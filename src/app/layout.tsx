@@ -21,13 +21,17 @@ export const metadata: Metadata = {
       "Built on the HGE inference engine. Free for humanitarian and academic use.",
     type: "website",
     locale: "en_US",
+    url: "https://ceres.northflow.no",
+    siteName: "CERES — Northflow Technologies",
   },
   twitter: {
     card: "summary_large_image",
     title: "CERES — Calibrated Early-warning & Risk Evaluation System",
     description: "Calibrated 90-day IPC Phase 3+ probability forecasts. Built on HGE. Free for humanitarian and academic use.",
   },
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
+  alternates: { canonical: "https://ceres.northflow.no" },
+  metadataBase: new URL("https://ceres.northflow.no"),
 };
 
 export default function RootLayout({

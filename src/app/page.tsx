@@ -127,7 +127,7 @@ export default function Dashboard() {
         {/* Meta */}
         <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexWrap: "wrap" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
-            {lastUpdated ? formatDate(lastUpdated).toUpperCase() : "LOADING…"} · 90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
+            {lastUpdated ? `LAST UPDATED: ${formatDate(lastUpdated).toUpperCase()}` : "LOADING…"} · 90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
           </span>
           <span style={{ fontStyle: "italic", color: "var(--ink-light)", fontSize: 12 }}>
             Northflow Technologies — Open Humanitarian Intelligence

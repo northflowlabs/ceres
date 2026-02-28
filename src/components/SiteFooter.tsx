@@ -5,8 +5,8 @@ const PAGES = [
   { href: "/methodology", label: "Methodology"  },
   { href: "/data",        label: "Data Sources" },
   { href: "/validation",  label: "Validation"   },
-  { href: "/about",       label: "About"        },
   { href: "/api-access",  label: "API Access"   },
+  { href: "/about",       label: "About"        },
 ];
 
 export default function SiteFooter() {
@@ -31,11 +31,11 @@ export default function SiteFooter() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>Northflow Technologies</div>
           <a href="https://northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>northflow.no</a>
           <a href="mailto:hello@northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>hello@northflow.no</a>
-          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>All predictions are timestamped and falsifiable. Not for operational use without institutional validation.</p>
+          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Research-grade forecasts. Not a substitute for field-based IPC assessment or operational humanitarian decision-making.</p>
         </div>
       </div>
       <div style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.1.0 · HGE Adapter #5 · arXiv pre-print forthcoming</span>
+        <span>CERES v0.1.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv pre-print in preparation</span>
         <span>© 2026 Northflow Technologies</span>
       </div>
     </footer>

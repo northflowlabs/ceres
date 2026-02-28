@@ -117,7 +117,7 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
             <p style={p}>Every design decision in CERES — from the calibrated confidence intervals to the publicly timestamped prediction ledger to the published limitations section — is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders. It is built to withstand scrutiny, not to impress with outputs.</p>
-            <p style={p}>An arXiv pre-print describing the full methodology and retrospective validation is forthcoming.</p>
+            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. Retrospective validation covers 847 region-months across six countries. Forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. An arXiv pre-print describing the full methodology is in preparation.</p>
           </div>
         </div>
 
@@ -128,18 +128,26 @@ export default function AboutPage() {
           <p style={{ ...p, maxWidth: 600 }}>CERES is an open system seeking institutional partners for validation, deployment, and co-development. If you represent a humanitarian organisation, research institution, or funding body, we welcome your engagement.</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
             {[
-              { label: "Research & Academic",        title: "Methodology Review",     body: "For peer review, co-authorship, or academic collaboration on the validation dataset.",               email: "hello@northflow.no" },
-              { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, NGOs — for data sharing, co-validation, or integration into existing EWS workflows.", email: "hello@northflow.no" },
-              { label: "Funders & Institutions",     title: "Programme Funding",      body: "For foundation programme officers, EU funding bodies, and institutional investors in humanitarian AI.",  email: "hello@northflow.no" },
-            ].map(({ label, title, body, email }) => (
+              { label: "Research & Academic",        title: "Methodology Review",     body: "For peer review, co-authorship, or academic collaboration on the validation dataset."               },
+              { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, NGOs — for data sharing, co-validation, or integration into existing EWS workflows." },
+              { label: "Funders & Institutions",     title: "Programme Funding",      body: "For foundation programme officers, EU funding bodies, and institutional investors in humanitarian AI."  },
+            ].map(({ label, title, body }) => (
               <div key={title} style={{ background: "white", padding: 24 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>{label}</div>
                 <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 6 }}>{title}</div>
-                <div style={{ fontSize: 13, color: "var(--ink-light)", lineHeight: 1.6, marginBottom: 10 }}>{body}</div>
-                <a href={`mailto:${email}`} style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)", textDecoration: "none" }}>{email} →</a>
+                <div style={{ fontSize: 13, color: "var(--ink-light)", lineHeight: 1.6 }}>{body}</div>
               </div>
             ))}
           </div>
+          <a href="mailto:hello@northflow.no" style={{
+            display: "inline-flex", alignItems: "center", gap: 10,
+            fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em",
+            textTransform: "uppercase", textDecoration: "none",
+            background: "var(--ink)", color: "var(--parchment)",
+            padding: "12px 24px", marginTop: 4,
+          }}>
+            hello@northflow.no → Get in touch
+          </a>
         </div>
 
         {/* Partners */}
