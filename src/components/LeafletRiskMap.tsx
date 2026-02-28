@@ -49,7 +49,6 @@ export default function LeafletRiskMap({
       L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
         maxZoom: 19,
         opacity: 0.75,
-        crossOrigin: "",
       }).addTo(map);
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
