@@ -86,7 +86,7 @@ export default function ApiAccessPage() {
 
   return (
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <SiteNav ctaHref="mailto:api@northflow.no" ctaLabel="Request Access →" />
+      <SiteNav ctaHref="mailto:hello@northflow.no" ctaLabel="Request Access →" />
 
       {/* Page header */}
       <div style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
@@ -143,7 +143,7 @@ export default function ApiAccessPage() {
               ))}
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)" }}>
-              To request API access, email <a href="mailto:api@northflow.no" style={{ color: "var(--earth)" }}>api@northflow.no</a> with your organisation name and intended use. Academic and humanitarian requests are approved within 48 hours.
+              To request API access, email <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a> with your organisation name and intended use. Academic and humanitarian requests are approved within 48 hours.
             </p>
           </section>
 
