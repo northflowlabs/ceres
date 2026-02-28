@@ -60,9 +60,9 @@ export default function AboutPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {[
-              { title: "Open by design",          body: "Full methodology published. Predictions timestamped. Graded against IPC outcomes at T+90 days. Everything is auditable." },
-              { title: "Calibrated, not confident", body: "Every prediction carries a 90% confidence interval. The system is designed to be honest about what it does not know." },
-              { title: "Built to be scrutinised",   body: "CERES is not operational until it has been validated by institutional partners. The arXiv pre-print is forthcoming." },
+              { title: "Open by design",            body: "The methodology is published. The code is public. Every prediction is timestamped and graded against real-world outcomes. We built CERES to be examined — by scientists, by funders, by the people whose lives depend on getting this right." },
+              { title: "Calibrated, not overconfident", body: "CERES never gives you a single number and calls it certainty. Every forecast carries a 90% confidence interval, built from 2,000 bootstrap replications. Honest uncertainty is more useful to a humanitarian programme officer than false precision." },
+              { title: "Built to be proven wrong",  body: "Every prediction CERES issues is publicly recorded before the outcome is known. If we are wrong, it is visible. That is not a vulnerability — it is the point. A forecast system that cannot be falsified is not a forecast system." },
             ].map(({ title, body }) => (
               <div key={title} style={{ borderLeft: "2px solid #44403C", paddingLeft: 16 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 4 }}>{title}</div>

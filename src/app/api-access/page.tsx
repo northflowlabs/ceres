@@ -266,8 +266,31 @@ export default function ApiAccessPage() {
             </Endpoint>
           </section>
 
+          <section id="formats" style={section}>
+            <div style={sectionLabel}>§ 4 — Response Format</div>
+            <h2 style={h2Style}>Response Format</h2>
+            <p style={pStyle}>All endpoints return JSON. Dates are ISO 8601. Probabilities are floats in [0, 1]. Confidence intervals are 90% bootstrap CIs.</p>
+            <Code>
+              <Cm># Standard envelope{"\n"}</Cm>
+              {"{\n"}
+              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260228-160603"</Str>{",\n"}
+              {"  "}<Key>"generated_at"</Key>{": "}<Str>"2026-02-28T16:06:03Z"</Str>{",\n"}
+              {"  "}<Key>"horizon_days"</Key>{": "}<Num>90</Num>{",\n"}
+              {"  "}<Key>"reference_date"</Key>{": "}<Str>"2026-02-28"</Str>{",\n"}
+              {"  "}<Key>"data"</Key>{": { ... }\n}"}
+            </Code>
+            <Code>
+              <Cm># Error envelope{"\n"}</Cm>
+              {"{\n"}
+              {"  "}<Key>"error"</Key>{": "}<Str>"region_not_found"</Str>{",\n"}
+              {"  "}<Key>"message"</Key>{": "}<Str>"Region XYZ is not currently monitored"</Str>{",\n"}
+              {"  "}<Key>"status"</Key>{": "}<Num>404</Num>{"\n}"}
+            </Code>
+            <p style={pStyle}>All probabilities follow the same field pattern: <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>p_ipc3plus_90d</code>, <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>ci_90_low</code>, <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>ci_90_high</code>.</p>
+          </section>
+
           <section id="attribution" style={{ marginBottom: 0, paddingBottom: 0 }}>
-            <div style={sectionLabel}>§ 4 — Attribution</div>
+            <div style={sectionLabel}>§ 5 — Attribution</div>
             <h2 style={h2Style}>Attribution Requirements</h2>
             <p style={pStyle}>All use of CERES data — whether in publications, dashboards, or operational systems — requires attribution to Northflow Technologies and CERES.</p>
             <Code>
