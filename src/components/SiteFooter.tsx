@@ -16,6 +16,7 @@ export default function SiteFooter() {
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>CERES</div>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Calibrated Early-warning &amp; Risk Evaluation System</p>
+          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Ingests satellite, conflict, and market data across 8 open sources to produce calibrated 90-day IPC Phase 3+ probability forecasts with bootstrap confidence intervals. Built on the HGE inference engine. Free for humanitarian and academic use.</p>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Open Humanitarian Intelligence<br />Northflow Technologies · 2026</p>
         </div>
         <div>

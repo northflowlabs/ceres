@@ -3,30 +3,29 @@ import "./globals.css";
 import "leaflet/dist/leaflet.css";
 
 export const metadata: Metadata = {
-  title: "CERES — Famine Early Warning Intelligence",
+  title: "CERES — Calibrated Early-warning & Risk Evaluation System",
   description:
-    "90-day predictive famine early warning across 15 global crisis regions. " +
-    "Calibrated logistic model with bootstrap confidence intervals. " +
-    "Powered by the HGE Hypothesis Generation Engine (Adapter #5). " +
-    "All predictions are timestamped, falsifiable, and graded against IPC outcomes.",
+    "CERES ingests satellite, conflict, and market data across 8 open sources to produce " +
+    "calibrated 90-day IPC Phase 3+ probability forecasts with bootstrap confidence intervals. " +
+    "Built on the HGE inference engine. Free for humanitarian and academic use.",
   keywords: [
     "famine early warning", "food security", "IPC", "FEWS NET",
     "humanitarian intelligence", "predictive analytics", "crisis monitoring",
-    "HGE", "CERES", "Northflow",
+    "HGE", "CERES", "Northflow", "calibrated forecasting", "bootstrap confidence intervals",
   ],
-  authors: [{ name: "Northflow Systems" }],
+  authors: [{ name: "northflowlabs" }],
   openGraph: {
-    title: "CERES — Famine Early Warning Intelligence",
+    title: "CERES — Calibrated Early-warning & Risk Evaluation System",
     description:
-      "Real-time 90-day famine probability predictions for 15 crisis regions. " +
-      "Timestamped, falsifiable, and graded against IPC outcomes.",
+      "Calibrated 90-day IPC Phase 3+ probability forecasts across 8 open data sources. " +
+      "Built on the HGE inference engine. Free for humanitarian and academic use.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "CERES — Famine Early Warning Intelligence",
-    description: "90-day predictive famine risk for 15 global crisis regions.",
+    title: "CERES — Calibrated Early-warning & Risk Evaluation System",
+    description: "Calibrated 90-day IPC Phase 3+ probability forecasts. Built on HGE. Free for humanitarian and academic use.",
   },
   robots: { index: false, follow: false },
 };
