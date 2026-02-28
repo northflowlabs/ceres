@@ -49,6 +49,7 @@ export default function LeafletRiskMap({
       L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
         maxZoom: 12,
         opacity: 0.65,
+        crossOrigin: true,
       }).addTo(map);
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
