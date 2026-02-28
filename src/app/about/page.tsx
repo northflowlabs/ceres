@@ -128,8 +128,8 @@ export default function AboutPage() {
           <p style={{ ...p, maxWidth: 600 }}>CERES is an open system seeking institutional partners for validation, deployment, and co-development. If you represent a humanitarian organisation, research institution, or funding body, we welcome your engagement.</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
             {[
-              { label: "Research & Academic",        title: "Methodology Review",     body: "For peer review, co-authorship, or academic collaboration on the validation dataset.",               email: "research@northflow.no" },
-              { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, NGOs — for data sharing, co-validation, or integration into existing EWS workflows.", email: "partners@northflow.no" },
+              { label: "Research & Academic",        title: "Methodology Review",     body: "For peer review, co-authorship, or academic collaboration on the validation dataset.",               email: "hello@northflow.no" },
+              { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, NGOs — for data sharing, co-validation, or integration into existing EWS workflows.", email: "hello@northflow.no" },
               { label: "Funders & Institutions",     title: "Programme Funding",      body: "For foundation programme officers, EU funding bodies, and institutional investors in humanitarian AI.",  email: "hello@northflow.no" },
             ].map(({ label, title, body, email }) => (
               <div key={title} style={{ background: "white", padding: 24 }}>
