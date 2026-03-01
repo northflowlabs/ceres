@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/methodology", label: "Methodology"  },
   { href: "/data",        label: "Data Sources" },
   { href: "/validation",  label: "Validation"   },
+  { href: "/tracker",     label: "Track Record" },
   { href: "/about",       label: "About"        },
   { href: "/api-access",  label: "API"          },
 ];

@@ -107,18 +107,77 @@ export interface Admin1Signal {
   reference_date: string;
 }
 
+export interface GradeRecord {
+  hypothesis_id:    string;
+  run_id:           string;
+  region_id:        string;
+  region_name:      string;
+  reference_date:   string;
+  horizon_date:     string;
+  graded_at:        string;
+  predicted_tier:   string;
+  p_ipc3plus_90d:   number;
+  ci_90_low:        number;
+  ci_90_high:       number;
+  actual_ipc_phase: number;
+  outcome_ipc3plus: boolean;
+  brier_score:      number;
+  tier_correct:     boolean;
+  ci_covered:       boolean;
+}
+
+export interface AggregateMetrics {
+  n_graded:         number;
+  brier_score:      number | null;
+  ci_coverage:      number | null;
+  tier1_precision:  number | null;
+  tier1_recall:     number | null;
+  tier1_n_issued:   number;
+  tier1_n_correct:  number;
+  tier1_n_missed:   number;
+}
+
+export interface GradingLedger {
+  grades:  GradeRecord[];
+  metrics: AggregateMetrics;
+}
+
+export interface ReportMeta {
+  run_id:      string;
+  filename:    string;
+  size_bytes:  number;
+  created_at:  string;
+}
+
 async function apiFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`API ${path} → ${res.status}`);
   return res.json();
 }
 
+async function apiPost<T>(path: string, body?: unknown): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined,
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`API POST ${path} → ${res.status}`);
+  return res.json();
+}
+
 export const api = {
-  health: ()                          => apiFetch<HealthStatus>("/health"),
-  predictions: (tier?: string)        => apiFetch<Prediction[]>(`/v1/predictions${tier ? `?tier=${tier}` : ""}`),
-  prediction: (regionId: string)      => apiFetch<Prediction>(`/v1/predictions/${regionId}`),
-  hypotheses: ()                      => apiFetch<Hypothesis[]>("/v1/hypotheses"),
-  hypothesis: (id: string)            => apiFetch<Hypothesis>(`/v1/hypotheses/${id}`),
-  admin1: (countryId: string)         => apiFetch<Admin1Signal[]>(`/v1/admin1/${countryId}`),
-  admin1Summary: ()                   => apiFetch<Admin1Signal[]>("/v1/admin1/summary"),
+  health:       ()                          => apiFetch<HealthStatus>("/health"),
+  predictions:  (tier?: string)             => apiFetch<Prediction[]>(`/v1/predictions${tier ? `?tier=${tier}` : ""}`),
+  prediction:   (regionId: string)          => apiFetch<Prediction>(`/v1/predictions/${regionId}`),
+  hypotheses:   ()                          => apiFetch<Hypothesis[]>("/v1/hypotheses"),
+  hypothesis:   (id: string)                => apiFetch<Hypothesis>(`/v1/hypotheses/${id}`),
+  admin1:       (countryId: string)         => apiFetch<Admin1Signal[]>(`/v1/admin1/${countryId}`),
+  admin1Summary: ()                         => apiFetch<Admin1Signal[]>("/v1/admin1/summary"),
+  grades:       ()                          => apiFetch<GradingLedger>("/v1/grades"),
+  gradeMetrics: ()                          => apiFetch<AggregateMetrics>("/v1/grades/metrics"),
+  runGrading:   ()                          => apiPost<{ total_graded: number }>("/v1/grades/run"),
+  reports:      ()                          => apiFetch<ReportMeta[]>("/v1/reports"),
+  generateReport: ()                        => apiPost<{ run_id: string; pdf_path: string }>("/v1/reports/generate"),
+  subscribeEmail: (email: string)           => apiPost<{ success: boolean; message: string }>("/v1/alerts/subscribe/email", { email }),
 };
