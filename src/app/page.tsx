@@ -36,6 +36,7 @@ export default function Dashboard() {
   const [deepHyp,     setDeepHyp]     = useState<Hypothesis | null>(null);
   const [deepLoading, setDeepLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [mobileTab, setMobileTab] = useState<"regions" | "detail">("regions");
 
   const load = useCallback(async () => {
     setLoading(true); setError(null);
@@ -125,7 +126,7 @@ export default function Dashboard() {
         </div>
 
         {/* Meta */}
-        <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexWrap: "wrap" }}>
+        <div className="desktop-meta" style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexWrap: "wrap" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
             {lastUpdated ? `LAST UPDATED: ${formatDate(lastUpdated).toUpperCase()}` : "LOADING…"} · 90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
           </span>
@@ -149,7 +150,7 @@ export default function Dashboard() {
         </div>
 
         {/* Nav links */}
-        <div style={{ display: "flex", alignItems: "center", padding: "0 16px", borderRight: "1px solid var(--border)" }}>
+        <div className="desktop-nav-links" style={{ display: "flex", alignItems: "center", padding: "0 16px", borderRight: "1px solid var(--border)" }}>
           {([
             { href: "/",            label: "Dashboard"    },
             { href: "/methodology", label: "Methodology"  },
@@ -170,8 +171,8 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Pipeline status */}
-        <div style={{
+        {/* Pipeline status — hidden on mobile, hamburger takes its place */}
+        <div className="desktop-meta" style={{
           display: "flex", alignItems: "center", gap: 8,
           padding: "0 0 0 24px",
           marginLeft: "auto",
@@ -195,6 +196,21 @@ export default function Dashboard() {
             {loading ? "…" : "REFRESH"}
           </button>
         </div>
+        {/* Hamburger — mobile only */}
+        <button
+          className="hamburger-btn"
+          style={{
+            display: "none", marginLeft: "auto",
+            alignItems: "center", justifyContent: "center",
+            background: "none", border: "none", cursor: "pointer",
+            padding: "12px 8px", gap: 5, flexDirection: "column",
+          }}
+          aria-label="Open menu"
+        >
+          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+        </button>
       </header>
 
       {/* ── ERROR ────────────────────────────────────────────────────── */}
@@ -221,10 +237,20 @@ export default function Dashboard() {
         flex: 1,
         height: "calc(100vh - 65px)",
         overflow: "hidden",
-      }}>
+      }} className="dashboard-grid">
+
+        {/* ── MOBILE TABS ───────────────────────────────────────────── */}
+        <div className="mobile-tabs" style={{ gridColumn: "1 / -1" }}>
+          <button className={`mobile-tab${mobileTab === "regions" ? " active" : ""}`} onClick={() => setMobileTab("regions")}>
+            Regions {predictions.length > 0 ? `(${predictions.length})` : ""}
+          </button>
+          <button className={`mobile-tab${mobileTab === "detail" ? " active" : ""}`} onClick={() => setMobileTab("detail")}>
+            {selPred ? selPred.region_name : "Detail"}
+          </button>
+        </div>
 
         {/* ── LEFT PANEL — Region list ─────────────────────────────── */}
-        <aside style={{
+        <aside className={`dashboard-panel-list${mobileTab === "regions" ? " mobile-active" : ""}`} style={{
           borderRight: "1px solid var(--border)",
           overflowY: "auto",
           background: "var(--parchment)",
@@ -275,7 +301,7 @@ export default function Dashboard() {
                   key={p.region_id}
                   className={`region-card ${tierCssClass(p.alert_tier)} animate-card-in ${isSel ? "selected" : ""}`}
                   style={{ animationDelay: `${i * 0.05}s` }}
-                  onClick={() => selectRegion(p)}
+                  onClick={() => { selectRegion(p); setMobileTab("detail"); }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                     <div>
@@ -335,7 +361,7 @@ export default function Dashboard() {
         </aside>
 
         {/* ── MAP ──────────────────────────────────────────────────── */}
-        <main style={{ position: "relative", background: "var(--map-bg)", overflow: "hidden" }}>
+        <main className="dashboard-panel-map" style={{ position: "relative", background: "var(--map-bg)", overflow: "hidden" }}>
           <LeafletRiskMap
             predictions={predictions}
             selected={selPred}
@@ -392,7 +418,7 @@ export default function Dashboard() {
         </main>
 
         {/* ── RIGHT PANEL — Hypothesis + Signals + Ledger ─────────── */}
-        <aside style={{
+        <aside className={`dashboard-panel-detail${mobileTab === "detail" ? " mobile-active" : ""}`} style={{
           borderLeft: "1px solid var(--border)",
           overflowY: "auto",
           background: "var(--parchment)",

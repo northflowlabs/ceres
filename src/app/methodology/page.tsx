@@ -73,7 +73,7 @@ export default function MethodologyPage() {
       <SiteNav />
 
       {/* Page header */}
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Technical Documentation
@@ -85,10 +85,10 @@ export default function MethodologyPage() {
       </div>
 
       {/* Content grid */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "200px 1fr", padding: "0 40px", alignItems: "start" }}>
+      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "200px 1fr", padding: "0 40px", alignItems: "start" }}>
 
         {/* TOC */}
-        <nav style={{ position: "sticky", top: 64, padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
+        <nav className="methodology-toc" style={{ position: "sticky", top: 64, padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 16 }}>Contents</div>
           {TOC.map(({ id, label }) => (
             <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }} style={{
@@ -102,7 +102,7 @@ export default function MethodologyPage() {
         </nav>
 
         {/* Article */}
-        <article ref={articleRef} style={{ padding: "48px 0 80px 56px" }}>
+        <article ref={articleRef} style={{ padding: "48px 0 80px 56px" }} className="methodology-article">
 
           <section id="overview" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 1 — Overview</div>

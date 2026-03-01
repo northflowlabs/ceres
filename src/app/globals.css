@@ -237,4 +237,137 @@
     color: var(--ink);
     background: var(--parchment-dark);
   }
+
+  /* ── Mobile nav drawer ──────────────────────────────────────── */
+  .mobile-nav-drawer {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--parchment);
+    z-index: 2000;
+    flex-direction: column;
+    padding: 24px;
+  }
+  .mobile-nav-drawer.open { display: flex; }
+
+  /* ── Mobile tab bar ─────────────────────────────────────────── */
+  .mobile-tabs {
+    display: none;
+  }
+
+  /* ── Dashboard mobile panel visibility ──────────────────────── */
+  .dashboard-panel-list   { display: flex; }
+  .dashboard-panel-map    { display: block; }
+  .dashboard-panel-detail { display: flex; }
+
+  /* ── Page content mobile padding ────────────────────────────── */
+  .page-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  @media (max-width: 768px) {
+    /* Dashboard 3-col → single col with tabs */
+    .dashboard-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    .dashboard-panel-map    { display: none !important; }
+    .dashboard-panel-list   { display: none; }
+    .dashboard-panel-detail { display: none; }
+    .dashboard-panel-list.mobile-active   { display: flex !important; }
+    .dashboard-panel-detail.mobile-active { display: flex !important; }
+
+    /* Tab bar */
+    .mobile-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--ink);
+      background: var(--parchment);
+      position: sticky;
+      top: 56px;
+      z-index: 900;
+    }
+    .mobile-tab {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 12px 8px;
+      text-align: center;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      color: var(--ink-light);
+      transition: all 0.15s;
+    }
+    .mobile-tab.active {
+      color: var(--earth);
+      border-bottom-color: var(--earth);
+    }
+
+    /* Header compact */
+    .desktop-nav-links { display: none !important; }
+    .desktop-meta      { display: none !important; }
+    .desktop-cta       { display: none !important; }
+    .hamburger-btn     { display: flex !important; }
+
+    /* Page content */
+    .page-content {
+      padding: 32px 20px;
+    }
+
+    /* Inner panels scroll freely */
+    .dashboard-panel-list,
+    .dashboard-panel-detail {
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+      border: none !important;
+    }
+
+    /* ── Content page global overrides ─────────────────────────── */
+
+    /* Methodology: hide TOC, single column layout */
+    .methodology-toc    { display: none !important; }
+    .methodology-layout { grid-template-columns: 1fr !important; padding: 0 20px !important; }
+    .methodology-article { padding: 32px 0 48px !important; }
+
+    /* Page headers */
+    .page-header {
+      padding: 32px 20px !important;
+    }
+    .page-header h1 { font-size: 28px !important; }
+
+    /* About page hero */
+    .about-hero {
+      grid-template-columns: 1fr !important;
+      gap: 32px !important;
+      padding: 32px 20px !important;
+    }
+
+    /* About missions grid */
+    .about-missions {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Validation / Data / API content wrappers */
+    .content-wrap {
+      padding: 32px 20px !important;
+      max-width: 100% !important;
+    }
+    .content-two-col {
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+
+    /* Global heading scale-down */
+    h1 { font-size: 26px !important; line-height: 1.2 !important; }
+    h2 { font-size: 20px !important; }
+  }
 }

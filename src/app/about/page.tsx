@@ -26,7 +26,7 @@ export default function AboutPage() {
       <SiteNav />
 
       {/* HERO */}
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "80px 40px", maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "1fr 380px", gap: 80, alignItems: "start" }}>
+      <div className="about-hero" style={{ borderBottom: "1px solid var(--border)", padding: "80px 40px", maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "1fr 380px", gap: 80, alignItems: "start" }}>
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
@@ -51,7 +51,7 @@ export default function AboutPage() {
 
       {/* MISSION BLOCK */}
       <div style={{ background: "var(--ink)", color: "var(--parchment)", padding: "60px 40px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+        <div className="about-missions" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 16 }}>Mission</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 400, fontStyle: "italic", lineHeight: 1.4, color: "var(--parchment)" }}>
@@ -74,10 +74,10 @@ export default function AboutPage() {
       </div>
 
       {/* CONTENT */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px" }}>
+      <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px" }}>
 
         {/* HGE Platform */}
-        <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 60, padding: "64px 0", borderBottom: "1px solid var(--border-light)" }}>
+        <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 60, padding: "64px 0", borderBottom: "1px solid var(--border-light)" }}>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Northflow Technologies</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>The HGE Platform</h2>
@@ -104,7 +104,7 @@ export default function AboutPage() {
         </div>
 
         {/* Scope & Limits */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, padding: "64px 0", borderBottom: "1px solid var(--border-light)" }}>
+        <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, padding: "64px 0", borderBottom: "1px solid var(--border-light)" }}>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Scope &amp; Limits</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>What CERES Is Not</h2>
