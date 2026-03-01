@@ -6,6 +6,144 @@ import SiteFooter from "@/components/SiteFooter";
 
 const API_BASE = "https://ceres-core-production.up.railway.app";
 
+const TIER_LABELS: Record<string, string> = {
+  professional:  "CERES Professional — $199 / month",
+  institutional: "CERES Institutional — $999 / month",
+};
+
+function CheckoutModal({
+  tier,
+  onClose,
+  onSubmit,
+  loading,
+  error,
+}: {
+  tier: string;
+  onClose: () => void;
+  onSubmit: (email: string, org: string) => void;
+  loading: boolean;
+  error: string | null;
+}) {
+  const [email, setEmail] = useState("");
+  const [org,   setOrg]   = useState("");
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { emailRef.current?.focus(); }, []);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    onSubmit(email.trim(), org.trim());
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%", padding: "10px 12px", boxSizing: "border-box",
+    fontFamily: "var(--mono)", fontSize: 13,
+    background: "var(--parchment)", border: "1px solid var(--border)",
+    color: "var(--ink)", outline: "none",
+  };
+  const labelStyle: React.CSSProperties = {
+    fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em",
+    textTransform: "uppercase", color: "var(--ink-light)", display: "block", marginBottom: 6,
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, background: "rgba(28,25,23,0.6)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        zIndex: 1000, padding: 24,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "var(--parchment)", border: "1px solid var(--border)",
+          maxWidth: 420, width: "100%", padding: 32,
+          boxShadow: "6px 6px 0 rgba(0,0,0,0.15)",
+        }}
+      >
+        {/* Header */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 8 }}>
+            Subscribe
+          </div>
+          <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)" }}>
+            {TIER_LABELS[tier]}
+          </div>
+          <div style={{ fontSize: 12, color: "var(--ink-light)", marginTop: 6, lineHeight: 1.5 }}>
+            You'll be redirected to Stripe to complete payment. Your API key will be emailed immediately after.
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <div>
+            <label style={labelStyle}>Work email *</label>
+            <input
+              ref={emailRef}
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@organisation.org"
+              style={inputStyle}
+            />
+          </div>
+          <div>
+            <label style={labelStyle}>Organisation name</label>
+            <input
+              type="text"
+              value={org}
+              onChange={(e) => setOrg(e.target.value)}
+              placeholder="WFP, FAO, University of Oslo…"
+              style={inputStyle}
+            />
+          </div>
+
+          {error && (
+            <div style={{ background: "var(--crisis-light)", border: "1px solid var(--crisis)", padding: "10px 14px", fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)" }}>
+              {error}
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+            <button
+              type="submit"
+              disabled={loading || !email.trim()}
+              style={{
+                flex: 1, padding: "12px 0",
+                fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
+                background: loading || !email.trim() ? "var(--ink-light)" : "var(--ink)",
+                color: "var(--parchment)", border: "none",
+                cursor: loading || !email.trim() ? "not-allowed" : "pointer",
+              }}
+            >
+              {loading ? "Redirecting to Stripe…" : "Continue to payment →"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                padding: "12px 20px",
+                fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
+                background: "transparent", color: "var(--ink-mid)",
+                border: "1px solid var(--border)", cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+
+          <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.6 }}>
+            🔒 Payments processed securely by Stripe. Cancel anytime from the billing portal.
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 const TOC = [
   { id: "access",      label: "Access Tiers"    },
   { id: "base",        label: "Base URL"         },
@@ -101,7 +239,8 @@ const section = { marginBottom: 56, paddingBottom: 56, borderBottom: "1px solid 
 
 export default function ApiAccessPage() {
   const tocRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [modalTier,       setModalTier]       = useState<string | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError,   setCheckoutError]   = useState<string | null>(null);
 
   const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
@@ -124,29 +263,36 @@ export default function ApiAccessPage() {
     return () => obs.disconnect();
   }, []);
 
-  async function handleCheckout(tier: string) {
-    setCheckoutLoading(tier);
+  async function handleCheckoutSubmit(email: string, org: string) {
+    if (!modalTier) return;
+    setCheckoutLoading(true);
     setCheckoutError(null);
-    const email = prompt("Enter your work email address:");
-    if (!email) { setCheckoutLoading(null); return; }
-    const org   = prompt("Organisation name (optional):") ?? "";
     try {
       const resp = await fetch(`${API_BASE}/v1/billing/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier, email, org_name: org }),
+        body: JSON.stringify({ tier: modalTier, email, org_name: org }),
       });
       if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
       const data = await resp.json();
       window.location.href = data.checkout_url;
     } catch (err) {
       setCheckoutError(err instanceof Error ? err.message : "Checkout failed — try again or email ceres@northflow.no");
-      setCheckoutLoading(null);
+      setCheckoutLoading(false);
     }
   }
 
   return (
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      {modalTier && (
+        <CheckoutModal
+          tier={modalTier}
+          onClose={() => { setModalTier(null); setCheckoutLoading(false); setCheckoutError(null); }}
+          onSubmit={handleCheckoutSubmit}
+          loading={checkoutLoading}
+          error={checkoutError}
+        />
+      )}
       <SiteNav ctaHref="mailto:ceres@northflow.no" ctaLabel="Request Access →" />
 
       {/* Page header */}
@@ -225,17 +371,15 @@ export default function ApiAccessPage() {
                   </ul>
                   {ctaAction === "checkout" ? (
                     <button
-                      onClick={() => handleCheckout(key)}
-                      disabled={checkoutLoading === key}
+                      onClick={() => { setModalTier(key); setCheckoutError(null); }}
                       style={{
                         width: "100%", padding: "11px 0",
                         fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
                         background: highlight ? "var(--earth)" : "var(--ink)",
-                        color: "var(--parchment)", border: "none", cursor: checkoutLoading === key ? "wait" : "pointer",
-                        opacity: checkoutLoading === key ? 0.7 : 1,
+                        color: "var(--parchment)", border: "none", cursor: "pointer",
                       }}
                     >
-                      {checkoutLoading === key ? "Redirecting…" : cta}
+                      {cta}
                     </button>
                   ) : (
                     <a
