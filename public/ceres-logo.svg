@@ -8,27 +8,28 @@
   <circle cx="256" cy="256" r="200" fill="none" stroke="#1C1917" stroke-width="1.5"/>
 
   <!-- Latitude lines (horizontal arcs) -->
-  <ellipse cx="256" cy="256" rx="200" ry="60"  fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
-  <ellipse cx="256" cy="256" rx="200" ry="120" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
-  <ellipse cx="256" cy="256" rx="200" ry="175" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <ellipse cx="256" cy="256" rx="200" ry="60"  fill="none" stroke="#92400E" stroke-width="1" opacity="0.35"/>
+  <ellipse cx="256" cy="256" rx="200" ry="120" fill="none" stroke="#92400E" stroke-width="1" opacity="0.35"/>
+  <ellipse cx="256" cy="256" rx="200" ry="175" fill="none" stroke="#92400E" stroke-width="1" opacity="0.35"/>
 
   <!-- Meridian lines (vertical arcs) -->
-  <ellipse cx="256" cy="256" rx="60"  ry="200" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
-  <ellipse cx="256" cy="256" rx="120" ry="200" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <ellipse cx="256" cy="256" rx="60"  ry="200" fill="none" stroke="#92400E" stroke-width="1" opacity="0.35"/>
+  <ellipse cx="256" cy="256" rx="120" ry="200" fill="none" stroke="#92400E" stroke-width="1" opacity="0.35"/>
 
   <!-- Equator line -->
-  <line x1="56" y1="256" x2="456" y2="256" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <line x1="56" y1="256" x2="456" y2="256" stroke="#92400E" stroke-width="1" opacity="0.35"/>
   <!-- Prime meridian line -->
-  <line x1="256" y1="56" x2="256" y2="456" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <line x1="256" y1="56" x2="256" y2="456" stroke="#92400E" stroke-width="1" opacity="0.35"/>
 
   <!-- CERES text in centre -->
   <text
-    x="256" y="268"
+    x="256" y="278"
     font-family="Georgia, 'Times New Roman', serif"
     font-size="68"
     font-weight="700"
     letter-spacing="8"
     text-anchor="middle"
+    dominant-baseline="middle"
     fill="#1C1917"
   >CERES</text>
 
