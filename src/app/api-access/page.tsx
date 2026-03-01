@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+
+const API_BASE = "https://ceres-core-production.up.railway.app";
 
 const TOC = [
   { id: "access",      label: "Access Tiers"    },
@@ -16,16 +18,49 @@ const TOC = [
 
 const TIERS = [
   {
-    tier: "Tier A", name: "Open Research", price: "Free",
-    features: ["All prediction endpoints","All hypothesis data","Admin1 signal breakdown","100 requests / day","Academic & NGO use"],
+    key: "free",
+    tier: "Tier A", name: "Open Research", price: "Free", priceNote: "forever",
+    highlight: false,
+    cta: "Start for Free",
+    ctaAction: "email",
+    features: [
+      "All prediction endpoints",
+      "All hypothesis data",
+      "Admin1 signal breakdown",
+      "500 requests / month",
+      "Academic & NGO use",
+      "CC BY 4.0 licence",
+    ],
   },
   {
-    tier: "Tier B", name: "Institutional", price: "€500–2,000 / month",
-    features: ["All Open Research features","5,000 requests / day","Webhook alerts on Tier-I events","White-label PDF reports","Dedicated support"],
+    key: "professional",
+    tier: "Tier B", name: "Professional", price: "$199", priceNote: "/ month",
+    highlight: true,
+    cta: "Subscribe →",
+    ctaAction: "checkout",
+    features: [
+      "Everything in Open Research",
+      "10,000 requests / month",
+      "Full prediction history",
+      "Webhook alerts — Tier I/II events",
+      "PDF intelligence reports",
+      "Priority email support",
+    ],
   },
   {
-    tier: "Tier C", name: "Sovereign / Custom", price: "Contact us",
-    features: ["All Institutional features","Unlimited requests","Custom region coverage","Private deployment option","SLA & integration support"],
+    key: "institutional",
+    tier: "Tier C", name: "Institutional", price: "$999", priceNote: "/ month",
+    highlight: false,
+    cta: "Subscribe →",
+    ctaAction: "checkout",
+    features: [
+      "Everything in Professional",
+      "Unlimited requests",
+      "Admin1 sub-national data",
+      "Custom region coverage",
+      "SLA & integration support",
+      "Designed for WFP / FAO / OCHA",
+    ],
   },
 ];
 
@@ -66,6 +101,11 @@ const section = { marginBottom: 56, paddingBottom: 56, borderBottom: "1px solid 
 
 export default function ApiAccessPage() {
   const tocRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [checkoutError,   setCheckoutError]   = useState<string | null>(null);
+
+  const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const checkoutStatus = urlParams?.get("checkout");
 
   useEffect(() => {
     const sections = document.querySelectorAll<HTMLElement>("section[id]");
@@ -83,6 +123,27 @@ export default function ApiAccessPage() {
     sections.forEach((s) => obs.observe(s));
     return () => obs.disconnect();
   }, []);
+
+  async function handleCheckout(tier: string) {
+    setCheckoutLoading(tier);
+    setCheckoutError(null);
+    const email = prompt("Enter your work email address:");
+    if (!email) { setCheckoutLoading(null); return; }
+    const org   = prompt("Organisation name (optional):") ?? "";
+    try {
+      const resp = await fetch(`${API_BASE}/v1/billing/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier, email, org_name: org }),
+      });
+      if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
+      const data = await resp.json();
+      window.location.href = data.checkout_url;
+    } catch (err) {
+      setCheckoutError(err instanceof Error ? err.message : "Checkout failed — try again or email ceres@northflow.no");
+      setCheckoutLoading(null);
+    }
+  }
 
   return (
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -123,27 +184,77 @@ export default function ApiAccessPage() {
           <section id="access" style={section}>
             <div style={sectionLabel}>§ 1 — Access</div>
             <h2 style={h2Style}>Access Tiers</h2>
-            <p style={pStyle}>CERES API access is free for academic institutions and humanitarian organisations. All tiers share the same endpoints and data quality — the difference is rate limits and support.</p>
+            <p style={pStyle}>Free for academic institutions and humanitarian organisations. Paid tiers unlock higher volume, full prediction history, and webhook alerts. All tiers use the same endpoints and data quality.</p>
+
+            {/* Checkout success / cancelled banners */}
+            {checkoutStatus === "success" && (
+              <div style={{ background: "#F1F8E9", border: "1px solid var(--watch)", padding: "12px 16px", marginBottom: 20, fontFamily: "var(--mono)", fontSize: 12, color: "var(--watch)", display: "flex", gap: 10, alignItems: "center" }}>
+                <span>✓</span>
+                <span>Subscription confirmed. Your API key has been emailed to you. Check your inbox.</span>
+              </div>
+            )}
+            {checkoutStatus === "cancelled" && (
+              <div style={{ background: "var(--warning-light)", border: "1px solid var(--warning)", padding: "12px 16px", marginBottom: 20, fontFamily: "var(--mono)", fontSize: 12, color: "var(--warning)", display: "flex", gap: 10, alignItems: "center" }}>
+                <span>⚠</span>
+                <span>Checkout was cancelled. No charge was made.</span>
+              </div>
+            )}
+            {checkoutError && (
+              <div style={{ background: "var(--crisis-light)", border: "1px solid var(--crisis)", padding: "12px 16px", marginBottom: 20, fontFamily: "var(--mono)", fontSize: 12, color: "var(--crisis)", display: "flex", gap: 10, alignItems: "center" }}>
+                <span>✗</span>
+                <span>{checkoutError}</span>
+              </div>
+            )}
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
-              {TIERS.map(({ tier, name, price, features }) => (
-                <div key={tier} style={{ background: "white", padding: 24 }}>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>{tier}</div>
-                  <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{name}</div>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: 13, color: "var(--earth)", marginBottom: 12 }}>{price}</div>
-                  <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
+              {TIERS.map(({ key, tier, name, price, priceNote, highlight, cta, ctaAction, features }) => (
+                <div key={tier} style={{ background: highlight ? "var(--ink)" : "white", padding: 28, display: "flex", flexDirection: "column" }}>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: highlight ? "#A8A29E" : "var(--ink-light)", marginBottom: 8 }}>{tier}</div>
+                  <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, marginBottom: 4, color: highlight ? "var(--parchment)" : "var(--ink)" }}>{name}</div>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 16 }}>
+                    <span style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, color: highlight ? "#F4A261" : "var(--earth)" }}>{price}</span>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: highlight ? "#A8A29E" : "var(--ink-light)" }}>{priceNote}</span>
+                  </div>
+                  <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 7, flex: 1, marginBottom: 20 }}>
                     {features.map((f) => (
-                      <li key={f} style={{ fontSize: 12, color: "var(--ink-mid)", display: "flex", alignItems: "flex-start", gap: 8, lineHeight: 1.4 }}>
-                        <span style={{ color: "var(--watch)", fontFamily: "var(--mono)", fontSize: 11, flexShrink: 0, marginTop: 1 }}>✓</span>
+                      <li key={f} style={{ fontSize: 12, color: highlight ? "#D6D3D1" : "var(--ink-mid)", display: "flex", alignItems: "flex-start", gap: 8, lineHeight: 1.4 }}>
+                        <span style={{ color: highlight ? "#F4A261" : "var(--watch)", fontFamily: "var(--mono)", fontSize: 11, flexShrink: 0, marginTop: 1 }}>✓</span>
                         {f}
                       </li>
                     ))}
                   </ul>
+                  {ctaAction === "checkout" ? (
+                    <button
+                      onClick={() => handleCheckout(key)}
+                      disabled={checkoutLoading === key}
+                      style={{
+                        width: "100%", padding: "11px 0",
+                        fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
+                        background: highlight ? "var(--earth)" : "var(--ink)",
+                        color: "var(--parchment)", border: "none", cursor: checkoutLoading === key ? "wait" : "pointer",
+                        opacity: checkoutLoading === key ? 0.7 : 1,
+                      }}
+                    >
+                      {checkoutLoading === key ? "Redirecting…" : cta}
+                    </button>
+                  ) : (
+                    <a
+                      href="mailto:ceres@northflow.no?subject=CERES Open Research API Access"
+                      style={{
+                        display: "block", width: "100%", padding: "11px 0", textAlign: "center",
+                        fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
+                        background: "transparent", color: "var(--earth)", border: "1px solid var(--earth)",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {cta}
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)" }}>
-              To request API access, email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a> with your organisation name and intended use. Academic and humanitarian requests are approved within 48 hours.
+              Academic and humanitarian organisations may request free access by emailing <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>. All paid subscriptions are billed monthly via Stripe and can be cancelled at any time.
             </p>
           </section>
 
