@@ -48,6 +48,15 @@ export default function Dashboard() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  useEffect(() => {
+    if (sheetOpen || menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [sheetOpen, menuOpen]);
+
   const load = useCallback(async () => {
     setLoading(true); setError(null);
     try {
