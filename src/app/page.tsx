@@ -37,6 +37,14 @@ export default function Dashboard() {
   const [deepLoading, setDeepLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [mobileTab, setMobileTab] = useState<"regions" | "detail">("regions");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true); setError(null);
@@ -362,11 +370,13 @@ export default function Dashboard() {
 
         {/* ── MAP ──────────────────────────────────────────────────── */}
         <main className="dashboard-panel-map" style={{ position: "relative", background: "var(--map-bg)", overflow: "hidden" }}>
-          <LeafletRiskMap
-            predictions={predictions}
-            selected={selPred}
-            onSelect={selectRegion}
-          />
+          {!isMobile && (
+            <LeafletRiskMap
+              predictions={predictions}
+              selected={selPred}
+              onSelect={selectRegion}
+            />
+          )}
 
           {/* Map overlay — run info */}
           <div style={{
