@@ -139,14 +139,14 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
-          <a href="mailto:hello@northflow.no" style={{
+          <a href="mailto:ceres@northflow.no" style={{
             display: "inline-flex", alignItems: "center", gap: 10,
             fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em",
             textTransform: "uppercase", textDecoration: "none",
             background: "var(--ink)", color: "var(--parchment)",
             padding: "12px 24px", marginTop: 4,
           }}>
-            hello@northflow.no → Get in touch
+            ceres@northflow.no → Get in touch
           </a>
         </div>
 
