@@ -32,6 +32,11 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   alternates: { canonical: "https://ceres.northflow.no" },
   metadataBase: new URL("https://ceres.northflow.no"),
+  icons: {
+    icon:    "/ceres-logo.svg",
+    shortcut: "/ceres-logo.svg",
+    apple:   "/ceres-logo.svg",
+  },
 };
 
 export default function RootLayout({

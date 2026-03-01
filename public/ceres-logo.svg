@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#F5F0E8"/>
+
+  <!-- Outer ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#1C1917" stroke-width="6"/>
+  <!-- Inner ring -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#1C1917" stroke-width="1.5"/>
+
+  <!-- Latitude lines (horizontal arcs) -->
+  <ellipse cx="256" cy="256" rx="200" ry="60"  fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <ellipse cx="256" cy="256" rx="200" ry="120" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <ellipse cx="256" cy="256" rx="200" ry="175" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+
+  <!-- Meridian lines (vertical arcs) -->
+  <ellipse cx="256" cy="256" rx="60"  ry="200" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <ellipse cx="256" cy="256" rx="120" ry="200" fill="none" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+
+  <!-- Equator line -->
+  <line x1="56" y1="256" x2="456" y2="256" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+  <!-- Prime meridian line -->
+  <line x1="256" y1="56" x2="256" y2="456" stroke="#1C1917" stroke-width="1" opacity="0.25"/>
+
+  <!-- Central dot / focal point -->
+  <circle cx="256" cy="256" r="18" fill="#92400E"/>
+  <circle cx="256" cy="256" r="10" fill="#F5F0E8"/>
+
+  <!-- Decorative tick marks around outer ring -->
+  <g stroke="#1C1917" stroke-width="3" opacity="0.5">
+    <!-- N/S/E/W ticks -->
+    <line x1="256" y1="30" x2="256" y2="52"/>
+    <line x1="256" y1="460" x2="256" y2="482"/>
+    <line x1="30" y1="256" x2="52" y2="256"/>
+    <line x1="460" y1="256" x2="482" y2="256"/>
+    <!-- Diagonal ticks -->
+    <line x1="100" y1="100" x2="114" y2="114"/>
+    <line x1="412" y1="100" x2="398" y2="114"/>
+    <line x1="100" y1="412" x2="114" y2="398"/>
+    <line x1="412" y1="412" x2="398" y2="398"/>
+  </g>
+
+</svg>
