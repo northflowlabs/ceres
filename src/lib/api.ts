@@ -149,6 +149,33 @@ export interface ReportMeta {
   created_at:  string;
 }
 
+export interface RegionSnapshot {
+  run_id:                 string;
+  run_date:               string;
+  region_id:              string;
+  region_name:            string;
+  alert_tier:             string;
+  p_ipc3plus_90d:         number;
+  p_ipc4plus_90d:         number;
+  p_famine_90d:           number;
+  ci_90_low:              number;
+  ci_90_high:             number;
+  ipc_phase_forecast:     number;
+  composite_stress_score: number;
+  convergence_tier:       string;
+  driver_types:           string[];
+  hypothesis_id:          string;
+  archived_at:            string;
+}
+
+export interface ArchiveStats {
+  total_runs:      number;
+  total_regions:   number;
+  total_snapshots: number;
+  earliest_run:    string | null;
+  latest_run:      string | null;
+}
+
 async function apiFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`API ${path} → ${res.status}`);
@@ -180,4 +207,8 @@ export const api = {
   reports:      ()                          => apiFetch<ReportMeta[]>("/v1/reports"),
   generateReport: ()                        => apiPost<{ run_id: string; pdf_path: string }>("/v1/reports/generate"),
   subscribeEmail: (email: string)           => apiPost<{ success: boolean; message: string }>("/v1/alerts/subscribe/email", { email }),
+  archiveRegion:  (regionId: string, limit?: number) => apiFetch<RegionSnapshot[]>(`/v1/archive/regions/${regionId}${limit ? `?limit=${limit}` : ""}`),
+  archiveLatest:  ()                        => apiFetch<RegionSnapshot[]>("/v1/archive/latest"),
+  archiveRuns:    ()                        => apiFetch<string[]>("/v1/archive/runs"),
+  archiveStats:   ()                        => apiFetch<ArchiveStats>("/v1/archive/stats"),
 };
