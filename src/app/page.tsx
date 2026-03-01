@@ -350,7 +350,7 @@ export default function Dashboard() {
 
                   {/* Drivers */}
                   <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                    {p.driver_types.map((d) => (
+                    {(p.driver_types ?? []).map((d) => (
                       <span key={d} className="driver-tag">{d}</span>
                     ))}
                   </div>
@@ -499,7 +499,7 @@ export default function Dashboard() {
                     H-0{i + 2} · {dc.driver_type}
                   </div>
                   <div style={{ fontSize: 11, lineHeight: 1.5, color: "var(--ink-mid)", fontStyle: "italic", borderLeft: "2px solid var(--earth)", paddingLeft: 10, marginBottom: 6 }}>
-                    {dc.key_signals.slice(0, 3).join(" · ")}
+                    {(dc.key_signals ?? []).slice(0, 3).join(" · ")}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <div style={{ flex: 1, height: 3, background: "var(--border-light)", borderRadius: 2 }}>
@@ -535,7 +535,7 @@ export default function Dashboard() {
               {/* Evidence table — only available from deep fetch */}
               {(hyp.evidence ?? []).length > 0 && (
                 <div style={{ marginTop: 16 }}>
-                  <div className="panel-label" style={{ marginBottom: 8 }}>Evidence Records — {hyp.evidence!.length} items</div>
+                  <div className="panel-label" style={{ marginBottom: 8 }}>Evidence Records — {(hyp.evidence ?? []).length} items</div>
                   <div style={{ overflowX: "auto" }}>
                     <table className="evidence-table">
                       <thead>
@@ -549,12 +549,12 @@ export default function Dashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {hyp.evidence!.slice(0, 8).map((ev, ei) => (
+                        {(hyp.evidence ?? []).slice(0, 8).map((ev, ei) => (
                           <tr key={ei}>
                             <td style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--earth)" }}>{ev.source_id}</td>
                             <td>{ev.variable}</td>
-                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{ev.observed_value.toFixed(2)}</td>
-                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{ev.threshold.toFixed(2)}</td>
+                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{(ev.observed_value ?? 0).toFixed(2)}</td>
+                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{(ev.threshold ?? 0).toFixed(2)}</td>
                             <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{ev.direction}</td>
                             <td>
                               <span className={ev.supports_hypothesis ? "evidence-supports" : "evidence-contradicts"}
@@ -567,9 +567,9 @@ export default function Dashboard() {
                       </tbody>
                     </table>
                   </div>
-                  {hyp.evidence!.length > 8 && (
+                  {(hyp.evidence ?? []).length > 8 && (
                     <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 6 }}>
-                      +{hyp.evidence!.length - 8} more evidence records
+                      +{(hyp.evidence ?? []).length - 8} more evidence records
                     </div>
                   )}
                 </div>
