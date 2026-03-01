@@ -38,6 +38,8 @@ export default function Dashboard() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [mobileTab, setMobileTab] = useState<"regions" | "detail">("regions");
   const [isMobile, setIsMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -207,6 +209,7 @@ export default function Dashboard() {
         {/* Hamburger — mobile only */}
         <button
           className="hamburger-btn"
+          onClick={() => setMenuOpen(true)}
           style={{
             display: "none", marginLeft: "auto",
             alignItems: "center", justifyContent: "center",
@@ -220,6 +223,41 @@ export default function Dashboard() {
           <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
         </button>
       </header>
+
+      {/* ── MOBILE NAV DRAWER ────────────────────────────────────────── */}
+      {menuOpen && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 3000,
+          background: "var(--parchment)",
+          display: "flex", flexDirection: "column",
+          padding: "24px 28px",
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
+            <span style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, letterSpacing: "0.06em" }}>CERES</span>
+            <button onClick={() => setMenuOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 28, lineHeight: 1, color: "var(--ink)", padding: 4 }}>✕</button>
+          </div>
+          {([
+            { href: "/",            label: "Dashboard"    },
+            { href: "/methodology", label: "Methodology"  },
+            { href: "/data",        label: "Data Sources" },
+            { href: "/validation",  label: "Validation"   },
+            { href: "/tracker",     label: "Track Record" },
+            { href: "/about",       label: "About"        },
+            { href: "/api-access",  label: "API"          },
+          ] as const).map(({ href, label }) => (
+            <Link key={href} href={href} onClick={() => setMenuOpen(false)} style={{
+              fontFamily: "var(--display)", fontSize: 22, fontWeight: 600,
+              color: "var(--ink)", textDecoration: "none",
+              padding: "14px 0", borderBottom: "1px solid var(--border-light)",
+              display: "block",
+            }}>{label}</Link>
+          ))}
+          <a href="mailto:ceres@northflow.no" style={{
+            marginTop: 32, fontFamily: "var(--mono)", fontSize: 11,
+            letterSpacing: "0.1em", color: "var(--earth)", textDecoration: "none",
+          }}>ceres@northflow.no</a>
+        </div>
+      )}
 
       {/* ── ERROR ────────────────────────────────────────────────────── */}
       {error && (
@@ -309,7 +347,7 @@ export default function Dashboard() {
                   key={p.region_id}
                   className={`region-card ${tierCssClass(p.alert_tier)} animate-card-in ${isSel ? "selected" : ""}`}
                   style={{ animationDelay: `${i * 0.05}s` }}
-                  onClick={() => { selectRegion(p); setMobileTab("detail"); }}
+                  onClick={() => { selectRegion(p); if (isMobile) { setSheetOpen(true); } else { setMobileTab("detail"); } }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                     <div>
@@ -676,6 +714,114 @@ export default function Dashboard() {
           </div>
         </aside>
       </div>
+
+      {/* ── MOBILE BOTTOM SHEET ──────────────────────────────────────── */}
+      {sheetOpen && selPred && (
+        <div
+          onClick={() => setSheetOpen(false)}
+          style={{
+            position: "fixed", inset: 0, zIndex: 2000,
+            background: "rgba(28,25,23,0.5)",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "absolute", bottom: 0, left: 0, right: 0,
+              background: "var(--parchment)",
+              borderTop: "2px solid var(--ink)",
+              maxHeight: "82vh",
+              overflowY: "auto",
+              borderRadius: "12px 12px 0 0",
+            }}
+          >
+            {/* Sheet handle + header */}
+            <div style={{
+              padding: "12px 20px 0",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+            }}>
+              <div style={{ width: 36, height: 4, background: "var(--border)", borderRadius: 2 }} />
+              <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 12, borderBottom: "1px solid var(--border-light)" }}>
+                <div>
+                  <div style={{ fontFamily: "var(--display)", fontSize: 17, fontWeight: 700 }}>{selPred.region_name}</div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{selPred.region_id} · {selPred.alert_tier}</div>
+                </div>
+                <button onClick={() => setSheetOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 22, color: "var(--ink-light)", padding: 4 }}>✕</button>
+              </div>
+            </div>
+
+            {/* Probability hero */}
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+                <span style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1, color: editColor(selPred.alert_tier) }}>
+                  {pct(selPred.p_ipc3plus_90d)}
+                </span>
+                <span style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic" }}>P(IPC 3+ · 90d)</span>
+              </div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 10 }}>
+                90% CI [{pct(selPred.ci_90_low)} – {pct(selPred.ci_90_high)}] · {selPred.ci_method ?? "Bootstrap"}
+              </div>
+              <div style={{ height: 6, background: "var(--border-light)", borderRadius: 3, position: "relative" }}>
+                <div style={{
+                  position: "absolute", height: "100%", borderRadius: 3,
+                  left: `${selPred.ci_90_low * 100}%`,
+                  width: `${(selPred.ci_90_high - selPred.ci_90_low) * 100}%`,
+                  background: editColor(selPred.alert_tier), opacity: 0.3,
+                }} />
+                <div style={{
+                  position: "absolute", width: 12, height: 12, borderRadius: "50%",
+                  top: -3, transform: "translateX(-50%)",
+                  left: `${selPred.p_ipc3plus_90d * 100}%`,
+                  background: editColor(selPred.alert_tier),
+                }} />
+              </div>
+            </div>
+
+            {/* Drivers */}
+            <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--border-light)" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Primary Drivers</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {(selPred.driver_types ?? []).map((d) => (
+                  <span key={d} className="driver-tag">{d}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Hypothesis */}
+            {hyp && (
+              <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--border-light)" }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Active Hypothesis</div>
+                <div style={{ fontSize: 13, lineHeight: 1.65, color: "var(--ink-mid)", fontStyle: "italic", borderLeft: "2px solid var(--earth)", paddingLeft: 10 }}>
+                  {hyp.description}
+                </div>
+              </div>
+            )}
+
+            {/* Signal matrix compact */}
+            <div style={{ padding: "14px 20px 28px" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Signal Convergence</div>
+              {[
+                { name: "CHIRPS",  level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
+                { name: "ACLED",   level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
+                { name: "IPC",     level: Math.round(selPred.ipc_phase_forecast) },
+                { name: "WFP VAM", level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
+              ].map(({ name, level }) => {
+                const c = level >= 4 ? "var(--crisis)" : level === 3 ? "var(--warning)" : "var(--watch)";
+                return (
+                  <div key={name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", width: 64, flexShrink: 0 }}>{name}</span>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      {Array.from({ length: 5 }).map((_, j) => (
+                        <div key={j} style={{ width: 10, height: 10, borderRadius: "50%", background: j < level ? c : "var(--border)" }} />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
