@@ -13,10 +13,10 @@ const LINKS = [
   { href: "/tracker",      label: "Track Record" },
   { href: "/about",        label: "About"        },
   { href: "/api-access",   label: "API"          },
-  { href: "/account",      label: "Account"      },
+  { href: "/login",        label: "Sign In"      },
 ];
 
-export default function SiteNav({ ctaHref = "/api-access", ctaLabel = "Access API →" }: { ctaHref?: string; ctaLabel?: string }) {
+export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }: { ctaHref?: string; ctaLabel?: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
