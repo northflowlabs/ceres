@@ -8,12 +8,17 @@ out/
 # Production build
 build/
 
-# Environment variables
+# Environment variables — never commit any .env file
 .env
+.env.*
 .env.local
+.env.development
 .env.development.local
+.env.test
 .env.test.local
+.env.production
 .env.production.local
+.env.staging
 
 # Debug logs
 npm-debug.log*
