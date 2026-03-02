@@ -36,6 +36,24 @@ interface MeData {
 
 const SESSION_KEY = "ceres_session_token";
 
+const ALL_REGIONS = [
+  { id: "SDN", name: "Sudan" },
+  { id: "SOM", name: "Somalia" },
+  { id: "ETH", name: "Ethiopia" },
+  { id: "SSD", name: "South Sudan" },
+  { id: "YEM", name: "Yemen" },
+  { id: "KEN", name: "Kenya" },
+  { id: "NIG", name: "Niger" },
+  { id: "MLI", name: "Mali" },
+  { id: "BFA", name: "Burkina Faso" },
+  { id: "HTI", name: "Haiti" },
+  { id: "AFG", name: "Afghanistan" },
+  { id: "SYR", name: "Syria" },
+  { id: "COD", name: "DR Congo" },
+  { id: "ZWE", name: "Zimbabwe" },
+  { id: "MOZ", name: "Mozambique" },
+];
+
 export default function AccountPage() {
   const router = useRouter();
   const [me,            setMe]            = useState<MeData | null>(null);
@@ -47,6 +65,11 @@ export default function AccountPage() {
   const [webhookUrl,     setWebhookUrl]     = useState("");
   const [webhookLoading, setWebhookLoading] = useState(false);
   const [webhookError,   setWebhookError]   = useState<string | null>(null);
+  const [watchRegions,   setWatchRegions]   = useState<string[]>([]);
+  const [watchThreshold, setWatchThreshold] = useState(0.70);
+  const [watchLoading,   setWatchLoading]   = useState(false);
+  const [watchSaved,     setWatchSaved]     = useState(false);
+  const [watchError,     setWatchError]     = useState<string | null>(null);
 
   async function fetchWebhooks(token: string) {
     try {
@@ -56,6 +79,43 @@ export default function AccountPage() {
         setWebhooks(data.webhooks ?? []);
       }
     } catch { /* non-fatal */ }
+  }
+
+  async function fetchWatchlist(token: string) {
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/watchlist?session_token=${encodeURIComponent(token)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        setWatchRegions(data.region_ids ?? []);
+        setWatchThreshold(data.threshold ?? 0.70);
+      }
+    } catch { /* non-fatal */ }
+  }
+
+  async function saveWatchlist() {
+    const token = localStorage.getItem(SESSION_KEY);
+    if (!token) return;
+    setWatchLoading(true);
+    setWatchError(null);
+    setWatchSaved(false);
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/watchlist`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_token: token, region_ids: watchRegions, threshold: watchThreshold }),
+      });
+      if (!resp.ok) throw new Error(`Error ${resp.status}`);
+      setWatchSaved(true);
+      setTimeout(() => setWatchSaved(false), 3000);
+    } catch (err) {
+      setWatchError(err instanceof Error ? err.message : "Failed to save watchlist");
+    } finally {
+      setWatchLoading(false);
+    }
+  }
+
+  function toggleRegion(id: string) {
+    setWatchRegions(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]);
   }
 
   async function addWebhook(e: React.FormEvent) {
@@ -107,6 +167,7 @@ export default function AccountPage() {
       if (!resp.ok) throw new Error(`Server error ${resp.status}`);
       const meData = await resp.json();
       setMe(meData);
+      fetchWatchlist(token);
       if (["professional", "institutional"].includes(meData.tier)) {
         fetchWebhooks(token);
       }
@@ -203,7 +264,7 @@ export default function AccountPage() {
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <SiteNav />
 
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 860, margin: "0 auto", width: "100%" }}>
+      <div className="account-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 860, margin: "0 auto", width: "100%" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Subscriber Account
@@ -223,7 +284,7 @@ export default function AccountPage() {
         )}
       </div>
 
-      <div style={{ maxWidth: 860, margin: "0 auto", width: "100%", padding: "40px 40px 80px" }}>
+      <div className="account-wrap" style={{ maxWidth: 860, margin: "0 auto", width: "100%", padding: "40px 40px 80px" }}>
 
         {/* Loading */}
         {loading && (
@@ -265,7 +326,7 @@ export default function AccountPage() {
             </div>
 
             {/* Stats */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 28 }}>
+            <div className="account-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 28 }}>
               {[
                 { label: "Requests this month", val: me.requests_this_month.toLocaleString(), sub: isUnlimited ? "Unlimited plan" : `of ${me.monthly_limit.toLocaleString()} limit` },
                 { label: "Remaining",           val: isUnlimited ? "∞" : me.remaining.toLocaleString(), sub: isUnlimited ? "No cap" : "resets 1st of month" },
@@ -322,6 +383,101 @@ export default function AccountPage() {
                 {" "}<span style={{ color: "#9ECBFF" }}>-H</span>
                 {" "}<span style={{ color: "#F4A261" }}>"X-API-Key: YOUR_KEY"</span>
               </div>
+            </div>
+
+            {/* Watchlist — available to all subscribers */}
+            <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
+                Custom Watchlist
+              </div>
+              <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 20px" }}>
+                Select which regions you want alerts and digests for, and set a probability threshold. Leave all unselected to receive alerts for all monitored regions.
+              </p>
+
+              {/* Region grid */}
+              <div className="account-watchlist-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 24 }}>
+                {ALL_REGIONS.map(({ id, name }) => {
+                  const active = watchRegions.includes(id);
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => toggleRegion(id)}
+                      style={{
+                        padding: "8px 12px",
+                        fontFamily: "var(--mono)", fontSize: 11,
+                        letterSpacing: "0.06em",
+                        textAlign: "left",
+                        background: active ? "var(--ink)" : "var(--parchment)",
+                        color: active ? "var(--parchment)" : "var(--ink-mid)",
+                        border: `1px solid ${active ? "var(--ink)" : "var(--border)"}`,
+                        cursor: "pointer",
+                        transition: "all 0.1s",
+                        display: "flex", alignItems: "center", gap: 8,
+                      }}
+                    >
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", flexShrink: 0, background: active ? "var(--watch)" : "var(--border)", display: "inline-block" }} />
+                      <span style={{ fontSize: 10 }}>{id}</span>
+                      <span style={{ fontSize: 11, color: active ? "#D4C5A9" : "var(--ink-light)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Threshold slider */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <label style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)" }}>
+                    Alert Threshold — P(IPC 3+) ≥
+                  </label>
+                  <span style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: watchThreshold >= 0.90 ? "var(--crisis)" : watchThreshold >= 0.70 ? "var(--warning, #D97706)" : "var(--watch)" }}>
+                    {Math.round(watchThreshold * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range" min={0.10} max={0.99} step={0.01}
+                  value={watchThreshold}
+                  onChange={e => setWatchThreshold(parseFloat(e.target.value))}
+                  style={{ width: "100%", accentColor: "var(--earth)" }}
+                />
+                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 4 }}>
+                  <span>10% — All signals</span>
+                  <span style={{ color: "var(--watch)" }}>50% — Watch</span>
+                  <span style={{ color: "var(--warning, #D97706)" }}>70% — Warning</span>
+                  <span style={{ color: "var(--crisis)" }}>90% — Critical only</span>
+                </div>
+              </div>
+
+              {watchRegions.length > 0 && (
+                <p style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginBottom: 16 }}>
+                  Watching {watchRegions.length} region{watchRegions.length > 1 ? "s" : ""}: {watchRegions.join(", ")} · threshold ≥ {Math.round(watchThreshold * 100)}%
+                </p>
+              )}
+              {watchRegions.length === 0 && (
+                <p style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginBottom: 16 }}>
+                  Watching all {ALL_REGIONS.length} monitored regions · threshold ≥ {Math.round(watchThreshold * 100)}%
+                </p>
+              )}
+
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <button
+                  onClick={saveWatchlist}
+                  disabled={watchLoading}
+                  style={{ padding: "10px 24px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: watchSaved ? "var(--watch)" : "var(--ink)", color: "var(--parchment)", border: "none", cursor: watchLoading ? "not-allowed" : "pointer", opacity: watchLoading ? 0.6 : 1 }}
+                >
+                  {watchLoading ? "Saving…" : watchSaved ? "✓ Saved" : "Save Watchlist →"}
+                </button>
+                {watchRegions.length > 0 && (
+                  <button
+                    onClick={() => setWatchRegions([])}
+                    style={{ padding: "10px 16px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "transparent", color: "var(--ink-light)", border: "1px solid var(--border)", cursor: "pointer" }}
+                  >
+                    Clear all
+                  </button>
+                )}
+              </div>
+              {watchError && (
+                <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginTop: 8 }}>{watchError}</div>
+              )}
             </div>
 
             {/* Webhook management — Professional/Institutional only */}

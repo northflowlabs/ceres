@@ -44,6 +44,7 @@ export default function Dashboard() {
   const [admin1Loading, setAdmin1Loading] = useState(false);
   const [admin1Open, setAdmin1Open] = useState(false);
   const detailPanelRef = useRef<HTMLElement | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -362,9 +363,14 @@ export default function Dashboard() {
               return (
                 <div
                   key={p.region_id}
+                  ref={(el) => { cardRefs.current[p.region_id] = el; }}
                   className={`region-card ${tierCssClass(p.alert_tier)} animate-card-in ${isSel ? "selected" : ""}`}
                   style={{ animationDelay: `${i * 0.05}s` }}
-                  onClick={() => { selectRegion(p); if (isMobile) { setSheetOpen(true); } else { setMobileTab("detail"); } }}
+                  onClick={() => {
+                    selectRegion(p);
+                    cardRefs.current[p.region_id]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    if (isMobile) { setSheetOpen(true); } else { setMobileTab("detail"); }
+                  }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                     <div>

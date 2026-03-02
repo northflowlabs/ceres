@@ -126,7 +126,7 @@ export default function AboutPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Get In Touch</div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Institutional Collaboration &amp; Access</h2>
           <p style={{ ...p, maxWidth: 600 }}>CERES is an open system seeking institutional partners for validation, deployment, and co-development. If you represent a humanitarian organisation, research institution, or funding body, we welcome your engagement.</p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
+          <div className="about-contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
             {[
               { label: "Research & Academic",        title: "Methodology Review",     body: "For peer review, co-authorship, or academic collaboration on the validation dataset."               },
               { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, NGOs — for data sharing, co-validation, or integration into existing EWS workflows." },

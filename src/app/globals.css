@@ -369,5 +369,154 @@
     /* Global heading scale-down */
     h1 { font-size: 26px !important; line-height: 1.2 !important; }
     h2 { font-size: 20px !important; }
+
+    /* ── SiteNav: ensure hamburger always visible on mobile ─────── */
+    .hamburger-btn { display: flex !important; }
+
+    /* ── About: mission block two-col ───────────────────────────── */
+    .about-missions {
+      grid-template-columns: 1fr !important;
+      gap: 32px !important;
+      padding: 40px 20px !important;
+    }
+
+    /* ── About: contact grid 3-col → 1-col ──────────────────────── */
+    .about-contact-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── About: stats glance box goes full width ─────────────────── */
+    .about-hero .about-glance {
+      width: 100% !important;
+    }
+
+    /* ── Account page ────────────────────────────────────────────── */
+    .account-stats-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .account-watchlist-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .account-wrap {
+      padding: 24px 16px 60px !important;
+    }
+    .account-header {
+      padding: 40px 16px 32px !important;
+    }
+
+    /* ── Validation page grids ───────────────────────────────────── */
+    .validation-metrics-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .validation-cal-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .validation-region-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── API-access tiers ────────────────────────────────────────── */
+    .tiers-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── Subnational: hide lower-priority table columns ─────────── */
+    .subnational-col-hide {
+      display: none !important;
+    }
+    .subnational-wrap {
+      padding: 20px 12px 60px !important;
+    }
+    .subnational-header {
+      padding: 32px 16px 28px !important;
+    }
+    .subnational-filter-row {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+    .subnational-filter-row input,
+    .subnational-filter-row select {
+      width: 100% !important;
+    }
+
+    /* ── Tracker / validation page ───────────────────────────────── */
+    .tracker-stats-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* ── Methodology layout ──────────────────────────────────────── */
+    .methodology-layout {
+      grid-template-columns: 1fr !important;
+      padding: 0 16px !important;
+    }
+    .methodology-toc { display: none !important; }
+
+    /* ── Generic inner-page padding normalization ────────────────── */
+    .inner-page-header {
+      padding: 32px 16px 24px !important;
+    }
+    .inner-page-body {
+      padding: 24px 16px 60px !important;
+      max-width: 100% !important;
+    }
+
+    /* ── Login page ──────────────────────────────────────────────── */
+    .login-wrap {
+      padding: 40px 20px !important;
+    }
+
+    /* ── Data page ───────────────────────────────────────────────── */
+    .data-sources-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── Methodology / API article: remove left indent ───────────── */
+    .methodology-article {
+      padding: 32px 0 60px !important;
+    }
+    .methodology-layout {
+      padding: 0 16px !important;
+    }
+
+    /* ── Tracker: region list + detail → stacked ─────────────────── */
+    .tracker-panel-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .tracker-region-list {
+      max-height: 280px !important;
+      border-right: none !important;
+      border-bottom: 1px solid var(--border) !important;
+    }
+
+    /* ── Validation newsletter CTA: stack form below text ────────── */
+    .newsletter-cta {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      padding: 28px 20px !important;
+    }
+    .newsletter-cta form {
+      flex-direction: column !important;
+      width: 100% !important;
+    }
+    .newsletter-cta input {
+      width: 100% !important;
+    }
+
+    /* ── Code blocks: horizontal scroll on mobile ────────────────── */
+    pre {
+      font-size: 11px !important;
+      overflow-x: auto !important;
+    }
+
+    /* ── Tables: horizontal scroll wrapper ───────────────────────── */
+    .table-scroll {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ── Generic flex rows that need to wrap ─────────────────────── */
+    .flex-wrap-mobile {
+      flex-wrap: wrap !important;
+    }
   }
 }

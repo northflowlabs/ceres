@@ -127,7 +127,7 @@ export default function DataPage() {
       <SiteNav />
 
       {/* Page header */}
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Signal Coverage
@@ -146,10 +146,10 @@ export default function DataPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
+      <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
 
         {/* Source cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 48px" }}>
+        <div className="data-sources-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 48px" }}>
           {SOURCES.map(({ id, full, provider, cadence, latency, resolution, vars, url, type }) => (
             <div key={id} style={{ background: "white", padding: 24 }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10, gap: 12 }}>

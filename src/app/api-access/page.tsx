@@ -391,7 +391,7 @@ export default function ApiAccessPage() {
       <SiteNav ctaHref="mailto:ceres@northflow.no" ctaLabel="Request Access →" />
 
       {/* Page header */}
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Developer &amp; Institutional Access
@@ -403,10 +403,10 @@ export default function ApiAccessPage() {
       </div>
 
       {/* Content grid */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, alignItems: "start" }}>
+      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, alignItems: "start" }}>
 
         {/* Sidebar TOC */}
-        <nav style={{ position: "sticky", top: 64, padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
+        <nav className="methodology-toc" style={{ position: "sticky", top: 64, padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 12 }}>Contents</div>
           {TOC.map(({ id, label }) => (
             <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }} style={{
@@ -420,7 +420,7 @@ export default function ApiAccessPage() {
         </nav>
 
         {/* Article */}
-        <article style={{ padding: "48px 0 48px 56px" }}>
+        <article className="methodology-article" style={{ padding: "48px 0 48px 56px" }}>
 
           <section id="access" style={section}>
             <div style={sectionLabel}>§ 1 — Access</div>
@@ -447,7 +447,7 @@ export default function ApiAccessPage() {
               </div>
             )}
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
+            <div className="tiers-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
               {TIERS.map(({ key, tier, name, price, priceNote, highlight, cta, ctaAction, features }) => (
                 <div key={tier} style={{ background: highlight ? "var(--ink)" : "white", padding: 28, display: "flex", flexDirection: "column" }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: highlight ? "#A8A29E" : "var(--ink-light)", marginBottom: 8 }}>{tier}</div>

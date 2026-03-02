@@ -158,7 +158,7 @@ export default function ValidationPage() {
         </p>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
+      <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
 
         {/* Metrics grid — live when grades exist, static (back-validation) otherwise */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "48px 0 0" }}>
@@ -170,7 +170,7 @@ export default function ValidationPage() {
             : <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>In-sample · back-validation 2022–2025</span>
           }
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "10px 0 0" }}>
+        <div className="validation-metrics-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "10px 0 0" }}>
           {liveMetricCards.map(({ val, label, target, pass }) => (
             <div key={label} style={{ background: "white", padding: 24 }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>
@@ -203,7 +203,7 @@ export default function ValidationPage() {
         {loading ? (
           <div style={{ padding: "32px 0", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", textAlign: "center" }}>Loading grading ledger…</div>
         ) : grades.length > 0 ? (
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
             <thead>
               <tr>
                 {["Region","Issued","Tier","P(IPC 3+)","90% CI","Horizon","Actual IPC","Brier","Verdict"].map(h => (
@@ -233,7 +233,7 @@ export default function ValidationPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         ) : (
           <div style={{ border: "1px solid var(--border)", background: "white", padding: "40px 32px", textAlign: "center" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 12 }}>NO GRADED PREDICTIONS YET</div>
@@ -244,7 +244,7 @@ export default function ValidationPage() {
         )}
 
         {/* Newsletter subscription */}
-        <div style={{ background: "var(--ink)", padding: "32px 40px", margin: "40px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
+        <div className="newsletter-cta" style={{ background: "var(--ink)", padding: "32px 40px", margin: "40px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Free Intelligence Newsletter</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Monthly CERES Intelligence Letter — free</div>
@@ -279,7 +279,7 @@ export default function ValidationPage() {
             }
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+          <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
 
             {/* Calibration bars */}
             <div style={{ border: "1px solid var(--border)", background: "white", padding: 24 }}>

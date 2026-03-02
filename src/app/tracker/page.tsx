@@ -153,7 +153,7 @@ export default function TrackerPage() {
 
         {/* Archive stats */}
         {archiveStats && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 40px" }}>
+          <div className="tracker-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 40px" }}>
             {[
               { val: String(archiveStats.total_runs),      label: "Weekly Runs",    note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Archiving active" },
               { val: String(archiveStats.total_regions),   label: "Regions Tracked", note: "Monitored globally"  },
@@ -188,9 +188,9 @@ export default function TrackerPage() {
               No archive data yet — run the weekly pipeline to begin building the history.
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 0, border: "1px solid var(--border)" }}>
+            <div className="tracker-panel-grid" style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 0, border: "1px solid var(--border)" }}>
               {/* Region list */}
-              <div style={{ borderRight: "1px solid var(--border)", maxHeight: 640, overflowY: "auto" }}>
+              <div className="tracker-region-list" style={{ borderRight: "1px solid var(--border)", maxHeight: 640, overflowY: "auto" }}>
                 {latest.map(s => {
                   const mini = (miniHistory[s.region_id] ?? []).sort((a, b) => a.run_date.localeCompare(b.run_date));
                   const trend = mini.length >= 2 ? mini[mini.length - 1].p_ipc3plus_90d - mini[0].p_ipc3plus_90d : 0;

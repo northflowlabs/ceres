@@ -97,7 +97,7 @@ export default function SubnationalPage() {
       <SiteNav />
 
       {/* Page header */}
-      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+      <div className="page-header subnational-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Admin1 Sub-national Resolution
@@ -127,10 +127,10 @@ export default function SubnationalPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", padding: "32px 40px 80px" }}>
+      <div className="subnational-wrap" style={{ maxWidth: 1200, margin: "0 auto", width: "100%", padding: "32px 40px 80px" }}>
 
         {/* Filters */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="subnational-filter-row" style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "center" }}>
           <input
             type="text"
             value={search}
