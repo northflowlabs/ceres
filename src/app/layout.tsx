@@ -33,9 +33,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no" },
   metadataBase: new URL("https://ceres.northflow.no"),
   icons: {
-    icon:    "/ceres-logo.png",
-    shortcut: "/ceres-logo.png",
-    apple:   "/ceres-logo.png",
+    icon:    "/ceres-logo-web.png",
+    shortcut: "/ceres-logo-web.png",
+    apple:   "/ceres-logo-web.png",
   },
 };
 

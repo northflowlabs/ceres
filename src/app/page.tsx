@@ -134,7 +134,7 @@ export default function Dashboard() {
           padding: "14px 32px 14px 0",
           borderRight: "1px solid var(--border)",
         }}>
-          <img src="/ceres-logo.png" alt="CERES" width={36} height={36} style={{ flexShrink: 0, borderRadius: "50%" }} />
+          <img src="/ceres-logo-web.png" alt="CERES" width={36} height={36} style={{ flexShrink: 0, borderRadius: "50%" }} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{
               fontFamily: "var(--display)", fontSize: 18, fontWeight: 700,
