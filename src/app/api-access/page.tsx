@@ -325,7 +325,7 @@ export default function ApiAccessPage() {
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--watch)", marginBottom: 12 }}>✓ Subscribed</div>
                 <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 12 }}>You&rsquo;re in.</div>
                 <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, marginBottom: 24 }}>
-                  Check your inbox — a note from Tom is on its way. You&rsquo;ll receive alerts when any monitored region escalates to Tier I or Tier II.
+                  Check your inbox — a personal note from our founder Tom is on its way. You&rsquo;ll receive the monthly CERES Intelligence Letter on the first Monday of each month.
                 </p>
                 <button
                   onClick={() => { setFreeModal(false); setFreeSuccess(false); setFreeEmail(""); }}
@@ -337,10 +337,9 @@ export default function ApiAccessPage() {
             ) : (
               <>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 8 }}>Open Research — Free</div>
-                <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 8 }}>Get CERES Alerts</div>
+                <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 8 }}>Monthly Intelligence Letter</div>
                 <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.6, marginBottom: 20 }}>
-                  Enter your email to receive Tier I &amp; II escalation alerts. Free, no payment required.
-                  You&rsquo;ll get a personal note from the founder on sign-up.
+                  Free newsletter sent the first Monday of each month — top risk regions, system status, and a note from our founder Tom. No payment required.
                 </p>
                 <form onSubmit={handleFreeSubscribe} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   <div>
