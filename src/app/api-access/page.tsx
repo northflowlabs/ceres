@@ -186,9 +186,9 @@ const TIERS = [
       "10,000 API requests / month",
       "Real-time Tier I/II email alerts",
       "Weekly intelligence digest",
+      "Weekly PDF intelligence briefs (downloadable)",
       "Webhook delivery to any endpoint",
       "Custom watchlist — region + threshold filter",
-      "PDF intelligence reports",
       "Priority email support",
     ],
   },
@@ -202,7 +202,7 @@ const TIERS = [
       "Everything in Tier B",
       "Unlimited API requests",
       "Named alert contacts — per-region routing",
-      "White-label PDF briefs with org name",
+      "Weekly PDF briefs — white-labelled with org name",
       "Custom region coverage on request",
       "Embeddable widget — white-label option",
       "SLA & dedicated integration support",
@@ -431,7 +431,7 @@ export default function ApiAccessPage() {
           <section id="access" style={section}>
             <div style={sectionLabel}>§ 1 — Access</div>
             <h2 style={h2Style}>Access Tiers</h2>
-            <p style={pStyle}>All tiers access the same endpoints and data quality. Free subscribers receive the monthly intelligence newsletter. Paid tiers unlock higher request volume, real-time Tier I/II email alerts, a weekly digest, and webhook delivery to any endpoint.</p>
+            <p style={pStyle}>All tiers access the same endpoints and data quality. Free subscribers receive the monthly intelligence newsletter. Paid tiers unlock higher request volume, real-time Tier I/II email alerts, a weekly digest, weekly PDF intelligence briefs, and webhook delivery to any endpoint.</p>
 
             {/* Checkout success / cancelled banners */}
             {checkoutStatus === "success" && (
@@ -561,6 +561,12 @@ export default function ApiAccessPage() {
                   tier: "Tier B/C — Paid",
                   color: "var(--crisis)",
                   desc: "Immediate email and/or webhook notification when any monitored region escalates to Tier I (Critical) or Tier II (Warning). Register webhook endpoints from your account portal.",
+                },
+                {
+                  label: "PDF Intelligence Briefs",
+                  tier: "Tier B/C — Paid",
+                  color: "var(--earth)",
+                  desc: "Weekly multi-page PDF report: cover, executive summary, full predictions table, and methodology. Auto-emailed after each pipeline run. Downloadable from your account portal. Tier C receives a white-labelled version with your organisation's name on the cover.",
                 },
               ].map(({ label, tier: t, color, desc }) => (
                 <div key={label} style={{ background: "white", padding: "20px 24px", borderLeft: `3px solid ${color}` }}>
