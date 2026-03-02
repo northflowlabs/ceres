@@ -248,7 +248,7 @@ export default function ValidationPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Free Intelligence Newsletter</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Monthly CERES Intelligence Letter — free</div>
-            <div style={{ fontSize: 13, color: "#78716C", lineHeight: 1.6 }}>Top risk regions, system status, and a note from Tom. Sent the first Monday of each month to all free subscribers.</div>
+            <div style={{ fontSize: 13, color: "#78716C", lineHeight: 1.6 }}>Top risk regions, system status, and a note from our founder. Sent the first Monday of each month to all free subscribers.</div>
           </div>
           <form onSubmit={handleSubscribe} style={{ display: "flex", gap: 8, flexShrink: 0 }}>
             <input

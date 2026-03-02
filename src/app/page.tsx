@@ -105,6 +105,8 @@ export default function Dashboard() {
       .then(setAdmin1Data)
       .catch(() => {})
       .finally(() => setAdmin1Loading(false));
+    // Scroll window to top so the fixed-height grid (map) is always visible
+    window.scrollTo({ top: 0, behavior: "smooth" });
     // Scroll detail panel to top so content is always visible
     if (detailPanelRef.current) {
       detailPanelRef.current.scrollTop = 0;

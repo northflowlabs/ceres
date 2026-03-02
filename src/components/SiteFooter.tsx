@@ -34,8 +34,8 @@ export default function SiteFooter() {
         </div>
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>Northflow Technologies</div>
-          <a href="https://northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>northflow.no</a>
           <a href="mailto:ceres@northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>ceres@northflow.no</a>
+          <a href="https://northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>northflow.no</a>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Research-grade forecasts. Not a substitute for field-based IPC assessment or operational humanitarian decision-making.</p>
         </div>
       </div>
