@@ -225,10 +225,10 @@ function Code({ children }: { children: React.ReactNode }) {
 function Endpoint({ method, path, desc, children }: { method: string; path: string; desc: string; children: React.ReactNode }) {
   return (
     <div style={{ margin: "20px 0" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "10px 14px" }}>
+      <div className="endpoint-header" style={{ display: "flex", alignItems: "center", gap: 12, background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "10px 14px" }}>
         <span style={{ fontFamily: "var(--mono)", fontSize: 10, fontWeight: 500, padding: "3px 8px", background: "#E8F5E9", color: "var(--watch)", border: "1px solid rgba(46,125,50,0.2)" }}>{method}</span>
         <span style={{ fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)" }}>{path}</span>
-        <span style={{ fontSize: 12, color: "var(--ink-light)", marginLeft: "auto" }}>{desc}</span>
+        <span className="endpoint-desc" style={{ fontSize: 12, color: "var(--ink-light)", marginLeft: "auto" }}>{desc}</span>
       </div>
       <Code>{children}</Code>
     </div>
@@ -543,7 +543,7 @@ export default function ApiAccessPage() {
             <p style={pStyle}>
               CERES delivers intelligence through three channels depending on your tier:
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
+            <div className="alerts-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
               {[
                 {
                   label: "Monthly Newsletter",
@@ -603,7 +603,7 @@ export default function ApiAccessPage() {
               </a>{" "}
               under ODbL licence. No API key required — download directly as HXL-tagged CSV.
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, margin: "24px 0" }}>
+            <div className="hdx-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, margin: "24px 0" }}>
               {[
                 {
                   label: "All Weekly Runs",
