@@ -41,8 +41,58 @@ export default function AccountPage() {
   const [me,            setMe]            = useState<MeData | null>(null);
   const [loading,       setLoading]       = useState(true);
   const [error,         setError]         = useState<string | null>(null);
-  const [portalLoading, setPortalLoading] = useState(false);
-  const [copied,        setCopied]        = useState(false);
+  const [portalLoading,  setPortalLoading]  = useState(false);
+  const [copied,         setCopied]         = useState(false);
+  const [webhooks,       setWebhooks]       = useState<string[]>([]);
+  const [webhookUrl,     setWebhookUrl]     = useState("");
+  const [webhookLoading, setWebhookLoading] = useState(false);
+  const [webhookError,   setWebhookError]   = useState<string | null>(null);
+
+  async function fetchWebhooks(token: string) {
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/webhooks?session_token=${encodeURIComponent(token)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        setWebhooks(data.webhooks ?? []);
+      }
+    } catch { /* non-fatal */ }
+  }
+
+  async function addWebhook(e: React.FormEvent) {
+    e.preventDefault();
+    const token = localStorage.getItem(SESSION_KEY);
+    if (!token || !webhookUrl.trim()) return;
+    setWebhookLoading(true);
+    setWebhookError(null);
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/webhooks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_token: token, url: webhookUrl.trim() }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.detail ?? `Error ${resp.status}`);
+      setWebhookUrl("");
+      await fetchWebhooks(token);
+    } catch (err) {
+      setWebhookError(err instanceof Error ? err.message : "Failed to register webhook");
+    } finally {
+      setWebhookLoading(false);
+    }
+  }
+
+  async function removeWebhook(url: string) {
+    const token = localStorage.getItem(SESSION_KEY);
+    if (!token) return;
+    try {
+      await fetch(`${API_BASE}/v1/auth/webhooks`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_token: token, url }),
+      });
+      setWebhooks(prev => prev.filter(w => w !== url));
+    } catch { /* non-fatal */ }
+  }
 
   async function fetchMe(token: string) {
     setLoading(true);
@@ -55,7 +105,11 @@ export default function AccountPage() {
         return;
       }
       if (!resp.ok) throw new Error(`Server error ${resp.status}`);
-      setMe(await resp.json());
+      const meData = await resp.json();
+      setMe(meData);
+      if (["professional", "institutional"].includes(meData.tier)) {
+        fetchWebhooks(token);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load account");
     } finally {
@@ -269,6 +323,66 @@ export default function AccountPage() {
                 {" "}<span style={{ color: "#F4A261" }}>"X-API-Key: YOUR_KEY"</span>
               </div>
             </div>
+
+            {/* Webhook management — Professional/Institutional only */}
+            {["professional", "institutional"].includes(me.tier) && (
+              <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
+                  Webhook Alerts
+                </div>
+                <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 16px" }}>
+                  Receive a JSON POST to your endpoint whenever a region escalates to Tier I or Tier II.
+                </p>
+
+                {/* Registered webhooks */}
+                {webhooks.length > 0 && (
+                  <div style={{ marginBottom: 16 }}>
+                    {webhooks.map(url => (
+                      <div key={url} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", background: "var(--parchment)", border: "1px solid var(--border)", marginBottom: 6, fontFamily: "var(--mono)", fontSize: 12 }}>
+                        <span style={{ flex: 1, color: "var(--ink)", wordBreak: "break-all" }}>{url}</span>
+                        <button
+                          onClick={() => removeWebhook(url)}
+                          style={{ flexShrink: 0, padding: "4px 10px", fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", background: "transparent", color: "var(--crisis)", border: "1px solid var(--crisis)", cursor: "pointer" }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {webhooks.length === 0 && (
+                  <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 16 }}>
+                    No webhooks registered yet.
+                  </p>
+                )}
+
+                {/* Add webhook form */}
+                <form onSubmit={addWebhook} style={{ display: "flex", gap: 0 }}>
+                  <input
+                    type="url"
+                    required
+                    value={webhookUrl}
+                    onChange={e => setWebhookUrl(e.target.value)}
+                    placeholder="https://your-server.example.com/ceres-webhook"
+                    style={{ flex: 1, padding: "10px 14px", fontFamily: "var(--mono)", fontSize: 12, background: "var(--parchment)", border: "1px solid var(--border)", borderRight: "none", color: "var(--ink)", outline: "none" }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={webhookLoading || !webhookUrl.trim()}
+                    style={{ padding: "10px 20px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: webhookLoading ? "var(--ink-light)" : "var(--ink)", color: "var(--parchment)", border: "none", cursor: webhookLoading ? "not-allowed" : "pointer" }}
+                  >
+                    {webhookLoading ? "Adding…" : "Register →"}
+                  </button>
+                </form>
+                {webhookError && (
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginTop: 8 }}>{webhookError}</div>
+                )}
+                <p style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginTop: 10, lineHeight: 1.7 }}>
+                  Payload: <code style={{ background: "var(--parchment-dark)", padding: "1px 4px" }}>{"{ event, run_id, timestamp, n_alerts, alerts[] }"}</code>
+                </p>
+              </div>
+            )}
 
             {/* Actions */}
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
