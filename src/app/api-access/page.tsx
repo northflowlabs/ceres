@@ -243,6 +243,31 @@ export default function ApiAccessPage() {
   const [modalTier,       setModalTier]       = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError,   setCheckoutError]   = useState<string | null>(null);
+  const [freeModal,       setFreeModal]       = useState(false);
+  const [freeEmail,       setFreeEmail]       = useState("");
+  const [freeLoading,     setFreeLoading]     = useState(false);
+  const [freeSuccess,     setFreeSuccess]     = useState(false);
+  const [freeError,       setFreeError]       = useState<string | null>(null);
+
+  async function handleFreeSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (!freeEmail.trim()) return;
+    setFreeLoading(true);
+    setFreeError(null);
+    try {
+      const resp = await fetch(`${API_BASE}/v1/alerts/subscribe/email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: freeEmail.trim() }),
+      });
+      if (!resp.ok) throw new Error(`Error ${resp.status}`);
+      setFreeSuccess(true);
+    } catch (err) {
+      setFreeError(err instanceof Error ? err.message : "Something went wrong — try again or email ceres@northflow.no");
+    } finally {
+      setFreeLoading(false);
+    }
+  }
 
   const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
   const checkoutStatus = urlParams?.get("checkout");
@@ -285,6 +310,74 @@ export default function ApiAccessPage() {
 
   return (
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+
+      {/* Free tier sign-up modal */}
+      {freeModal && (
+        <div
+          onClick={() => { if (!freeSuccess) { setFreeModal(false); setFreeEmail(""); setFreeError(null); } }}
+          style={{ position: "fixed", inset: 0, background: "rgba(28,25,23,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 24 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "var(--parchment)", border: "1px solid var(--border)", maxWidth: 400, width: "100%", padding: 32, boxShadow: "6px 6px 0 rgba(0,0,0,0.15)" }}>
+            {freeSuccess ? (
+              <>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--watch)", marginBottom: 12 }}>✓ Subscribed</div>
+                <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 12 }}>You&rsquo;re in.</div>
+                <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, marginBottom: 24 }}>
+                  Check your inbox — a note from Tom is on its way. You&rsquo;ll receive alerts when any monitored region escalates to Tier I or Tier II.
+                </p>
+                <button
+                  onClick={() => { setFreeModal(false); setFreeSuccess(false); setFreeEmail(""); }}
+                  style={{ width: "100%", padding: "11px 0", fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", border: "none", cursor: "pointer" }}
+                >
+                  Close
+                </button>
+              </>
+            ) : (
+              <>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 8 }}>Open Research — Free</div>
+                <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 8 }}>Get CERES Alerts</div>
+                <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.6, marginBottom: 20 }}>
+                  Enter your email to receive Tier I &amp; II escalation alerts. Free, no payment required.
+                  You&rsquo;ll get a personal note from the founder on sign-up.
+                </p>
+                <form onSubmit={handleFreeSubscribe} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  <div>
+                    <label style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", display: "block", marginBottom: 6 }}>Email address *</label>
+                    <input
+                      type="email" required autoFocus
+                      value={freeEmail}
+                      onChange={(e) => setFreeEmail(e.target.value)}
+                      placeholder="you@organisation.org"
+                      style={{ width: "100%", padding: "10px 12px", boxSizing: "border-box", fontFamily: "var(--mono)", fontSize: 13, background: "var(--parchment)", border: "1px solid var(--border)", color: "var(--ink)", outline: "none" }}
+                    />
+                  </div>
+                  {freeError && (
+                    <div style={{ background: "var(--crisis-light)", border: "1px solid var(--crisis)", padding: "8px 12px", fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)" }}>{freeError}</div>
+                  )}
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button
+                      type="submit" disabled={freeLoading || !freeEmail.trim()}
+                      style={{ flex: 1, padding: "11px 0", fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", background: freeLoading || !freeEmail.trim() ? "var(--ink-light)" : "var(--ink)", color: "var(--parchment)", border: "none", cursor: freeLoading || !freeEmail.trim() ? "not-allowed" : "pointer" }}
+                    >
+                      {freeLoading ? "Subscribing…" : "Subscribe →"}
+                    </button>
+                    <button
+                      type="button" onClick={() => { setFreeModal(false); setFreeEmail(""); setFreeError(null); }}
+                      style={{ padding: "11px 18px", fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", background: "transparent", color: "var(--ink-mid)", border: "1px solid var(--border)", cursor: "pointer" }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.6 }}>
+                    No spam. Unsubscribe anytime by replying UNSUBSCRIBE.
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {modalTier && (
         <CheckoutModal
           tier={modalTier}
@@ -383,17 +476,17 @@ export default function ApiAccessPage() {
                       {cta}
                     </button>
                   ) : (
-                    <a
-                      href="mailto:ceres@northflow.no?subject=CERES Open Research API Access"
+                    <button
+                      onClick={() => { setFreeModal(true); setFreeSuccess(false); setFreeError(null); setFreeEmail(""); }}
                       style={{
-                        display: "block", width: "100%", padding: "11px 0", textAlign: "center",
+                        width: "100%", padding: "11px 0",
                         fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
                         background: "transparent", color: "var(--earth)", border: "1px solid var(--earth)",
-                        textDecoration: "none",
+                        cursor: "pointer",
                       }}
                     >
                       {cta}
-                    </a>
+                    </button>
                   )}
                 </div>
               ))}
