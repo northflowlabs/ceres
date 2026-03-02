@@ -426,7 +426,7 @@ export default function ApiAccessPage() {
           <section id="access" style={section}>
             <div style={sectionLabel}>§ 1 — Access</div>
             <h2 style={h2Style}>Access Tiers</h2>
-            <p style={pStyle}>Free for academic institutions and humanitarian organisations. Paid tiers unlock higher volume, full prediction history, and webhook alerts. All tiers use the same endpoints and data quality.</p>
+            <p style={pStyle}>All tiers access the same endpoints and data quality. Free subscribers receive the monthly intelligence newsletter. Paid tiers unlock higher request volume, real-time Tier I/II email alerts, a weekly digest, and webhook delivery to any endpoint.</p>
 
             {/* Checkout success / cancelled banners */}
             {checkoutStatus === "success" && (
