@@ -124,7 +124,7 @@ export default function ValidationPage() {
         </div>
 
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
-          Retrospective validation on 847 region-months, 2022–2025, across 6 countries covering 3 famine-grade events. Forward validation of live predictions is ongoing.
+          <strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> These figures are back-validation estimates derived from retrospective testing on 847 region-months (2022–2025). Coefficients were set with knowledge of these outcomes — they are an in-sample consistency check, not a prospective performance claim. Prospective forward validation of live predictions begins May 2026 when T+90 outcomes first populate.
         </p>
 
         {/* Live ledger */}
@@ -207,7 +207,7 @@ export default function ValidationPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>Retrospective Calibration — 2022–2025</div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>847 Region-Months · 6 Countries · 3 Famine-Grade Events</h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 24, lineHeight: 1.75 }}>
-            The following calibration results are derived from back-testing CERES predictions against published IPC outcomes across the retrospective validation set. All metrics are reported on held-out test data, not training data.
+            The following calibration results are derived from retrospective back-testing on 847 region-months across 6 countries. Model coefficients are expert-informed priors initialised on this dataset — results are therefore in-sample and should be treated as a sanity check establishing that the model is not trivially wrong, not as an out-of-sample performance claim. Prospective calibration data will populate from May 2026 onwards.
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>

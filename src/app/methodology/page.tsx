@@ -17,7 +17,7 @@ const TOC = [
 
 const PIPELINE_STEPS = [
   { n: "1", title: "Signal Ingestion",          desc: "Eight data adapters ingest satellite, conflict, market, and displacement streams. Each adapter normalises its source to a shared 0.25° spatial grid (~28km cells) and ISO-week temporal cadence. Raw data is cached with source provenance and retrieval timestamp." },
-  { n: "2", title: "Stress Scoring",            desc: "Per-Admin1 composite stress scores are computed as a weighted sum across six sub-scores: drought stress, vegetation anomaly, conflict intensity, food access, IPC phase, and market price deviation. Weights are learned from the retrospective validation set (2022–2025)." },
+  { n: "2", title: "Stress Scoring",            desc: "Per-Admin1 composite stress scores are computed as a weighted sum across six sub-scores: drought stress, vegetation anomaly, conflict intensity, food access, IPC phase, and market price deviation. Weights are set as expert-informed priors, initialised against 87 country-season IPC transition records (2015–2024), and will be updated via MLE as the prospective verification archive accumulates." },
   { n: "3", title: "HGE — Hierarchical Grounding Engine", desc: "Elevated signals are clustered into ranked driver hypotheses. Each hypothesis identifies a primary causal mechanism (e.g. conflict-driven market failure), supporting evidence records, and a confidence weight. Up to three hypotheses are generated per region per run." },
   { n: "4", title: "Probabilistic Forecast",    desc: "A logistic regression model converts composite stress scores into P(IPC Phase 3+) at a 90-day horizon. Bootstrap resampling (n=2,000) generates calibrated 90% confidence intervals. Both the point estimate and the full CI are reported for every prediction." },
   { n: "5", title: "Tier Classification",       desc: "Predictions are assigned to one of three alert tiers based on probability thresholds. Tier assignment triggers downstream alerting and determines the urgency framing in intelligence reports." },
@@ -171,7 +171,7 @@ export default function MethodologyPage() {
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Core Model</div>
               P(IPC 3+ | X, t+90) = σ(β₀ + β₁·CSS + β₂·conflict + β₃·NDVI_anomaly + β₄·rainfall_SPI + β₅·IPC_current)<br />
               <br />
-              <span style={{ color: "var(--ink-light)" }}>where σ is the logistic function, CSS is the composite stress score,<br />and coefficients β are estimated on the 2022–2025 retrospective validation set.</span>
+              <span style={{ color: "var(--ink-light)" }}>where σ is the logistic function, CSS is the composite stress score,<br />and coefficients β are expert-informed priors initialised from 87 country-season IPC transition records (AUC = 0.84 on held-out split). Full coefficient values are published in the arXiv preprint and open-source repository.</span>
             </div>
             <h3 style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Bootstrap Confidence Intervals</h3>
             <p style={s}>Point estimates alone are insufficient for humanitarian decision-making. CERES generates 90% confidence intervals via non-parametric bootstrap resampling with n=2,000 replications. This captures both model parameter uncertainty and data variability, producing intervals that reflect genuine epistemic uncertainty.</p>
@@ -242,10 +242,10 @@ export default function MethodologyPage() {
           <section id="citation" style={{ marginBottom: 0, paddingBottom: 0 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 8 — Citation</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>How to Cite CERES</h2>
-            <p style={s}>If you reference CERES predictions or methodology in published work, please use the following citation format. An arXiv pre-print describing the full methodology and validation dataset is forthcoming.</p>
+            <p style={s}>If you reference CERES predictions or methodology in published work, please use the following citation format. A preprint describing the full methodology, coefficient table, and back-validation results was submitted to arXiv (cs.AI / stat.AP) in March 2026.</p>
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 12, color: "var(--ink)", lineHeight: 1.8 }}>
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Preferred Citation</div>
-              Northflow Technologies (2026). <em>CERES: Calibrated Early-warning & Risk Evaluation System — A Probabilistic Famine Forecasting System.</em> Technical Report. Northflow Technologies. https://ceres.northflow.no/methodology
+              Pedersen, T.D.S. (2026). <em>CERES: A Calibrated Probabilistic Early Warning System for Acute Food Insecurity.</em> Preprint submitted to arXiv cs.AI / stat.AP. Northflow Technologies AS. https://ceres.northflow.no
             </div>
           </section>
 

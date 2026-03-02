@@ -36,7 +36,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.1.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv pre-print in preparation</span>
+        <span>CERES v0.1.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv preprint submitted March 2026</span>
         <span>© 2026 Northflow Technologies</span>
       </div>
     </footer>
