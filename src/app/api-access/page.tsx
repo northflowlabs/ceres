@@ -405,7 +405,7 @@ export default function ApiAccessPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>CERES API</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 600, lineHeight: 1.7, fontWeight: 300 }}>
-          Programmatic access to CERES predictions, hypotheses, and Admin1 signal data. Free for academic and humanitarian use. Institutional tiers available for organisations requiring higher volume or custom integration.
+          Programmatic access to CERES predictions, hypotheses, and Admin1 signal data. Free for academic and humanitarian use. Paid tiers unlock real-time alerts, weekly PDF intelligence briefs, webhook delivery, scenario modelling, and team accounts.
         </p>
       </div>
 
