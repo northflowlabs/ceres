@@ -117,7 +117,7 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
             <p style={p}>Every design decision in CERES — from the calibrated confidence intervals to the publicly timestamped prediction ledger to the published limitations section — is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders. It is built to withstand scrutiny, not to impress with outputs.</p>
-            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. Retrospective validation covers 847 region-months across six countries. Forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. An arXiv pre-print describing the full methodology is in preparation.</p>
+            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. Retrospective validation covers 847 region-months across six countries. Forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. A preprint describing the full methodology was submitted to arXiv (cs.AI / stat.AP) in March 2026.</p>
           </div>
         </div>
 

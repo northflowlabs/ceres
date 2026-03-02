@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
@@ -43,6 +43,7 @@ export default function Dashboard() {
   const [admin1Data, setAdmin1Data] = useState<Admin1Signal[]>([]);
   const [admin1Loading, setAdmin1Loading] = useState(false);
   const [admin1Open, setAdmin1Open] = useState(false);
+  const detailPanelRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -103,6 +104,10 @@ export default function Dashboard() {
       .then(setAdmin1Data)
       .catch(() => {})
       .finally(() => setAdmin1Loading(false));
+    // Scroll detail panel to top so content is always visible
+    if (detailPanelRef.current) {
+      detailPanelRef.current.scrollTop = 0;
+    }
   }, [hypotheses]);
 
   const sorted = [...predictions].sort((a, b) => b.p_ipc3plus_90d - a.p_ipc3plus_90d);
@@ -478,7 +483,7 @@ export default function Dashboard() {
         </main>
 
         {/* ── RIGHT PANEL — Hypothesis + Signals + Ledger ─────────── */}
-        <aside className={`dashboard-panel-detail${mobileTab === "detail" ? " mobile-active" : ""}`} style={{
+        <aside ref={detailPanelRef} className={`dashboard-panel-detail${mobileTab === "detail" ? " mobile-active" : ""}`} style={{
           borderLeft: "1px solid var(--border)",
           overflowY: "auto",
           background: "var(--parchment)",
