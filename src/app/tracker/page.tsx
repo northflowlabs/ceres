@@ -91,6 +91,7 @@ export default function TrackerPage() {
   const [history,       setHistory]       = useState<RegionSnapshot[]>([]);
   const [histLoading,   setHistLoading]   = useState(false);
   const [archiveTab,    setArchiveTab]    = useState<"timeline" | "verification">("timeline");
+  const [miniHistory,   setMiniHistory]   = useState<Record<string, RegionSnapshot[]>>({});
 
   useEffect(() => {
     api.grades()
@@ -103,6 +104,12 @@ export default function TrackerPage() {
         setLatest(lat);
         setArchiveStats(stats);
         if (lat.length > 0 && !selRegion) setSelRegion(lat[0].region_id);
+        // Pre-fetch mini history for all regions (last 8 runs each)
+        lat.forEach(s => {
+          api.archiveRegion(s.region_id, 8)
+            .then(snaps => setMiniHistory(prev => ({ ...prev, [s.region_id]: snaps })))
+            .catch(() => {});
+        });
       })
       .catch(() => {});
   }, []);
@@ -184,21 +191,39 @@ export default function TrackerPage() {
             <div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 0, border: "1px solid var(--border)" }}>
               {/* Region list */}
               <div style={{ borderRight: "1px solid var(--border)", maxHeight: 640, overflowY: "auto" }}>
-                {latest.map(s => (
+                {latest.map(s => {
+                  const mini = (miniHistory[s.region_id] ?? []).sort((a, b) => a.run_date.localeCompare(b.run_date));
+                  const trend = mini.length >= 2 ? mini[mini.length - 1].p_ipc3plus_90d - mini[0].p_ipc3plus_90d : 0;
+                  const trendArrow = trend > 0.03 ? "↑" : trend < -0.03 ? "↓" : "→";
+                  const trendColor = trend > 0.03 ? "var(--crisis)" : trend < -0.03 ? "var(--watch)" : "var(--ink-light)";
+                  return (
                   <button key={s.region_id} onClick={() => setSelRegion(s.region_id)} style={{
-                    width: "100%", textAlign: "left", padding: "14px 18px",
+                    width: "100%", textAlign: "left", padding: "12px 18px 10px",
                     background: selRegion === s.region_id ? tierBg(s.alert_tier) : "white",
                     borderBottom: "1px solid var(--border-light)", border: "none",
                     borderLeft: selRegion === s.region_id ? `3px solid ${tierColor(s.alert_tier)}` : "3px solid transparent",
                     cursor: "pointer",
                   }}>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: 11, fontWeight: 600, color: "var(--ink)", marginBottom: 3 }}>{s.region_name}</div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 11, fontWeight: 600, color: "var(--ink)" }}>{s.region_name}</span>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", fontWeight: 700 }}>{fmtPct(s.p_ipc3plus_90d)}</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: tierColor(s.alert_tier) }}>{s.alert_tier}</span>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--earth)", fontWeight: 600 }}>{fmtPct(s.p_ipc3plus_90d)}</span>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: trendColor, fontWeight: 700 }} title={`${trend >= 0 ? "+" : ""}${(trend * 100).toFixed(1)}% over ${mini.length} runs`}>{trendArrow}</span>
+                      {mini.length >= 3 && (
+                        <svg width={60} height={18} style={{ display: "block", overflow: "visible" }}>
+                          {(() => {
+                            const pts = mini.map((m, i) => [i / (mini.length - 1) * 60, 18 - m.p_ipc3plus_90d * 14 - 2] as [number, number]);
+                            const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+                            return <path d={d} fill="none" stroke={tierColor(s.alert_tier)} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" opacity={0.7} />;
+                          })()}
+                        </svg>
+                      )}
                     </div>
                   </button>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Detail panel */}
