@@ -146,6 +146,7 @@ function CheckoutModal({
 
 const TOC = [
   { id: "access",      label: "Access Tiers"    },
+  { id: "hdx",         label: "Open Data (HDX)" },
   { id: "base",        label: "Base URL"         },
   { id: "predictions", label: "Predictions"      },
   { id: "hypotheses",  label: "Hypotheses"       },
@@ -402,8 +403,53 @@ export default function ApiAccessPage() {
             </p>
           </section>
 
+          <section id="hdx" style={section}>
+            <div style={sectionLabel}>§ 2 — Open Data</div>
+            <h2 style={h2Style}>Free Data Downloads — Humanitarian Data Exchange</h2>
+            <p style={pStyle}>
+              CERES prediction archives are published openly on the{" "}
+              <a href="https://data.humdata.org/dataset/ceres-famine-early-warning" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>
+                OCHA Humanitarian Data Exchange (HDX)
+              </a>{" "}
+              under ODbL licence. No API key required — download directly as HXL-tagged CSV.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, margin: "24px 0" }}>
+              {[
+                {
+                  label: "All Weekly Runs",
+                  desc: "Full archive — one row per region per weekly pipeline run. HXL-tagged.",
+                  href: "https://ceres-core-production.up.railway.app/v1/export/hdx",
+                  badge: "CSV · HXL",
+                },
+                {
+                  label: "Latest Snapshot",
+                  desc: "Most recent prediction per region only. One row per monitored country.",
+                  href: "https://ceres-core-production.up.railway.app/v1/export/hdx?latest=true",
+                  badge: "CSV · HXL",
+                },
+              ].map(({ label, desc, href, badge }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+                  <div style={{
+                    border: "1px solid var(--border)", background: "white", padding: "20px 24px",
+                    transition: "border-color 0.15s", cursor: "pointer",
+                  }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+                      <span style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, color: "var(--ink)" }}>{label}</span>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "2px 8px", color: "var(--ink-light)" }}>{badge}</span>
+                    </div>
+                    <p style={{ fontSize: 13, color: "var(--ink-light)", margin: 0, lineHeight: 1.6 }}>{desc}</p>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", marginTop: 12 }}>↓ Download →</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+            <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.7 }}>
+              Column 2 of every CSV file contains HXL hashtags (e.g. <code style={{ fontFamily: "var(--mono)", background: "var(--parchment-dark)", padding: "1px 4px" }}>#indicator+value+prob+ipc3plus+90d</code>) for machine-readable humanitarian interoperability. Compatible with all HDX-aware tools.
+            </p>
+          </section>
+
           <section id="base" style={section}>
-            <div style={sectionLabel}>§ 2 — Base URL</div>
+            <div style={sectionLabel}>§ 3 — Base URL</div>
             <h2 style={h2Style}>Connection</h2>
             <Code>
               <Cm># Production{"\n"}</Cm>
