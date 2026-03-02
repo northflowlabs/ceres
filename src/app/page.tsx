@@ -134,15 +134,7 @@ export default function Dashboard() {
           padding: "14px 32px 14px 0",
           borderRight: "1px solid var(--border)",
         }}>
-          <div style={{
-            width: 36, height: 36,
-            border: "2px solid var(--ink)",
-            borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0,
-          }}>
-            <div style={{ width: 10, height: 10, background: "var(--earth)", borderRadius: "50%" }} />
-          </div>
+          <img src="/ceres-logo.png" alt="CERES" width={36} height={36} style={{ flexShrink: 0, borderRadius: "50%" }} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{
               fontFamily: "var(--display)", fontSize: 18, fontWeight: 700,

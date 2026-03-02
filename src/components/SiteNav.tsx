@@ -32,7 +32,7 @@ export default function SiteNav({ ctaHref = "/api-access", ctaLabel = "Access AP
           padding: "12px 24px 12px 0", borderRight: "1px solid var(--border)",
           textDecoration: "none", color: "inherit", flexShrink: 0,
         }}>
-          <img src="/ceres-logo.svg" alt="CERES" width={36} height={36} style={{ flexShrink: 0 }} />
+          <img src="/ceres-logo.png" alt="CERES" width={36} height={36} style={{ flexShrink: 0, borderRadius: "50%" }} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 700, letterSpacing: "0.06em", lineHeight: 1 }}>CERES</span>
             <span style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.14em", color: "var(--ink-light)", textTransform: "uppercase", marginTop: 3 }}>
