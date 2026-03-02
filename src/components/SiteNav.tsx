@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const LINKS = [
-  { href: "/",            label: "Dashboard"    },
-  { href: "/methodology", label: "Methodology"  },
-  { href: "/data",        label: "Data Sources" },
-  { href: "/validation",  label: "Validation"   },
-  { href: "/tracker",     label: "Track Record" },
-  { href: "/about",       label: "About"        },
-  { href: "/api-access",  label: "API"          },
+  { href: "/",             label: "Dashboard"    },
+  { href: "/subnational",  label: "Sub-national" },
+  { href: "/methodology",  label: "Methodology"  },
+  { href: "/data",         label: "Data Sources" },
+  { href: "/validation",   label: "Validation"   },
+  { href: "/tracker",      label: "Track Record" },
+  { href: "/about",        label: "About"        },
+  { href: "/api-access",   label: "API"          },
 ];
 
 export default function SiteNav({ ctaHref = "/api-access", ctaLabel = "Access API →" }: { ctaHref?: string; ctaLabel?: string }) {
