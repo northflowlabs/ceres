@@ -147,6 +147,8 @@ function CheckoutModal({
 const TOC = [
   { id: "access",      label: "Access Tiers"    },
   { id: "hdx",         label: "Open Data (HDX)" },
+  { id: "auth",        label: "Authentication"  },
+  { id: "alerts",      label: "Alerts & Digest" },
   { id: "base",        label: "Base URL"         },
   { id: "predictions", label: "Predictions"      },
   { id: "hypotheses",  label: "Hypotheses"       },
@@ -167,7 +169,7 @@ const TIERS = [
       "All hypothesis data",
       "Admin1 signal breakdown",
       "500 requests / month",
-      "Academic & NGO use",
+      "Monthly intelligence newsletter",
       "CC BY 4.0 licence",
     ],
   },
@@ -180,10 +182,10 @@ const TIERS = [
     features: [
       "Everything in Open Research",
       "10,000 requests / month",
-      "Full prediction history",
-      "Webhook alerts — Tier I/II events",
+      "Real-time Tier I/II email alerts",
+      "Weekly intelligence digest",
+      "Webhook delivery — any endpoint",
       "PDF intelligence reports",
-      "Priority email support",
     ],
   },
   {
@@ -496,8 +498,91 @@ export default function ApiAccessPage() {
             </p>
           </section>
 
+          <section id="auth" style={section}>
+            <div style={sectionLabel}>&sect; 2 &mdash; Authentication</div>
+            <h2 style={h2Style}>Authentication &amp; Account</h2>
+            <p style={pStyle}>
+              Tier A (Open Research) endpoints are unauthenticated — no key required.
+              Tier B and C endpoints require an <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>X-API-Key</code> header.
+              Your key is emailed immediately after a successful Stripe checkout.
+            </p>
+            <Code>
+              <Cm># Tier A — no authentication needed{"\n"}</Cm>
+              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>{"\n\n"}
+              <Cm># Tier B / C — include your API key{"\n"}</Cm>
+              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/reports</Str>{"\n"}
+              <Key>{"X-API-Key"}</Key>{": "}<Str>ceres_xxxxxxxxxxxxxxxxxxxxxxxx</Str>
+            </Code>
+            <h3 style={h3Style}>Account Portal</h3>
+            <p style={pStyle}>
+              Sign in to your account at{" "}
+              <a href="/login" style={{ color: "var(--earth)" }}>ceres.northflow.no/login</a>{" "}
+              using a one-time magic link sent to your registered email — no password needed.
+              From the account portal you can view your API key prefix, current usage,
+              manage your billing subscription, and register webhook endpoints.
+            </p>
+            <div style={{ display: "flex", gap: 12, margin: "16px 0 0" }}>
+              <a href="/login" style={{ display: "inline-block", padding: "10px 20px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", textDecoration: "none" }}>
+                Sign In &rarr;
+              </a>
+              <a href="/account" style={{ display: "inline-block", padding: "10px 20px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "transparent", color: "var(--ink)", border: "1px solid var(--border)", textDecoration: "none" }}>
+                Account Portal &rarr;
+              </a>
+            </div>
+          </section>
+
+          <section id="alerts" style={section}>
+            <div style={sectionLabel}>&sect; 3 &mdash; Alerts</div>
+            <h2 style={h2Style}>Alerts &amp; Intelligence Delivery</h2>
+            <p style={pStyle}>
+              CERES delivers intelligence through three channels depending on your tier:
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
+              {[
+                {
+                  label: "Monthly Newsletter",
+                  tier: "Tier A — Free",
+                  color: "var(--ink-light)",
+                  desc: "Monthly intelligence letter summarising the top risk regions, system status, and a note from Tom. Sent the first Monday of each month to all free subscribers.",
+                },
+                {
+                  label: "Weekly Digest",
+                  tier: "Tier B/C — Paid",
+                  color: "var(--earth)",
+                  desc: "Every Monday morning: top-5 regions by risk score, trend arrows vs. the previous week, and a brief founder's analysis. Delivered to all active paid subscribers.",
+                },
+                {
+                  label: "Real-time Alerts",
+                  tier: "Tier B/C — Paid",
+                  color: "var(--crisis)",
+                  desc: "Immediate email and/or webhook notification when any monitored region escalates to Tier I (Critical) or Tier II (Warning). Register webhook endpoints from your account portal.",
+                },
+              ].map(({ label, tier: t, color, desc }) => (
+                <div key={label} style={{ background: "white", padding: "20px 24px", borderLeft: `3px solid ${color}` }}>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color, marginBottom: 6 }}>{t}</div>
+                  <div style={{ fontFamily: "var(--display)", fontSize: 15, fontWeight: 700, color: "var(--ink)", marginBottom: 10 }}>{label}</div>
+                  <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.65, margin: 0 }}>{desc}</p>
+                </div>
+              ))}
+            </div>
+            <h3 style={h3Style}>Webhook Payload</h3>
+            <p style={pStyle}>Tier B/C subscribers can register webhook URLs from their account portal. On each escalation event, CERES POSTs the following JSON payload:</p>
+            <Code>
+              {"POST "}<Str>https://your-endpoint.example.com/ceres-webhook</Str>{"\n\n"}
+              {"Content-Type: application/json\n\n"}
+              {"{{\n"}
+              {"  "}<Key>"event"</Key>{": "}<Str>"ceres_alert"</Str>{",\n"}
+              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260303-060012"</Str>{",\n"}
+              {"  "}<Key>"timestamp"</Key>{": "}<Str>"2026-03-03T06:00:12Z"</Str>{",\n"}
+              {"  "}<Key>"n_alerts"</Key>{": "}<Num>2</Num>{",\n"}
+              {"  "}<Key>"alerts"</Key>{": [\n"}
+              {"    {{ "}<Key>"region_id"</Key>{": "}<Str>"SDN"</Str>{", "}<Key>"alert_tier"</Key>{": "}<Str>"TIER-1"</Str>{", "}<Key>"p_ipc3plus_90d"</Key>{": "}<Num>0.966</Num>{" }}\n"}
+              {"  ]\n}}"}
+            </Code>
+          </section>
+
           <section id="hdx" style={section}>
-            <div style={sectionLabel}>§ 2 — Open Data</div>
+            <div style={sectionLabel}>&sect; 4 &mdash; Open Data</div>
             <h2 style={h2Style}>Free Data Downloads — Humanitarian Data Exchange</h2>
             <p style={pStyle}>
               CERES prediction archives are published openly on the{" "}
@@ -542,22 +627,22 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="base" style={section}>
-            <div style={sectionLabel}>§ 3 — Base URL</div>
+            <div style={sectionLabel}>&sect; 5 &mdash; Base URL</div>
             <h2 style={h2Style}>Connection</h2>
             <Code>
-              <Cm># Production{"\n"}</Cm>
-              {"Base URL: "}<Str>https://ceres.northflow.no/api</Str>{"\n\n"}
+              <Cm># Production base URL{"\n"}</Cm>
+              {"Base URL: "}<Str>https://ceres-core-production.up.railway.app</Str>{"\n\n"}
               <Cm># All endpoints require the version prefix{"\n"}</Cm>
-              {"GET "}<Str>https://ceres.northflow.no/api/v1/predictions</Str>{"\n\n"}
-              <Cm># Authentication (Tier B/C){"\n"}</Cm>
-              {"Authorization: Bearer "}<Str>YOUR_API_KEY</Str>{"\n\n"}
-              <Cm># Open Research: no authentication required{"\n"}</Cm>
-              {"GET "}<Str>https://ceres.northflow.no/api/v1/predictions</Str>
+              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>{"\n\n"}
+              <Cm># Tier B/C authentication — header, not Bearer token{"\n"}</Cm>
+              {"X-API-Key: "}<Str>ceres_xxxxxxxxxxxxxxxxxxxxxxxx</Str>{"\n\n"}
+              <Cm># Tier A — no key required{"\n"}</Cm>
+              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>
             </Code>
           </section>
 
           <section id="predictions" style={section}>
-            <div style={sectionLabel}>§ 3 — Endpoints</div>
+            <div style={sectionLabel}>&sect; 6 &mdash; Endpoints</div>
             <h2 style={h2Style}>Predictions</h2>
 
             <Endpoint method="GET" path="/v1/predictions" desc="All active regional forecasts">
@@ -661,7 +746,7 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="formats" style={section}>
-            <div style={sectionLabel}>§ 4 — Response Format</div>
+            <div style={sectionLabel}>&sect; 7 &mdash; Response Format</div>
             <h2 style={h2Style}>Response Format</h2>
             <p style={pStyle}>All endpoints return JSON. Dates are ISO 8601. Probabilities are floats in [0, 1]. Confidence intervals are 90% bootstrap CIs.</p>
             <Code>
@@ -684,7 +769,7 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="attribution" style={{ marginBottom: 0, paddingBottom: 0 }}>
-            <div style={sectionLabel}>§ 5 — Attribution</div>
+            <div style={sectionLabel}>&sect; 8 &mdash; Attribution</div>
             <h2 style={h2Style}>Attribution Requirements</h2>
             <p style={pStyle}>All use of CERES data — whether in publications, dashboards, or operational systems — requires attribution to Northflow Technologies and CERES.</p>
             <Code>
