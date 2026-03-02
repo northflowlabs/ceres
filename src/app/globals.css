@@ -518,5 +518,34 @@
     .flex-wrap-mobile {
       flex-wrap: wrap !important;
     }
+
+    /* ── Impact page grids ───────────────────────────────────── */
+    .impact-grid-4 {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .impact-grid-3 {
+      grid-template-columns: 1fr !important;
+    }
+    .impact-downloads-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── Changelog layout (TOC + entries) ───────────────────── */
+    .changelog-layout {
+      grid-template-columns: 1fr !important;
+    }
+    .changelog-toc {
+      display: none !important;
+    }
+
+    /* ── Named contacts form rows ───────────────────────────── */
+    .contacts-row {
+      grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* ── Embed/widget configurator ──────────────────────────── */
+    .embed-layout {
+      grid-template-columns: 1fr !important;
+    }
   }
 }

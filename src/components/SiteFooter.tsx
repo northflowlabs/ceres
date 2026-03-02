@@ -2,11 +2,15 @@ import Link from "next/link";
 
 const PAGES = [
   { href: "/",            label: "Dashboard"    },
+  { href: "/impact",      label: "Impact"       },
+  { href: "/tracker",     label: "Track Record" },
+  { href: "/validation",  label: "Validation"   },
+  { href: "/subnational", label: "Sub-national" },
   { href: "/methodology", label: "Methodology"  },
   { href: "/data",        label: "Data Sources" },
-  { href: "/validation",  label: "Validation"   },
-  { href: "/tracker",     label: "Track Record" },
   { href: "/api-access",  label: "API Access"   },
+  { href: "/embed",       label: "Embed Widget" },
+  { href: "/changelog",   label: "Changelog"    },
   { href: "/about",       label: "About"        },
 ];
 
@@ -36,7 +40,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.1.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv preprint submitted March 2026</span>
+        <span>CERES v0.4.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv preprint submitted March 2026</span>
         <span>© 2026 Northflow Technologies</span>
       </div>
     </footer>

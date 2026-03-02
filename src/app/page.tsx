@@ -648,6 +648,40 @@ export default function Dashboard() {
             </div>
           )}
 
+          {/* Narrative summary — plain-English analysis */}
+          {selPred && hyp && (
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }} className="animate-fade-in">
+              <div className="panel-label" style={{ marginBottom: 10 }}>Intelligence Summary</div>
+              <p style={{ fontSize: 12, lineHeight: 1.7, color: "var(--ink-mid)", margin: "0 0 10px" }}>
+                {selPred.region_name} is currently assessed at a{" "}
+                <strong style={{ color: selPred.alert_tier === "TIER-1" ? "var(--crisis)" : selPred.alert_tier === "TIER-2" ? "var(--warning)" : "var(--watch)" }}>
+                  {Math.round(selPred.p_ipc3plus_90d * 100)}% probability
+                </strong>{" "}
+                of reaching IPC Phase 3+ (Crisis) within 90 days — classified as{" "}
+                <strong style={{ color: "var(--ink)" }}>{selPred.alert_tier}</strong>.{" "}
+                {(selPred.driver_types ?? []).length > 0
+                  ? `The primary drivers are ${(selPred.driver_types ?? []).slice(0, 3).join(", ").toLowerCase()}, with ${selPred.n_signals_flagged ?? 0} elevated signals detected across ${selPred.flagged_sources ?? "multiple data sources"}.`
+                  : `${selPred.n_signals_flagged ?? 0} elevated signals have been detected, indicating compound stress.`
+                }{" "}
+                The 90% confidence interval spans{" "}
+                <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.ci_90_low * 100)}%–{Math.round(selPred.ci_90_high * 100)}%</strong>,{" "}
+                reflecting {(selPred.ci_90_high - selPred.ci_90_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}.
+              </p>
+              <p style={{ fontSize: 12, lineHeight: 1.7, color: "var(--ink-mid)", margin: 0 }}>
+                {hyp.description
+                  ? `HGE analysis: ${hyp.description.endsWith(".") ? hyp.description : hyp.description + "."}`
+                  : `The composite stress score of ${Math.round(selPred.composite_stress_score * 100)}% indicates ${selPred.composite_stress_score > 0.7 ? "critical" : selPred.composite_stress_score > 0.5 ? "elevated" : "moderate"} overall risk.`
+                }{" "}
+                {selPred.is_compound
+                  ? "This is a compound crisis — multiple independent stressors are reinforcing each other, which significantly elevates forecast confidence."
+                  : selPred.convergence_score > 0.7
+                  ? "Strong signal convergence across independent data sources increases confidence in this assessment."
+                  : "Monitor closely — signal convergence is moderate and conditions may change with incoming data."
+                }
+              </p>
+            </div>
+          )}
+
           {/* Signal matrix */}
           {selPred && (
             <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>

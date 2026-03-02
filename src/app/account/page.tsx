@@ -70,6 +70,10 @@ export default function AccountPage() {
   const [watchLoading,   setWatchLoading]   = useState(false);
   const [watchSaved,     setWatchSaved]     = useState(false);
   const [watchError,     setWatchError]     = useState<string | null>(null);
+  const [contacts,       setContacts]       = useState<Array<{ region_id: string; contact_name: string; contact_email: string }>>([]);
+  const [contactsSaved,  setContactsSaved]  = useState(false);
+  const [contactsLoading,setContactsLoading]= useState(false);
+  const [contactsError,  setContactsError]  = useState<string | null>(null);
 
   async function fetchWebhooks(token: string) {
     try {
@@ -116,6 +120,50 @@ export default function AccountPage() {
 
   function toggleRegion(id: string) {
     setWatchRegions(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]);
+  }
+
+  async function fetchContacts(token: string) {
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/contacts?session_token=${encodeURIComponent(token)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        setContacts(data.contacts ?? []);
+      }
+    } catch { /* non-fatal */ }
+  }
+
+  async function saveContacts() {
+    const token = localStorage.getItem(SESSION_KEY);
+    if (!token) return;
+    setContactsLoading(true);
+    setContactsError(null);
+    setContactsSaved(false);
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/contacts`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_token: token, contacts }),
+      });
+      if (!resp.ok) throw new Error(`Error ${resp.status}`);
+      setContactsSaved(true);
+      setTimeout(() => setContactsSaved(false), 3000);
+    } catch (err) {
+      setContactsError(err instanceof Error ? err.message : "Failed to save contacts");
+    } finally {
+      setContactsLoading(false);
+    }
+  }
+
+  function addContactRow() {
+    setContacts(prev => [...prev, { region_id: "", contact_name: "", contact_email: "" }]);
+  }
+
+  function removeContactRow(i: number) {
+    setContacts(prev => prev.filter((_, idx) => idx !== i));
+  }
+
+  function updateContact(i: number, field: string, value: string) {
+    setContacts(prev => prev.map((c, idx) => idx === i ? { ...c, [field]: value } : c));
   }
 
   async function addWebhook(e: React.FormEvent) {
@@ -170,6 +218,9 @@ export default function AccountPage() {
       fetchWatchlist(token);
       if (["professional", "institutional"].includes(meData.tier)) {
         fetchWebhooks(token);
+      }
+      if (["institutional", "admin"].includes(meData.tier)) {
+        fetchContacts(token);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load account");
@@ -479,6 +530,79 @@ export default function AccountPage() {
                 <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginTop: 8 }}>{watchError}</div>
               )}
             </div>
+
+            {/* Named contacts — Institutional only */}
+            {["institutional", "admin"].includes(me.tier) && (
+              <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
+                  Named Alert Contacts
+                </div>
+                <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 20px" }}>
+                  Route Tier I/II alerts to specific contacts per region. Up to 50 entries. Leave region blank to apply to all regions.
+                </p>
+
+                {contacts.length > 0 && (
+                  <div style={{ marginBottom: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+                    {contacts.map((c, i) => (
+                      <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr auto", gap: 8, alignItems: "center" }}>
+                        <input
+                          type="text"
+                          placeholder="Region ID (e.g. SDN)"
+                          value={c.region_id}
+                          onChange={e => updateContact(i, "region_id", e.target.value.toUpperCase())}
+                          style={{ fontFamily: "var(--mono)", fontSize: 11, padding: "8px 10px", border: "1px solid var(--border)", background: "var(--parchment)", color: "var(--ink)", outline: "none" }}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Contact name"
+                          value={c.contact_name}
+                          onChange={e => updateContact(i, "contact_name", e.target.value)}
+                          style={{ fontFamily: "var(--mono)", fontSize: 11, padding: "8px 10px", border: "1px solid var(--border)", background: "var(--parchment)", color: "var(--ink)", outline: "none" }}
+                        />
+                        <input
+                          type="email"
+                          placeholder="Contact email *"
+                          value={c.contact_email}
+                          onChange={e => updateContact(i, "contact_email", e.target.value)}
+                          style={{ fontFamily: "var(--mono)", fontSize: 11, padding: "8px 10px", border: "1px solid var(--border)", background: "var(--parchment)", color: "var(--ink)", outline: "none" }}
+                        />
+                        <button
+                          onClick={() => removeContactRow(i)}
+                          style={{ padding: "8px 10px", fontFamily: "var(--mono)", fontSize: 9, background: "transparent", color: "var(--crisis)", border: "1px solid var(--crisis)", cursor: "pointer", letterSpacing: "0.06em" }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {contacts.length === 0 && (
+                  <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 16 }}>
+                    No named contacts configured. Alerts go to your account email by default.
+                  </p>
+                )}
+
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <button
+                    onClick={addContactRow}
+                    style={{ padding: "9px 18px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "transparent", color: "var(--earth)", border: "1px solid var(--earth)", cursor: "pointer" }}
+                  >
+                    + Add Contact
+                  </button>
+                  <button
+                    onClick={saveContacts}
+                    disabled={contactsLoading}
+                    style={{ padding: "9px 18px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: contactsSaved ? "var(--watch)" : "var(--ink)", color: "var(--parchment)", border: "none", cursor: contactsLoading ? "not-allowed" : "pointer", opacity: contactsLoading ? 0.6 : 1 }}
+                  >
+                    {contactsLoading ? "Saving…" : contactsSaved ? "✓ Saved" : "Save Contacts →"}
+                  </button>
+                </div>
+                {contactsError && (
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginTop: 8 }}>{contactsError}</div>
+                )}
+              </div>
+            )}
 
             {/* Webhook management — Professional/Institutional only */}
             {["professional", "institutional"].includes(me.tier) && (
