@@ -76,6 +76,12 @@ export default function AccountPage() {
   const [contactsError,  setContactsError]  = useState<string | null>(null);
   const [briefs,         setBriefs]         = useState<Array<{ run_id: string; filename: string; size_kb: number; created_at: string }>>([]);
   const [briefsLoading,  setBriefsLoading]  = useState(false);
+  const [teamMembers,    setTeamMembers]    = useState<Array<{ member_email: string; invited_at: string; accepted: number }>>([]);
+  const [teamLoading,    setTeamLoading]    = useState(false);
+  const [inviteEmail,    setInviteEmail]    = useState("");
+  const [inviteLoading,  setInviteLoading]  = useState(false);
+  const [inviteError,    setInviteError]    = useState<string | null>(null);
+  const [inviteSent,     setInviteSent]     = useState(false);
 
   async function fetchWebhooks(token: string) {
     try {
@@ -134,6 +140,19 @@ export default function AccountPage() {
       }
     } catch { /* non-fatal */ } finally {
       setBriefsLoading(false);
+    }
+  }
+
+  async function fetchTeam(token: string) {
+    setTeamLoading(true);
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/team?session_token=${encodeURIComponent(token)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        setTeamMembers(data.members ?? []);
+      }
+    } catch { /* non-fatal */ } finally {
+      setTeamLoading(false);
     }
   }
 
@@ -237,6 +256,7 @@ export default function AccountPage() {
       }
       if (["institutional", "admin"].includes(meData.tier)) {
         fetchContacts(token);
+        fetchTeam(token);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load account");
@@ -594,6 +614,88 @@ export default function AccountPage() {
                     })}
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Team Members — Institutional only */}
+            {["institutional", "admin"].includes(me.tier) && (
+              <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
+                  Team Members
+                </div>
+                <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 20px" }}>
+                  Invite colleagues to access this Institutional account — they inherit your tier, org name, API access, and PDF briefs. Up to 10 members.
+                </p>
+
+                {teamLoading && <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>Loading team…</div>}
+
+                {!teamLoading && teamMembers.length > 0 && (
+                  <div style={{ marginBottom: 20, display: "flex", flexDirection: "column", gap: 6 }}>
+                    {teamMembers.map(m => {
+                      const token = typeof window !== "undefined" ? localStorage.getItem("ceres_session_token") ?? "" : "";
+                      return (
+                        <div key={m.member_email} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", background: "var(--parchment)", border: "1px solid var(--border)" }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{m.member_email}</div>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 2 }}>
+                              Invited {new Date(m.invited_at).toLocaleDateString()} · {m.accepted ? "Active" : "Invite pending"}
+                            </div>
+                          </div>
+                          <button
+                            onClick={async () => {
+                              const resp = await fetch(`${API_BASE}/v1/auth/team/${encodeURIComponent(m.member_email)}?session_token=${encodeURIComponent(token)}`, { method: "DELETE" });
+                              if (resp.ok) setTeamMembers(prev => prev.filter(x => x.member_email !== m.member_email));
+                            }}
+                            style={{ padding: "7px 12px", fontFamily: "var(--mono)", fontSize: 9, background: "transparent", color: "var(--crisis)", border: "1px solid var(--crisis)", cursor: "pointer", letterSpacing: "0.06em" }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {!teamLoading && teamMembers.length === 0 && (
+                  <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 16 }}>No team members yet.</p>
+                )}
+
+                <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                  <input
+                    type="email"
+                    placeholder="colleague@organisation.org"
+                    value={inviteEmail}
+                    onChange={e => { setInviteEmail(e.target.value); setInviteError(null); setInviteSent(false); }}
+                    style={{ flex: 1, fontFamily: "var(--mono)", fontSize: 11, padding: "10px 12px", border: "1px solid var(--border)", background: "var(--parchment)", color: "var(--ink)", outline: "none" }}
+                  />
+                  <button
+                    disabled={inviteLoading || !inviteEmail}
+                    onClick={async () => {
+                      const token = typeof window !== "undefined" ? localStorage.getItem("ceres_session_token") ?? "" : "";
+                      setInviteLoading(true); setInviteError(null); setInviteSent(false);
+                      try {
+                        const resp = await fetch(`${API_BASE}/v1/auth/team/invite`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ session_token: token, member_email: inviteEmail }),
+                        });
+                        if (!resp.ok) {
+                          const err = await resp.json();
+                          setInviteError(err.detail ?? "Invite failed");
+                        } else {
+                          const data = await resp.json();
+                          setTeamMembers(prev => [...prev, { member_email: data.invited, invited_at: new Date().toISOString(), accepted: 0 }]);
+                          setInviteEmail(""); setInviteSent(true);
+                        }
+                      } catch { setInviteError("Request failed"); } finally { setInviteLoading(false); }
+                    }}
+                    style={{ padding: "10px 20px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", border: "none", cursor: inviteLoading || !inviteEmail ? "not-allowed" : "pointer", opacity: inviteLoading || !inviteEmail ? 0.5 : 1 }}
+                  >
+                    {inviteLoading ? "Sending…" : "Invite →"}
+                  </button>
+                </div>
+                {inviteError && <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginTop: 8 }}>{inviteError}</div>}
+                {inviteSent && <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--watch)", marginTop: 8 }}>✓ Invite sent — they can sign in at ceres.northflow.no/login</div>}
               </div>
             )}
 
