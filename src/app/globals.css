@@ -547,5 +547,10 @@
     .embed-layout {
       grid-template-columns: 1fr !important;
     }
+
+    /* ── Region intelligence page ───────────────────────────── */
+    .region-two-col {
+      grid-template-columns: 1fr !important;
+    }
   }
 }

@@ -417,11 +417,20 @@ export default function Dashboard() {
                     CI [{pct(p.ci_90_low)} – {pct(p.ci_90_high)}] · {p.ci_method ?? "Bootstrap"}
                   </div>
 
-                  {/* Drivers */}
-                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                    {(p.driver_types ?? []).map((d) => (
-                      <span key={d} className="driver-tag">{d}</span>
-                    ))}
+                  {/* Drivers + brief link */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                      {(p.driver_types ?? []).map((d) => (
+                        <span key={d} className="driver-tag">{d}</span>
+                      ))}
+                    </div>
+                    <a
+                      href={`/regions/${p.region_id.toLowerCase()}`}
+                      onClick={e => e.stopPropagation()}
+                      style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", color: "var(--earth)", textDecoration: "none", textTransform: "uppercase", flexShrink: 0, marginLeft: 8 }}
+                    >
+                      Brief →
+                    </a>
                   </div>
                 </div>
               );
