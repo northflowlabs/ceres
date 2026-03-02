@@ -74,6 +74,8 @@ export default function AccountPage() {
   const [contactsSaved,  setContactsSaved]  = useState(false);
   const [contactsLoading,setContactsLoading]= useState(false);
   const [contactsError,  setContactsError]  = useState<string | null>(null);
+  const [briefs,         setBriefs]         = useState<Array<{ run_id: string; filename: string; size_kb: number; created_at: string }>>([]);
+  const [briefsLoading,  setBriefsLoading]  = useState(false);
 
   async function fetchWebhooks(token: string) {
     try {
@@ -120,6 +122,19 @@ export default function AccountPage() {
 
   function toggleRegion(id: string) {
     setWatchRegions(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]);
+  }
+
+  async function fetchBriefs(token: string) {
+    setBriefsLoading(true);
+    try {
+      const resp = await fetch(`${API_BASE}/v1/auth/briefs?session_token=${encodeURIComponent(token)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        setBriefs(data.briefs ?? []);
+      }
+    } catch { /* non-fatal */ } finally {
+      setBriefsLoading(false);
+    }
   }
 
   async function fetchContacts(token: string) {
@@ -218,6 +233,7 @@ export default function AccountPage() {
       fetchWatchlist(token);
       if (["professional", "institutional"].includes(meData.tier)) {
         fetchWebhooks(token);
+        fetchBriefs(token);
       }
       if (["institutional", "admin"].includes(meData.tier)) {
         fetchContacts(token);
@@ -530,6 +546,56 @@ export default function AccountPage() {
                 <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginTop: 8 }}>{watchError}</div>
               )}
             </div>
+
+            {/* PDF Intelligence Briefs — Professional/Institutional */}
+            {["professional", "institutional", "admin"].includes(me.tier) && (
+              <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
+                  PDF Intelligence Briefs
+                </div>
+                <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 16px" }}>
+                  Multi-page weekly intelligence briefs — cover, executive summary, full predictions table, and methodology. Sent to your email each Monday.
+                  {me.tier === "institutional" && me.org_name && (
+                    <span style={{ color: "var(--earth)" }}> White-labelled for <strong>{me.org_name}</strong>.</span>
+                  )}
+                </p>
+
+                {briefsLoading && (
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>Loading briefs…</div>
+                )}
+
+                {!briefsLoading && briefs.length === 0 && (
+                  <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 0 }}>
+                    No briefs available yet — they are generated and sent each Monday after the weekly pipeline run.
+                  </p>
+                )}
+
+                {!briefsLoading && briefs.length > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {briefs.map(b => {
+                      const token = typeof window !== "undefined" ? localStorage.getItem("ceres_session_token") ?? "" : "";
+                      const url = `${API_BASE}/v1/auth/briefs/${encodeURIComponent(b.run_id)}?session_token=${encodeURIComponent(token)}`;
+                      return (
+                        <div key={b.run_id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", background: "var(--parchment)", border: "1px solid var(--border)" }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)", fontWeight: 500 }}>{b.run_id}</div>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 2 }}>{b.size_kb} KB · PDF</div>
+                          </div>
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ padding: "7px 14px", fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", textDecoration: "none", flexShrink: 0 }}
+                          >
+                            Download ↓
+                          </a>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Named contacts — Institutional only */}
             {["institutional", "admin"].includes(me.tier) && (
