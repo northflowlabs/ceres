@@ -371,8 +371,10 @@ export default function Dashboard() {
                   onClick={() => {
                     selectRegion(p);
                     cardRefs.current[p.region_id]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                    setMobileTab("detail");
-                    setSheetOpen(true);
+                    if (isMobile) {
+                      setMobileTab("detail");
+                      setSheetOpen(true);
+                    }
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
