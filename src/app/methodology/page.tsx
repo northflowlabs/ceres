@@ -85,7 +85,7 @@ export default function MethodologyPage() {
       </div>
 
       {/* Content grid */}
-      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "200px 1fr", padding: "0 40px", alignItems: "start" }}>
+      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "200px 1fr", padding: "0 40px", alignItems: "start", boxSizing: "border-box" }}>
 
         {/* TOC */}
         <nav className="methodology-toc" style={{ position: "sticky", top: 64, padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
@@ -102,7 +102,7 @@ export default function MethodologyPage() {
         </nav>
 
         {/* Article */}
-        <article ref={articleRef} style={{ padding: "48px 0 80px 56px" }} className="methodology-article">
+        <article ref={articleRef} style={{ padding: "48px 0 80px 56px", minWidth: 0 }} className="methodology-article">
 
           <section id="overview" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 1 — Overview</div>
@@ -120,7 +120,7 @@ export default function MethodologyPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 2 — Pipeline Architecture</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Six-Stage Processing Pipeline</h2>
             <p style={s}>Each pipeline run proceeds through six sequential stages. The run identifier (e.g. <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>CERES-20260228-160603</span>) is recorded with every prediction, enabling complete reproducibility and audit.</p>
-            <div style={{ border: "1px solid var(--border)", margin: "32px 0" }}>
+            <div className="table-scroll" style={{ border: "1px solid var(--border)", margin: "32px 0", overflowX: "auto" }}>
               {PIPELINE_STEPS.map(({ n, title, desc }, i) => (
                 <div key={n} style={{ display: "grid", gridTemplateColumns: "56px 1fr", borderBottom: i < 5 ? "1px solid var(--border-light)" : "none" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--earth)", borderRight: "1px solid var(--border-light)", background: "var(--parchment-dark)", padding: "20px 0" }}>{n}</div>
@@ -141,7 +141,7 @@ export default function MethodologyPage() {
             <p style={s}>HGE monitors for simultaneous stress elevation across independent data streams. When two or more signals from different domains (e.g. CHIRPS rainfall deficit + ACLED conflict escalation + WFP VAM food access deterioration) converge on the same Admin1 region in the same time window, this constitutes a convergence event — a materially stronger signal than any single indicator in isolation.</p>
             <h3 style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Hypothesis Taxonomy</h3>
             <p style={s}>Each convergence event is classified into one of four primary causal archetypes:</p>
-            <table style={{ width: "100%", borderCollapse: "collapse", margin: "24px 0", fontSize: 13 }}>
+            <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", margin: "24px 0", fontSize: 13, minWidth: 420 }}>
               <thead>
                 <tr>{["Archetype","Primary Signals","Typical Regions"].map(h=><th key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--parchment)", background: "var(--ink)", padding: "10px 14px", textAlign: "left", fontWeight: 500 }}>{h}</th>)}</tr>
               </thead>
@@ -154,7 +154,7 @@ export default function MethodologyPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
             <h3 style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Evidence Records</h3>
             <p style={s}>Every hypothesis is grounded in structured evidence records — individual signal observations that either support or contradict the hypothesis. Each record specifies: source, variable name, observed value, baseline threshold, deviation direction, and a binary support/contradict verdict.</p>
             <div style={{ borderLeft: "3px solid var(--watch)", background: "#FEFCF7", border: "1px solid var(--border-light)", borderLeftWidth: 3, borderLeftColor: "var(--watch)", padding: "16px 20px", margin: "24px 0" }}>
@@ -167,7 +167,7 @@ export default function MethodologyPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 4 — Probabilistic Model</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Logistic Model & Confidence Intervals</h2>
             <p style={s}>CERES uses a calibrated logistic regression model to convert composite stress scores into IPC Phase 3+ exceedance probabilities at a 90-day horizon. The choice of logistic regression is deliberate: it is well-understood, natively probabilistic, and produces outputs that are straightforwardly interpretable by non-technical reviewers.</p>
-            <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", lineHeight: 2 }}>
+            <div className="methodology-formula" style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", lineHeight: 2, overflowX: "auto" }}>
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Core Model</div>
               P(IPC 3+ | X, t+90) = σ(β₀ + β₁·CSS + β₂·conflict + β₃·NDVI_anomaly + β₄·rainfall_SPI + β₅·IPC_current)<br />
               <br />
@@ -175,7 +175,7 @@ export default function MethodologyPage() {
             </div>
             <h3 style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Bootstrap Confidence Intervals</h3>
             <p style={s}>Point estimates alone are insufficient for humanitarian decision-making. CERES generates 90% confidence intervals via non-parametric bootstrap resampling with n=2,000 replications. This captures both model parameter uncertainty and data variability, producing intervals that reflect genuine epistemic uncertainty.</p>
-            <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", lineHeight: 2 }}>
+            <div className="methodology-formula" style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", lineHeight: 2, overflowX: "auto" }}>
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>CI Construction</div>
               CI₉₀ = [P̂₅, P̂₉₅] where P̂ₖ is the k-th percentile of the bootstrap distribution<br />
               n_bootstrap = 2,000 · Empirical coverage = 91.2% (target: ≥88%)
@@ -186,7 +186,7 @@ export default function MethodologyPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 5 — Tier Classification</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Alert Tier Definitions</h2>
             <p style={s}>Predictions are assigned to one of three alert tiers based on the point estimate of P(IPC Phase 3+). Tier thresholds are calibrated to IPC phase transition probabilities estimated from the validation dataset.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, margin: "24px 0" }}>
+            <div className="methodology-tiers-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, margin: "24px 0" }}>
               {TIERS.map(({ color, name, thresh, desc }) => (
                 <div key={name} style={{ border: "1px solid var(--border)", padding: 20, background: "white" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
@@ -208,7 +208,7 @@ export default function MethodologyPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 6 — Validation & Calibration</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Model Performance</h2>
             <p style={s}>CERES is validated against 847 region-months of published IPC outcomes spanning six countries and three famine-grade events between 2022 and 2025. Four performance targets are set and continuously tracked.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
+            <div className="methodology-metrics-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
               {METRICS.map(({ val, label, note }) => (
                 <div key={label} style={{ background: "white", padding: 20 }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>
@@ -242,8 +242,8 @@ export default function MethodologyPage() {
           <section id="citation" style={{ marginBottom: 0, paddingBottom: 0 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 8 — Citation</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>How to Cite CERES</h2>
-            <p style={s}>If you reference CERES predictions or methodology in published work, please use the following citation format. A preprint describing the full methodology, coefficient table, and back-validation results was submitted to arXiv (cs.AI / stat.AP) in March 2026.</p>
-            <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 12, color: "var(--ink)", lineHeight: 1.8 }}>
+            <p style={s}>If you reference CERES predictions or methodology in published work, please use the following citation format. A preprint describing the full methodology, coefficient table, and back-validation results is in preparation for submission to arXiv (cs.AI / stat.AP).</p>
+            <div className="methodology-formula" style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 12, color: "var(--ink)", lineHeight: 1.8, overflowX: "auto", wordBreak: "break-word" }}>
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Preferred Citation</div>
               Pedersen, T.D.S. (2026). <em>CERES: A Calibrated Probabilistic Early Warning System for Acute Food Insecurity.</em> Preprint submitted to arXiv cs.AI / stat.AP. Northflow Technologies AS. https://ceres.northflow.no
             </div>

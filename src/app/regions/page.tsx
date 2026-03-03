@@ -58,7 +58,7 @@ export default function RegionsPage() {
       <SiteNav />
 
       {/* Header */}
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Intelligence Regions
@@ -70,11 +70,11 @@ export default function RegionsPage() {
         </p>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
+      <div className="regions-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", boxSizing: "border-box" }}>
 
         {/* Stats strip */}
         {!loading && predictions.length > 0 && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "40px 0 32px" }}>
+          <div className="regions-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "40px 0 32px" }}>
             {[
               { val: String(predictions.length), label: "Regions Monitored", color: "var(--ink)" },
               { val: String(n1),  label: "Critical Risk",  color: "#C0392B" },
@@ -90,13 +90,13 @@ export default function RegionsPage() {
         )}
 
         {/* Filter + sort bar */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="regions-filter-bar" style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap", alignItems: "center" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginRight: 4 }}>Filter:</span>
           <button style={btnStyle(filter === "all")}    onClick={() => setFilter("all")}>All ({predictions.length})</button>
           <button style={btnStyle(filter === "TIER-1", "#C0392B")} onClick={() => setFilter("TIER-1")}>Critical ({n1})</button>
           <button style={btnStyle(filter === "TIER-2", "#D97706")} onClick={() => setFilter("TIER-2")}>Warning ({n2})</button>
           <button style={btnStyle(filter === "TIER-3", "#2E7D32")} onClick={() => setFilter("TIER-3")}>Watch ({n3})</button>
-          <div style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="regions-sort" style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
             <span style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)" }}>Sort:</span>
             <button style={btnStyle(sort === "risk")} onClick={() => setSort("risk")}>By Risk</button>
             <button style={btnStyle(sort === "name")} onClick={() => setSort("name")}>A – Z</button>
@@ -117,7 +117,7 @@ export default function RegionsPage() {
 
         {/* Region cards grid */}
         {!loading && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+          <div className="regions-cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
             {filtered.map(p => {
               const color = tierColor(p.alert_tier);
               const bg    = tierBg(p.alert_tier);

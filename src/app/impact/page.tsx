@@ -60,12 +60,12 @@ export default function ImpactPage() {
       <SiteNav />
 
       {/* Hero */}
-      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Performance &amp; Reach
         </div>
-        <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 60, alignItems: "start" }}>
+        <div className="impact-hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 60, alignItems: "start" }}>
           <div>
             <h1 style={{ fontFamily: "var(--display)", fontSize: 52, fontWeight: 700, lineHeight: 1.05, marginBottom: 20 }}>
               CERES<br />Impact Record
@@ -101,17 +101,17 @@ export default function ImpactPage() {
         </div>
       </div>
 
-      <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
+      <div className="impact-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", boxSizing: "border-box" }}>
 
         {/* Primary stats grid */}
         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "48px 0 10px" }}>Accuracy Record</div>
-        <div className="impact-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 2 }}>
+        <div className="impact-grid-4 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 2 }}>
           <StatCard val={loading ? "—" : `${s?.tier1_hit_rate_pct ?? 83.8}%`} label="Tier I Hit Rate" sub="Of alerts that proved correct" accent />
           <StatCard val={loading ? "—" : `${s?.avg_brier_score ?? 0.087}`}     label="Brier Score"    sub="Target < 0.10 · lower = better" />
           <StatCard val={loading ? "—" : `${s?.ci_coverage_pct ?? 91.2}%`}     label="CI Coverage"    sub="90% CI contains actual outcome" />
           <StatCard val={loading ? "—" : `${s?.avg_lead_time_days ?? 78} days`} label="Avg Lead Time"  sub="Before IPC phase escalation" />
         </div>
-        <div className="impact-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
+        <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           <StatCard val={loading ? "—" : `${s?.tier1_alerts_issued ?? 371}`}   label="Tier I Alerts Issued"    sub="High-probability crisis warnings" />
           <StatCard val={loading ? "—" : `${s?.tier1_alerts_verified ?? 311}`} label="Verified Correct"        sub="Confirmed by IPC outcome" />
           <StatCard val={loading ? "—" : `${s?.predictions_graded ?? 847}`}    label="Predictions Graded"      sub="Region-months assessed" />

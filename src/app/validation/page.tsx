@@ -158,7 +158,7 @@ export default function ValidationPage() {
         </p>
       </div>
 
-      <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
+      <div className="validation-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", boxSizing: "border-box" }}>
 
         {/* Metrics grid — live when grades exist, static (back-validation) otherwise */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "48px 0 0" }}>

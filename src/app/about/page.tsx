@@ -26,7 +26,7 @@ export default function AboutPage() {
       <SiteNav />
 
       {/* HERO */}
-      <div className="about-hero" style={{ borderBottom: "1px solid var(--border)", padding: "80px 40px", maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "1fr 380px", gap: 80, alignItems: "start" }}>
+      <div className="about-hero" style={{ borderBottom: "1px solid var(--border)", padding: "80px 40px", maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "1fr 380px", gap: 80, alignItems: "start", boxSizing: "border-box" }}>
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
@@ -50,8 +50,8 @@ export default function AboutPage() {
       </div>
 
       {/* MISSION BLOCK */}
-      <div style={{ background: "var(--ink)", color: "var(--parchment)", padding: "60px 40px" }}>
-        <div className="about-missions" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+      <div className="about-mission-wrap" style={{ background: "var(--ink)", color: "var(--parchment)", padding: "60px 40px" }}>
+        <div className="about-missions" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center", boxSizing: "border-box" }}>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 16 }}>Mission</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 400, fontStyle: "italic", lineHeight: 1.4, color: "var(--parchment)" }}>
@@ -74,7 +74,7 @@ export default function AboutPage() {
       </div>
 
       {/* CONTENT */}
-      <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px" }}>
+      <div className="about-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px", boxSizing: "border-box" }}>
 
         {/* HGE Platform */}
         <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 60, padding: "64px 0", borderBottom: "1px solid var(--border-light)" }}>
@@ -117,7 +117,7 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
             <p style={p}>Every design decision in CERES — from the calibrated confidence intervals to the publicly timestamped prediction ledger to the published limitations section — is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders. It is built to withstand scrutiny, not to impress with outputs.</p>
-            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. Retrospective validation covers 847 region-months across six countries. Forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. A preprint describing the full methodology was submitted to arXiv (cs.AI / stat.AP) in March 2026.</p>
+            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. Retrospective validation covers 847 region-months across six countries. Forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. A preprint describing the full methodology is in preparation for submission to arXiv (cs.AI / stat.AP).</p>
           </div>
         </div>
 
@@ -126,7 +126,7 @@ export default function AboutPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Get In Touch</div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Institutional Collaboration &amp; Access</h2>
           <p style={{ ...p, maxWidth: 600 }}>CERES is an open system seeking institutional partners for validation, deployment, and co-development. If you represent a humanitarian organisation, research institution, or funding body, we welcome your engagement.</p>
-          <div className="about-contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
+          <div className="about-contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0", boxSizing: "border-box" }}>
             {[
               { label: "Research & Academic",        title: "Methodology Review",     body: "For peer review, co-authorship, or academic collaboration on the validation dataset."               },
               { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, NGOs — for data sharing, co-validation, or integration into existing EWS workflows." },

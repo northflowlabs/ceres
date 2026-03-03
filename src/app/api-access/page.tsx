@@ -398,7 +398,7 @@ export default function ApiAccessPage() {
       <SiteNav ctaHref="mailto:ceres@northflow.no" ctaLabel="Request Access →" />
 
       {/* Page header */}
-      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+      <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
           Developer &amp; Institutional Access
@@ -410,7 +410,7 @@ export default function ApiAccessPage() {
       </div>
 
       {/* Content grid */}
-      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, alignItems: "start" }}>
+      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, alignItems: "start", boxSizing: "border-box" }}>
 
         {/* Sidebar TOC */}
         <nav className="methodology-toc" style={{ position: "sticky", top: 64, padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
@@ -427,7 +427,7 @@ export default function ApiAccessPage() {
         </nav>
 
         {/* Article */}
-        <article className="methodology-article" style={{ padding: "48px 0 48px 56px" }}>
+        <article className="methodology-article api-article" style={{ padding: "48px 0 48px 56px" }}>
 
           <section id="access" style={section}>
             <div style={sectionLabel}>§ 1 — Access</div>

@@ -432,6 +432,13 @@
     .hdx-grid {
       grid-template-columns: 1fr !important;
     }
+    /* ── API article: remove left indent, fix outer padding ─────── */
+    .api-article {
+      padding: 32px 0 48px 0 !important;
+    }
+    .methodology-layout {
+      padding: 0 16px 60px !important;
+    }
     /* ── Endpoint header: wrap path + desc ──────────────────────── */
     .endpoint-header {
       flex-wrap: wrap !important;
@@ -469,7 +476,6 @@
     /* ── Methodology layout ──────────────────────────────────────── */
     .methodology-layout {
       grid-template-columns: 1fr !important;
-      padding: 0 16px !important;
     }
     .methodology-toc { display: none !important; }
 
@@ -573,6 +579,128 @@
     /* ── Region intelligence page ───────────────────────────── */
     .region-two-col {
       grid-template-columns: 1fr !important;
+    }
+
+    /* ── Methodology article ─────────────────────────────────── */
+    .methodology-article {
+      padding: 32px 0 60px 0 !important;
+    }
+    .methodology-tiers-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .methodology-metrics-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .methodology-formula {
+      font-size: 11px !important;
+      padding: 14px 16px !important;
+      overflow-x: auto !important;
+      word-break: break-word !important;
+    }
+    .table-scroll {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    /* ── About page ──────────────────────────────────────────── */
+    .about-hero {
+      grid-template-columns: 1fr !important;
+      gap: 32px !important;
+      padding: 40px 16px !important;
+    }
+    .about-mission-wrap {
+      padding: 40px 20px !important;
+    }
+    .about-missions {
+      grid-template-columns: 1fr !important;
+      gap: 32px !important;
+    }
+    .about-body {
+      padding: 0 16px 60px !important;
+    }
+    .about-contact-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── Impact page ─────────────────────────────────────────── */
+    .impact-hero-grid {
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+    .impact-body {
+      padding: 0 16px 60px !important;
+    }
+    .impact-stats-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* ── Validation page ─────────────────────────────────────── */
+    .validation-body {
+      padding: 0 16px 60px !important;
+    }
+    .validation-metrics-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* ── Shared content wrappers ─────────────────────────────── */
+    .content-two-col {
+      grid-template-columns: 1fr !important;
+      gap: 32px !important;
+      padding: 40px 0 !important;
+    }
+    .page-header {
+      padding: 40px 16px 32px !important;
+    }
+
+    /* ── Data page ───────────────────────────────────────────── */
+    .data-body {
+      padding: 0 16px 60px !important;
+    }
+    .data-sources-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .data-source-meta {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .data-principles-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── Regions page ────────────────────────────────────────── */
+    .regions-body {
+      padding: 0 16px 60px !important;
+    }
+    .regions-stats-grid {
+      grid-template-columns: 1fr 1fr !important;
+      margin: 24px 0 20px !important;
+    }
+    .regions-filter-bar {
+      gap: 6px !important;
+    }
+    .regions-sort {
+      margin-left: 0 !important;
+      width: 100% !important;
+      margin-top: 4px !important;
+    }
+    .regions-cards-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      padding: 32px 20px !important;
+    }
+    .footer-grid {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 32px !important;
+    }
+    .footer-grid > div:first-child {
+      grid-column: 1 / -1 !important;
+    }
+    .footer-bottom {
+      flex-direction: column !important;
+      gap: 8px !important;
+      margin-top: 24px !important;
     }
   }
 }

@@ -17,7 +17,7 @@ const PAGES = [
 export default function SiteFooter() {
   return (
     <footer style={{ borderTop: "2px solid var(--ink)", background: "var(--ink)", color: "var(--parchment)", padding: 40, position: "relative", zIndex: 1, marginTop: "auto" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 40 }}>
+      <div className="footer-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 40 }}>
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>CERES</div>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Calibrated Early-warning &amp; Risk Evaluation System</p>
@@ -39,8 +39,8 @@ export default function SiteFooter() {
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Research-grade forecasts. Not a substitute for field-based IPC assessment or operational humanitarian decision-making.</p>
         </div>
       </div>
-      <div style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.4.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv preprint submitted March 2026</span>
+      <div className="footer-bottom" style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
+        <span>CERES v0.4.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv preprint in preparation</span>
         <span>© 2026 Northflow Technologies</span>
       </div>
     </footer>

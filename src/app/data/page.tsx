@@ -146,7 +146,7 @@ export default function DataPage() {
         </div>
       </div>
 
-      <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
+      <div className="data-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", boxSizing: "border-box" }}>
 
         {/* Source cards */}
         <div className="data-sources-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 48px" }}>
@@ -168,7 +168,7 @@ export default function DataPage() {
                 </a>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, margin: "12px 0", padding: "12px 0", borderTop: "1px solid var(--border-light)", borderBottom: "1px solid var(--border-light)" }}>
+              <div className="data-source-meta" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, margin: "12px 0", padding: "12px 0", borderTop: "1px solid var(--border-light)", borderBottom: "1px solid var(--border-light)" }}>
                 {[
                   { label: "Provider",    val: provider   },
                   { label: "Cadence",     val: cadence    },
@@ -207,7 +207,7 @@ export default function DataPage() {
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 24, lineHeight: 1.75, maxWidth: 640 }}>
             Each data stream feeds into a specific stage of the CERES pipeline. Sub-scores are combined into a composite stress score which drives the probabilistic forecast. See the <a href="/methodology" style={{ color: "var(--earth)", textDecoration: "none" }}>Methodology</a> page for full mathematical specification.
           </p>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 400 }}>
             <thead>
               <tr>
                 {["Signal", "Role in Pipeline", "Stage"].map(h => <th key={h} style={th}>{h}</th>)}
@@ -226,11 +226,11 @@ export default function DataPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </div>
 
         {/* Data principles */}
-        <div style={{ margin: "48px 0 0", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
+        <div className="data-principles-grid" style={{ margin: "48px 0 0", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           {[
             { title: "100% Open Data",      body: "Every source used by CERES is publicly available and free to access. No proprietary or licensed data is used in the pipeline." },
             { title: "Source Provenance",   body: "Every prediction stores the data retrieval timestamps for all eight sources. Full audit trail from raw signal to probability estimate." },
