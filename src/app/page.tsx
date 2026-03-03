@@ -371,7 +371,8 @@ export default function Dashboard() {
                   onClick={() => {
                     selectRegion(p);
                     cardRefs.current[p.region_id]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                    if (isMobile) { setSheetOpen(true); } else { setMobileTab("detail"); }
+                    setMobileTab("detail");
+                    setSheetOpen(true);
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
@@ -955,6 +956,22 @@ export default function Dashboard() {
                 </div>
               </div>
             )}
+
+            {/* Full brief link */}
+            <div style={{ padding: "16px 20px 0", borderBottom: "1px solid var(--border-light)" }}>
+              <a
+                href={`/regions/${selPred.region_id.toLowerCase()}`}
+                style={{
+                  display: "block", width: "100%", padding: "13px 0",
+                  fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em",
+                  textTransform: "uppercase", textAlign: "center",
+                  background: "var(--ink)", color: "var(--parchment)",
+                  textDecoration: "none", marginBottom: 16,
+                }}
+              >
+                Full Intelligence Brief →
+              </a>
+            </div>
 
             {/* Signal matrix compact */}
             <div style={{ padding: "14px 20px 28px" }}>
