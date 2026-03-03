@@ -150,17 +150,6 @@ export default function AboutPage() {
           </a>
         </div>
 
-        {/* Partners */}
-        <div style={{ padding: "64px 0" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Institutional Partners</div>
-          <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Validation &amp; Partnership</h2>
-          <p style={{ ...p, maxWidth: 600 }}>CERES is actively seeking institutional co-validation partners. The following organisations are priority engagement targets.</p>
-          <div style={{ border: "1px dashed var(--border)", padding: 32, textAlign: "center", background: "white" }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Partnership Status — 2026</div>
-            <div style={{ fontSize: 14, color: "var(--ink-light)", fontStyle: "italic" }}>WFP Innovation Accelerator · FAO GIEWS · EU ECHO · USAID FEWS NET · IFPRI<br />Engagement in progress — co-validation partnerships forthcoming.</div>
-          </div>
-        </div>
-
       </div>
       <SiteFooter />
     </div>
