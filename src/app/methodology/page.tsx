@@ -85,10 +85,10 @@ export default function MethodologyPage() {
       </div>
 
       {/* Content grid */}
-      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "200px 1fr", padding: "0 40px", alignItems: "start", boxSizing: "border-box" }}>
+      <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "200px 1fr", padding: "0 40px", boxSizing: "border-box" }}>
 
         {/* TOC */}
-        <nav className="methodology-toc" style={{ position: "sticky", top: 64, padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
+        <nav className="methodology-toc" style={{ position: "sticky", top: 64, alignSelf: "start", padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 16 }}>Contents</div>
           {TOC.map(({ id, label }) => (
             <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }} style={{
