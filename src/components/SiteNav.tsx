@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const LINKS = [
   { href: "/",             label: "Dashboard"    },
@@ -21,6 +21,11 @@ const LINKS = [
 export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }: { ctaHref?: string; ctaLabel?: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   return (
     <>

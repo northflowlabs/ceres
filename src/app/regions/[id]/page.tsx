@@ -233,7 +233,7 @@ export default function RegionPage() {
       <SiteNav />
 
       {/* ── Page header ───────────────────────────────────────────── */}
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "48px 40px 40px", maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+      <div className="page-header region-detail-header" style={{ borderBottom: "1px solid var(--border)", padding: "48px 40px 40px", maxWidth: 1100, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 14, display: "flex", alignItems: "center", gap: 10 }}>
           <Link href="/" style={{ color: "var(--ink-light)", textDecoration: "none" }}>Dashboard</Link>
           <span style={{ color: "var(--border)" }}>›</span>
@@ -259,10 +259,10 @@ export default function RegionPage() {
       </div>
 
       {/* ── Body ─────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "40px 40px 80px", display: "flex", flexDirection: "column", gap: 36 }}>
+      <div className="region-detail-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "40px 40px 80px", display: "flex", flexDirection: "column", gap: 36, boxSizing: "border-box" }}>
 
         {/* ── Stat strip ───────────────────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
+        <div className="region-stat-strip" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           <StatBox label="P(IPC 4+) 90d"   value={pct(pred.p_ipc4plus_90d)}    accent={color} />
           <StatBox label="P(Famine) 90d"    value={pct(pred.p_famine_90d)}      sub="IPC Phase 5" accent={pred.p_famine_90d > 0.15 ? color : undefined} />
           <StatBox label="IPC Phase Forecast" value={`Phase ${pred.ipc_phase_forecast}`} sub={IPC_LABELS[pred.ipc_phase_forecast]} accent={pred.ipc_phase_forecast >= 3 ? color : undefined} />
@@ -351,7 +351,7 @@ export default function RegionPage() {
                 const css = a.composite_stress_score;
                 const aColor = css >= 0.5 ? "#C0392B" : css >= 0.35 ? "#D97706" : "#78716C";
                 return (
-                  <div key={a.admin1_id} style={{ display: "grid", gridTemplateColumns: "180px 1fr 60px", gap: 12, alignItems: "center" }}>
+                  <div key={a.admin1_id} className="admin1-row" style={{ display: "grid", gridTemplateColumns: "180px 1fr 60px", gap: 12, alignItems: "center" }}>
                     <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{a.admin1_name}</div>
                     <div style={{ height: 8, background: "var(--border-light)", borderRadius: 4 }}>
                       <div style={{ height: "100%", width: `${Math.min(100, css * 100)}%`, background: aColor, borderRadius: 4 }} />

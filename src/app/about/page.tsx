@@ -4,10 +4,10 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
 const ADAPTERS = [
-  { color: "var(--watch)",   name: "MARVIS — Maritime",       desc: "Maritime AI Validation & Intelligence System · EIC proposal" },
-  { color: "var(--watch)",   name: "GAIA — Climate",          desc: "Earth systems intelligence · Active" },
-  { color: "var(--warning)", name: "ORION — Conflict",        desc: "Conflict reconstruction intelligence · Ukraine focus · Active" },
-  { color: "var(--watch)",   name: "Medical / Biotech",       desc: "Arrhythmia & drug discovery · EIC proposal" },
+  { color: "var(--watch)",   name: "GAIA — Astrophysics",        desc: "Space research intelligence · ESO, ESA, academic journals · Operational" },
+  { color: "var(--warning)", name: "ORION — Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus · Active" },
+  { color: "var(--watch)",   name: "OFW — Deforestation",        desc: "forestwatch.northflow.no · EU DG ENV, NGOs, investigative journalists · Live" },
+  { color: "var(--watch)",   name: "MARVIS — Maritime",          desc: "Maritime AI Validation & Intelligence System · In development" },
   { color: "var(--earth)",   name: "CERES — Famine Intelligence", desc: "This system · HGE Adapter #5 · Live" },
 ];
 

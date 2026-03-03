@@ -437,7 +437,13 @@
       padding: 32px 0 48px 0 !important;
     }
     .methodology-layout {
+      grid-template-columns: 1fr !important;
       padding: 0 16px 60px !important;
+    }
+    .methodology-toc { display: none !important; }
+    .methodology-article {
+      padding: 32px 0 60px 0 !important;
+      min-width: 0 !important;
     }
     /* ── Endpoint header: wrap path + desc ──────────────────────── */
     .endpoint-header {
@@ -473,11 +479,6 @@
       grid-template-columns: 1fr 1fr !important;
     }
 
-    /* ── Methodology layout ──────────────────────────────────────── */
-    .methodology-layout {
-      grid-template-columns: 1fr !important;
-    }
-    .methodology-toc { display: none !important; }
 
     /* ── Generic inner-page padding normalization ────────────────── */
     .inner-page-header {
@@ -576,15 +577,27 @@
       grid-template-columns: 1fr !important;
     }
 
+    /* ── Region detail page ─────────────────────────────────── */
+    .region-detail-header {
+      padding: 32px 16px 24px !important;
+    }
+    .region-detail-body {
+      padding: 24px 16px 60px !important;
+    }
+    .region-stat-strip {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .admin1-row {
+      grid-template-columns: 120px 1fr 48px !important;
+      gap: 8px !important;
+    }
+
     /* ── Region intelligence page ───────────────────────────── */
     .region-two-col {
       grid-template-columns: 1fr !important;
     }
 
     /* ── Methodology article ─────────────────────────────────── */
-    .methodology-article {
-      padding: 32px 0 60px 0 !important;
-    }
     .methodology-tiers-grid {
       grid-template-columns: 1fr !important;
     }
