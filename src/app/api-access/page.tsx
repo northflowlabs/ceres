@@ -500,7 +500,7 @@ export default function ApiAccessPage() {
               ))}
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)" }}>
-              Academic and humanitarian organisations may request free access by emailing <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>. All paid subscriptions are billed monthly via Stripe and can be cancelled at any time.
+              All paid subscriptions are billed monthly via Stripe and can be cancelled at any time. Questions? Email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>.
             </p>
           </section>
 
