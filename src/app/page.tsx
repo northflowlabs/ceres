@@ -310,7 +310,7 @@ export default function Dashboard() {
           <button className={`mobile-tab${mobileTab === "regions" ? " active" : ""}`} onClick={() => setMobileTab("regions")}>
             Regions {predictions.length > 0 ? `(${predictions.length})` : ""}
           </button>
-          <button className={`mobile-tab${mobileTab === "detail" ? " active" : ""}`} onClick={() => setMobileTab("detail")}>
+          <button className={`mobile-tab${mobileTab === "detail" ? " active" : ""}`} onClick={() => { setMobileTab("detail"); setSheetOpen(true); }}>
             {selPred ? selPred.region_name : "Detail"}
           </button>
         </div>
@@ -876,6 +876,22 @@ export default function Dashboard() {
       </div>
 
       {/* ── MOBILE BOTTOM SHEET ──────────────────────────────────────── */}
+      {sheetOpen && !selPred && (
+        <div onClick={() => setSheetOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(28,25,23,0.5)" }}>
+          <div onClick={e => e.stopPropagation()} style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "var(--parchment)", borderTop: "2px solid var(--ink)", borderRadius: "12px 12px 0 0", padding: "20px 20px 40px" }}>
+            <div style={{ width: 36, height: 4, background: "var(--border)", borderRadius: 2, margin: "0 auto 20px" }} />
+            <div style={{ textAlign: "center", padding: "20px 0" }}>
+              <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>No Region Selected</div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", lineHeight: 1.7 }}>
+                Tap a region card in the list to view its intelligence detail.
+              </div>
+              <button onClick={() => { setSheetOpen(false); setMobileTab("regions"); }} style={{ marginTop: 20, fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", padding: "12px 28px", background: "var(--ink)", color: "var(--parchment)", border: "none", cursor: "pointer" }}>
+                Back to Regions
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {sheetOpen && selPred && (
         <div
           onClick={() => setSheetOpen(false)}
