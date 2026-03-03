@@ -330,7 +330,7 @@ export default function TrackerPage() {
                     <div key={r.region} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 4 ? "1px solid var(--border-light)" : "none" }}>
                       <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{r.region}</div>
                       <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", fontWeight: 600 }}>{r.prob}</div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--warning)", padding: "2px 8px", border: "1px solid rgba(217,119,6,0.3)", background: "#FFFBEB" }}>⟳ {r.horizon}</div>
+                      <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--warning)", padding: "2px 8px", border: "1px solid rgba(217,119,6,0.3)", background: "#FFFBEB" }}>Grading: {r.horizon}</div>
                     </div>
                   ))}
                 </div>

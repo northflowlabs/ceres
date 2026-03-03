@@ -394,20 +394,18 @@ export default function RegionPage() {
             {
               title: "FEWS NET Comparison",
               desc: "Side-by-side view of CERES forecast vs. current FEWS NET classification. Highlights where CERES diverges from the consensus — early warning of emerging disagreements.",
-              icon: "⚖",
             },
             {
               title: "IPC Assessment Countdown",
               desc: "Days until the next scheduled IPC Cadre Harmonisé or IPC acute food insecurity assessment for this region. Live verification of CERES predictions at each new release.",
-              icon: "📅",
             },
-          ].map(({ title, desc, icon }) => (
+          ].map(({ title, desc }) => (
             <div key={title} style={{ background: "white", border: "1px dashed var(--border)", padding: "24px 28px", opacity: 0.8 }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>
                 Coming Soon
               </div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 15, fontWeight: 600, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-                <span>{icon}</span> {title}
+              <div style={{ fontFamily: "var(--display)", fontSize: 15, fontWeight: 600, marginBottom: 10 }}>
+                {title}
               </div>
               <p style={{ fontSize: 13, color: "var(--ink-light)", lineHeight: 1.7, margin: 0 }}>{desc}</p>
             </div>
@@ -416,7 +414,7 @@ export default function RegionPage() {
 
         {/* ── Methodology note ─────────────────────────────────── */}
         <div style={{ padding: "20px 28px", background: "var(--parchment)", border: "1px solid var(--border-light)", display: "flex", gap: 16, alignItems: "flex-start" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 20, lineHeight: 1, color: "var(--earth)", flexShrink: 0 }}>ℹ</div>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 20, lineHeight: 1, color: "var(--earth)", flexShrink: 0 }}>i</div>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 6 }}>Methodology</div>
             <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: 0 }}>

@@ -104,7 +104,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "model",
     title: "Three-tier alert classification — TIER-1, TIER-2, TIER-3",
-    body: "TIER-1: P(IPC Phase 3+) ≥ 0.70 — high probability of crisis-level hunger within 90 days. Triggers immediate email alert to all subscribers. TIER-2: P ≥ 0.50 — elevated risk, weekly digest inclusion. TIER-3: P ≥ 0.30 — watch status, monthly newsletter. Thresholds set to balance precision (84%) and recall (91%) for Tier I across back-validation dataset.",
+    body: "TIER-1: P(IPC Phase 3+) > 90% — IPC Phase 4–5 probable within 90 days. Triggers immediate email alert to all subscribers. TIER-2: P 70–90% — IPC Phase 3 likely, enhanced monitoring indicated. TIER-3: P 50–70% — elevated risk, watch status, monthly newsletter. Thresholds set to balance precision (84%) and recall (91%) for Tier I across back-validation dataset.",
   },
 ];
 
