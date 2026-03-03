@@ -432,8 +432,10 @@ export default function RegionPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 6 }}>Methodology</div>
             <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: 0 }}>
-              Forecasts are generated weekly by the CERES pipeline (HGE Adapter #5) using a composite weighted logistic model
-              calibrated against historical IPC transitions in Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021).
+              Forecasts are generated weekly by the CERES pipeline using a composite weighted logistic model. Current scores reflect
+              live data ingested from CHIRPS, ACLED, MODIS NDVI, IPC, WFP VAM, FAO GIEWS, and FEWS NET. Model coefficients were
+              calibrated against verified famine transitions in Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021)
+              — these are the historical ground-truth events used to set probability thresholds, not the data vintage.
               Probabilities represent the likelihood of escalation to IPC Phase 3 or above within 90 days from the reference date.
               &nbsp;<Link href="/methodology" style={{ color: "var(--earth)", textDecoration: "none" }}>Full methodology →</Link>
             </p>
