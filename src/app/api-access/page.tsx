@@ -543,7 +543,7 @@ export default function ApiAccessPage() {
             <p style={pStyle}>
               CERES delivers intelligence through three channels depending on your tier:
             </p>
-            <div className="alerts-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
+            <div className="alerts-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
               {[
                 {
                   label: "Monthly Newsletter",
@@ -595,47 +595,34 @@ export default function ApiAccessPage() {
 
           <section id="hdx" style={section}>
             <div style={sectionLabel}>&sect; 4 &mdash; Open Data</div>
-            <h2 style={h2Style}>Free Data Downloads — Humanitarian Data Exchange</h2>
+            <h2 style={h2Style}>Open Data — Forthcoming HDX Publication</h2>
             <p style={pStyle}>
-              CERES prediction archives are published openly on the{" "}
-              <a href="https://data.humdata.org/dataset/ceres-famine-early-warning" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>
+              CERES prediction archives will be published openly on the{" "}
+              <a href="https://data.humdata.org" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>
                 OCHA Humanitarian Data Exchange (HDX)
               </a>{" "}
-              under ODbL licence. No API key required — download directly as HXL-tagged CSV.
+              under ODbL licence as HXL-tagged CSV. Publication is planned for mid-2026 once the validation baseline is finalised.
             </p>
-            <div className="hdx-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, margin: "24px 0" }}>
-              {[
-                {
-                  label: "All Weekly Runs",
-                  desc: "Full archive — one row per region per weekly pipeline run. HXL-tagged.",
-                  href: "https://ceres-core-production.up.railway.app/v1/export/hdx",
-                  badge: "CSV · HXL",
-                },
-                {
-                  label: "Latest Snapshot",
-                  desc: "Most recent prediction per region only. One row per monitored country.",
-                  href: "https://ceres-core-production.up.railway.app/v1/export/hdx?latest=true",
-                  badge: "CSV · HXL",
-                },
-              ].map(({ label, desc, href, badge }) => (
-                <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-                  <div style={{
-                    border: "1px solid var(--border)", background: "white", padding: "20px 24px",
-                    transition: "border-color 0.15s", cursor: "pointer",
-                  }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-                      <span style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, color: "var(--ink)" }}>{label}</span>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "2px 8px", color: "var(--ink-light)" }}>{badge}</span>
+            <div style={{ border: "1px dashed var(--border)", background: "white", padding: "24px 28px", margin: "24px 0" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Planned datasets</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {[
+                  { label: "All Weekly Runs", desc: "Full archive — one row per region per weekly pipeline run. HXL-tagged." },
+                  { label: "Latest Snapshot", desc: "Most recent prediction per region only. One row per monitored country." },
+                ].map(({ label, desc }) => (
+                  <div key={label} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", flexShrink: 0, marginTop: 2 }}>—</span>
+                    <div>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 11, fontWeight: 600, color: "var(--ink)" }}>{label}</span>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}> — {desc}</span>
                     </div>
-                    <p style={{ fontSize: 13, color: "var(--ink-light)", margin: 0, lineHeight: 1.6 }}>{desc}</p>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", marginTop: 12 }}>↓ Download →</div>
                   </div>
-                </a>
-              ))}
+                ))}
+              </div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginTop: 16, fontStyle: "italic" }}>
+                In the meantime, raw CSV export is available via the API endpoints below for authenticated Tier B/C users.
+              </div>
             </div>
-            <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.7 }}>
-              Column 2 of every CSV file contains HXL hashtags (e.g. <code style={{ fontFamily: "var(--mono)", background: "var(--parchment-dark)", padding: "1px 4px" }}>#indicator+value+prob+ipc3plus+90d</code>) for machine-readable humanitarian interoperability. Compatible with all HDX-aware tools.
-            </p>
           </section>
 
           <section id="base" style={section}>
