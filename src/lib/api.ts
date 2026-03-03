@@ -21,6 +21,12 @@ export interface Prediction {
   n_signals_flagged: number;
   flagged_sources: string;
   composite_stress_score: number;
+  drought_stress: number;
+  vegetation_stress: number;
+  conflict_stress: number;
+  food_access_stress: number;
+  ipc_stress: number;
+  price_stress: number;
   driver_types: string[];
   hypothesis_id: string;
   generated_at: string;

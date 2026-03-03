@@ -220,12 +220,26 @@ export default function RegionPage() {
   const drivers = hyp?.driver_clusters ?? [];
   const sortedAdmin1 = [...admin1].sort((a, b) => b.composite_stress_score - a.composite_stress_score);
 
-  // Build driver intensity map from clusters or driver_types
+  // Build driver intensity map from clusters, or fall back to actual stress scores from pred
   const driverIntensity: Record<string, number> = {};
   if (drivers.length > 0) {
     drivers.forEach(d => { driverIntensity[d.driver_type] = d.intensity; });
   } else {
-    (pred.driver_types ?? []).forEach(dt => { driverIntensity[dt] = 0.5; });
+    // Use real stress scores from the prediction object
+    const stressMap: Record<string, number | undefined> = {
+      CLIMATE:  pred.drought_stress,
+      CONFLICT: pred.conflict_stress,
+      ECONOMIC: pred.price_stress,
+      FOOD:     pred.food_access_stress,
+      IPC:      pred.ipc_stress,
+    };
+    for (const [key, val] of Object.entries(stressMap)) {
+      if (val != null && val > 0) driverIntensity[key] = val;
+    }
+    // If no stress scores on pred, fall back to driver_types at a meaningful level
+    if (Object.keys(driverIntensity).length === 0) {
+      (pred.driver_types ?? []).forEach(dt => { driverIntensity[dt] = 0.5; });
+    }
   }
 
   return (
