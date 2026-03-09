@@ -1,0 +1,88 @@
+record_id,iso3,country_name,season,reference_date,reference_ipc_phase,followon_date,followon_ipc_phase,transition_outcome,all_six_sources_available,notes
+1,SOM,Somalia,2011-S1,2011-01-15,3,2011-07-20,5,deterioration,TRUE,Back-validation case; declared famine July 2011
+2,SOM,Somalia,2011-S2,2011-07-20,5,2011-12-01,3,improvement,TRUE,Post-famine recovery
+3,SOM,Somalia,2016-S1,2016-02-01,3,2016-07-15,3,stable,TRUE,
+4,SOM,Somalia,2017-S1,2017-01-10,3,2017-06-30,4,deterioration,TRUE,
+5,SOM,Somalia,2022-S1,2022-03-01,4,2022-09-01,3,improvement,TRUE,Improved Gu rains 2022
+6,SSD,South Sudan,2016-S1,2016-07-01,4,2016-12-15,3,improvement,TRUE,Partial stabilisation late 2016
+7,SSD,South Sudan,2017-S1,2017-01-15,4,2017-06-30,5,deterioration,TRUE,Back-validation case; famine declared Feb 2017
+8,SSD,South Sudan,2017-S2,2017-07-01,4,2017-12-15,3,improvement,TRUE,
+9,SSD,South Sudan,2019-S1,2019-02-01,3,2019-07-15,3,stable,TRUE,
+10,SSD,South Sudan,2021-S1,2021-03-01,4,2021-09-01,3,improvement,TRUE,Dry season stabilisation
+11,YEM,Yemen,2018-S1,2018-01-01,4,2018-07-01,4,stable,TRUE,
+12,YEM,Yemen,2019-S1,2019-01-15,4,2019-07-20,3,improvement,TRUE,Temporary ceasefire Hudaydah
+13,YEM,Yemen,2020-S1,2020-02-01,4,2020-08-01,3,improvement,TRUE,COVID-period reduced assessment
+14,YEM,Yemen,2021-S1,2021-03-01,4,2021-09-01,4,stable,TRUE,Back-validation case; protracted Phase 4+
+15,YEM,Yemen,2022-S1,2022-02-01,4,2022-08-01,4,stable,TRUE,
+16,YEM,Yemen,2023-S1,2023-01-15,4,2023-07-15,3,improvement,TRUE,Saudi-Yemen de-escalation 2023
+17,ETH,Ethiopia,2021-S1,2021-06-01,3,2021-11-15,4,deterioration,TRUE,Tigray conflict escalation
+18,ETH,Ethiopia,2022-S1,2022-01-01,4,2022-07-01,4,stable,TRUE,Back-validation case; Tigray Phase 4-5
+19,ETH,Ethiopia,2022-S2,2022-07-01,4,2022-12-15,3,improvement,TRUE,Cessation of hostilities Nov 2022
+20,ETH,Ethiopia,2023-S1,2023-02-01,3,2023-08-01,3,stable,TRUE,
+21,BFA,Burkina Faso,2019-S1,2019-06-01,3,2019-11-15,3,stable,TRUE,
+22,BFA,Burkina Faso,2020-S1,2020-03-01,3,2020-09-01,3,stable,TRUE,
+23,BFA,Burkina Faso,2021-S1,2021-03-01,3,2021-09-01,4,deterioration,TRUE,
+24,BFA,Burkina Faso,2022-S1,2022-02-01,4,2022-08-01,3,improvement,TRUE,Seasonal harvest partial recovery
+25,BFA,Burkina Faso,2023-S1,2023-02-01,4,2023-08-01,4,stable,TRUE,
+26,MLI,Mali,2015-S1,2015-06-01,3,2015-11-15,3,stable,TRUE,
+27,MLI,Mali,2018-S1,2018-06-01,3,2018-11-15,3,stable,TRUE,
+28,MLI,Mali,2021-S1,2021-06-01,3,2021-11-15,4,deterioration,TRUE,
+29,MLI,Mali,2022-S1,2022-06-01,4,2022-11-15,3,improvement,TRUE,Harvest season improvement
+30,NER,Niger,2015-S1,2015-05-01,3,2015-10-01,3,stable,TRUE,
+31,NER,Niger,2022-S1,2022-04-01,3,2022-10-01,3,stable,TRUE,
+32,NER,Niger,2023-S1,2023-04-01,3,2023-10-01,4,deterioration,TRUE,Post-coup humanitarian deterioration
+33,TCD,Chad,2021-S1,2021-03-01,3,2021-09-01,3,stable,TRUE,
+34,TCD,Chad,2022-S1,2022-03-01,3,2022-09-01,3,stable,TRUE,
+35,CAF,Central African Republic,2020-S1,2020-05-01,3,2020-10-15,3,stable,TRUE,
+36,CAF,Central African Republic,2021-S1,2021-05-01,3,2021-11-01,3,stable,TRUE,
+37,COD,DR Congo,2017-S1,2017-01-01,3,2017-07-01,3,stable,TRUE,
+38,COD,DR Congo,2019-S1,2019-03-01,3,2019-09-01,3,stable,TRUE,
+39,COD,DR Congo,2020-S1,2020-03-01,3,2020-09-01,3,stable,TRUE,
+40,COD,DR Congo,2021-S1,2021-03-01,3,2021-09-01,3,stable,TRUE,
+41,COD,DR Congo,2022-S1,2022-03-01,3,2022-09-01,3,stable,TRUE,
+42,ZWE,Zimbabwe,2019-S1,2019-09-01,3,2020-01-15,3,stable,TRUE,
+43,ZWE,Zimbabwe,2020-S1,2020-09-01,3,2021-01-15,3,stable,TRUE,
+44,ZWE,Zimbabwe,2021-S1,2021-09-01,3,2022-01-15,3,stable,TRUE,
+45,MOZ,Mozambique,2019-S1,2019-06-01,3,2019-12-01,3,stable,TRUE,Cyclone Idai aftermath
+46,MOZ,Mozambique,2021-S1,2021-06-01,3,2021-12-01,3,stable,TRUE,
+47,SDN,Sudan,2021-S1,2021-04-01,3,2021-10-01,3,stable,TRUE,
+48,SDN,Sudan,2022-S1,2022-04-01,3,2022-10-01,3,stable,TRUE,
+49,SDN,Sudan,2023-S1,2023-04-01,4,2023-10-01,4,stable,TRUE,Post-April conflict outbreak
+50,AFG,Afghanistan,2021-S1,2021-07-01,3,2021-12-01,4,deterioration,TRUE,Taliban takeover Aug 2021
+51,AFG,Afghanistan,2022-S1,2022-01-01,4,2022-07-01,3,improvement,TRUE,Partial aid delivery 2022
+52,AFG,Afghanistan,2023-S1,2023-01-01,4,2023-07-01,3,improvement,TRUE,
+53,SYR,Syria,2018-S1,2018-01-01,3,2018-07-01,3,stable,TRUE,
+54,SYR,Syria,2020-S1,2020-01-01,3,2020-07-01,3,stable,TRUE,
+55,SYR,Syria,2022-S1,2022-01-01,3,2022-07-01,3,stable,TRUE,
+56,IRQ,Iraq,2015-S1,2015-01-01,3,2015-07-01,3,stable,TRUE,ISIS-controlled territory
+57,GTM,Guatemala,2016-S1,2016-07-01,3,2016-12-15,3,stable,TRUE,Dry corridor
+58,GTM,Guatemala,2019-S1,2019-07-01,3,2019-12-15,3,stable,TRUE,
+59,HTI,Haiti,2019-S1,2019-09-01,3,2020-02-15,3,stable,TRUE,
+60,HTI,Haiti,2021-S1,2021-09-01,3,2022-03-01,4,deterioration,TRUE,Gang violence escalation
+61,HTI,Haiti,2022-S1,2022-09-01,4,2023-03-01,3,improvement,TRUE,Gang-controlled area partial access
+62,HND,Honduras,2016-S1,2016-07-01,3,2016-12-01,3,stable,TRUE,Dry corridor
+63,NIC,Nicaragua,2016-S1,2016-07-01,3,2016-12-01,3,stable,TRUE,
+64,KEN,Kenya,2016-S1,2016-10-01,3,2017-04-01,3,stable,TRUE,Drought
+65,KEN,Kenya,2022-S1,2022-04-01,3,2022-10-01,4,deterioration,TRUE,Severe drought Horn of Africa
+66,KEN,Kenya,2023-S1,2023-04-01,3,2023-10-01,3,improvement,TRUE,El Niño rains
+67,UGA,Uganda,2016-S1,2016-06-01,3,2016-12-01,3,stable,TRUE,Karamoja region
+68,UGA,Uganda,2021-S1,2021-06-01,3,2021-12-01,3,stable,TRUE,
+69,TZA,Tanzania,2016-S1,2016-04-01,3,2016-10-01,3,stable,TRUE,
+70,MDG,Madagascar,2020-S1,2020-10-01,3,2021-04-01,4,deterioration,TRUE,Grand Sud drought
+71,MDG,Madagascar,2021-S1,2021-10-01,4,2022-04-01,3,improvement,TRUE,
+72,ERI,Eritrea,2015-S1,2015-06-01,3,2015-12-01,3,stable,TRUE,
+73,ERI,Eritrea,2018-S1,2018-06-01,3,2018-12-01,3,stable,TRUE,
+74,DJI,Djibouti,2022-S1,2022-06-01,3,2022-12-01,3,stable,TRUE,Drought Horn of Africa
+75,SOM,Somalia,2023-S1,2023-01-01,4,2023-07-01,3,improvement,TRUE,Gu rains 2023
+76,SSD,South Sudan,2022-S1,2022-04-01,4,2022-10-01,4,stable,TRUE,Floods
+77,SSD,South Sudan,2023-S1,2023-04-01,4,2023-10-01,3,improvement,TRUE,Dry season partial stabilisation
+78,CAF,Central African Republic,2023-S1,2023-05-01,3,2023-11-01,3,stable,TRUE,
+79,GNB,Guinea-Bissau,2015-S1,2015-07-01,3,2015-12-01,3,stable,TRUE,
+80,SEN,Senegal,2015-S1,2015-07-01,3,2015-12-01,3,stable,TRUE,
+81,MRT,Mauritania,2022-S1,2022-06-01,3,2022-11-01,3,stable,TRUE,
+82,GMB,Gambia,2015-S1,2015-07-01,3,2015-12-01,3,stable,TRUE,
+83,ETH,Ethiopia,2015-S1,2015-06-01,3,2015-12-01,3,stable,TRUE,El Niño drought
+84,KEN,Kenya,2017-S1,2017-03-01,3,2017-09-01,3,stable,TRUE,Drought
+85,SDN,Sudan,2017-S1,2017-04-01,3,2017-10-01,3,stable,TRUE,
+86,NGA,Nigeria,2016-S1,2016-06-01,3,2016-12-01,3,stable,TRUE,Northeast — Boko Haram
+87,NGA,Nigeria,2022-S1,2022-06-01,3,2022-12-01,3,stable,TRUE,Northwest displacement
