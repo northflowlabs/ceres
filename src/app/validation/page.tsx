@@ -6,10 +6,10 @@ import SiteFooter from "@/components/SiteFooter";
 import { api, GradeRecord, AggregateMetrics } from "@/lib/api";
 
 const STATIC_METRICS = [
-  { val: "0.087", label: "Brier Score",        target: "Target <0.10", pass: true },
-  { val: "91.2%", label: "CI Coverage (90%)",  target: "Target >88%",  pass: true },
-  { val: "0.84",  label: "Tier-I Precision",   target: "Target >0.80", pass: true },
-  { val: "0.91",  label: "Tier-I Recall",      target: "Target >0.85", pass: true },
+  { val: "Pending", label: "Brier Score",        target: "< 0.10",  pass: false, pending: true },
+  { val: "Pending", label: "CI Coverage (90%)",  target: "> 88%",   pass: false, pending: true },
+  { val: "Pending", label: "Tier-I Precision",   target: "> 80%",   pass: false, pending: true },
+  { val: "Pending", label: "Tier-I Recall",      target: "> 85%",   pass: false, pending: true },
 ];
 
 // ── Calibration bins computed from live grade records ─────────────────────────
@@ -89,13 +89,23 @@ const STATIC_CAL_BINS = [
 ];
 
 const STATIC_BREAKDOWN = [
-  { label: "Total observations",     val: "847 region-months"    },
-  { label: "Countries validated",    val: "6"                    },
-  { label: "Time period",            val: "2022–2025"            },
-  { label: "Famine events covered",  val: "3"                    },
-  { label: "IPC Phase 3+ events",    val: "312"                  },
-  { label: "Tier-I alerts issued",   val: "371"                  },
-  { label: "Bootstrap replications", val: "2,000 per prediction" },
+  { label: "IPC transition records",    val: "87 country-seasons"       },
+  { label: "Countries represented",     val: "31"                       },
+  { label: "Time period",               val: "2011–2023"                },
+  { label: "Phase 4–5 events",          val: "18"                       },
+  { label: "Back-validation cases",     val: "4 (data-complete only)"   },
+  { label: "Perturbation draws",        val: "n=2,000 per prediction"   },
+  { label: "Interval type",             val: "Input-perturbation 90%"   },
+];
+
+const PRE_REGISTERED_PROTOCOL = [
+  { metric: "Brier Score",                   definition: "Mean (P̂₃ − O₃)²",                         minN: "100 predictions",   target: "Jun 2026" },
+  { metric: "Brier Skill Score",             definition: "1 − BS / BS_climatology",                  minN: "100 predictions",   target: "Jun 2026" },
+  { metric: "TIER-1 Precision",              definition: "True TIER-1 / all TIER-1 issued",           minN: "30 TIER-1 alerts",  target: "Sep 2026" },
+  { metric: "TIER-1 Recall",                 definition: "True TIER-1 / all Phase 4+ events",         minN: "10 Phase 4+ events",target: "Sep 2026" },
+  { metric: "Sensitivity interval coverage",definition: "Fraction outcomes in 90% interval",         minN: "200 predictions",   target: "Sep 2026" },
+  { metric: "CRPS (ordered categorical)",    definition: "Full distribution vs IPC phase",            minN: "500 predictions",   target: "Mar 2027" },
+  { metric: "Reliability diagram",           definition: "Forecast prob. vs empirical frequency",    minN: "500 predictions",   target: "Mar 2027" },
 ];
 
 export default function ValidationPage() {
@@ -133,11 +143,11 @@ export default function ValidationPage() {
   const regionRows = hasLive ? computeRegionStats(grades) : [];
   const runningBS  = hasLive ? computeRunningBrier(grades): [];
   const liveMetricCards = metrics && metrics.n_graded > 0 ? [
-    { val: fmt(metrics.brier_score),        label: "Brier Score",      target: "< 0.10", pass: (metrics.brier_score ?? 1) < 0.10 },
-    { val: fmtPct(metrics.ci_coverage),     label: "CI Coverage (90%)",target: "> 88%",  pass: (metrics.ci_coverage ?? 0) > 0.88 },
-    { val: fmtPct(metrics.tier1_precision), label: "Tier-I Precision", target: "> 80%",  pass: (metrics.tier1_precision ?? 0) > 0.80 },
-    { val: fmtPct(metrics.tier1_recall),    label: "Tier-I Recall",    target: "> 85%",  pass: (metrics.tier1_recall ?? 0) > 0.85 },
-  ] : STATIC_METRICS.map(m => ({ ...m, target: m.target.replace("Target ", "") }));
+    { val: fmt(metrics.brier_score),        label: "Brier Score",      target: "< 0.10", pass: (metrics.brier_score ?? 1) < 0.10,        pending: false },
+    { val: fmtPct(metrics.ci_coverage),     label: "CI Coverage (90%)",target: "> 88%",  pass: (metrics.ci_coverage ?? 0) > 0.88,        pending: false },
+    { val: fmtPct(metrics.tier1_precision), label: "Tier-I Precision", target: "> 80%",  pass: (metrics.tier1_precision ?? 0) > 0.80,    pending: false },
+    { val: fmtPct(metrics.tier1_recall),    label: "Tier-I Recall",    target: "> 85%",  pass: (metrics.tier1_recall ?? 0) > 0.85,       pending: false },
+  ] : STATIC_METRICS;
 
   const th = { fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--parchment)", background: "var(--ink)", padding: "10px 12px", textAlign: "left" as const, fontWeight: 500 };
   const td = (even: boolean) => ({ padding: "10px 12px", borderBottom: "1px solid var(--border-light)", color: "var(--ink-mid)", verticalAlign: "middle" as const, background: even ? "white" : "transparent" });
@@ -171,12 +181,16 @@ export default function ValidationPage() {
           }
         </div>
         <div className="validation-metrics-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "10px 0 0" }}>
-          {liveMetricCards.map(({ val, label, target, pass }) => (
+          {liveMetricCards.map(({ val, label, target, pass, pending }) => (
             <div key={label} style={{ background: "white", padding: 24 }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 36, fontWeight: 700, color: "var(--earth)", lineHeight: 1, marginBottom: 4 }}>{val}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 36, fontWeight: 700, color: pending ? "var(--ink-light)" : "var(--earth)", lineHeight: 1, marginBottom: 4 }}>{val}</div>
               <div style={{ fontSize: 12, color: "var(--ink-light)" }}>
-                Target {target} <span style={{ color: pass ? "var(--watch)" : "var(--crisis)", fontWeight: 500 }}>{pass ? "✓ Met" : "✗ Missed"}</span>
+                Target {target}{" "}
+                {pending
+                  ? <span style={{ color: "var(--warning)", fontWeight: 500 }}>⏳ Grading from Jun 2026</span>
+                  : <span style={{ color: pass ? "var(--watch)" : "var(--crisis)", fontWeight: 500 }}>{pass ? "✓ Met" : "✗ Missed"}</span>
+                }
               </div>
             </div>
           ))}
@@ -442,6 +456,48 @@ export default function ValidationPage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Pre-registered calibration protocol */}
+        <div style={{ margin: "48px 0 0", paddingTop: 40, borderTop: "1px solid var(--border-light)" }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>Pre-Registered Calibration Protocol</div>
+          <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>What We Commit to Measuring</h2>
+          <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 24, lineHeight: 1.75, maxWidth: 720 }}>
+            Table 1 from the CERES preprint. These metrics were pre-registered before any prospective outcome data was collected. No metrics will be selectively reported — all graded predictions remain permanently visible. Minimum sample sizes are fixed; targets cannot be revised retroactively.
+          </p>
+          <div style={{ border: "1px solid var(--border)", overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr>
+                  {["Metric", "Definition", "Min. N", "Target date", "Status"].map(h => (
+                    <th key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "10px 14px", textAlign: "left", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {PRE_REGISTERED_PROTOCOL.map((row, i) => {
+                  const live = metrics && metrics.n_graded > 0;
+                  return (
+                    <tr key={row.metric} style={{ borderBottom: "1px solid var(--border-light)", background: i % 2 === 0 ? "white" : "transparent" }}>
+                      <td style={{ padding: "10px 14px", fontWeight: 600, color: "var(--ink)", whiteSpace: "nowrap" }}>{row.metric}</td>
+                      <td style={{ padding: "10px 14px", color: "var(--ink-mid)", fontFamily: "var(--mono)", fontSize: 11 }}>{row.definition}</td>
+                      <td style={{ padding: "10px 14px", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", whiteSpace: "nowrap" }}>{row.minN}</td>
+                      <td style={{ padding: "10px 14px", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", whiteSpace: "nowrap" }}>{row.target}</td>
+                      <td style={{ padding: "10px 14px", whiteSpace: "nowrap" }}>
+                        {live
+                          ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--watch)", background: "#F0FDF4", border: "1px solid rgba(46,125,50,0.2)", padding: "2px 8px" }}>● Accumulating</span>
+                          : <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--warning)", background: "#FFFBEB", border: "1px solid rgba(217,119,6,0.2)", padding: "2px 8px" }}>⏳ Pending</span>
+                        }
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 12 }}>
+            Pre-registered in Pedersen (2026), Table 1. Protocol locked prior to accumulation of prospective outcome data.
+          </p>
         </div>
 
         {/* Commitment */}
