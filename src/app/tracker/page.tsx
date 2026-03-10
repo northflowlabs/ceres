@@ -90,7 +90,7 @@ export default function TrackerPage() {
   const [selRegion,     setSelRegion]     = useState<string | null>(null);
   const [history,       setHistory]       = useState<RegionSnapshot[]>([]);
   const [histLoading,   setHistLoading]   = useState(false);
-  const [archiveTab,    setArchiveTab]    = useState<"timeline" | "verification">("timeline");
+  const [archiveTab,    setArchiveTab]    = useState<"timeline" | "verification" | "pending">("timeline");
   const [miniHistory,   setMiniHistory]   = useState<Record<string, RegionSnapshot[]>>({});
 
   useEffect(() => {
@@ -130,6 +130,18 @@ export default function TrackerPage() {
     ? (grades.reduce((s, g) => s + g.brier_score, 0) / grades.length).toFixed(4)
     : null;
 
+  // Pending predictions: latest snapshot per region, horizon = run_date + 90d
+  const today = new Date();
+  const pendingPredictions = latest
+    .map(s => {
+      const runDate = new Date(s.run_date);
+      const horizonDate = new Date(runDate.getTime() + 90 * 24 * 60 * 60 * 1000);
+      const daysUntil = Math.ceil((horizonDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      return { ...s, horizonDate, daysUntil };
+    })
+    .filter(s => s.daysUntil > 0)
+    .sort((a, b) => b.p_ipc3plus_90d - a.p_ipc3plus_90d);
+
   const selSnap = latest.find(s => s.region_id === selRegion);
   const sortedHistory = [...history].sort((a, b) => a.run_date.localeCompare(b.run_date));
 
@@ -155,9 +167,9 @@ export default function TrackerPage() {
         {archiveStats && (
           <div className="tracker-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 40px" }}>
             {[
-              { val: String(archiveStats.total_runs),      label: "Weekly Runs",    note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Archiving active" },
-              { val: String(archiveStats.total_regions),   label: "Regions Tracked", note: "Monitored globally"  },
-              { val: String(archiveStats.total_snapshots), label: "Snapshots",       note: "Region × run records" },
+              { val: String(archiveStats.total_runs),      label: "Weekly Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Archiving active" },
+              { val: String(archiveStats.total_regions),   label: "Regions Tracked",   note: "Monitored globally"  },
+              { val: String(pendingPredictions.length),    label: "Pending Grading",   note: "Awaiting T+90 outcome" },
               { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "—", label: "Verified Hit Rate", note: grades.length > 0 ? `${grades.length} graded` : "Grading from May 2026" },
             ].map(({ val, label, note }) => (
               <div key={label} style={{ background: "white", padding: 24 }}>
@@ -171,7 +183,7 @@ export default function TrackerPage() {
 
         {/* Tabs */}
         <div style={{ display: "flex", borderBottom: "2px solid var(--ink)", marginBottom: 32 }}>
-          {([["timeline", "Risk Timeline"], ["verification", "Verified Outcomes"]] as const).map(([t, label]) => (
+          {([ ["timeline", "Risk Timeline"], ["pending", `Pending (${pendingPredictions.length})`], ["verification", "Verified Outcomes"] ] as const).map(([t, label]) => (
             <button key={t} onClick={() => setArchiveTab(t)} style={{
               fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
               padding: "10px 24px", background: "none", border: "none", cursor: "pointer",
@@ -315,24 +327,21 @@ export default function TrackerPage() {
                 <div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What this section will show</div>
                   <h2 style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, marginBottom: 16, lineHeight: 1.3 }}>The permanent record of what CERES predicted — and whether it was right</h2>
-                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Starting May–June 2026, when the first predictions reach their T+90 horizon, this section auto-populates with IPC-verified outcomes.</p>
+                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>When the first predictions reach their T+90 horizon, this section auto-populates with IPC-verified outcomes.</p>
                   <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Misses are as visible as hits. No curation, no removal.</p>
                 </div>
                 <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>First predictions pending grading</div>
-                  {[
-                    { region: "Sudan",       tier: "TIER-1", prob: "96.6%", horizon: "29 May 2026" },
-                    { region: "Somalia",     tier: "TIER-1", prob: "96.2%", horizon: "29 May 2026" },
-                    { region: "Yemen",       tier: "TIER-1", prob: "95.2%", horizon: "29 May 2026" },
-                    { region: "Ethiopia",    tier: "TIER-1", prob: "92.0%", horizon: "29 May 2026" },
-                    { region: "South Sudan", tier: "TIER-1", prob: "91.8%", horizon: "29 May 2026" },
-                  ].map((r, i) => (
-                    <div key={r.region} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 4 ? "1px solid var(--border-light)" : "none" }}>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{r.region}</div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", fontWeight: 600 }}>{r.prob}</div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--warning)", padding: "2px 8px", border: "1px solid rgba(217,119,6,0.3)", background: "#FFFBEB" }}>Grading: {r.horizon}</div>
-                    </div>
-                  ))}
+                  {pendingPredictions.slice(0, 5).map((r, i) => {
+                    const h = r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+                    return (
+                      <div key={r.region_id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 4 ? "1px solid var(--border-light)" : "none" }}>
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{r.region_name}</div>
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: tierColor(r.alert_tier), fontWeight: 600 }}>{fmtPct(r.p_ipc3plus_90d)}</div>
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--warning)", padding: "2px 8px", border: "1px solid rgba(217,119,6,0.3)", background: "#FFFBEB" }}>Grading: {h}</div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -396,6 +405,56 @@ export default function TrackerPage() {
               </div>
             </>
           )
+        )}
+
+        {/* ── TAB: Pending ────────────────────────────────────────── */}
+        {archiveTab === "pending" && (
+          <div>
+            <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.7, maxWidth: 680 }}>
+              Every prediction below was issued publicly before the outcome is known. Each carries a hard 90-day horizon date — the date on which the grading module will query IPC Phase data and record the outcome automatically.
+            </p>
+            <div style={{ border: "1px solid var(--border)", overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr>
+                    {["Region", "Issued", "Hypothesis ID", "P(IPC3+)", "Tier", "Horizon date", "Days remaining"].map(h => (
+                      <th key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "10px 14px", textAlign: h === "Region" ? "left" : "right", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingPredictions.length === 0 ? (
+                    <tr><td colSpan={7} style={{ padding: "32px 14px", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>No pending predictions — run the weekly pipeline first.</td></tr>
+                  ) : pendingPredictions.map(r => {
+                    const urgency = r.daysUntil <= 14 ? "var(--crisis)" : r.daysUntil <= 30 ? "var(--warning)" : "var(--ink-light)";
+                    return (
+                      <tr key={r.hypothesis_id} style={{ borderBottom: "1px solid var(--border-light)", background: r.alert_tier === "TIER-1" ? "rgba(192,57,43,0.02)" : "white" }}>
+                        <td style={{ padding: "10px 14px" }}>
+                          <span style={{ fontWeight: 600, color: "var(--ink)" }}>{r.region_name}</span>
+                          <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginLeft: 6 }}>{r.region_id}</span>
+                        </td>
+                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-mid)" }}>{fmtDate(r.run_date)}</td>
+                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{r.hypothesis_id.slice(-13)}</td>
+                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 11, fontWeight: 700, color: tierColor(r.alert_tier) }}>{fmtPct(r.p_ipc3plus_90d)}</td>
+                        <td style={{ padding: "10px 14px", textAlign: "right" }}>
+                          <span style={{ fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, color: tierColor(r.alert_tier), background: tierBg(r.alert_tier), padding: "2px 8px" }}>{r.alert_tier}</span>
+                        </td>
+                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-mid)" }}>
+                          {r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        </td>
+                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 11, fontWeight: 700, color: urgency }}>
+                          {r.daysUntil}d
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 16 }}>
+              Grading is fully automated — no human intervention. At T+90 the system queries IPC Global Platform for the latest published phase and records the Brier score and tier outcome. Results appear in the Verified Outcomes tab.
+            </p>
+          </div>
         )}
 
         {/* Commitment block */}
