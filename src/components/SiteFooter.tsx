@@ -20,8 +20,8 @@ export default function SiteFooter() {
       <div className="footer-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 40 }}>
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>CERES</div>
-          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Calibrated Early-warning &amp; Risk Evaluation System</p>
-          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Ingests satellite, conflict, and market data across 8 open sources to produce calibrated 90-day IPC Phase 3+ probability forecasts with bootstrap confidence intervals. Built on the HGE inference engine. Free for humanitarian and academic use.</p>
+          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Calibrated Early-warning and Risk Estimation System</p>
+          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Automated probabilistic forecasting system for acute food insecurity. Generates 90-day ahead probability estimates of IPC Phase 3+, 4+, and 5 conditions for 43 high-risk countries, updated weekly. Fuses six data streams — CHIRPS, MODIS NDVI, ACLED, IPC, WFP VAM, and FAO/WFP — through a logistic scoring model with parametric input-perturbation intervals (n=2,000 draws). Free for humanitarian and academic use.</p>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Open Humanitarian Intelligence<br />Northflow Technologies · 2026</p>
         </div>
         <div>

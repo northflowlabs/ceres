@@ -8,14 +8,14 @@ const ADAPTERS = [
   { color: "var(--warning)", name: "ORION — Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus · Active" },
   { color: "var(--watch)",   name: "OFW — Deforestation",        desc: "forestwatch.northflow.no · EU DG ENV, NGOs, investigative journalists · Live" },
   { color: "var(--watch)",   name: "MARVIS — Maritime",          desc: "Maritime AI Validation & Intelligence System · In development" },
-  { color: "var(--earth)",   name: "CERES — Famine Intelligence", desc: "This system · HGE Adapter #5 · Live" },
+  { color: "var(--earth)",   name: "CERES — Famine Early Warning", desc: "This system · Probabilistic · 43 countries · Live" },
 ];
 
 const STATS = [
   { num: "90d",   label: "Forecast Horizon",        note: "vs. 30–45 days for existing EWS" },
   { num: "847",   label: "Validation Observations",  note: "Region-months, 2022–2025, 6 countries" },
   { num: "0.087", label: "Brier Score",              note: "Target <0.10 — all 4 metrics met" },
-  { num: "8",     label: "Data Sources",             note: "CHIRPS · MODIS · ACLED · IPC · FEWS NET · WFP VAM · FAO · UNHCR" },
+  { num: "6",     label: "Data Streams",              note: "CHIRPS · MODIS NDVI · ACLED · IPC · WFP VAM · FAO/WFP" },
 ];
 
 const p = { fontSize: 15, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.85 } as const;
@@ -34,7 +34,7 @@ export default function AboutPage() {
           </div>
           <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 24 }}>Built to close the humanitarian lead-time gap</h1>
           <p style={p}>CERES was built because the gap between when a famine becomes predictable and when the humanitarian system acts is measured in lives. Current early warning systems provide 30–45 days of actionable lead time. Pre-positioning food aid, mobilising logistics, and securing emergency funding requires 60–90 days.</p>
-          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises eight data streams into calibrated 90-day famine risk predictions — designed to give the humanitarian system the lead time it currently lacks.</p>
+          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises six data streams into 90-day famine risk predictions — designed to give the humanitarian system the lead time it currently lacks.</p>
           <p style={p}>It is free. It is open. Its methodology is published. Its predictions are timestamped and graded against outcomes. It is built to be scrutinised.</p>
         </div>
         <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>

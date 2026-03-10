@@ -72,7 +72,7 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 700, letterSpacing: "0.06em", lineHeight: 1 }}>CERES</span>
             <span style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.14em", color: "var(--ink-light)", textTransform: "uppercase", marginTop: 3 }}>
-              Famine Intelligence · HGE #5
+              Probabilistic Famine Early Warning
             </span>
           </div>
         </Link>
