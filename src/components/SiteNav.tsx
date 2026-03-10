@@ -18,9 +18,19 @@ const LINKS = [
   { href: "/login",        label: "Sign In"      },
 ];
 
+const MOBILE_BREAKPOINT = 1024;
+
 export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }: { ctaHref?: string; ctaLabel?: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -67,56 +77,61 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
           </div>
         </Link>
 
-        {/* Desktop nav links */}
-        <div className="desktop-nav-links" style={{ display: "flex", alignItems: "center", padding: "0 16px" }}>
-          {LINKS.map(({ href, label }) => {
-            const active = pathname === href || (href !== "/" && pathname.startsWith(href));
-            return (
-              <Link key={href} href={href} style={{
-                fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em",
-                textTransform: "uppercase", textDecoration: "none",
-                color: active ? "var(--earth)" : "var(--ink-light)",
-                padding: "0 14px", height: "100%",
-                display: "flex", alignItems: "center",
-                borderBottom: active ? "2px solid var(--earth)" : "2px solid transparent",
-                marginBottom: -2, transition: "all 0.15s",
-              }}>
-                {label}
-              </Link>
-            );
-          })}
-        </div>
+        {/* Desktop nav links — hidden on mobile */}
+        {!isMobile && (
+          <div style={{ display: "flex", alignItems: "center", padding: "0 16px" }}>
+            {LINKS.map(({ href, label }) => {
+              const active = pathname === href || (href !== "/" && pathname.startsWith(href));
+              return (
+                <Link key={href} href={href} style={{
+                  fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em",
+                  textTransform: "uppercase", textDecoration: "none",
+                  color: active ? "var(--earth)" : "var(--ink-light)",
+                  padding: "0 14px", height: "100%",
+                  display: "flex", alignItems: "center",
+                  borderBottom: active ? "2px solid var(--earth)" : "2px solid transparent",
+                  marginBottom: -2, transition: "all 0.15s",
+                }}>
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
+        )}
 
-        {/* Desktop CTA */}
-        <div className="desktop-cta" style={{
-          marginLeft: "auto", display: "flex", alignItems: "center",
-          paddingLeft: 24, borderLeft: "1px solid var(--border)",
-        }}>
-          <Link href={ctaHref} style={{
-            fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em",
-            textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)",
-            padding: "8px 16px", textDecoration: "none",
+        {/* Desktop CTA — hidden on mobile */}
+        {!isMobile && (
+          <div style={{
+            marginLeft: "auto", display: "flex", alignItems: "center",
+            paddingLeft: 24, borderLeft: "1px solid var(--border)",
           }}>
-            {ctaLabel}
-          </Link>
-        </div>
+            <Link href={ctaHref} style={{
+              fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em",
+              textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)",
+              padding: "8px 16px", textDecoration: "none",
+            }}>
+              {ctaLabel}
+            </Link>
+          </div>
+        )}
 
-        {/* Hamburger button — hidden on desktop */}
-        <button
-          className="hamburger-btn"
-          onClick={() => setOpen(true)}
-          style={{
-            display: "none", marginLeft: "auto",
-            alignItems: "center", justifyContent: "center",
-            background: "none", border: "none", cursor: "pointer",
-            padding: "8px", gap: 5, flexDirection: "column",
-          }}
-          aria-label="Open menu"
-        >
-          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
-          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
-          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
-        </button>
+        {/* Hamburger button — shown on mobile only */}
+        {isMobile && (
+          <button
+            onClick={() => setOpen(true)}
+            style={{
+              display: "flex", marginLeft: "auto",
+              alignItems: "center", justifyContent: "center",
+              background: "none", border: "none", cursor: "pointer",
+              padding: "8px", gap: 5, flexDirection: "column",
+            }}
+            aria-label="Open menu"
+          >
+            <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+          </button>
+        )}
       </nav>
 
       {/* Mobile nav drawer */}
