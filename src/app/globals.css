@@ -73,6 +73,7 @@
     background: var(--parchment);
     color: var(--ink);
     overflow-x: hidden;
+    scroll-padding-top: 72px;
   }
 
   body {
@@ -275,14 +276,6 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 60px 40px;
-  }
-
-  @media (max-width: 1024px) {
-    /* Nav: hide desktop links + show hamburger at tablet/small laptop */
-    .desktop-nav-links { display: none !important; }
-    .desktop-meta      { display: none !important; }
-    .desktop-cta       { display: none !important; }
-    .hamburger-btn     { display: flex !important; }
   }
 
   @media (max-width: 768px) {
@@ -721,5 +714,25 @@
       gap: 8px !important;
       margin-top: 24px !important;
     }
+  }
+}
+
+/* ── Small laptop / tablet breakpoint (outside @layer for reliable cascade) ── */
+@media (max-width: 1024px) {
+  /* Nav: collapse to hamburger */
+  .desktop-nav-links { display: none !important; }
+  .desktop-meta      { display: none !important; }
+  .desktop-cta       { display: none !important; }
+  .hamburger-btn     { display: flex !important; }
+
+  /* Methodology: hide TOC sidebar, go single column */
+  .methodology-toc    { display: none !important; }
+  .methodology-layout {
+    grid-template-columns: 1fr !important;
+    padding: 0 24px !important;
+  }
+  .methodology-article {
+    padding: 40px 0 60px !important;
+    min-width: 0 !important;
   }
 }
