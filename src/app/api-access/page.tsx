@@ -595,34 +595,57 @@ export default function ApiAccessPage() {
 
           <section id="hdx" style={section}>
             <div style={sectionLabel}>&sect; 4 &mdash; Open Data</div>
-            <h2 style={h2Style}>Open Data — Forthcoming HDX Publication</h2>
-            <p style={pStyle}>
-              CERES prediction archives will be published openly on the{" "}
-              <a href="https://data.humdata.org" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>
-                OCHA Humanitarian Data Exchange (HDX)
-              </a>{" "}
-              under ODbL licence as HXL-tagged CSV. Publication is planned for mid-2026 once the validation baseline is finalised.
-            </p>
-            <div style={{ border: "1px dashed var(--border)", background: "white", padding: "24px 28px", margin: "24px 0" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Planned datasets</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {[
-                  { label: "All Weekly Runs", desc: "Full archive — one row per region per weekly pipeline run. HXL-tagged." },
-                  { label: "Latest Snapshot", desc: "Most recent prediction per region only. One row per monitored country." },
-                ].map(({ label, desc }) => (
-                  <div key={label} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                    <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", flexShrink: 0, marginTop: 2 }}>—</span>
-                    <div>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: 11, fontWeight: 600, color: "var(--ink)" }}>{label}</span>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}> — {desc}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginTop: 16, fontStyle: "italic" }}>
-                In the meantime, raw CSV export is available via the API endpoints below for authenticated Tier B/C users.
-              </div>
+            <h2 style={h2Style}>Open Data — HXL-Tagged CSV</h2>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "#F0FDF4", color: "var(--watch)", border: "1px solid rgba(46,125,50,0.3)", padding: "4px 10px", marginBottom: 16 }}>
+              ● Live — No authentication required
             </div>
+            <p style={pStyle}>
+              CERES prediction archives are available as HXL-tagged CSV, free and unauthenticated, for direct use
+              in humanitarian data workflows, HDX pipelines, and academic research. Licensed under{" "}
+              <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>ODbL</a>.
+              Submissions to the{" "}
+              <a href="https://data.humdata.org" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>OCHA Humanitarian Data Exchange (HDX)</a>{" "}
+              are in progress.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
+              {[
+                {
+                  label: "Latest Snapshot",
+                  desc: "One row per monitored region — most recent pipeline run only. Suitable for dashboards and current situational awareness.",
+                  url: `${API_BASE}/v1/export/hdx?latest=true`,
+                  badge: "43 regions",
+                },
+                {
+                  label: "Full Archive",
+                  desc: "All weekly runs since launch — one row per region per run. Suitable for time-series analysis and calibration research.",
+                  url: `${API_BASE}/v1/export/hdx`,
+                  badge: "All runs",
+                },
+              ].map(({ label, desc, url, badge }) => (
+                <div key={label} style={{ background: "white", padding: "20px 24px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                    <div style={{ fontFamily: "var(--display)", fontSize: 15, fontWeight: 700, color: "var(--ink)" }}>{label}</div>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--earth)", border: "1px solid var(--earth)", padding: "2px 7px", opacity: 0.7 }}>{badge}</span>
+                  </div>
+                  <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.65, margin: "0 0 14px" }}>{desc}</p>
+                  <a
+                    href={url}
+                    target="_blank" rel="noopener noreferrer"
+                    style={{ display: "inline-block", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "8px 14px", textDecoration: "none" }}
+                  >
+                    Download CSV ↓
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "0 0 8px" }}>
+              Row 1: column headers · Row 2: HXL hashtags (per{" "}
+              <a href="https://hxlstandard.org" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>HXL Standard</a>
+              ) · Row 3+: data
+            </p>
+            <p style={{ fontSize: 12, color: "var(--ink-light)", margin: 0 }}>
+              Grading ledger (predictions + outcomes): <a href={`${API_BASE}/v1/export/grades/csv`} style={{ color: "var(--earth)", fontFamily: "var(--mono)", fontSize: 11 }}>/v1/export/grades/csv</a>
+            </p>
           </section>
 
           <section id="base" style={section}>

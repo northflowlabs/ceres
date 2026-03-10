@@ -229,6 +229,64 @@ export default function DataPage() {
           </table></div>
         </div>
 
+        {/* Open data downloads */}
+        <div style={{ borderTop: "1px solid var(--border-light)", paddingTop: 48, marginTop: 48 }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Open Data</div>
+          <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>Download CERES Predictions</h2>
+          <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.75, maxWidth: 640 }}>
+            All CERES predictions are freely available as HXL-tagged CSV — no authentication required.
+            Compatible with HDX pipelines, Excel, R, Python, and Tableau.
+            Licensed under <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>ODbL</a>.
+          </p>
+          <div className="data-sources-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 16 }}>
+            {[
+              {
+                label: "Latest Snapshot",
+                sub: "One row per region — current run",
+                desc: "Best for dashboards, situational awareness, and map data integrations.",
+                url: "https://ceres-core-production.up.railway.app/v1/export/hdx?latest=true",
+                tag: "HXL-tagged",
+              },
+              {
+                label: "Full Archive",
+                sub: "All weekly runs since launch",
+                desc: "Best for time-series analysis, trend research, and calibration studies.",
+                url: "https://ceres-core-production.up.railway.app/v1/export/hdx",
+                tag: "HXL-tagged",
+              },
+              {
+                label: "Grading Ledger",
+                sub: "Predictions + IPC outcomes",
+                desc: "All predictions that have reached T+90, with actual IPC phase and Brier scores.",
+                url: "https://ceres-core-production.up.railway.app/v1/export/grades/csv",
+                tag: "CSV",
+              },
+            ].map(({ label, sub, desc, url, tag }) => (
+              <div key={label} style={{ background: "white", padding: 24 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                  <div>
+                    <div style={{ fontFamily: "var(--display)", fontSize: 15, fontWeight: 700, color: "var(--ink)", marginBottom: 2 }}>{label}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.06em" }}>{sub}</div>
+                  </div>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--watch)", border: "1px solid rgba(46,125,50,0.3)", padding: "2px 7px", flexShrink: 0 }}>{tag}</span>
+                </div>
+                <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.65, margin: "10px 0 16px" }}>{desc}</p>
+                <a
+                  href={url}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display: "inline-block", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "8px 14px", textDecoration: "none" }}
+                >
+                  Download ↓
+                </a>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 12, color: "var(--ink-light)" }}>
+            HXL format: Row 1 = column headers · Row 2 = HXL hashtags · Row 3+ = data.
+            {" "}<a href="/api-access#hdx" style={{ color: "var(--earth)" }}>Full API documentation →</a>
+          </p>
+        </div>
+
         {/* Data principles */}
         <div className="data-principles-grid" style={{ margin: "48px 0 0", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           {[
