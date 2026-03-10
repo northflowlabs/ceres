@@ -38,6 +38,7 @@ export default function Dashboard() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [mobileTab, setMobileTab] = useState<"regions" | "detail">("regions");
   const [isMobile, setIsMobile] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [admin1Data, setAdmin1Data] = useState<Admin1Signal[]>([]);
@@ -47,7 +48,10 @@ export default function Dashboard() {
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 1024);
+    const check = () => {
+      setIsMobile(window.innerWidth <= 1280);
+      setIsCompact(window.innerWidth <= 1440);
+    };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -155,8 +159,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Meta — hidden on mobile */}
-        {!isMobile && <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexWrap: "wrap" }}>
+        {/* Meta — hidden on compact/mobile */}
+        {!isCompact && <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexShrink: 1, overflow: "hidden" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
             {lastUpdated ? `LAST UPDATED: ${formatDate(lastUpdated).toUpperCase()}` : "LOADING…"} · 90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
           </span>
