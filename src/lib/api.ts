@@ -113,6 +113,30 @@ export interface Admin1Signal {
   reference_date: string;
 }
 
+export interface Admin2Prediction {
+  admin2_id: string;
+  admin1_id: string;
+  country_id: string;
+  admin2_name: string;
+  centroid_lat: number;
+  centroid_lon: number;
+  ipc_weight: number;
+  alert_tier: string;
+  p_ipc3plus_90d: number;
+  p_ipc4plus_90d: number;
+  composite_stress_score: number;
+  drought_stress: number;
+  vegetation_stress: number;
+  conflict_stress: number;
+  food_access_stress: number;
+  ipc_stress: number;
+  price_stress: number;
+  n_signals_available: number;
+  from_admin1_fallback: boolean;
+  from_country_fallback: boolean;
+  reference_date: string;
+}
+
 export interface GradeRecord {
   hypothesis_id:    string;
   run_id:           string;
@@ -217,4 +241,7 @@ export const api = {
   archiveLatest:  ()                        => apiFetch<RegionSnapshot[]>("/v1/archive/latest"),
   archiveRuns:    ()                        => apiFetch<string[]>("/v1/archive/runs"),
   archiveStats:   ()                        => apiFetch<ArchiveStats>("/v1/archive/stats"),
+  admin2Predictions: (countryId?: string, tier?: string) => apiFetch<Admin2Prediction[]>(`/v1/admin2/predictions${countryId ? `?country_id=${countryId}` : ""}${tier ? `${countryId ? "&" : "?"}tier=${tier}` : ""}`),
+  admin2Country:  (countryId: string)       => apiFetch<Admin2Prediction[]>(`/v1/admin2/${countryId}`),
+  admin2Countries: ()                       => apiFetch<string[]>("/v1/admin2/countries"),
 };
