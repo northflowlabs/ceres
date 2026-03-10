@@ -47,7 +47,7 @@ export default function Dashboard() {
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => setIsMobile(window.innerWidth <= 1024);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -155,8 +155,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Meta */}
-        <div className="desktop-meta" style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexWrap: "wrap" }}>
+        {/* Meta — hidden on mobile */}
+        {!isMobile && <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexWrap: "wrap" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
             {lastUpdated ? `LAST UPDATED: ${formatDate(lastUpdated).toUpperCase()}` : "LOADING…"} · 90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
           </span>
@@ -177,10 +177,10 @@ export default function Dashboard() {
               {n1} REGION{n1 > 1 ? "S" : ""} AT CRITICAL RISK
             </div>
           )}
-        </div>
+        </div>}
 
-        {/* Nav links */}
-        <div className="desktop-nav-links" style={{ display: "flex", alignItems: "center", padding: "0 16px", borderRight: "1px solid var(--border)" }}>
+        {/* Nav links — hidden on mobile */}
+        {!isMobile && <div style={{ display: "flex", alignItems: "center", padding: "0 16px", borderRight: "1px solid var(--border)" }}>
           {([
             { href: "/",            label: "Dashboard"    },
             { href: "/methodology", label: "Methodology"  },
@@ -199,10 +199,10 @@ export default function Dashboard() {
               marginBottom: -2, transition: "all 0.15s",
             }}>{label}</Link>
           ))}
-        </div>
+        </div>}
 
-        {/* Pipeline status — hidden on mobile, hamburger takes its place */}
-        <div className="desktop-meta" style={{
+        {/* Pipeline status — hidden on mobile */}
+        {!isMobile && <div style={{
           display: "flex", alignItems: "center", gap: 8,
           padding: "0 0 0 24px",
           marginLeft: "auto",
@@ -225,23 +225,24 @@ export default function Dashboard() {
           >
             {loading ? "…" : "REFRESH"}
           </button>
-        </div>
+        </div>}
         {/* Hamburger — mobile only */}
-        <button
-          className="hamburger-btn"
-          onClick={() => setMenuOpen(true)}
-          style={{
-            display: "none", marginLeft: "auto",
-            alignItems: "center", justifyContent: "center",
-            background: "none", border: "none", cursor: "pointer",
-            padding: "12px 8px", gap: 5, flexDirection: "column",
-          }}
-          aria-label="Open menu"
-        >
-          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
-          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
-          <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
-        </button>
+        {isMobile && (
+          <button
+            onClick={() => setMenuOpen(true)}
+            style={{
+              display: "flex", marginLeft: "auto",
+              alignItems: "center", justifyContent: "center",
+              background: "none", border: "none", cursor: "pointer",
+              padding: "12px 8px", gap: 5, flexDirection: "column",
+            }}
+            aria-label="Open menu"
+          >
+            <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "var(--ink)" }} />
+          </button>
+        )}
       </header>
 
       {/* ── MOBILE NAV DRAWER ────────────────────────────────────────── */}
