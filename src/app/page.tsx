@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [mobileTab, setMobileTab] = useState<"regions" | "detail">("regions");
   const [isMobile, setIsMobile] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
+  const [isTinyMobile, setIsTinyMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [admin1Data, setAdmin1Data] = useState<Admin1Signal[]>([]);
@@ -51,6 +52,7 @@ export default function Dashboard() {
     const check = () => {
       setIsMobile(window.innerWidth <= 1280);
       setIsCompact(window.innerWidth <= 1440);
+      setIsTinyMobile(window.innerWidth < 768);
     };
     check();
     window.addEventListener("resize", check);
@@ -450,7 +452,7 @@ export default function Dashboard() {
 
         {/* ── MAP ──────────────────────────────────────────────────── */}
         <main className="dashboard-panel-map" style={{ position: "relative", background: "var(--map-bg)", overflow: "hidden" }}>
-          {!isMobile && (
+          {!isTinyMobile && (
             <LeafletRiskMap
               predictions={predictions}
               selected={selPred}
