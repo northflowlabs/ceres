@@ -24,6 +24,30 @@ const COUNTRY_NAMES: Record<string, string> = {
   ERI: "Eritrea",        DJI: "Djibouti",
 };
 
+interface Admin2Prediction {
+  admin2_id: string;
+  admin1_id: string;
+  country_id: string;
+  admin2_name: string;
+  centroid_lat: number;
+  centroid_lon: number;
+  ipc_weight: number;
+  alert_tier: string;
+  p_ipc3plus_90d: number;
+  p_ipc4plus_90d: number;
+  composite_stress_score: number;
+  drought_stress: number;
+  vegetation_stress: number;
+  conflict_stress: number;
+  food_access_stress: number;
+  ipc_stress: number;
+  price_stress: number;
+  n_signals_available: number;
+  from_admin1_fallback: boolean;
+  from_country_fallback: boolean;
+  reference_date: string;
+}
+
 interface Admin1Prediction {
   admin1_id: string;
   country_id: string;
@@ -97,9 +121,18 @@ function MiniBar({ value }: { value: number }) {
 }
 
 export default function SubnationalPage() {
+  const [resolution, setResolution] = useState<"admin1" | "admin2">("admin1");
+
+  // ── Admin1 state ───────────────────────────────────────────────
   const [rows, setRows] = useState<Admin1Prediction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // ── Admin2 state ───────────────────────────────────────────────
+  const [a2rows, setA2rows] = useState<Admin2Prediction[]>([]);
+  const [a2loading, setA2loading] = useState(false);
+  const [a2error, setA2error] = useState<string | null>(null);
+
   const [sortBy, setSortBy] = useState<SortKey>("p_ipc3plus_90d");
   const [sortDesc, setSortDesc] = useState(true);
   const [filterCountry, setFilterCountry] = useState("ALL");
@@ -115,25 +148,51 @@ export default function SubnationalPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (resolution !== "admin2" || a2rows.length > 0) return;
+    setA2loading(true);
+    fetch(`${API_BASE}/v1/admin2/predictions?limit=500`)
+      .then(r => r.json())
+      .then(data => setA2rows(Array.isArray(data) ? data : []))
+      .catch(e => setA2error(e.message))
+      .finally(() => setA2loading(false));
+  }, [resolution]);
+
+  const activeRows = resolution === "admin1" ? rows : a2rows;
+  const activeLoading = resolution === "admin1" ? loading : a2loading;
+  const activeError = resolution === "admin1" ? error : a2error;
+
   const countries = useMemo(() =>
-    Array.from(new Set(rows.map(r => r.country_id))).sort(),
-    [rows]
+    Array.from(new Set(activeRows.map(r => r.country_id))).sort(),
+    [activeRows]
   );
 
   const filtered = useMemo(() => {
-    let r = rows;
+    let r = activeRows as (Admin1Prediction | Admin2Prediction)[];
     if (filterCountry !== "ALL") r = r.filter(x => x.country_id === filterCountry);
     if (filterTier !== "ALL") r = r.filter(x => x.alert_tier === filterTier);
     if (search.trim()) {
       const q = search.toLowerCase();
-      r = r.filter(x => x.admin1_name.toLowerCase().includes(q) || x.country_id.toLowerCase().includes(q) || (COUNTRY_NAMES[x.country_id] ?? "").toLowerCase().includes(q));
+      r = r.filter(x => {
+        const name = resolution === "admin1" ? (x as Admin1Prediction).admin1_name : (x as Admin2Prediction).admin2_name;
+        return name.toLowerCase().includes(q) || x.country_id.toLowerCase().includes(q) || (COUNTRY_NAMES[x.country_id] ?? "").toLowerCase().includes(q);
+      });
     }
-    return [...r].sort((a, b) => sortDesc ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy]);
-  }, [rows, filterCountry, filterTier, search, sortBy, sortDesc]);
+    const getVal = (x: Admin1Prediction | Admin2Prediction): number => {
+      if (sortBy === "p_ipc3plus_90d")         return x.p_ipc3plus_90d;
+      if (sortBy === "composite_stress_score") return x.composite_stress_score;
+      if (sortBy === "conflict_stress")        return x.conflict_stress;
+      if (sortBy === "drought_stress")         return x.drought_stress;
+      if (sortBy === "food_access_stress")     return x.food_access_stress;
+      if (sortBy === "ipc_stress")             return x.ipc_stress;
+      return 0;
+    };
+    return [...r].sort((a, b) => sortDesc ? getVal(b) - getVal(a) : getVal(a) - getVal(b));
+  }, [activeRows, filterCountry, filterTier, search, sortBy, sortDesc, resolution]);
 
-  const tier1Count = rows.filter(r => r.alert_tier === "TIER-1").length;
-  const tier2Count = rows.filter(r => r.alert_tier === "TIER-2").length;
-  const nCountries = new Set(rows.map(r => r.country_id)).size;
+  const tier1Count = activeRows.filter(r => r.alert_tier === "TIER-1").length;
+  const tier2Count = activeRows.filter(r => r.alert_tier === "TIER-2").length;
+  const nCountries = new Set(activeRows.map(r => r.country_id)).size;
 
   function toggleSort(key: SortKey) {
     if (sortBy === key) setSortDesc(d => !d);
@@ -156,14 +215,32 @@ export default function SubnationalPage() {
       <div className="page-header subnational-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1300, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
-          Admin1 Sub-national Resolution · 43 Countries
+          Sub-national Resolution · {resolution === "admin1" ? "Admin1 · Province / State" : "Admin2 · District / County"}
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
           Sub-national Risk Intelligence
         </h1>
         <p style={{ fontSize: 16, color: "var(--ink-mid)", maxWidth: 720, lineHeight: 1.7, fontWeight: 300 }}>
-          Probabilistic 90-day IPC Phase 3+ forecasts disaggregated to Admin1 (province / state / region) level across {loading ? "—" : rows.length} administrative units in {loading ? "—" : nCountries} countries. Same logistic scoring model as country-level predictions.
+          {resolution === "admin1"
+            ? <>Probabilistic 90-day IPC Phase 3+ forecasts disaggregated to Admin1 (province / state / region) level across {activeLoading ? "—" : activeRows.length} units in {activeLoading ? "—" : nCountries} countries.</>
+            : <>District-level disaggregation for the top 10 crisis countries across {activeLoading ? "—" : activeRows.length} Admin2 units. Signals inherited from parent Admin1 where district-level grid data is sparse.</>
+          }
         </p>
+        {/* Resolution tabs */}
+        <div style={{ display: "flex", gap: 0, marginTop: 28, borderBottom: "2px solid var(--ink)" }}>
+          {(["admin1", "Admin1 · Province / State (43 countries)"] as const).concat().length > 0 && (
+            ["admin1", "Admin2"].map((res, i) => (
+              <button key={res} onClick={() => { setResolution(res as "admin1" | "admin2"); setFilterCountry("ALL"); setSearch(""); }} style={{
+                fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
+                padding: "10px 24px", background: "none", border: "none", cursor: "pointer",
+                borderBottom: resolution === res ? "2px solid var(--earth)" : "2px solid transparent",
+                marginBottom: -2, color: resolution === res ? "var(--earth)" : "var(--ink-light)",
+              }}>
+                {i === 0 ? `Admin1 · Province (${loading ? "…" : rows.length})` : `Admin2 · District (${a2loading ? "…" : a2rows.length || "10 countries"})`}
+              </button>
+            ))
+          )}
+        </div>
         <div style={{ display: "flex", gap: 40, marginTop: 32, flexWrap: "wrap" }}>
           {[
             { num: loading ? "—" : rows.length,    label: "Admin1 Units",          color: "var(--ink)"     },
@@ -205,9 +282,9 @@ export default function SubnationalPage() {
           </div>
         </div>
 
-        {error && (
+        {activeError && (
           <div style={{ padding: "16px 20px", background: "#FEF2F2", border: "1px solid rgba(192,57,43,0.2)", color: "var(--crisis)", fontFamily: "var(--mono)", fontSize: 11, marginBottom: 24 }}>
-            {error}
+            {activeError}
           </div>
         )}
 
@@ -238,7 +315,7 @@ export default function SubnationalPage() {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
+              {activeLoading ? (
                 Array.from({ length: 14 }).map((_, i) => (
                   <tr key={i}>
                     {Array.from({ length: 9 }).map((_, j) => (
@@ -251,16 +328,24 @@ export default function SubnationalPage() {
               ) : filtered.map((a) => {
                 const tier = a.alert_tier;
                 const borderLeft = tier === "TIER-1" ? "3px solid var(--crisis)" : tier === "TIER-2" ? "3px solid var(--warning)" : "3px solid transparent";
+                const a1 = a as Admin1Prediction;
+                const a2 = a as Admin2Prediction;
+                const unitName = resolution === "admin1" ? a1.admin1_name : a2.admin2_name;
+                const unitKey  = resolution === "admin1" ? a1.admin1_id  : a2.admin2_id;
+                const isFallback = resolution === "admin1" ? a1.from_country_fallback : (a2.from_admin1_fallback || a2.from_country_fallback);
                 return (
-                  <tr key={a.admin1_id} style={{ background: tierBg(tier), borderBottom: "1px solid var(--border-light)", borderLeft }}>
+                  <tr key={unitKey} style={{ background: tierBg(tier), borderBottom: "1px solid var(--border-light)", borderLeft }}>
                     <td style={{ padding: "10px 14px" }}>
                       <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", letterSpacing: "0.06em" }}>{a.country_id}</span>
                       <div style={{ fontSize: 11, color: "var(--ink-light)" }}>{COUNTRY_NAMES[a.country_id] ?? a.country_id}</div>
                     </td>
                     <td style={{ padding: "10px 14px" }}>
-                      <span style={{ fontWeight: 600, color: "var(--ink)" }}>{a.admin1_name}</span>
-                      {a.from_country_fallback && (
-                        <span title="Estimated from country-level fallback" style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", marginLeft: 6, border: "1px solid var(--border-light)", padding: "1px 4px" }}>est.</span>
+                      <span style={{ fontWeight: 600, color: "var(--ink)" }}>{unitName}</span>
+                      {resolution === "admin2" && (
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 1 }}>{a2.admin1_id}</div>
+                      )}
+                      {isFallback && (
+                        <span title="Estimated from parent-level fallback" style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", marginLeft: 6, border: "1px solid var(--border-light)", padding: "1px 4px" }}>est.</span>
                       )}
                     </td>
                     <td style={{ padding: "10px 14px", textAlign: "right" }}>
