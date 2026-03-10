@@ -61,7 +61,7 @@ export default function MethodologyPage() {
           if (el) { el.style.color = "var(--earth)"; el.style.borderLeftColor = "var(--earth)"; }
         }
       });
-    }, { rootMargin: "-20% 0px -70% 0px" });
+    }, { rootMargin: "-10% 0px -60% 0px", threshold: 0.05 });
     sections.forEach((s) => obs.observe(s));
     return () => obs.disconnect();
   }, []);

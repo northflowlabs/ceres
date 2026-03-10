@@ -293,7 +293,7 @@ export default function ApiAccessPage() {
           if (el) { el.style.color = "var(--earth)"; el.style.borderLeftColor = "var(--earth)"; }
         }
       });
-    }, { rootMargin: "-20% 0px -70% 0px" });
+    }, { rootMargin: "-10% 0px -60% 0px", threshold: 0.05 });
     sections.forEach((s) => obs.observe(s));
     return () => obs.disconnect();
   }, []);
@@ -796,10 +796,10 @@ export default function ApiAccessPage() {
             <p style={pStyle}>All use of CERES data — whether in publications, dashboards, or operational systems — requires attribution to Northflow Technologies and CERES.</p>
             <Code>
               <Cm># Required attribution string{"\n"}</Cm>
-              <Str>"Source: CERES (Calibrated Early-warning & Risk Evaluation System),{"\n"} Northflow Technologies, 2026. ceres.northflow.no"</Str>
+              <Str>"Source: CERES (Calibrated Early-warning and Risk Estimation System),{"\n"} Northflow Technologies, 2026. ceres.northflow.no"</Str>
               {"\n\n"}
               <Cm># For academic publications, also cite the methodology pre-print{"\n"}</Cm>
-              <Str>"Northflow Technologies (2026). CERES: Calibrated Early-warning &{"\n"} Risk Evaluation System. arXiv:2026.XXXXX"</Str>
+              <Str>"Northflow Technologies (2026). CERES: Calibrated Early-warning and{"\n"} Risk Estimation System. arXiv:2026.XXXXX"</Str>
             </Code>
             <p style={{ ...pStyle, marginTop: 16 }}>
               CERES predictions are provided under a Creative Commons Attribution 4.0 International licence (CC BY 4.0). Commercial use requires a Tier B or C agreement.
