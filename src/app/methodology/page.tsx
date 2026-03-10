@@ -49,21 +49,29 @@ export default function MethodologyPage() {
   const articleRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const sections = document.querySelectorAll<HTMLElement>("section[id]");
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          Object.values(tocRefs.current).forEach((el) => {
-            if (el) el.style.color = "var(--ink-light)";
-            if (el) el.style.borderLeftColor = "transparent";
-          });
-          const el = tocRefs.current[e.target.id];
-          if (el) { el.style.color = "var(--earth)"; el.style.borderLeftColor = "var(--earth)"; }
-        }
+    const ids = TOC.map(t => t.id);
+    function setActive(id: string) {
+      ids.forEach(sid => {
+        const el = tocRefs.current[sid];
+        if (!el) return;
+        const active = sid === id;
+        el.style.color = active ? "var(--earth)" : "var(--ink-light)";
+        el.style.borderLeftColor = active ? "var(--earth)" : "transparent";
       });
-    }, { rootMargin: "-10% 0px -60% 0px", threshold: 0.05 });
-    sections.forEach((s) => obs.observe(s));
-    return () => obs.disconnect();
+    }
+    function onScroll() {
+      const offset = 80;
+      let activeId = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= offset) activeId = id;
+      }
+      setActive(activeId);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const s = { fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.85 } as const;
