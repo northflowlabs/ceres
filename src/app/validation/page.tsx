@@ -279,6 +279,74 @@ export default function ValidationPage() {
             }
           </p>
 
+          {/* Reliability Diagram — SVG scatter with perfect-calibration diagonal */}
+          <div style={{ border: "1px solid var(--border)", background: "white", padding: 24, marginBottom: 32 }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>Reliability Diagram — Predicted vs. Observed Probability</div>
+            <div style={{ fontSize: 12, color: "var(--ink-light)", marginBottom: 16 }}>Perfect calibration lies on the diagonal. Points above = underconfident; points below = overconfident.</div>
+            <svg viewBox="0 0 320 260" style={{ width: "100%", maxWidth: 480, display: "block" }} aria-label="Reliability diagram">
+              {/* Grid */}
+              {[0,20,40,60,80,100].map(v => (
+                <g key={v}>
+                  <line x1={40 + v*2.4} y1={20} x2={40 + v*2.4} y2={220} stroke="var(--border-light)" strokeWidth="1" />
+                  <line x1={40} y1={220 - v*2} x2={280} y2={220 - v*2} stroke="var(--border-light)" strokeWidth="1" />
+                  <text x={40 + v*2.4} y={236} textAnchor="middle" style={{ fontFamily: "var(--mono)", fontSize: 9, fill: "var(--ink-light)" }}>{v}%</text>
+                  <text x={32} y={224 - v*2} textAnchor="end" dominantBaseline="middle" style={{ fontFamily: "var(--mono)", fontSize: 9, fill: "var(--ink-light)" }}>{v}%</text>
+                </g>
+              ))}
+              {/* Axis labels */}
+              <text x={160} y={252} textAnchor="middle" style={{ fontFamily: "var(--mono)", fontSize: 10, fill: "var(--ink-light)" }}>Predicted Probability</text>
+              <text x={10} y={120} textAnchor="middle" style={{ fontFamily: "var(--mono)", fontSize: 10, fill: "var(--ink-light)", writingMode: "vertical-rl", transform: "rotate(180deg)", transformOrigin: "10px 120px" }}>Observed Frequency</text>
+              {/* Perfect calibration diagonal */}
+              <line x1={40} y1={220} x2={280} y2={20} stroke="var(--border)" strokeWidth="1.5" strokeDasharray="4 3" />
+              <text x={245} y={34} style={{ fontFamily: "var(--mono)", fontSize: 9, fill: "var(--ink-light)" }}>Perfect</text>
+              {/* Calibration band ±10% */}
+              <polygon
+                points={`40,240 40,200 280,40 280,0`}
+                fill="var(--earth)" fillOpacity="0.06"
+              />
+              {/* Data points from calBins */}
+              {calBins.map(({ label, ideal, actual }) => {
+                if (actual === null) return null;
+                const cx = 40 + ideal * 2.4;
+                const cy = 220 - actual * 2;
+                const isWell = Math.abs(actual - ideal) <= 10;
+                return (
+                  <g key={label}>
+                    <line x1={cx} y1={220 - (ideal - 10) * 2} x2={cx} y2={220 - (ideal + 10) * 2} stroke="var(--earth)" strokeWidth="1" strokeOpacity="0.4" />
+                    <circle cx={cx} cy={cy} r={6} fill={isWell ? "var(--earth)" : "var(--crisis)"} fillOpacity="0.85" stroke="white" strokeWidth="1.5" />
+                    <text x={cx + 8} y={cy + 4} style={{ fontFamily: "var(--mono)", fontSize: 9, fill: "var(--ink)" }}>{actual}%</text>
+                  </g>
+                );
+              })}
+              {/* Static fallback points when no live data */}
+              {!hasLive && STATIC_CAL_BINS.map(({ label, ideal, actual }) => {
+                const cx = 40 + ideal * 2.4;
+                const cy = 220 - actual * 2;
+                const isWell = Math.abs(actual - ideal) <= 10;
+                return (
+                  <g key={label}>
+                    <circle cx={cx} cy={cy} r={6} fill={isWell ? "var(--earth)" : "var(--crisis)"} fillOpacity="0.85" stroke="white" strokeWidth="1.5" />
+                    <text x={cx + 8} y={cy + 4} style={{ fontFamily: "var(--mono)", fontSize: 9, fill: "var(--ink)" }}>{actual}%</text>
+                  </g>
+                );
+              })}
+              {/* Axes */}
+              <line x1={40} y1={20} x2={40} y2={220} stroke="var(--ink)" strokeWidth="1.5" />
+              <line x1={40} y1={220} x2={280} y2={220} stroke="var(--ink)" strokeWidth="1.5" />
+            </svg>
+            <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ink-light)" }}>
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--earth)", display: "inline-block" }} /> Well-calibrated (±10%)
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ink-light)" }}>
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--crisis)", display: "inline-block" }} /> Outside tolerance
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ink-light)" }}>
+                <span style={{ width: 24, height: 1, background: "var(--border)", display: "inline-block", borderTop: "1px dashed var(--border)" }} /> Perfect calibration
+              </div>
+            </div>
+          </div>
+
           <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
 
             {/* Calibration bars */}
