@@ -277,6 +277,14 @@
     padding: 60px 40px;
   }
 
+  @media (max-width: 1024px) {
+    /* Nav: hide desktop links + show hamburger at tablet/small laptop */
+    .desktop-nav-links { display: none !important; }
+    .desktop-meta      { display: none !important; }
+    .desktop-cta       { display: none !important; }
+    .hamburger-btn     { display: flex !important; }
+  }
+
   @media (max-width: 768px) {
     /* Dashboard 3-col → single col with tabs */
     .dashboard-grid {
@@ -321,11 +329,7 @@
       border-bottom-color: var(--earth);
     }
 
-    /* Header compact */
-    .desktop-nav-links { display: none !important; }
-    .desktop-meta      { display: none !important; }
-    .desktop-cta       { display: none !important; }
-    .hamburger-btn     { display: flex !important; }
+    /* Header compact (already handled at 1024px above) */
 
     /* Page content */
     .page-content {
@@ -381,7 +385,6 @@
     h2 { font-size: 20px !important; }
 
     /* ── SiteNav: ensure hamburger always visible on mobile ─────── */
-    .hamburger-btn { display: flex !important; }
 
     /* ── About: mission block two-col ───────────────────────────── */
     .about-missions {
