@@ -75,15 +75,19 @@ const COUNTRY_NAMES: Record<string, string> = {
   HTI: "Haiti", AFG: "Afghanistan", SYR: "Syria", COD: "DR Congo",
   TCD: "Chad", NGA: "Nigeria", CAF: "Central African Rep.", CMR: "Cameroon",
   UGA: "Uganda", MOZ: "Mozambique", ZWE: "Zimbabwe", MDG: "Madagascar",
+  PSE: "Palestine",
 };
+
+// Map standard ISO-3166-1 codes (used in GeoJSON) to API region_ids where they differ
+const ISO_TO_API: Record<string, string> = { NER: "NIG" };
 
 function fmtPct(v: number | null | undefined) { if (v == null) return "—"; return `${(v * 100).toFixed(1)}%`; }
 function fmtScore(v: number) { return (v * 100).toFixed(0); }
 
 function isoFromProps(p: Record<string, string>): string {
-  const raw = p.ISO_A3 ?? p.iso_a3 ?? p.ADM0_A3 ?? "";
-  if (raw === "-99" || raw === "PSX" || raw === "") return p.ISO_A3_EH ?? p.WB_A3 ?? raw;
-  return raw;
+  const raw = p["ISO3166-1-Alpha-3"] ?? p.ISO_A3 ?? p.iso_a3 ?? p.ADM0_A3 ?? "";
+  if (raw === "-99" || raw === "PSX" || raw === "") return ISO_TO_API[p.ISO_A3_EH ?? p.WB_A3 ?? raw] ?? p.ISO_A3_EH ?? p.WB_A3 ?? raw;
+  return ISO_TO_API[raw] ?? raw;
 }
 
 function stressBar(v: number) {
