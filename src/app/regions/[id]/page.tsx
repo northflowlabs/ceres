@@ -281,7 +281,7 @@ export default function RegionPage() {
           <StatBox label="P(Famine) 90d"    value={pct(pred.p_famine_90d)}      sub="IPC Phase 5" accent={pred.p_famine_90d > 0.15 ? color : undefined} />
           <StatBox label="IPC Phase Forecast" value={`Phase ${pred.ipc_phase_forecast}`} sub={IPC_LABELS[pred.ipc_phase_forecast]} accent={pred.ipc_phase_forecast >= 3 ? color : undefined} />
           <StatBox label="Composite Stress" value={`${(pred.composite_stress_score * 100).toFixed(0)}/100`} sub="0 = low · 100 = extreme" />
-          <StatBox label="Confidence Interval" value={`${pct(pred.ci_90_low)} – ${pct(pred.ci_90_high)}`} sub="90-day P(IPC 3+)" />
+          <StatBox label="Sensitivity Interval" value={pred.ci_90_low != null && pred.ci_90_high != null ? `${pct(pred.ci_90_low)} – ${pct(pred.ci_90_high)}` : "Pending"} sub={pred.ci_90_low != null ? "90% SI · P(IPC 3+)" : "Populating from May 2026"} />
         </div>
 
         {/* ── Two-column: Trend + Drivers ──────────────────────── */}
@@ -434,8 +434,8 @@ export default function RegionPage() {
             <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: 0 }}>
               Forecasts are generated weekly by the CERES pipeline using a composite weighted logistic model. Current scores reflect
               live data ingested from CHIRPS, ACLED, MODIS NDVI, IPC, WFP VAM, FAO GIEWS, and FEWS NET. Model coefficients were
-              calibrated against verified famine transitions in Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021)
-              — these are the historical ground-truth events used to set probability thresholds, not the data vintage.
+              initialised with author-specified values informed by IPC transition records across Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021)
+              — see the <Link href="/methodology#model" style={{ color: "var(--earth)", textDecoration: "none" }}>Methodology page</Link> for the recalibration history and current production coefficients.
               Probabilities represent the likelihood of escalation to IPC Phase 3 or above within 90 days from the reference date.
               &nbsp;<Link href="/methodology" style={{ color: "var(--earth)", textDecoration: "none" }}>Full methodology →</Link>
             </p>
