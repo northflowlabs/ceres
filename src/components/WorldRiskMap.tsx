@@ -142,10 +142,10 @@ export default function WorldRiskMap({ predictions, onSelect, selected }: WorldR
         </g>
 
         {/* Risk circles for known locations */}
-        {CRISIS_COUNTRIES.map(({ iso3, name }) => {
+        {CRISIS_COUNTRIES.map(({ iso3, name, lat, lon }) => {
           const pred = byId[iso3];
           if (!pred) return null;
-          const [cx, cy] = project(pred.lat, pred.lon, W, H);
+          const [cx, cy] = project(lat, lon, W, H);
           const color = tierColor(pred.alert_tier);
           const r = 6 + pred.p_ipc3plus_90d * 16;
           const isSelected = selected?.region_id === iso3;

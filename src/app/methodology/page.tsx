@@ -48,6 +48,8 @@ export default function MethodologyPage() {
   const tocRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const articleRef = useRef<HTMLElement | null>(null);
   const activeRef = useRef<string>(TOC[0].id);
+  const clickLock = useRef(false);
+  const lockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function setActive(id: string) {
     activeRef.current = id;
@@ -62,9 +64,12 @@ export default function MethodologyPage() {
   function scrollTo(id: string) {
     const target = document.getElementById(id);
     if (!target) return;
+    clickLock.current = true;
+    if (lockTimer.current) clearTimeout(lockTimer.current);
     const top = target.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top, behavior: "smooth" });
     setActive(id);
+    lockTimer.current = setTimeout(() => { clickLock.current = false; }, 1000);
   }
 
   useEffect(() => {
@@ -82,6 +87,7 @@ export default function MethodologyPage() {
     const observed = new Map<string, number>();
     const observer = new IntersectionObserver(
       (entries) => {
+        if (clickLock.current) return;
         entries.forEach(e => {
           observed.set(e.target.id, e.intersectionRatio);
         });
