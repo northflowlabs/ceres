@@ -31,7 +31,7 @@ function tierBg(tier: string) {
   return "#F0FDF4";
 }
 
-function fmtPct(n: number) { return `${(n * 100).toFixed(1)}%`; }
+function fmtPct(n: number | null | undefined) { if (n == null) return "—"; return `${(n * 100).toFixed(1)}%`; }
 
 function WidgetContent() {
   const params   = useSearchParams();

@@ -77,7 +77,7 @@ const COUNTRY_NAMES: Record<string, string> = {
   UGA: "Uganda", MOZ: "Mozambique", ZWE: "Zimbabwe", MDG: "Madagascar",
 };
 
-function fmtPct(v: number) { return `${(v * 100).toFixed(1)}%`; }
+function fmtPct(v: number | null | undefined) { if (v == null) return "—"; return `${(v * 100).toFixed(1)}%`; }
 function fmtScore(v: number) { return (v * 100).toFixed(0); }
 
 function stressBar(v: number) {

@@ -6,7 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { api, Prediction } from "@/lib/api";
 
-function pct(n: number) { return `${(n * 100).toFixed(1)}%`; }
+function pct(n: number | null | undefined) { if (n == null) return "—"; return `${(n * 100).toFixed(1)}%`; }
 function tierColor(t: string) { return t === "TIER-1" ? "#C0392B" : t === "TIER-2" ? "#D97706" : "#2E7D32"; }
 function tierLabel(t: string) { return t === "TIER-1" ? "Critical" : t === "TIER-2" ? "Warning" : "Watch"; }
 function tierBg(t: string)    { return t === "TIER-1" ? "#FEF2F2" : t === "TIER-2" ? "#FFFBEB" : "#F0FDF4"; }

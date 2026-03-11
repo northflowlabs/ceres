@@ -9,7 +9,7 @@ import { api, Prediction, Hypothesis, Admin1Signal, RegionSnapshot } from "@/lib
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function pct(n: number) { return `${(n * 100).toFixed(1)}%`; }
+function pct(n: number | null | undefined) { if (n == null) return "—"; return `${(n * 100).toFixed(1)}%`; }
 function pctInt(n: number) { return `${Math.round(n * 100)}%`; }
 
 function tierColor(tier: string) {
