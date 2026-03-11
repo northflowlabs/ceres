@@ -688,9 +688,11 @@ export default function Dashboard() {
                   ? `The primary drivers are ${(selPred.driver_types ?? []).slice(0, 3).join(", ").toLowerCase()}, with ${selPred.n_signals_flagged ?? 0} elevated signals detected across ${selPred.flagged_sources ?? "multiple data sources"}.`
                   : `${selPred.n_signals_flagged ?? 0} elevated signals have been detected, indicating compound stress.`
                 }{" "}
-                The 90% confidence interval spans{" "}
-                <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.ci_90_low * 100)}%–{Math.round(selPred.ci_90_high * 100)}%</strong>,{" "}
-                reflecting {(selPred.ci_90_high - selPred.ci_90_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}.
+                {selPred.ci_90_low != null && selPred.ci_90_high != null ? (
+                  <>The 90% sensitivity interval spans{" "}
+                  <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.ci_90_low * 100)}%–{Math.round(selPred.ci_90_high * 100)}%</strong>,{" "}
+                  reflecting {(selPred.ci_90_high - selPred.ci_90_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}."</>
+                ) : "Sensitivity interval data is pending and will populate from May 2026."}
               </p>
               <p style={{ fontSize: 12, lineHeight: 1.7, color: "var(--ink-mid)", margin: 0 }}>
                 {hyp.description
