@@ -879,7 +879,7 @@ export default function Dashboard() {
           }}>
             All predictions are timestamped, falsifiable, and graded against IPC outcomes at T+90 days.
             Not for operational use without institutional validation.
-            Open methodology — arXiv preprint submitted March 2026.
+            Open methodology — published arXiv:2603.09425 (March 2026).
           </div>
         </aside>
       </div>

@@ -40,7 +40,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div className="footer-bottom" style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.4.0 · HGE Adapter #5 · Live since 28 Feb 2026 · arXiv preprint in preparation</span>
+        <span>CERES v0.4.0 · HGE Adapter #5 · Live since 28 Feb 2026 · <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "#57534E", textDecoration: "underline" }}>arXiv:2603.09425</a></span>
         <span style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
           <Link href="/privacy" style={{ color: "#57534E", textDecoration: "none" }}>Privacy Policy</Link>
           <Link href="/cookies" style={{ color: "#57534E", textDecoration: "none" }}>Cookies</Link>
