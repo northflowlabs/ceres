@@ -412,11 +412,11 @@ export default function Dashboard() {
                     height: 4, background: "var(--border-light)",
                     borderRadius: 2, marginBottom: 4, position: "relative",
                   }}>
-                    {p.ci_90_low != null && p.ci_90_high != null && (
+                    {p.sensitivity_interval_low != null && p.sensitivity_interval_high != null && (
                       <div style={{
                         position: "absolute", height: "100%", borderRadius: 2,
-                        left: `${p.ci_90_low * 100}%`,
-                        width: `${(p.ci_90_high - p.ci_90_low) * 100}%`,
+                        left: `${p.sensitivity_interval_low * 100}%`,
+                        width: `${(p.sensitivity_interval_high - p.sensitivity_interval_low) * 100}%`,
                         background: color, opacity: 0.3,
                       }} />
                     )}
@@ -428,8 +428,8 @@ export default function Dashboard() {
                     }} />
                   </div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginBottom: 8 }}>
-                    {p.ci_90_low != null && p.ci_90_high != null
-                      ? `SI [${pct(p.ci_90_low)} – ${pct(p.ci_90_high)}] · Input-perturbation`
+                    {p.sensitivity_interval_low != null && p.sensitivity_interval_high != null
+                      ? `SI [${pct(p.sensitivity_interval_low)} – ${pct(p.sensitivity_interval_high)}] · Input-perturbation`
                       : "SI Pending · Populating May 2026"}
                   </div>
 
@@ -688,10 +688,10 @@ export default function Dashboard() {
                   ? `The primary drivers are ${(selPred.driver_types ?? []).slice(0, 3).join(", ").toLowerCase()}, with ${selPred.n_signals_flagged ?? 0} elevated signals detected across ${selPred.flagged_sources ?? "multiple data sources"}.`
                   : `${selPred.n_signals_flagged ?? 0} elevated signals have been detected, indicating compound stress.`
                 }{" "}
-                {selPred.ci_90_low != null && selPred.ci_90_high != null ? (
+                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? (
                   <>The 90% sensitivity interval spans{" "}
-                  <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.ci_90_low * 100)}%–{Math.round(selPred.ci_90_high * 100)}%</strong>,{" "}
-                  reflecting {(selPred.ci_90_high - selPred.ci_90_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}."</>
+                  <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.sensitivity_interval_low * 100)}%–{Math.round(selPred.sensitivity_interval_high * 100)}%</strong>,{" "}
+                  reflecting {(selPred.sensitivity_interval_high - selPred.sensitivity_interval_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}."</>
                 ) : "Sensitivity interval data is pending and will populate from May 2026."}
               </p>
               <p style={{ fontSize: 12, lineHeight: 1.7, color: "var(--ink-mid)", margin: 0 }}>
@@ -950,15 +950,17 @@ export default function Dashboard() {
                 <span style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic" }}>P(IPC 3+ · 90d)</span>
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 10 }}>
-                90% CI [{pct(selPred.ci_90_low)} – {pct(selPred.ci_90_high)}] · {selPred.ci_method ?? "Bootstrap"}
+                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? `90% SI [${pct(selPred.sensitivity_interval_low)} – ${pct(selPred.sensitivity_interval_high)}] · ${selPred.ci_method ?? "Bootstrap"}` : "Sensitivity interval: Pending"}
               </div>
               <div style={{ height: 6, background: "var(--border-light)", borderRadius: 3, position: "relative" }}>
-                <div style={{
-                  position: "absolute", height: "100%", borderRadius: 3,
-                  left: `${selPred.ci_90_low * 100}%`,
-                  width: `${(selPred.ci_90_high - selPred.ci_90_low) * 100}%`,
-                  background: editColor(selPred.alert_tier), opacity: 0.3,
-                }} />
+                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null && (
+                  <div style={{
+                    position: "absolute", height: "100%", borderRadius: 3,
+                    left: `${selPred.sensitivity_interval_low * 100}%`,
+                    width: `${(selPred.sensitivity_interval_high - selPred.sensitivity_interval_low) * 100}%`,
+                    background: editColor(selPred.alert_tier), opacity: 0.3,
+                  }} />
+                )}
                 <div style={{
                   position: "absolute", width: 12, height: 12, borderRadius: "50%",
                   top: -3, transform: "translateX(-50%)",

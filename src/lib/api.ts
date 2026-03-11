@@ -12,8 +12,8 @@ export interface Prediction {
   p_ipc3plus_90d: number;
   p_ipc4plus_90d: number;
   p_famine_90d: number;
-  ci_90_low: number | null;
-  ci_90_high: number | null;
+  sensitivity_interval_low: number | null;
+  sensitivity_interval_high: number | null;
   ci_method: string;
   convergence_score: number;
   convergence_tier: string;
@@ -49,8 +49,8 @@ export interface Hypothesis {
   p_ipc3plus_90d: number;
   p_ipc4plus_90d: number;
   p_famine_90d: number;
-  ci_90_low?: number;
-  ci_90_high?: number;
+  sensitivity_interval_low?: number | null;
+  sensitivity_interval_high?: number | null;
   ci_method?: string;
   driver_types?: string[];
   n_sources_agreeing: number;
@@ -188,8 +188,8 @@ export interface RegionSnapshot {
   p_ipc3plus_90d:         number;
   p_ipc4plus_90d:         number;
   p_famine_90d:           number;
-  ci_90_low:              number | null;
-  ci_90_high:             number | null;
+  sensitivity_interval_low:  number | null;
+  sensitivity_interval_high: number | null;
   ipc_phase_forecast:     number;
   composite_stress_score: number;
   convergence_tier:       string;

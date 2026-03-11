@@ -149,8 +149,8 @@ export default function RegionsPage() {
 
                     {/* CI bar */}
                     <div style={{ height: 5, background: "var(--border-light)", borderRadius: 3, marginBottom: 10, position: "relative" }}>
-                      {p.ci_90_low != null && p.ci_90_high != null && (
-                        <div style={{ position: "absolute", height: "100%", borderRadius: 3, left: `${p.ci_90_low * 100}%`, width: `${(p.ci_90_high - p.ci_90_low) * 100}%`, background: color, opacity: 0.25 }} />
+                      {p.sensitivity_interval_low != null && p.sensitivity_interval_high != null && (
+                        <div style={{ position: "absolute", height: "100%", borderRadius: 3, left: `${p.sensitivity_interval_low * 100}%`, width: `${(p.sensitivity_interval_high - p.sensitivity_interval_low) * 100}%`, background: color, opacity: 0.25 }} />
                       )}
                       <div style={{ position: "absolute", width: 9, height: 9, borderRadius: "50%", top: -2, transform: "translateX(-50%)", left: `${p.p_ipc3plus_90d * 100}%`, background: color }} />
                     </div>

@@ -45,8 +45,8 @@ export default function HypothesisPanel({ hypothesis: initial, onClose }: Hypoth
   const p3   = h.p_ipc3plus_90d ?? 0;
   const p4   = h.p_ipc4plus_90d ?? 0;
   const pFam = h.p_famine_90d   ?? 0;
-  const ciLo = h.famine_probability?.confidence_interval_low  ?? h.ci_90_low  ?? 0;
-  const ciHi = h.famine_probability?.confidence_interval_high ?? h.ci_90_high ?? 0;
+  const ciLo = h.famine_probability?.confidence_interval_low  ?? h.sensitivity_interval_low  ?? 0;
+  const ciHi = h.famine_probability?.confidence_interval_high ?? h.sensitivity_interval_high ?? 0;
   const ciMethod = h.famine_probability?.method ?? h.ci_method ?? "";
   const drivers  = h.driver_clusters ?? [];
   const evidence = h.evidence        ?? [];

@@ -55,9 +55,9 @@ function Sparkline({ data }: { data: RegionSnapshot[] }) {
     const sorted = [...data].sort((a, b) => a.run_date.localeCompare(b.run_date));
     const xs = sorted.map((_, i) => (i / (sorted.length - 1)) * W);
     const ys = sorted.map(s => H - s.p_ipc3plus_90d * (H - 10) - 5);
-    const hasCi = sorted.every(s => s.ci_90_low != null && s.ci_90_high != null);
-    const cL = hasCi ? sorted.map(s => H - s.ci_90_low!  * (H - 10) - 5) : [];
-    const cH = hasCi ? sorted.map(s => H - s.ci_90_high! * (H - 10) - 5) : [];
+    const hasCi = sorted.every(s => s.sensitivity_interval_low != null && s.sensitivity_interval_high != null);
+    const cL = hasCi ? sorted.map(s => H - s.sensitivity_interval_low!  * (H - 10) - 5) : [];
+    const cH = hasCi ? sorted.map(s => H - s.sensitivity_interval_high! * (H - 10) - 5) : [];
     const line = sorted.map((_, i) => `${i === 0 ? "M" : "L"}${xs[i].toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
     const ci = hasCi ? [
       ...sorted.map((_, i) => `${i === 0 ? "M" : "L"}${xs[i].toFixed(1)},${cH[i].toFixed(1)}`),
