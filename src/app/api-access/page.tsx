@@ -283,6 +283,9 @@ export default function ApiAccessPage() {
 
   useEffect(() => {
     const ids = TOC.map(t => t.id);
+    let clickScrolling = false;
+    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
+
     function setActive(id: string) {
       ids.forEach(sid => {
         const el = tocRefs.current[sid];
@@ -301,7 +304,10 @@ export default function ApiAccessPage() {
       }
       return activeId;
     }
-    function onScroll() { setActive(getActive()); }
+    function onScroll() {
+      if (clickScrolling) return;
+      setActive(getActive());
+    }
     window.addEventListener("scroll", onScroll, { passive: true });
     setActive(getActive());
     // Delegated click on nav — works regardless of when refs populate
@@ -313,15 +319,19 @@ export default function ApiAccessPage() {
       const id = a.getAttribute("href")!.slice(1);
       const target = document.getElementById(id);
       if (target) {
+        clickScrolling = true;
+        if (scrollTimer) clearTimeout(scrollTimer);
         const top = target.getBoundingClientRect().top + window.scrollY - 80;
         window.scrollTo({ top, behavior: "smooth" });
+        setActive(id);
+        scrollTimer = setTimeout(() => { clickScrolling = false; }, 800);
       }
-      setActive(id);
     }
     nav?.addEventListener("click", onNavClick);
     return () => {
       window.removeEventListener("scroll", onScroll);
       nav?.removeEventListener("click", onNavClick);
+      if (scrollTimer) clearTimeout(scrollTimer);
     };
   }, []);
 
