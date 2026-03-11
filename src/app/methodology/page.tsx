@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -45,23 +45,18 @@ const METRICS = [
 ];
 
 export default function MethodologyPage() {
-  const tocRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const articleRef = useRef<HTMLElement | null>(null);
-  const activeRef = useRef<string>(TOC[0].id);
+  const [activeId, setActiveId] = useState(TOC[0].id);
+  const activeRef = useRef(TOC[0].id);
   const clickLock = useRef(false);
   const lockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function setActive(id: string) {
     activeRef.current = id;
-    Object.entries(tocRefs.current).forEach(([sid, el]) => {
-      if (!el) return;
-      const on = sid === id;
-      el.style.color = on ? "var(--earth)" : "var(--ink-light)";
-      el.style.borderLeftColor = on ? "var(--earth)" : "transparent";
-    });
+    setActiveId(id);
   }
 
-  function scrollTo(id: string) {
+  function handleTocClick(e: React.MouseEvent, id: string) {
+    e.preventDefault();
     const target = document.getElementById(id);
     if (!target) return;
     clickLock.current = true;
@@ -141,12 +136,14 @@ export default function MethodologyPage() {
         <nav className="methodology-toc" style={{ position: "sticky", top: 64, alignSelf: "start", padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 16 }}>Contents</div>
           {TOC.map(({ id, label }) => (
-            <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }}
-              onClick={(e) => { e.preventDefault(); scrollTo(id); }}
+            <a key={id} href={`#${id}`}
+              onClick={(e) => handleTocClick(e, id)}
               style={{
                 display: "block", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.06em",
-                color: "var(--ink-light)", textDecoration: "none", padding: "6px 0 6px 10px",
-                borderLeft: "2px solid transparent", marginLeft: -10, transition: "all 0.15s", lineHeight: 1.4,
+                color: activeId === id ? "var(--earth)" : "var(--ink-light)",
+                textDecoration: "none", padding: "6px 0 6px 10px",
+                borderLeft: `2px solid ${activeId === id ? "var(--earth)" : "transparent"}`,
+                marginLeft: -10, transition: "all 0.15s", lineHeight: 1.4,
                 cursor: "pointer",
               }}>
               {label}
@@ -155,7 +152,7 @@ export default function MethodologyPage() {
         </nav>
 
         {/* Article */}
-        <article ref={articleRef} style={{ padding: "48px 0 80px 56px", minWidth: 0 }} className="methodology-article">
+        <article style={{ padding: "48px 0 80px 56px", minWidth: 0 }} className="methodology-article">
 
           <section id="overview" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 1 — Overview</div>

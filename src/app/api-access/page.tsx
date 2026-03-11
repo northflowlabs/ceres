@@ -248,22 +248,18 @@ const pStyle  = { color: "var(--ink-mid)", fontSize: 14, marginBottom: 12, lineH
 const section = { marginBottom: 56, paddingBottom: 56, borderBottom: "1px solid var(--border-light)" };
 
 export default function ApiAccessPage() {
-  const tocRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const activeRef = useRef<string>(TOC[0].id);
+  const [activeId, setActiveId] = useState(TOC[0].id);
+  const activeRef = useRef(TOC[0].id);
   const clickLock = useRef(false);
   const lockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function setActive(id: string) {
     activeRef.current = id;
-    Object.entries(tocRefs.current).forEach(([sid, el]) => {
-      if (!el) return;
-      const on = sid === id;
-      el.style.color = on ? "var(--earth)" : "var(--ink-light)";
-      el.style.borderLeftColor = on ? "var(--earth)" : "transparent";
-    });
+    setActiveId(id);
   }
 
-  function scrollToSection(id: string) {
+  function handleTocClick(e: React.MouseEvent, id: string) {
+    e.preventDefault();
     const target = document.getElementById(id);
     if (!target) return;
     clickLock.current = true;
@@ -466,12 +462,14 @@ export default function ApiAccessPage() {
         <nav className="api-toc" style={{ position: "sticky", top: 64, alignSelf: "start", padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 12 }}>Contents</div>
           {TOC.map(({ id, label }) => (
-            <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }}
-              onClick={(e) => { e.preventDefault(); scrollToSection(id); }}
+            <a key={id} href={`#${id}`}
+              onClick={(e) => handleTocClick(e, id)}
               style={{
                 display: "block", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.06em",
-                color: "var(--ink-light)", textDecoration: "none", padding: "5px 0 5px 10px",
-                borderLeft: "2px solid transparent", marginLeft: -10, transition: "all 0.15s", lineHeight: 1.4,
+                color: activeId === id ? "var(--earth)" : "var(--ink-light)",
+                textDecoration: "none", padding: "5px 0 5px 10px",
+                borderLeft: `2px solid ${activeId === id ? "var(--earth)" : "transparent"}`,
+                marginLeft: -10, transition: "all 0.15s", lineHeight: 1.4,
                 cursor: "pointer",
               }}>
               {label}
