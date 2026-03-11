@@ -109,7 +109,7 @@ export default function ImpactPage() {
           <StatCard val={loading ? "—" : s?.tier1_hit_rate_pct != null ? `${s.tier1_hit_rate_pct}%` : "Pending"} label="Tier I Hit Rate" sub={s?.tier1_hit_rate_pct != null ? "Of alerts that proved correct" : "Grading from Sep 2026 · 30 TIER-1 alerts required"} accent />
           <StatCard val={loading ? "—" : s?.avg_brier_score != null ? `${s.avg_brier_score}` : "Pending"} label="Brier Score" sub={s?.avg_brier_score != null ? "Target < 0.10 · lower = better" : "Grading from May 2026 · 100 predictions required"} />
           <StatCard val={loading ? "—" : s?.ci_coverage_pct != null ? `${s.ci_coverage_pct}%` : "Pending"} label="SI Coverage" sub={s?.ci_coverage_pct != null ? "90% SI contains actual outcome" : "Grading from Sep 2026 · 200 predictions required"} />
-          <StatCard val={loading ? "—" : s?.avg_lead_time_days > 0 ? `${s.avg_lead_time_days} days` : "Pending"} label="Avg Lead Time" sub={s?.avg_lead_time_days > 0 ? "Before IPC phase escalation" : "Populating as T+90 grades accumulate"} />
+          <StatCard val={loading ? "—" : (s?.avg_lead_time_days ?? 0) > 0 ? `${s!.avg_lead_time_days} days` : "Pending"} label="Avg Lead Time" sub={(s?.avg_lead_time_days ?? 0) > 0 ? "Before IPC phase escalation" : "Populating as T+90 grades accumulate"} />
         </div>
         <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           <StatCard val={loading ? "—" : `${s?.tier1_alerts_issued ?? 0}`}   label="Tier I Alerts Issued"    sub="High-probability crisis warnings issued" />
