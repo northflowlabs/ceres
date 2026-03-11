@@ -340,8 +340,8 @@
 
     /* ── Content page global overrides ─────────────────────────── */
 
-    /* Methodology: hide TOC, single column layout */
-    .methodology-toc    { display: none !important; }
+    /* Methodology + API: hide TOC, single column layout */
+    .methodology-toc, .api-toc { display: none !important; }
     .methodology-layout { grid-template-columns: 1fr !important; padding: 0 20px !important; }
     .methodology-article { padding: 32px 0 48px !important; }
 
@@ -439,7 +439,7 @@
       grid-template-columns: 1fr !important;
       padding: 0 16px 60px !important;
     }
-    .methodology-toc { display: none !important; }
+    .methodology-toc, .api-toc { display: none !important; }
     .methodology-article {
       padding: 32px 0 60px 0 !important;
       min-width: 0 !important;
@@ -725,8 +725,8 @@
   .desktop-cta       { display: none !important; }
   .hamburger-btn     { display: flex !important; }
 
-  /* Methodology: hide TOC sidebar, go single column */
-  .methodology-toc    { display: none !important; }
+  /* Methodology + API: hide TOC sidebar, go single column */
+  .methodology-toc, .api-toc { display: none !important; }
   .methodology-layout {
     grid-template-columns: 1fr !important;
     padding: 0 24px !important;

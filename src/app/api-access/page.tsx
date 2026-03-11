@@ -245,29 +245,21 @@ const sectionLabel = { fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0
 const h2Style = { fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 14, lineHeight: 1.2 };
 const h3Style = { fontFamily: "var(--display)", fontSize: 18, fontWeight: 600, margin: "28px 0 10px" };
 const pStyle  = { color: "var(--ink-mid)", fontSize: 14, marginBottom: 12, lineHeight: 1.75 };
-const section = { marginBottom: 56, paddingBottom: 56, borderBottom: "1px solid var(--border-light)" };
+const section = { marginBottom: 56, paddingBottom: 56, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 };
 
 export default function ApiAccessPage() {
   const [activeId, setActiveId] = useState(TOC[0].id);
-  const activeRef = useRef(TOC[0].id);
-  const clickLock = useRef(false);
-  const lockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function setActive(id: string) {
-    activeRef.current = id;
-    setActiveId(id);
-  }
+  const scrollLock = useRef(false);
 
   function handleTocClick(e: React.MouseEvent, id: string) {
     e.preventDefault();
-    const target = document.getElementById(id);
-    if (!target) return;
-    clickLock.current = true;
-    if (lockTimer.current) clearTimeout(lockTimer.current);
-    const top = target.getBoundingClientRect().top + window.scrollY - 80;
+    const el = document.getElementById(id);
+    if (!el) return;
+    scrollLock.current = true;
+    setActiveId(id);
+    const top = el.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top, behavior: "smooth" });
-    setActive(id);
-    lockTimer.current = setTimeout(() => { clickLock.current = false; }, 1000);
+    setTimeout(() => { scrollLock.current = false; }, 900);
   }
   const [modalTier,       setModalTier]       = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -302,46 +294,18 @@ export default function ApiAccessPage() {
   const checkoutStatus = urlParams?.get("checkout");
 
   useEffect(() => {
-    const ids = TOC.map(t => t.id);
-
-    // Init active on load
-    let init = ids[0];
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (el && el.getBoundingClientRect().top <= 120) init = id;
+    function onScroll() {
+      if (scrollLock.current) return;
+      let current = TOC[0].id;
+      for (const { id } of TOC) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 100) current = id;
+      }
+      setActiveId(current);
     }
-    setActive(init);
-
-    // IntersectionObserver for scroll-spy
-    const observed = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (clickLock.current) return;
-        entries.forEach(e => {
-          observed.set(e.target.id, e.intersectionRatio);
-        });
-        let best = activeRef.current;
-        let bestTop = Infinity;
-        ids.forEach(id => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          const ratio = observed.get(id) ?? 0;
-          if (ratio > 0) {
-            const top = el.getBoundingClientRect().top;
-            if (top < bestTop) { bestTop = top; best = id; }
-          }
-        });
-        setActive(best);
-      },
-      { rootMargin: "-64px 0px -40% 0px", threshold: [0, 0.1, 0.5, 1] }
-    );
-
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   async function handleCheckoutSubmit(email: string, org: string) {
@@ -841,7 +805,7 @@ export default function ApiAccessPage() {
             <p style={pStyle}>All probabilities follow the same field pattern: <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>p_ipc3plus_90d</code>, <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>ci_90_low</code>, <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>ci_90_high</code>.</p>
           </section>
 
-          <section id="attribution" style={{ marginBottom: 0, paddingBottom: 0 }}>
+          <section id="attribution" style={{ marginBottom: 0, paddingBottom: 0, scrollMarginTop: 80 }}>
             <div style={sectionLabel}>&sect; 8 &mdash; Attribution</div>
             <h2 style={h2Style}>Attribution Requirements</h2>
             <p style={pStyle}>All use of CERES data — whether in publications, dashboards, or operational systems — requires attribution to Northflow Technologies and CERES.</p>

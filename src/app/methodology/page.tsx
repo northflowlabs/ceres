@@ -46,69 +46,32 @@ const METRICS = [
 
 export default function MethodologyPage() {
   const [activeId, setActiveId] = useState(TOC[0].id);
-  const activeRef = useRef(TOC[0].id);
-  const clickLock = useRef(false);
-  const lockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function setActive(id: string) {
-    activeRef.current = id;
-    setActiveId(id);
-  }
+  const scrollLock = useRef(false);
 
   function handleTocClick(e: React.MouseEvent, id: string) {
     e.preventDefault();
-    const target = document.getElementById(id);
-    if (!target) return;
-    clickLock.current = true;
-    if (lockTimer.current) clearTimeout(lockTimer.current);
-    const top = target.getBoundingClientRect().top + window.scrollY - 80;
+    const el = document.getElementById(id);
+    if (!el) return;
+    scrollLock.current = true;
+    setActiveId(id);
+    const top = el.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top, behavior: "smooth" });
-    setActive(id);
-    lockTimer.current = setTimeout(() => { clickLock.current = false; }, 1000);
+    setTimeout(() => { scrollLock.current = false; }, 900);
   }
 
   useEffect(() => {
-    const ids = TOC.map(t => t.id);
-
-    // Init active on load
-    let init = ids[0];
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (el && el.getBoundingClientRect().top <= 120) init = id;
+    function onScroll() {
+      if (scrollLock.current) return;
+      let current = TOC[0].id;
+      for (const { id } of TOC) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 100) current = id;
+      }
+      setActiveId(current);
     }
-    setActive(init);
-
-    // IntersectionObserver for scroll-spy
-    const observed = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (clickLock.current) return;
-        entries.forEach(e => {
-          observed.set(e.target.id, e.intersectionRatio);
-        });
-        // Pick the topmost visible section
-        let best = activeRef.current;
-        let bestTop = Infinity;
-        ids.forEach(id => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          const ratio = observed.get(id) ?? 0;
-          if (ratio > 0) {
-            const top = el.getBoundingClientRect().top;
-            if (top < bestTop) { bestTop = top; best = id; }
-          }
-        });
-        setActive(best);
-      },
-      { rootMargin: "-64px 0px -40% 0px", threshold: [0, 0.1, 0.5, 1] }
-    );
-
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const s = { fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.85 } as const;
@@ -154,7 +117,7 @@ export default function MethodologyPage() {
         {/* Article */}
         <article style={{ padding: "48px 0 80px 56px", minWidth: 0 }} className="methodology-article">
 
-          <section id="overview" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
+          <section id="overview" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 1 — Overview</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>The 90-Day Lead Time Problem</h2>
             <p style={s}>Existing humanitarian early warning systems — including FEWS NET and IPC cadres — provide effective lead times of <strong style={{ color: "var(--ink)" }}>30–45 days</strong> before a food crisis reaches emergency thresholds. Pre-positioning food aid, mobilising logistics, and securing emergency funding through multilateral mechanisms requires a minimum of <strong style={{ color: "var(--ink)" }}>60–90 days</strong>.</p>
@@ -166,7 +129,7 @@ export default function MethodologyPage() {
             <p style={s}>The system ingests eight open data streams covering rainfall, vegetation, conflict, food access, market prices, and displacement. These are synthesised by the <strong style={{ color: "var(--ink)" }}>Hypothesis Generation Engine (HGE)</strong> into ranked driver hypotheses, which feed a calibrated logistic model producing probabilistic risk scores at Admin1 resolution across 121 administrative units in 15 countries.</p>
           </section>
 
-          <section id="pipeline" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
+          <section id="pipeline" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 2 — Pipeline Architecture</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Six-Stage Processing Pipeline</h2>
             <p style={s}>Each pipeline run proceeds through six sequential stages. The run identifier (e.g. <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>CERES-20260228-160603</span>) is recorded with every prediction, enabling complete reproducibility and audit.</p>
@@ -183,7 +146,7 @@ export default function MethodologyPage() {
             </div>
           </section>
 
-          <section id="hge" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
+          <section id="hge" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 3 — Hypothesis Generation Engine</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>The HGE: From Signals to Hypotheses</h2>
             <p style={s}>The Hypothesis Generation Engine (HGE) is the core intelligence layer that distinguishes CERES from threshold-based early warning systems. Rather than flagging when a single indicator crosses a threshold, HGE synthesises multi-source signal convergence into causal hypotheses — ranked, evidenced explanations of <em>why</em> risk is elevated.</p>
@@ -213,7 +176,7 @@ export default function MethodologyPage() {
             </div>
           </section>
 
-          <section id="model" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
+          <section id="model" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 4 — Probabilistic Model</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Logistic Model & Sensitivity Intervals</h2>
             <p style={s}>CERES uses a calibrated logistic regression model to convert composite stress scores into IPC Phase 3+ exceedance probabilities at a 90-day horizon. The choice of logistic regression is deliberate: it is well-understood, natively probabilistic, and produces outputs that are straightforwardly interpretable by non-technical reviewers.</p>
@@ -236,7 +199,7 @@ export default function MethodologyPage() {
             </div>
           </section>
 
-          <section id="tiers" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
+          <section id="tiers" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 5 — Tier Classification</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Alert Tier Definitions</h2>
             <p style={s}>Predictions are assigned to one of three alert tiers based on the point estimate of P(IPC Phase 3+). Tier thresholds are calibrated to IPC phase transition probabilities estimated from the validation dataset.</p>
@@ -258,7 +221,7 @@ export default function MethodologyPage() {
             </div>
           </section>
 
-          <section id="calibration" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
+          <section id="calibration" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 6 — Validation & Calibration</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Model Performance</h2>
             <p style={s}>CERES is validated against 87 IPC transition records spanning 31 countries between 2011 and 2023. Four prospective performance targets are set and will be populated as T+90 grading accumulates from May 2026.</p>
@@ -273,7 +236,7 @@ export default function MethodologyPage() {
             </div>
           </section>
 
-          <section id="limitations" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
+          <section id="limitations" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 7 — Limitations</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Known Limitations & Constraints</h2>
             {[
@@ -293,7 +256,7 @@ export default function MethodologyPage() {
             </div>
           </section>
 
-          <section id="citation" style={{ marginBottom: 0, paddingBottom: 0 }}>
+          <section id="citation" style={{ marginBottom: 0, paddingBottom: 0, scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 8 — Citation</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>How to Cite CERES</h2>
             <p style={s}>If you reference CERES predictions or methodology in published work, please use the following citation format. The paper is published on arXiv and freely available under CC BY 4.0.</p>
