@@ -412,12 +412,14 @@ export default function Dashboard() {
                     height: 4, background: "var(--border-light)",
                     borderRadius: 2, marginBottom: 4, position: "relative",
                   }}>
-                    <div style={{
-                      position: "absolute", height: "100%", borderRadius: 2,
-                      left: `${p.ci_90_low * 100}%`,
-                      width: `${(p.ci_90_high - p.ci_90_low) * 100}%`,
-                      background: color, opacity: 0.3,
-                    }} />
+                    {p.ci_90_low != null && p.ci_90_high != null && (
+                      <div style={{
+                        position: "absolute", height: "100%", borderRadius: 2,
+                        left: `${p.ci_90_low * 100}%`,
+                        width: `${(p.ci_90_high - p.ci_90_low) * 100}%`,
+                        background: color, opacity: 0.3,
+                      }} />
+                    )}
                     <div style={{
                       position: "absolute", width: 8, height: 8, borderRadius: "50%",
                       top: -2, transform: "translateX(-50%)",
@@ -426,7 +428,9 @@ export default function Dashboard() {
                     }} />
                   </div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginBottom: 8 }}>
-                    CI [{pct(p.ci_90_low)} – {pct(p.ci_90_high)}] · {p.ci_method ?? "Bootstrap"}
+                    {p.ci_90_low != null && p.ci_90_high != null
+                      ? `SI [${pct(p.ci_90_low)} – ${pct(p.ci_90_high)}] · Input-perturbation`
+                      : "SI Pending · Populating May 2026"}
                   </div>
 
                   {/* Drivers + brief link */}

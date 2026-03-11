@@ -126,9 +126,9 @@ export default function LeafletRiskMap({
               ">${pct(p.p_ipc3plus_90d)}</div>
               <hr style="border:none;border-top:1px solid #D6CFC4;margin:8px 0;">
               <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
-                <span style="color:#78716C;">Confidence interval</span>
+                <span style="color:#78716C;">Sensitivity interval</span>
                 <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${color};">
-                  [${pct(p.ci_90_low)} – ${pct(p.ci_90_high)}]
+                  ${p.ci_90_low != null && p.ci_90_high != null ? `[${pct(p.ci_90_low)} – ${pct(p.ci_90_high)}]` : 'Pending'}
                 </span>
               </div>
               <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
