@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Prediction } from "@/lib/api";
 import { pct, tierLabel } from "@/lib/utils";
+import { CRISIS_COUNTRIES } from "@/lib/geo";
 
 interface LeafletRiskMapProps {
   predictions: Prediction[];
@@ -79,12 +80,21 @@ export default function LeafletRiskMap({
         markersRef.current.forEach((m) => m.remove());
         markersRef.current = [];
 
+        const crisisGeo = new Map(CRISIS_COUNTRIES.map(c => [c.iso3, c]));
+
         predictions.forEach((p) => {
+          // Use hardcoded centroid if available, otherwise API coords
+          const geo = crisisGeo.get(p.region_id);
+          const lat = geo?.lat ?? p.lat;
+          const lon = geo?.lon ?? p.lon;
+          // Skip null-island and missing coords
+          if ((lat === 0 && lon === 0) || lat == null || lon == null) return;
+
           const color      = editorialColor(p.alert_tier);
           const isSelected = selected?.region_id === p.region_id;
 
           // Outer ring (280 km) + inner dot (80 km) — matches the reference design
-          const outer = L.circle([p.lat, p.lon], {
+          const outer = L.circle([lat, lon], {
             radius: 280000,
             color,
             fillColor: color,
@@ -93,7 +103,7 @@ export default function LeafletRiskMap({
             opacity: isSelected ? 0.9 : 0.65,
           }).addTo(mapRef.current);
 
-          const inner = L.circle([p.lat, p.lon], {
+          const inner = L.circle([lat, lon], {
             radius: 80000,
             color,
             fillColor: color,
@@ -169,7 +179,11 @@ export default function LeafletRiskMap({
   // Fly to selected
   useEffect(() => {
     if (!mapRef.current || !selected) return;
-    mapRef.current.flyTo([selected.lat, selected.lon], 6, { duration: 1.2, easeLinearity: 0.4 });
+    const geo = CRISIS_COUNTRIES.find(c => c.iso3 === selected.region_id);
+    const lat = geo?.lat ?? selected.lat;
+    const lon = geo?.lon ?? selected.lon;
+    if ((lat === 0 && lon === 0) || lat == null || lon == null) return;
+    mapRef.current.flyTo([lat, lon], 6, { duration: 1.2, easeLinearity: 0.4 });
   }, [selected]);
 
   return (
