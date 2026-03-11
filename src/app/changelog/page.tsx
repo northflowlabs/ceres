@@ -58,11 +58,19 @@ const CHANGELOG: ChangeEntry[] = [
     body: "Initial public release of CERES. Predictions issued for 121 Admin1 regions across 15 countries at highest food insecurity risk: Ethiopia, Somalia, Sudan, South Sudan, Kenya, Yemen, Niger, Mali, Burkina Faso, Haiti, Afghanistan, Syria, DRC, Zimbabwe, Mozambique. All predictions timestamped and graded at T+90 days.",
   },
   {
+    date: "2026-03-11",
+    version: "v0.5",
+    type: "model",
+    title: "Coefficient recalibration — logit saturation fix",
+    body: "Following live deployment, the initial IPC 3+ coefficients (arXiv v1) were found to produce logit saturation: all 43 monitored regions returned P(IPC 3+) > 0.99, eliminating discriminative utility. Root cause: the additive stack of composite_stress (5.80), convergence_score (2.20), and n_independent (0.40 × 4 signals) dominated the intercept for any country with ≥3 elevated signals. Coefficients adjusted: intercept −2.10→−4.50, composite_stress β 5.80→3.20, convergence_score β 2.20→1.40, n_independent β 0.40→0.20. Recalibrated model produces P = 0.036–0.994 across the monitored-country CSS range. Same fix applied to admin1.py, admin2.py, and scenario.py. Updated coefficients documented in Appendix C of the preprint and on the Methodology page. arXiv v2 planned Q3 2026.",
+    breaking: true,
+  },
+  {
     date: "2026-02-28",
     version: "v0.2",
     type: "model",
-    title: "Calibrated logistic model — 847 region-month back-validation",
-    body: "Logistic regression model calibrated against 847 region-months of IPC outcome data (2022–2025) across 6 countries. Brier score 0.087 (target < 0.10). 90% CI coverage 91.2%. Tier I precision 84%, recall 91%. Bootstrap resampling (2,000 replications) for confidence intervals. All coefficients set with in-sample knowledge — prospective grading begins May 2026.",
+    title: "Logistic model initialised with author-specified coefficients — 87 IPC transition records",
+    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011–2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Bootstrap resampling (2,000 input-perturbation replications) for sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets — grading begins May 2026 when first predictions reach their T+90 horizon. See Validation page for live progress.",
   },
   {
     date: "2026-02-27",
@@ -104,7 +112,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "model",
     title: "Three-tier alert classification — TIER-1, TIER-2, TIER-3",
-    body: "TIER-1: P(IPC Phase 3+) > 90% — IPC Phase 4–5 probable within 90 days. Triggers immediate email alert to all subscribers. TIER-2: P 70–90% — IPC Phase 3 likely, enhanced monitoring indicated. TIER-3: P 50–70% — elevated risk, watch status, monthly newsletter. Thresholds set to balance precision (84%) and recall (91%) for Tier I across back-validation dataset.",
+    body: "TIER-1: P(IPC Phase 3+) ≥ 0.70 or P(IPC 4+) ≥ 0.50 — high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC Phase 3+) ≥ 0.45 or CRITICAL convergence — elevated risk, enhanced monitoring. TIER-3: P < 0.45 — watch status, included in weekly digest. Thresholds author-specified at initialisation; prospective calibration ongoing from May 2026.",
   },
 ];
 

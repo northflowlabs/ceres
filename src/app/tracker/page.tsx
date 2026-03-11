@@ -48,15 +48,16 @@ function Sparkline({ data, width = 320, height = 80 }: { data: RegionSnapshot[];
     const sorted = [...data].sort((a, b) => a.run_date.localeCompare(b.run_date));
     const xs = sorted.map((_, i) => (i / (sorted.length - 1)) * width);
     const ys = sorted.map(s => height - s.p_ipc3plus_90d * (height - 8) - 4);
-    const ciLow  = sorted.map(s => height - s.ci_90_low  * (height - 8) - 4);
-    const ciHigh = sorted.map(s => height - s.ci_90_high * (height - 8) - 4);
+    const hasCi = sorted.every(s => s.ci_90_low != null && s.ci_90_high != null);
+    const ciLow  = hasCi ? sorted.map(s => height - s.ci_90_low!  * (height - 8) - 4) : [];
+    const ciHigh = hasCi ? sorted.map(s => height - s.ci_90_high! * (height - 8) - 4) : [];
 
     const linePath  = sorted.map((_, i) => `${i === 0 ? "M" : "L"}${xs[i].toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
-    const ciPath = [
+    const ciPath = hasCi ? [
       ...sorted.map((_, i) => `${i === 0 ? "M" : "L"}${xs[i].toFixed(1)},${ciHigh[i].toFixed(1)}`),
       ...sorted.map((_, i) => `L${xs[sorted.length - 1 - i].toFixed(1)},${ciLow[sorted.length - 1 - i].toFixed(1)}`),
       "Z",
-    ].join(" ");
+    ].join(" ") : null;
 
     return { linePath, ciPath, sorted, xs, ys };
   }, [data, width, height]);
@@ -69,7 +70,7 @@ function Sparkline({ data, width = 320, height = 80 }: { data: RegionSnapshot[];
       <line x1={0} y1={height - 0.5 * (height - 8) - 4} x2={width} y2={height - 0.5 * (height - 8) - 4}
         stroke="var(--border)" strokeWidth={1} strokeDasharray="3 3" />
       {/* CI band */}
-      <path d={pts.ciPath} fill="var(--earth)" fillOpacity={0.1} />
+      {pts.ciPath && <path d={pts.ciPath} fill="var(--earth)" fillOpacity={0.1} />}
       {/* Main line */}
       <path d={pts.linePath} fill="none" stroke="var(--earth)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
       {/* Latest dot */}
@@ -257,7 +258,7 @@ export default function TrackerPage() {
                           {fmtPct(selSnap.p_ipc3plus_90d)}
                         </div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: tierColor(selSnap.alert_tier), marginTop: 4 }}>
-                          {selSnap.alert_tier} · CI [{fmtPct(selSnap.ci_90_low)}–{fmtPct(selSnap.ci_90_high)}]
+                          {selSnap.alert_tier}{selSnap.ci_90_low != null && selSnap.ci_90_high != null ? ` · SI [${fmtPct(selSnap.ci_90_low)}–${fmtPct(selSnap.ci_90_high)}]` : ""}
                         </div>
                       </div>
                     </div>
@@ -300,8 +301,8 @@ export default function TrackerPage() {
                           <div key={s.run_id} style={{ display: "grid", gridTemplateColumns: "100px 80px 80px 80px 80px 1fr", gap: 0, padding: "8px 0", borderBottom: "1px solid var(--border-light)" }}>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink)" }}>{fmtDateShort(s.run_date)}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: tierColor(s.alert_tier), fontWeight: 600 }}>{fmtPct(s.p_ipc3plus_90d)}</div>
-                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{fmtPct(s.ci_90_low)}</div>
-                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{fmtPct(s.ci_90_high)}</div>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{s.ci_90_low != null ? fmtPct(s.ci_90_low) : "—"}</div>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{s.ci_90_high != null ? fmtPct(s.ci_90_high) : "—"}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "0 6px", color: tierColor(s.alert_tier) }}>{s.alert_tier}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "0 6px", color: "var(--ink-light)" }}>{s.driver_types.slice(0, 3).join(", ")}</div>
                           </div>

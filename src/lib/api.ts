@@ -188,8 +188,8 @@ export interface RegionSnapshot {
   p_ipc3plus_90d:         number;
   p_ipc4plus_90d:         number;
   p_famine_90d:           number;
-  ci_90_low:              number;
-  ci_90_high:             number;
+  ci_90_low:              number | null;
+  ci_90_high:             number | null;
   ipc_phase_forecast:     number;
   composite_stress_score: number;
   convergence_tier:       string;
