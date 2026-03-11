@@ -292,19 +292,38 @@ export default function ApiAccessPage() {
         el.style.borderLeftColor = active ? "var(--earth)" : "transparent";
       });
     }
-    function onScroll() {
-      const offset = 80;
+    function getActive() {
+      const scrollY = window.scrollY + 100;
       let activeId = ids[0];
       for (const id of ids) {
         const el = document.getElementById(id);
         if (!el) continue;
-        if (el.getBoundingClientRect().top <= offset) activeId = id;
+        if (el.offsetTop <= scrollY) activeId = id;
       }
-      setActive(activeId);
+      return activeId;
     }
+    function onScroll() { setActive(getActive()); }
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    setActive(getActive());
+    // Delegated click on nav — works regardless of when refs populate
+    const nav = document.querySelector(".methodology-toc");
+    function onNavClick(e: Event) {
+      const a = (e.target as HTMLElement).closest("a[href^='#']");
+      if (!a) return;
+      e.preventDefault();
+      const id = a.getAttribute("href")!.slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        const top = target.offsetTop - 72;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+      setActive(id);
+    }
+    nav?.addEventListener("click", onNavClick);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      nav?.removeEventListener("click", onNavClick);
+    };
   }, []);
 
   async function handleCheckoutSubmit(email: string, org: string) {
