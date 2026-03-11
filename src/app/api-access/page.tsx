@@ -249,6 +249,25 @@ const section = { marginBottom: 56, paddingBottom: 56, borderBottom: "1px solid 
 
 export default function ApiAccessPage() {
   const tocRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const activeRef = useRef<string>(TOC[0].id);
+
+  function setActive(id: string) {
+    activeRef.current = id;
+    Object.entries(tocRefs.current).forEach(([sid, el]) => {
+      if (!el) return;
+      const on = sid === id;
+      el.style.color = on ? "var(--earth)" : "var(--ink-light)";
+      el.style.borderLeftColor = on ? "var(--earth)" : "transparent";
+    });
+  }
+
+  function scrollToSection(id: string) {
+    const target = document.getElementById(id);
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top, behavior: "smooth" });
+    setActive(id);
+  }
   const [modalTier,       setModalTier]       = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError,   setCheckoutError]   = useState<string | null>(null);
@@ -283,56 +302,44 @@ export default function ApiAccessPage() {
 
   useEffect(() => {
     const ids = TOC.map(t => t.id);
-    let clickScrolling = false;
-    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
 
-    function setActive(id: string) {
-      ids.forEach(sid => {
-        const el = tocRefs.current[sid];
-        if (!el) return;
-        const active = sid === id;
-        el.style.color = active ? "var(--earth)" : "var(--ink-light)";
-        el.style.borderLeftColor = active ? "var(--earth)" : "transparent";
-      });
+    // Init active on load
+    let init = ids[0];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 120) init = id;
     }
-    function getActive() {
-      let activeId = ids[0];
-      for (const id of ids) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        if (el.getBoundingClientRect().top <= 120) activeId = id;
-      }
-      return activeId;
-    }
-    function onScroll() {
-      if (clickScrolling) return;
-      setActive(getActive());
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    setActive(getActive());
-    // Delegated click on nav — works regardless of when refs populate
-    const nav = document.querySelector(".api-toc");
-    function onNavClick(e: Event) {
-      const a = (e.target as HTMLElement).closest("a[href^='#']");
-      if (!a) return;
-      e.preventDefault();
-      const id = a.getAttribute("href")!.slice(1);
-      const target = document.getElementById(id);
-      if (target) {
-        clickScrolling = true;
-        if (scrollTimer) clearTimeout(scrollTimer);
-        const top = target.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: "smooth" });
-        setActive(id);
-        scrollTimer = setTimeout(() => { clickScrolling = false; }, 800);
-      }
-    }
-    nav?.addEventListener("click", onNavClick);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      nav?.removeEventListener("click", onNavClick);
-      if (scrollTimer) clearTimeout(scrollTimer);
-    };
+    setActive(init);
+
+    // IntersectionObserver for scroll-spy
+    const observed = new Map<string, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(e => {
+          observed.set(e.target.id, e.intersectionRatio);
+        });
+        let best = activeRef.current;
+        let bestTop = Infinity;
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const ratio = observed.get(id) ?? 0;
+          if (ratio > 0) {
+            const top = el.getBoundingClientRect().top;
+            if (top < bestTop) { bestTop = top; best = id; }
+          }
+        });
+        setActive(best);
+      },
+      { rootMargin: "-64px 0px -40% 0px", threshold: [0, 0.1, 0.5, 1] }
+    );
+
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   async function handleCheckoutSubmit(email: string, org: string) {
@@ -453,11 +460,14 @@ export default function ApiAccessPage() {
         <nav className="api-toc" style={{ position: "sticky", top: 64, alignSelf: "start", padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 12 }}>Contents</div>
           {TOC.map(({ id, label }) => (
-            <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }} style={{
-              display: "block", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.06em",
-              color: "var(--ink-light)", textDecoration: "none", padding: "5px 0 5px 10px",
-              borderLeft: "2px solid transparent", marginLeft: -10, transition: "all 0.15s", lineHeight: 1.4,
-            }}>
+            <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }}
+              onClick={(e) => { e.preventDefault(); scrollToSection(id); }}
+              style={{
+                display: "block", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.06em",
+                color: "var(--ink-light)", textDecoration: "none", padding: "5px 0 5px 10px",
+                borderLeft: "2px solid transparent", marginLeft: -10, transition: "all 0.15s", lineHeight: 1.4,
+                cursor: "pointer",
+              }}>
               {label}
             </a>
           ))}
