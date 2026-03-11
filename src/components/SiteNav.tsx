@@ -4,20 +4,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
-const LINKS = [
-  { href: "/",             label: "Dashboard"    },
-  { href: "/regions",      label: "Regions"      },
-  { href: "/map",          label: "Map"          },
-  { href: "/subnational",  label: "Sub-national" },
-  { href: "/tracker",      label: "Track Record" },
-  { href: "/validation",   label: "Validation"   },
-  { href: "/impact",       label: "Impact"       },
-  { href: "/methodology",  label: "Methodology"  },
-  { href: "/data",         label: "Data"         },
-  { href: "/about",        label: "About"        },
-  { href: "/api-access",   label: "API"          },
-  { href: "/login",        label: "Sign In"      },
+const PRIMARY_LINKS = [
+  { href: "/",            label: "Dashboard"   },
+  { href: "/regions",     label: "Regions"     },
+  { href: "/map",         label: "Map"         },
+  { href: "/subnational", label: "Sub-national" },
+  { href: "/methodology", label: "Methodology" },
+  { href: "/api-access",  label: "API"         },
+  { href: "/about",       label: "About"       },
 ];
+
+const MORE_LINKS = [
+  { href: "/tracker",    label: "Track Record" },
+  { href: "/validation", label: "Validation"   },
+  { href: "/impact",     label: "Impact"       },
+  { href: "/data",       label: "Data"         },
+  { href: "/changelog",  label: "Changelog"    },
+];
+
+const ALL_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS, { href: "/login", label: "Sign In" }];
 
 const MOBILE_BREAKPOINT = 1024;
 
@@ -25,6 +30,7 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
@@ -80,16 +86,16 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
 
         {/* Desktop nav links — hidden on mobile */}
         {!isMobile && (
-          <div style={{ display: "flex", alignItems: "center", padding: "0 16px" }}>
-            {LINKS.map(({ href, label }) => {
+          <div style={{ display: "flex", alignItems: "center", padding: "0 8px", flexShrink: 1, minWidth: 0 }}>
+            {PRIMARY_LINKS.map(({ href, label }) => {
               const active = pathname === href || (href !== "/" && pathname.startsWith(href));
               return (
                 <Link key={href} href={href} style={{
-                  fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em",
+                  fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.10em",
                   textTransform: "uppercase", textDecoration: "none",
                   color: active ? "var(--earth)" : "var(--ink-light)",
-                  padding: "0 14px", height: "100%",
-                  display: "flex", alignItems: "center",
+                  padding: "0 10px", height: "100%",
+                  display: "flex", alignItems: "center", whiteSpace: "nowrap",
                   borderBottom: active ? "2px solid var(--earth)" : "2px solid transparent",
                   marginBottom: -2, transition: "all 0.15s",
                 }}>
@@ -97,6 +103,45 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
                 </Link>
               );
             })}
+            {/* More dropdown */}
+            <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center" }}
+              onMouseEnter={() => setMoreOpen(true)}
+              onMouseLeave={() => setMoreOpen(false)}
+            >
+              <button style={{
+                fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.10em",
+                textTransform: "uppercase", background: "none", border: "none",
+                color: MORE_LINKS.some(l => pathname.startsWith(l.href)) ? "var(--earth)" : "var(--ink-light)",
+                padding: "0 10px", height: "100%", cursor: "pointer", whiteSpace: "nowrap",
+                borderBottom: MORE_LINKS.some(l => pathname.startsWith(l.href)) ? "2px solid var(--earth)" : "2px solid transparent",
+                marginBottom: -2,
+              }}>
+                More ▾
+              </button>
+              {moreOpen && (
+                <div style={{
+                  position: "absolute", top: "100%", left: 0, zIndex: 2000,
+                  background: "var(--parchment)", border: "1px solid var(--border)",
+                  boxShadow: "3px 3px 0 rgba(0,0,0,0.08)", minWidth: 160,
+                }}>
+                  {MORE_LINKS.map(({ href, label }) => {
+                    const active = pathname.startsWith(href);
+                    return (
+                      <Link key={href} href={href} onClick={() => setMoreOpen(false)} style={{
+                        display: "block", padding: "10px 16px",
+                        fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.10em",
+                        textTransform: "uppercase", textDecoration: "none",
+                        color: active ? "var(--earth)" : "var(--ink-light)",
+                        borderBottom: "1px solid var(--border-light)",
+                        background: active ? "var(--parchment-dark)" : "transparent",
+                      }}>
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -149,7 +194,7 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
 
         {/* Links */}
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-          {LINKS.map(({ href, label }) => {
+          {ALL_LINKS.map(({ href, label }) => {
             const active = pathname === href || (href !== "/" && pathname.startsWith(href));
             return (
               <Link key={href} href={href}
