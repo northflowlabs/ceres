@@ -136,8 +136,9 @@ export default function CeresMap() {
         zoom: 3,
         minZoom: 2,
         maxZoom: 8,
-        zoomControl: true,
+        zoomControl: false,
       });
+      L.control.zoom({ position: "bottomleft" }).addTo(map);
 
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
         attribution: "© OpenStreetMap contributors © CARTO",
@@ -303,14 +304,14 @@ export default function CeresMap() {
   const t3 = activePreds.filter(p => p.alert_tier === "TIER-3").length;
 
   return (
-    <div style={{ display: "flex", gap: 0, marginTop: 24, flex: 1, minHeight: 580 }}>
+    <div style={{ display: "flex", gap: 0, marginTop: 24, height: 620 }}>
 
       {/* Map container */}
-      <div style={{ flex: 1, position: "relative", border: "1px solid var(--border)" }}>
+      <div style={{ flex: 1, position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
 
-        {/* Layer switcher */}
+        {/* Layer switcher — top-right to avoid zoom controls */}
         <div style={{
-          position: "absolute", top: 12, left: 12, zIndex: 1000,
+          position: "absolute", top: 12, right: 12, zIndex: 1000,
           background: "white", border: "1px solid var(--border)", display: "flex", gap: 0,
           boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
         }}>
@@ -339,7 +340,7 @@ export default function CeresMap() {
         )}
 
         {/* Leaflet map div */}
-        <div ref={mapRef} style={{ width: "100%", height: "100%", minHeight: 560 }} />
+        <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
       </div>
 
       {/* Side panel */}
