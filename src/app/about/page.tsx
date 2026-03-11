@@ -6,7 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 const ADAPTERS = [
   { color: "var(--watch)",   name: "GAIA — Astrophysics",        desc: "Space research intelligence · ESO, ESA, academic journals · Operational" },
   { color: "var(--warning)", name: "ORION — Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus · In development" },
-  { color: "var(--watch)",   name: "OFW — Deforestation",        desc: "forestwatch.northflow.no · EU DG ENV, NGOs, investigative journalists · Live" },
+  { color: "var(--watch)",   name: "OFW — Deforestation",        desc: "EU DG ENV, NGOs, investigative journalists · In development" },
   { color: "var(--watch)",   name: "MARVIS — Maritime",          desc: "Maritime AI Validation & Intelligence System · In development" },
   { color: "var(--earth)",   name: "CERES — Famine Early Warning", desc: "This system · Probabilistic · 43 countries · Live" },
 ];
