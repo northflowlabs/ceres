@@ -55,14 +55,15 @@ function Sparkline({ data }: { data: RegionSnapshot[] }) {
     const sorted = [...data].sort((a, b) => a.run_date.localeCompare(b.run_date));
     const xs = sorted.map((_, i) => (i / (sorted.length - 1)) * W);
     const ys = sorted.map(s => H - s.p_ipc3plus_90d * (H - 10) - 5);
-    const cL = sorted.map(s => H - s.ci_90_low  * (H - 10) - 5);
-    const cH = sorted.map(s => H - s.ci_90_high * (H - 10) - 5);
+    const hasCi = sorted.every(s => s.ci_90_low != null && s.ci_90_high != null);
+    const cL = hasCi ? sorted.map(s => H - s.ci_90_low!  * (H - 10) - 5) : [];
+    const cH = hasCi ? sorted.map(s => H - s.ci_90_high! * (H - 10) - 5) : [];
     const line = sorted.map((_, i) => `${i === 0 ? "M" : "L"}${xs[i].toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
-    const ci = [
+    const ci = hasCi ? [
       ...sorted.map((_, i) => `${i === 0 ? "M" : "L"}${xs[i].toFixed(1)},${cH[i].toFixed(1)}`),
       ...sorted.map((_, i) => `L${xs[sorted.length-1-i].toFixed(1)},${cL[sorted.length-1-i].toFixed(1)}`),
       "Z",
-    ].join(" ");
+    ].join(" ") : null;
     const last = sorted[sorted.length - 1];
     return { line, ci, xs, ys, sorted, last };
   }, [data]);
@@ -87,7 +88,7 @@ function Sparkline({ data }: { data: RegionSnapshot[] }) {
         <line x1={0} y1={H - 0.75*(H-10) - 5} x2={W} y2={H - 0.75*(H-10) - 5}
           stroke="var(--border)" strokeWidth={1} strokeDasharray="4 4" />
         {/* CI band */}
-        <path d={pts.ci} fill={color} fillOpacity={0.1} />
+        {pts.ci && <path d={pts.ci} fill={color} fillOpacity={0.1} />}
         {/* Main line */}
         <path d={pts.line} fill="none" stroke={color} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
         {/* Latest dot */}
