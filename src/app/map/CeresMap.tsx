@@ -44,6 +44,8 @@ interface Prediction {
   food_access_stress: number;
   ipc_stress: number;
   price_stress: number;
+  ci_90_low?: number | null;
+  ci_90_high?: number | null;
   reference_date?: string;
   centroid_lat?: number;
   centroid_lon?: number;
@@ -55,6 +57,8 @@ interface SelectedFeature {
   tier: string;
   p3: number;
   p4: number;
+  ciLow: number | null;
+  ciHigh: number | null;
   css: number;
   conflict: number;
   drought: number;
@@ -138,7 +142,6 @@ export default function CeresMap() {
         maxZoom: 8,
         zoomControl: false,
       });
-      L.control.zoom({ position: "bottomleft" }).addTo(map);
 
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
         attribution: "© OpenStreetMap contributors © CARTO",
@@ -221,6 +224,8 @@ export default function CeresMap() {
                 tier: pred.alert_tier,
                 p3: pred.p_ipc3plus_90d,
                 p4: pred.p_ipc4plus_90d,
+                ciLow: pred.ci_90_low ?? null,
+                ciHigh: pred.ci_90_high ?? null,
                 css: pred.composite_stress_score,
                 conflict: pred.conflict_stress,
                 drought: pred.drought_stress,
@@ -255,6 +260,8 @@ export default function CeresMap() {
             tier,
             p3: p.p_ipc3plus_90d,
             p4: p.p_ipc4plus_90d,
+            ciLow: p.ci_90_low ?? null,
+            ciHigh: p.ci_90_high ?? null,
             css: p.composite_stress_score,
             conflict: p.conflict_stress,
             drought: p.drought_stress,
@@ -287,6 +294,8 @@ export default function CeresMap() {
             tier,
             p3: p.p_ipc3plus_90d,
             p4: p.p_ipc4plus_90d,
+            ciLow: p.ci_90_low ?? null,
+            ciHigh: p.ci_90_high ?? null,
             css: p.composite_stress_score,
             conflict: p.conflict_stress,
             drought: p.drought_stress,
@@ -317,7 +326,26 @@ export default function CeresMap() {
       {/* Map container */}
       <div style={{ flex: 1, position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
 
-        {/* Layer switcher — top-right to avoid zoom controls */}
+        {/* Zoom controls — bottom-left inside container (avoids overflow:hidden clipping) */}
+        <div style={{
+          position: "absolute", bottom: 16, left: 12, zIndex: 1000,
+          display: "flex", flexDirection: "column", gap: 1,
+        }}>
+          {([["+", 1], ["-", -1]] as const).map(([label, delta]) => (
+            <button key={label} onClick={() => {
+              if (mapInstance.current) mapInstance.current.setZoom(mapInstance.current.getZoom() + delta);
+            }} style={{
+              width: 28, height: 28,
+              background: "white", border: "1px solid var(--border)",
+              fontFamily: "var(--mono)", fontSize: 16, fontWeight: 400,
+              color: "var(--ink)", cursor: "pointer", lineHeight: 1,
+              boxShadow: "0 1px 4px rgba(0,0,0,0.10)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>{label}</button>
+          ))}
+        </div>
+
+        {/* Layer switcher — top-right */}
         <div style={{
           position: "absolute", top: 12, right: 12, zIndex: 1000,
           background: "white", border: "1px solid var(--border)", display: "flex", gap: 0,
@@ -411,7 +439,7 @@ export default function CeresMap() {
               padding: "3px 9px", display: "inline-block", marginBottom: 18,
             }}>{selected.tier} · {TIER_LABEL[selected.tier]}</span>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
               {[
                 { label: "P(IPC 3+)", val: fmtPct(selected.p3), color: TIER_FILL[selected.tier] },
                 { label: "P(IPC 4+)", val: fmtPct(selected.p4), color: "#78716C" },
@@ -421,6 +449,13 @@ export default function CeresMap() {
                   <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color, lineHeight: 1 }}>{val}</div>
                 </div>
               ))}
+            </div>
+
+            {/* Sensitivity interval row */}
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginBottom: 20 }}>
+              {selected.ciLow != null && selected.ciHigh != null
+                ? `SI [${fmtPct(selected.ciLow)} – ${fmtPct(selected.ciHigh)}] · Input-perturbation`
+                : "SI Pending · Populating May 2026"}
             </div>
 
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Stress Drivers</div>
