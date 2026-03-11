@@ -72,7 +72,7 @@
     -moz-osx-font-smoothing: grayscale;
     background: var(--parchment);
     color: var(--ink);
-    overflow-x: hidden;
+    overflow-x: clip;
     scroll-padding-top: 72px;
   }
 
@@ -81,7 +81,7 @@
     color: var(--ink);
     font-size: 14px;
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
 
