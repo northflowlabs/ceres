@@ -142,22 +142,21 @@ export default function SubnationalPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_BASE}/v1/admin1/predictions?limit=700`)
-      .then(r => r.json())
-      .then(data => setRows(Array.isArray(data) ? data : []))
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (resolution !== "admin2" || a2rows.length > 0) return;
     setA2loading(true);
-    fetch(`${API_BASE}/v1/admin2/predictions?limit=500`)
-      .then(r => r.json())
-      .then(data => setA2rows(Array.isArray(data) ? data : []))
-      .catch(e => setA2error(e.message))
-      .finally(() => setA2loading(false));
-  }, [resolution]);
+    Promise.all([
+      fetch(`${API_BASE}/v1/admin1/predictions?limit=700`).then(r => r.json()).catch(() => []),
+      fetch(`${API_BASE}/v1/admin2/predictions?limit=500`).then(r => r.json()).catch(() => []),
+    ]).then(([a1, a2]) => {
+      setRows(Array.isArray(a1) ? a1 : []);
+      setA2rows(Array.isArray(a2) ? a2 : []);
+    }).catch(e => {
+      setError(e.message);
+      setA2error(e.message);
+    }).finally(() => {
+      setLoading(false);
+      setA2loading(false);
+    });
+  }, []);
 
   const activeRows = resolution === "admin1" ? rows : a2rows;
   const activeLoading = resolution === "admin1" ? loading : a2loading;
@@ -244,10 +243,10 @@ export default function SubnationalPage() {
         </div>
         <div style={{ display: "flex", gap: 40, marginTop: 32, flexWrap: "wrap" }}>
           {[
-            { num: loading ? "—" : rows.length,    label: "Admin1 Units",          color: "var(--ink)"     },
-            { num: loading ? "—" : nCountries,      label: "Countries",             color: "var(--earth)"   },
-            { num: loading ? "—" : tier1Count,      label: "TIER-1 · Critical",     color: "var(--crisis)"  },
-            { num: loading ? "—" : tier2Count,      label: "TIER-2 · Warning",      color: "var(--warning)" },
+            { num: activeLoading ? "—" : activeRows.length, label: resolution === "admin1" ? "Admin1 Units" : "Admin2 Units", color: "var(--ink)"     },
+            { num: activeLoading ? "—" : nCountries,        label: "Countries",             color: "var(--earth)"   },
+            { num: activeLoading ? "—" : tier1Count,        label: "TIER-1 · Critical",     color: "var(--crisis)"  },
+            { num: activeLoading ? "—" : tier2Count,        label: "TIER-2 · Warning",      color: "var(--warning)" },
           ].map(({ num, label, color }) => (
             <div key={label}>
               <div style={{ fontFamily: "var(--display)", fontSize: 32, fontWeight: 700, color, lineHeight: 1 }}>{num}</div>
@@ -279,7 +278,7 @@ export default function SubnationalPage() {
             <option value="TIER-3">TIER-3 · Watch</option>
           </select>
           <div style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-            {loading ? "Loading…" : `${filtered.length} units`}
+            {activeLoading ? "Loading…" : `${filtered.length} units`}
           </div>
         </div>
 
