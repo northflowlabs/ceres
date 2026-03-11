@@ -234,7 +234,7 @@ export default function ValidationPage() {
                     <span style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "2px 7px", color: tierColor(g.predicted_tier), border: `1px solid currentColor`, opacity: 0.85 }}>{g.predicted_tier}</span>
                   </td>
                   <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", color: tierColor(g.predicted_tier) }}>{fmtPct(g.p_ipc3plus_90d)}</td>
-                  <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>[{fmtPct(g.ci_90_low)}–{fmtPct(g.ci_90_high)}]</td>
+                  <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>[{fmtPct(g.sensitivity_interval_low)}–{fmtPct(g.sensitivity_interval_high)}]</td>
                   <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10 }}>{g.horizon_date}</td>
                   <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontWeight: 600, color: g.actual_ipc_phase >= 3 ? "var(--crisis)" : "var(--watch)" }}>IPC {g.actual_ipc_phase}</td>
                   <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10 }}>{g.brier_score.toFixed(4)}</td>

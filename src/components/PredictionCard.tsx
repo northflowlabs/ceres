@@ -77,7 +77,7 @@ export default function PredictionCard({ prediction: p, rank, onClick }: Predict
                 {pct(p.p_ipc3plus_90d)}
               </span>
               <span className="text-[10px] text-slate-600 font-mono">
-                {p.ci_90_low != null && p.ci_90_high != null ? ciStr(p.ci_90_low, p.ci_90_high) : "Pending"}
+                {p.sensitivity_interval_low != null && p.sensitivity_interval_high != null ? ciStr(p.sensitivity_interval_low, p.sensitivity_interval_high) : "Pending"}
               </span>
             </div>
           </div>
@@ -87,8 +87,8 @@ export default function PredictionCard({ prediction: p, rank, onClick }: Predict
             <div
               className="absolute h-full rounded-full opacity-30"
               style={{
-                left:  p.ci_90_low != null ? `${p.ci_90_low * 100}%` : "0%",
-                width: p.ci_90_low != null && p.ci_90_high != null ? `${(p.ci_90_high - p.ci_90_low) * 100}%` : "0%",
+                left:  p.sensitivity_interval_low != null ? `${p.sensitivity_interval_low * 100}%` : "0%",
+                width: p.sensitivity_interval_low != null && p.sensitivity_interval_high != null ? `${(p.sensitivity_interval_high - p.sensitivity_interval_low) * 100}%` : "0%",
                 backgroundColor: stressColor(p.p_ipc3plus_90d),
               }}
             />

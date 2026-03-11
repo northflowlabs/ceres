@@ -58,10 +58,10 @@ export default function ProbabilityChart({ predictions, onSelect, selected }: Pr
       region_id: p.region_id,
       ipc3: p.p_ipc3plus_90d,
       ipc4: p.p_ipc4plus_90d,
-      ci_lo: p.ci_90_low,
-      ci_hi: p.ci_90_high,
-      err: (p.ci_90_low != null && p.ci_90_high != null)
-        ? [p.p_ipc3plus_90d - p.ci_90_low, p.ci_90_high - p.p_ipc3plus_90d] as [number, number]
+      ci_lo: p.sensitivity_interval_low,
+      ci_hi: p.sensitivity_interval_high,
+      err: (p.sensitivity_interval_low != null && p.sensitivity_interval_high != null)
+        ? [p.p_ipc3plus_90d - p.sensitivity_interval_low, p.sensitivity_interval_high - p.p_ipc3plus_90d] as [number, number]
         : [0, 0] as [number, number],
       tier: p.alert_tier,
     }));

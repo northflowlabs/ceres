@@ -44,8 +44,8 @@ interface Prediction {
   food_access_stress: number;
   ipc_stress: number;
   price_stress: number;
-  ci_90_low?: number | null;
-  ci_90_high?: number | null;
+  sensitivity_interval_low?: number | null;
+  sensitivity_interval_high?: number | null;
   reference_date?: string;
   centroid_lat?: number;
   centroid_lon?: number;
@@ -224,8 +224,8 @@ export default function CeresMap() {
                 tier: pred.alert_tier,
                 p3: pred.p_ipc3plus_90d,
                 p4: pred.p_ipc4plus_90d,
-                ciLow: pred.ci_90_low ?? null,
-                ciHigh: pred.ci_90_high ?? null,
+                ciLow: pred.sensitivity_interval_low ?? null,
+                ciHigh: pred.sensitivity_interval_high ?? null,
                 css: pred.composite_stress_score,
                 conflict: pred.conflict_stress,
                 drought: pred.drought_stress,
@@ -260,8 +260,8 @@ export default function CeresMap() {
             tier,
             p3: p.p_ipc3plus_90d,
             p4: p.p_ipc4plus_90d,
-            ciLow: p.ci_90_low ?? null,
-            ciHigh: p.ci_90_high ?? null,
+            ciLow: p.sensitivity_interval_low ?? null,
+            ciHigh: p.sensitivity_interval_high ?? null,
             css: p.composite_stress_score,
             conflict: p.conflict_stress,
             drought: p.drought_stress,
@@ -294,8 +294,8 @@ export default function CeresMap() {
             tier,
             p3: p.p_ipc3plus_90d,
             p4: p.p_ipc4plus_90d,
-            ciLow: p.ci_90_low ?? null,
-            ciHigh: p.ci_90_high ?? null,
+            ciLow: p.sensitivity_interval_low ?? null,
+            ciHigh: p.sensitivity_interval_high ?? null,
             css: p.composite_stress_score,
             conflict: p.conflict_stress,
             drought: p.drought_stress,

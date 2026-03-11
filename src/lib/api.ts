@@ -147,8 +147,8 @@ export interface GradeRecord {
   graded_at:        string;
   predicted_tier:   string;
   p_ipc3plus_90d:   number;
-  ci_90_low:        number | null;
-  ci_90_high:       number | null;
+  sensitivity_interval_low:  number | null;
+  sensitivity_interval_high: number | null;
   actual_ipc_phase: number;
   outcome_ipc3plus: boolean;
   brier_score:      number;

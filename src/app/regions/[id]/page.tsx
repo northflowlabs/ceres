@@ -282,7 +282,7 @@ export default function RegionPage() {
           <StatBox label="P(Famine) 90d"    value={pred.p_famine_90d != null ? pct(pred.p_famine_90d) : "—"}      sub="IPC Phase 5" accent={(pred.p_famine_90d ?? 0) > 0.15 ? color : undefined} />
           <StatBox label="IPC Phase Forecast" value={`Phase ${pred.ipc_phase_forecast}`} sub={IPC_LABELS[pred.ipc_phase_forecast]} accent={pred.ipc_phase_forecast >= 3 ? color : undefined} />
           <StatBox label="Composite Stress" value={`${(pred.composite_stress_score * 100).toFixed(0)}/100`} sub="0 = low · 100 = extreme" />
-          <StatBox label="Sensitivity Interval" value={pred.ci_90_low != null && pred.ci_90_high != null ? `${pct(pred.ci_90_low)} – ${pct(pred.ci_90_high)}` : "Pending"} sub={pred.ci_90_low != null ? "90% SI · P(IPC 3+)" : "Populating from May 2026"} />
+          <StatBox label="Sensitivity Interval" value={pred.sensitivity_interval_low != null && pred.sensitivity_interval_high != null ? `${pct(pred.sensitivity_interval_low)} – ${pct(pred.sensitivity_interval_high)}` : "Pending"} sub={pred.sensitivity_interval_low != null ? "90% SI · P(IPC 3+)" : "Populating from May 2026"} />
         </div>
 
         {/* ── Two-column: Trend + Drivers ──────────────────────── */}

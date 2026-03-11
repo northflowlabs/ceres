@@ -11,8 +11,8 @@ interface RegionSnap {
   alert_tier:       string;
   p_ipc3plus_90d:   number;
   p_ipc4plus_90d:   number;
-  ci_90_low:        number;
-  ci_90_high:       number;
+  sensitivity_interval_low:  number | null;
+  sensitivity_interval_high: number | null;
   ipc_phase_forecast: number;
   composite_stress_score: number;
   convergence_tier: string;
@@ -114,7 +114,7 @@ function WidgetContent() {
             {!compact && (
               <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <span style={{ fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: tierColor(r.alert_tier), opacity: 0.9 }}>{r.alert_tier}</span>
-                <span style={{ fontSize: 9, color: inkMid }}>CI [{fmtPct(r.ci_90_low)}–{fmtPct(r.ci_90_high)}]</span>
+                <span style={{ fontSize: 9, color: inkMid }}>CI [{fmtPct(r.sensitivity_interval_low)}–{fmtPct(r.sensitivity_interval_high)}]</span>
                 <span style={{ fontSize: 9, color: inkMid }}>IPC {r.ipc_phase_forecast}+</span>
               </div>
             )}
