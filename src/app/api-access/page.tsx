@@ -827,7 +827,7 @@ export default function ApiAccessPage() {
               <Str>"Source: CERES (Calibrated Early-warning and Risk Estimation System),{"\n"} Northflow Technologies, 2026. ceres.northflow.no"</Str>
               {"\n\n"}
               <Cm># For academic publications, cite the paper{"\n"}</Cm>
-              <Str>"Pedersen, T.D.S. (2026). CERES: A Probabilistic Early Warning{"\n"} System for Acute Food Insecurity. arXiv:2603.09425 [stat.AP]"</Str>
+              <Str>"Pedersen, Tom Danny S. (2026). CERES: A Probabilistic Early Warning{"\n"} System for Acute Food Insecurity. arXiv:2603.09425 [stat.AP]"</Str>
             </Code>
             <p style={{ ...pStyle, marginTop: 16 }}>
               CERES predictions are provided under a Creative Commons Attribution 4.0 International licence (CC BY 4.0). Commercial use requires a Tier B or C agreement.

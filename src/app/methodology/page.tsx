@@ -276,7 +276,7 @@ export default function MethodologyPage() {
             <p style={s}>If you reference CERES predictions or methodology in published work, please use the following citation format. The paper is published on arXiv and freely available under CC BY 4.0.</p>
             <div className="methodology-formula" style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 12, color: "var(--ink)", lineHeight: 1.8, overflowX: "auto", wordBreak: "break-word" }}>
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Preferred Citation</div>
-              Pedersen, T.D.S. (2026). <em>CERES: A Probabilistic Early Warning System for Acute Food Insecurity.</em> arXiv:2603.09425 [stat.AP]. <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{color:"var(--earth)",textDecoration:"none"}}>https://arxiv.org/abs/2603.09425</a>
+              Pedersen, Tom Danny S. (2026). <em>CERES: A Probabilistic Early Warning System for Acute Food Insecurity.</em> arXiv:2603.09425 [stat.AP]. <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{color:"var(--earth)",textDecoration:"none"}}>https://arxiv.org/abs/2603.09425</a>
             </div>
           </section>
 
