@@ -109,14 +109,15 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const PIPELINE_USE = [
-  { signal: "CHIRPS SPI-3",           weight: "Drought stress sub-score",        stage: "Stress scoring"      },
-  { signal: "MODIS NDVI anomaly",      weight: "Vegetation stress sub-score",     stage: "Stress scoring"      },
-  { signal: "ACLED conflict events",   weight: "Conflict intensity sub-score",    stage: "Stress scoring"      },
-  { signal: "FEWS NET IPC estimate",   weight: "IPC phase sub-score",             stage: "Stress scoring"      },
-  { signal: "WFP VAM food access",     weight: "Food access sub-score",           stage: "Stress scoring"      },
-  { signal: "FEWS NET market prices",  weight: "Market deviation sub-score",      stage: "Stress scoring"      },
-  { signal: "IPC cadre outcome",       weight: "Ground-truth for grading",        stage: "Calibration (T+90d)" },
-  { signal: "UNHCR displacement",      weight: "HGE hypothesis corroboration",    stage: "Hypothesis generation"},
+  { signal: "CHIRPS SPI-3",            weight: "Drought stress sub-score",        stage: "Stress scoring"       },
+  { signal: "MODIS NDVI anomaly",       weight: "Vegetation stress sub-score",     stage: "Stress scoring"       },
+  { signal: "ACLED conflict events",    weight: "Conflict intensity sub-score",    stage: "Stress scoring"       },
+  { signal: "IPC phase estimate",       weight: "Food security phase sub-score",   stage: "Stress scoring"       },
+  { signal: "WFP VAM food access",      weight: "Food access sub-score",           stage: "Stress scoring"       },
+  { signal: "FAO GIEWS price index",    weight: "Market deviation sub-score",      stage: "Stress scoring"       },
+  { signal: "IPC cadre outcome",        weight: "Ground-truth for grading",        stage: "Calibration (T+90d)"  },
+  { signal: "FEWS NET outlook",         weight: "Signal corroboration (supplementary)", stage: "Hypothesis generation" },
+  { signal: "UNHCR displacement",       weight: "Signal corroboration (supplementary)", stage: "Hypothesis generation" },
 ];
 
 export default function DataPage() {
@@ -134,7 +135,7 @@ export default function DataPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Data Sources</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          CERES ingests eight open data streams covering rainfall, vegetation, conflict, food access, market prices, and displacement. All sources are publicly available. No proprietary data is used.
+          CERES ingests six formal model inputs (CHIRPS, MODIS NDVI, ACLED, IPC, WFP VAM, FAO GIEWS) plus two supplementary streams (FEWS NET, UNHCR) used for signal corroboration and hypothesis generation. All sources are publicly available. No proprietary data is used.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (
@@ -291,7 +292,7 @@ export default function DataPage() {
         <div className="data-principles-grid" style={{ margin: "48px 0 0", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           {[
             { title: "100% Open Data",      body: "Every source used by CERES is publicly available and free to access. No proprietary or licensed data is used in the pipeline." },
-            { title: "Source Provenance",   body: "Every prediction stores the data retrieval timestamps for all eight sources. Full audit trail from raw signal to probability estimate." },
+            { title: "Source Provenance",   body: "Every prediction stores the data retrieval timestamps for all ingested sources. Full audit trail from raw signal to probability estimate." },
             { title: "Latency Transparency", body: "Data latency for each source is published here. Known latency constraints are explicitly modelled as limitations in forecast uncertainty." },
           ].map(({ title, body }) => (
             <div key={title} style={{ background: "white", padding: 24 }}>

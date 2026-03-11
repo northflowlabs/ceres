@@ -7,7 +7,7 @@ import { api, GradeRecord, AggregateMetrics } from "@/lib/api";
 
 const STATIC_METRICS = [
   { val: "Pending", label: "Brier Score",        target: "< 0.10",  pass: false, pending: true },
-  { val: "Pending", label: "CI Coverage (90%)",  target: "> 88%",   pass: false, pending: true },
+  { val: "Pending", label: "SI Coverage (90%)",  target: "> 88%",   pass: false, pending: true },
   { val: "Pending", label: "Tier-I Precision",   target: "> 80%",   pass: false, pending: true },
   { val: "Pending", label: "Tier-I Recall",      target: "> 85%",   pass: false, pending: true },
 ];
@@ -81,11 +81,11 @@ function fmtPct(n: number | null) {
 }
 
 const STATIC_CAL_BINS = [
-  { label: "0–20%",   ideal: 10, actual: 18, count: 0 },
-  { label: "20–40%",  ideal: 30, actual: 37, count: 0 },
-  { label: "40–60%",  ideal: 50, actual: 58, count: 0 },
-  { label: "60–80%",  ideal: 70, actual: 77, count: 0 },
-  { label: "80–100%", ideal: 90, actual: 94, count: 0 },
+  { label: "0–20%",   ideal: 10, actual: null, count: 0 },
+  { label: "20–40%",  ideal: 30, actual: null, count: 0 },
+  { label: "40–60%",  ideal: 50, actual: null, count: 0 },
+  { label: "60–80%",  ideal: 70, actual: null, count: 0 },
+  { label: "80–100%", ideal: 90, actual: null, count: 0 },
 ];
 
 const STATIC_BREAKDOWN = [
@@ -144,7 +144,7 @@ export default function ValidationPage() {
   const runningBS  = hasLive ? computeRunningBrier(grades): [];
   const liveMetricCards = metrics && metrics.n_graded > 0 ? [
     { val: fmt(metrics.brier_score),        label: "Brier Score",      target: "< 0.10", pass: (metrics.brier_score ?? 1) < 0.10,        pending: false },
-    { val: fmtPct(metrics.ci_coverage),     label: "CI Coverage (90%)",target: "> 88%",  pass: (metrics.ci_coverage ?? 0) > 0.88,        pending: false },
+    { val: fmtPct(metrics.ci_coverage),     label: "SI Coverage (90%)",target: "> 88%",  pass: (metrics.ci_coverage ?? 0) > 0.88,        pending: false },
     { val: fmtPct(metrics.tier1_precision), label: "Tier-I Precision", target: "> 80%",  pass: (metrics.tier1_precision ?? 0) > 0.80,    pending: false },
     { val: fmtPct(metrics.tier1_recall),    label: "Tier-I Recall",    target: "> 85%",  pass: (metrics.tier1_recall ?? 0) > 0.85,       pending: false },
   ] : STATIC_METRICS;
@@ -220,7 +220,7 @@ export default function ValidationPage() {
           <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
             <thead>
               <tr>
-                {["Region","Issued","Tier","P(IPC 3+)","90% CI","Horizon","Actual IPC","Brier","Verdict"].map(h => (
+                {["Region","Issued","Tier","P(IPC 3+)","90% SI","Horizon","Actual IPC","Brier","Verdict"].map(h => (
                   <th key={h} style={th}>{h}</th>
                 ))}
               </tr>
@@ -284,12 +284,12 @@ export default function ValidationPage() {
             {hasLive ? "Live Calibration — Forward Validation" : "Retrospective Calibration — 2022–2025"}
           </div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>
-            {hasLive ? `${grades.length} Graded Predictions · Live Brier Score` : "847 Region-Months · 6 Countries · 3 Famine-Grade Events"}
+            {hasLive ? `${grades.length} Graded Predictions · Live Brier Score` : "87 IPC Records · 31 Countries · 4 Back-validation Cases"}
           </h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 24, lineHeight: 1.75 }}>
             {hasLive
               ? "Calibration computed from live graded predictions. Bins show the fraction of events that actually occurred (amber) vs. ideal calibration (grey). Each bin label is the predicted probability range."
-              : "Retrospective back-testing on 847 region-months across 6 countries. In-sample sanity check only — prospective grading begins May 2026."
+              : "Model initialised against 87 IPC transition records (2011–2023, 31 countries). 4 data-complete back-validation cases. In-sample sanity check only — prospective grading begins May 2026."
             }
           </p>
 
@@ -334,6 +334,7 @@ export default function ValidationPage() {
               })}
               {/* Static fallback points when no live data */}
               {!hasLive && STATIC_CAL_BINS.map(({ label, ideal, actual }) => {
+                if (actual === null) return null;
                 const cx = 40 + ideal * 2.4;
                 const cy = 220 - actual * 2;
                 const isWell = Math.abs(actual - ideal) <= 10;

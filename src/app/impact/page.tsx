@@ -75,7 +75,7 @@ export default function ImpactPage() {
             </p>
             {s && !s.is_live && (
               <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "8px 14px", display: "inline-block", letterSpacing: "0.06em" }}>
-                ※ Grading metrics from back-validation 2022–2025 · Forward validation begins May 2026
+                ※ CERES launched 28 February 2026 · Forward validation grading begins May 2026 · Pre-registered protocol published
               </div>
             )}
             {s?.is_live && (
@@ -106,15 +106,15 @@ export default function ImpactPage() {
         {/* Primary stats grid */}
         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "48px 0 10px" }}>Accuracy Record</div>
         <div className="impact-grid-4 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 2 }}>
-          <StatCard val={loading ? "—" : `${s?.tier1_hit_rate_pct ?? 83.8}%`} label="Tier I Hit Rate" sub="Of alerts that proved correct" accent />
-          <StatCard val={loading ? "—" : `${s?.avg_brier_score ?? 0.087}`}     label="Brier Score"    sub="Target < 0.10 · lower = better" />
-          <StatCard val={loading ? "—" : `${s?.ci_coverage_pct ?? 91.2}%`}     label="CI Coverage"    sub="90% CI contains actual outcome" />
-          <StatCard val={loading ? "—" : `${s?.avg_lead_time_days ?? 78} days`} label="Avg Lead Time"  sub="Before IPC phase escalation" />
+          <StatCard val={loading ? "—" : s?.tier1_hit_rate_pct != null ? `${s.tier1_hit_rate_pct}%` : "Pending"} label="Tier I Hit Rate" sub={s?.tier1_hit_rate_pct != null ? "Of alerts that proved correct" : "Grading from Sep 2026 · 30 TIER-1 alerts required"} accent />
+          <StatCard val={loading ? "—" : s?.avg_brier_score != null ? `${s.avg_brier_score}` : "Pending"} label="Brier Score" sub={s?.avg_brier_score != null ? "Target < 0.10 · lower = better" : "Grading from May 2026 · 100 predictions required"} />
+          <StatCard val={loading ? "—" : s?.ci_coverage_pct != null ? `${s.ci_coverage_pct}%` : "Pending"} label="SI Coverage" sub={s?.ci_coverage_pct != null ? "90% SI contains actual outcome" : "Grading from Sep 2026 · 200 predictions required"} />
+          <StatCard val={loading ? "—" : s?.avg_lead_time_days > 0 ? `${s.avg_lead_time_days} days` : "Pending"} label="Avg Lead Time" sub={s?.avg_lead_time_days > 0 ? "Before IPC phase escalation" : "Populating as T+90 grades accumulate"} />
         </div>
         <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
-          <StatCard val={loading ? "—" : `${s?.tier1_alerts_issued ?? 371}`}   label="Tier I Alerts Issued"    sub="High-probability crisis warnings" />
-          <StatCard val={loading ? "—" : `${s?.tier1_alerts_verified ?? 311}`} label="Verified Correct"        sub="Confirmed by IPC outcome" />
-          <StatCard val={loading ? "—" : `${s?.predictions_graded ?? 847}`}    label="Predictions Graded"      sub="Region-months assessed" />
+          <StatCard val={loading ? "—" : `${s?.tier1_alerts_issued ?? 0}`}   label="Tier I Alerts Issued"    sub="High-probability crisis warnings issued" />
+          <StatCard val={loading ? "—" : s?.tier1_alerts_verified != null && s.tier1_alerts_issued > 0 ? `${s.tier1_alerts_verified}` : "Pending"} label="Verified Correct" sub={s?.tier1_alerts_verified != null && s.tier1_alerts_issued > 0 ? "Confirmed by IPC outcome at T+90" : "Grading begins May 2026"} />
+          <StatCard val={loading ? "—" : `${s?.predictions_graded ?? 0}`}    label="Predictions Graded"      sub={s?.predictions_graded ? "Region-weeks assessed at T+90" : "Grading begins May 2026 · T+90 horizon"} />
         </div>
 
         {/* Operational stats */}
@@ -130,16 +130,16 @@ export default function ImpactPage() {
         <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, margin: "56px 0 0", paddingTop: 48, borderTop: "1px solid var(--border-light)" }}>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What These Numbers Mean</div>
-            <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>78 days. That is the difference.</h2>
-            <p style={p}>Standard humanitarian early warning systems issue effective alerts 30–45 days before crisis thresholds. Pre-positioning food aid and mobilising emergency logistics requires 60–90 days minimum. CERES closes that gap.</p>
-            <p style={p}>An average lead time of 78 days means a WFP programme officer using CERES receives a Tier I alert — with calibrated probability, confidence interval, and named driver causes — more than two months before IPC field cadres publish the same finding.</p>
-            <p style={p}>At an 83.8% Tier I hit rate, that lead time is operationally meaningful. Not every alert is correct. But the ones that are give humanitarian operations the window they need.</p>
+            <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>90 days. That is the target.</h2>
+            <p style={p}>Standard humanitarian early warning systems issue effective alerts 30–45 days before crisis thresholds. Pre-positioning food aid and mobilising emergency logistics requires 60–90 days minimum. CERES is designed to close that gap.</p>
+            <p style={p}>CERES issues 90-day horizon predictions — each carrying a calibrated probability, 90% sensitivity interval, and named driver causes. Every prediction is timestamped on issue and graded against IPC outcomes when the T+90 date arrives.</p>
+            <p style={p}>Prospective hit rate and lead time metrics will populate automatically from May 2026 as graded predictions accumulate. Performance targets: Brier score &lt;0.10 · Tier I precision &gt;80% · SI coverage &gt;88%.</p>
           </div>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>How We Verify</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Graded against published IPC outcomes. No exceptions.</h2>
             <p style={p}>Every CERES prediction carries a T+90 grading date. When that date arrives, we compare our probabilistic forecast against the IPC phase classification published by OCHA, FEWS NET, or the IPC Global Platform for that region.</p>
-            <p style={p}>Predictions are graded on: (1) whether our predicted tier matches the observed IPC phase, (2) whether the actual outcome fell within our 90% confidence interval, and (3) our Brier score — the standard probabilistic calibration metric used in meteorological forecasting.</p>
+            <p style={p}>Predictions are graded on: (1) whether our predicted tier matches the observed IPC phase, (2) whether the actual outcome fell within our 90% sensitivity interval, and (3) our Brier score — the standard probabilistic calibration metric used in meteorological forecasting.</p>
             <p style={p}>This ledger is public, permanent, and updated automatically. We do not remove incorrect predictions. <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>View the full ledger →</a></p>
           </div>
         </div>

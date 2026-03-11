@@ -42,6 +42,7 @@ interface Admin2Prediction {
   food_access_stress: number;
   ipc_stress: number;
   price_stress: number;
+  current_ipc_phase: number | null;
   n_signals_available: number;
   from_admin1_fallback: boolean;
   from_country_fallback: boolean;

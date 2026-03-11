@@ -69,7 +69,7 @@ export default function ProbabilityChart({ predictions, onSelect, selected }: Pr
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold text-white">90-Day Famine Probability</h3>
-          <p className="text-xs text-slate-500 mt-0.5">P(IPC 3+) with 90% bootstrap CI · sorted by severity</p>
+          <p className="text-xs text-slate-500 mt-0.5">P(IPC 3+) with 90% sensitivity interval · sorted by severity</p>
         </div>
         <div className="flex items-center gap-3 text-xs text-slate-500">
           <div className="flex items-center gap-1.5">

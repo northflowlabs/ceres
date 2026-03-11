@@ -473,7 +473,7 @@ export default function Dashboard() {
               90-Day Famine Risk — Active Monitoring
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.8 }}>
-              IPC Phase 3+ probability · Logistic model + Bootstrap CI<br />
+              IPC Phase 3+ probability · Logistic model + sensitivity intervals<br />
               Data: CHIRPS · MODIS · ACLED · FEWS NET · WFP VAM · FAO<br />
               {lastUpdated ? `Ref: ${formatDate(lastUpdated)}` : "Loading…"} · HGE v1.0
             </div>
@@ -839,10 +839,10 @@ export default function Dashboard() {
             <div className="panel-label" style={{ marginBottom: 10 }}>Forecast Accuracy Ledger</div>
             {[
               { label: "Predictions tracked", val: hypotheses.length > 0 ? String(hypotheses.length) : "—" },
-              { label: "Brier score",          val: "0.087 ↓" },
-              { label: "CI coverage (90%)",    val: "91.2%" },
-              { label: "Tier-1 precision",     val: "0.84" },
-              { label: "Tier-1 recall",        val: "0.91" },
+              { label: "Brier score",          val: "Populating May 2026" },
+              { label: "SI coverage (90%)",    val: "Populating May 2026" },
+              { label: "Tier-1 precision",     val: "Populating May 2026" },
+              { label: "Tier-1 recall",        val: "Populating May 2026" },
             ].map(({ label, val }) => (
               <div key={label} style={{
                 display: "flex", justifyContent: "space-between", alignItems: "baseline",
@@ -869,7 +869,7 @@ export default function Dashboard() {
             Mode: {error ? "OFFLINE" : "LIVE"} · HGE v1.0<br />
             Regions: {predictions.map((p) => p.region_id).join(" · ") || "loading…"}<br />
             Hypotheses: {hypotheses.length} tracked<br />
-            Horizon: 90 days · Bootstrap CI n=2,000
+            Horizon: 90 days · input-perturbation sensitivity intervals
           </div>
 
           <div style={{

@@ -13,12 +13,12 @@ export const metadata: Metadata = {
   title: "CERES — Famine Early Warning · 43 Countries · Weekly IPC Forecasts",
   description:
     "CERES publishes calibrated 90-day probability forecasts of IPC Phase 3+, 4+, and Famine conditions " +
-    "for 43 high-risk countries — updated weekly, with confidence intervals and a public verification ledger. " +
+    "for 43 high-risk countries — updated weekly, with sensitivity intervals and a public verification ledger. " +
     "Free for humanitarian, academic, and governmental use.",
   keywords: [
     "famine early warning", "food security forecast", "IPC Phase 3", "IPC Phase 4", "famine prediction",
     "FEWS NET", "WFP", "OCHA", "humanitarian intelligence", "food crisis", "acute food insecurity",
-    "ACLED", "CHIRPS", "MODIS", "calibrated probability", "Brier score", "anticipatory action",
+    "sensitivity intervals", "CHIRPS", "MODIS", "ACLED", "food security", "Brier score", "anticipatory action",
     "CERES", "Northflow Technologies", "open humanitarian data",
   ],
   authors: [{ name: "Tom Danny S. Pedersen", url: "https://northflow.no" }],

@@ -293,12 +293,12 @@ export default function ApiAccessPage() {
       });
     }
     function getActive() {
-      const scrollY = window.scrollY + 100;
       let activeId = ids[0];
       for (const id of ids) {
         const el = document.getElementById(id);
         if (!el) continue;
-        if (el.offsetTop <= scrollY) activeId = id;
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        if (top <= window.scrollY + 120) activeId = id;
       }
       return activeId;
     }
@@ -314,7 +314,7 @@ export default function ApiAccessPage() {
       const id = a.getAttribute("href")!.slice(1);
       const target = document.getElementById(id);
       if (target) {
-        const top = target.offsetTop - 72;
+        const top = target.getBoundingClientRect().top + window.scrollY - 80;
         window.scrollTo({ top, behavior: "smooth" });
       }
       setActive(id);
@@ -798,7 +798,7 @@ export default function ApiAccessPage() {
           <section id="formats" style={section}>
             <div style={sectionLabel}>&sect; 7 &mdash; Response Format</div>
             <h2 style={h2Style}>Response Format</h2>
-            <p style={pStyle}>All endpoints return JSON. Dates are ISO 8601. Probabilities are floats in [0, 1]. Confidence intervals are 90% bootstrap CIs.</p>
+            <p style={pStyle}>All endpoints return JSON. Dates are ISO 8601. Probabilities are floats in [0, 1]. Confidence intervals are 90% input-perturbation sensitivity intervals.</p>
             <Code>
               <Cm># Standard envelope{"\n"}</Cm>
               {"{\n"}
