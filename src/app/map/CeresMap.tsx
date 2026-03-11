@@ -117,21 +117,6 @@ export default function CeresMap() {
     });
   }, []);
 
-  // ── Build lookup maps ───────────────────────────────────────────────────
-  const countryMap = useRef<Map<string, Prediction>>(new Map());
-  const a1Map = useRef<Map<string, Prediction>>(new Map());
-  const a2Map = useRef<Map<string, Prediction>>(new Map());
-
-  useEffect(() => {
-    countryMap.current = new Map(predictions.map(p => [p.region_id ?? p.country_id, p]));
-  }, [predictions]);
-  useEffect(() => {
-    a1Map.current = new Map(a1preds.map(p => [p.admin1_id ?? "", p]));
-  }, [a1preds]);
-  useEffect(() => {
-    a2Map.current = new Map(a2preds.map(p => [p.admin2_id ?? "", p]));
-  }, [a2preds]);
-
   // ── Init Leaflet map ────────────────────────────────────────────────────
   useEffect(() => {
     if (!mapRef.current || mapInstance.current) return;
@@ -182,6 +167,9 @@ export default function CeresMap() {
     layerGroupRef.current.clearLayers();
 
     if (layer === "country") {
+      // Build lookup synchronously from current predictions state — avoids ref timing issues
+      const cMap = new Map(predictions.map(p => [p.region_id ?? p.country_id, p]));
+
       // Fetch country GeoJSON
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let geoData: any = null;
@@ -193,11 +181,11 @@ export default function CeresMap() {
       L.geoJSON(geoData, {
         style: (feature) => {
           const iso = feature?.properties?.ISO_A3 ?? feature?.properties?.iso_a3 ?? "";
-          const pred = countryMap.current.get(iso);
+          const pred = cMap.get(iso);
           const tier = pred?.alert_tier ?? "TIER-3";
           return {
             fillColor: TIER_FILL[tier] ?? "#78716C",
-            fillOpacity: TIER_FILL_OPACITY[tier] ?? 0.10,
+            fillOpacity: pred ? (TIER_FILL_OPACITY[tier] ?? 0.10) : 0.04,
             color: pred ? (TIER_FILL[tier] ?? "#78716C") : "#D6D3D1",
             weight: pred ? 1.2 : 0.5,
             opacity: 0.7,
@@ -205,7 +193,7 @@ export default function CeresMap() {
         },
         onEachFeature: (feature, leafletLayer) => {
           const iso = feature?.properties?.ISO_A3 ?? feature?.properties?.iso_a3 ?? "";
-          const pred = countryMap.current.get(iso);
+          const pred = cMap.get(iso);
           if (!pred) return;
           leafletLayer.on({
             mouseover: (e) => {
