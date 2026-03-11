@@ -64,8 +64,7 @@ export default function MethodologyPage() {
       for (const id of ids) {
         const el = document.getElementById(id);
         if (!el) continue;
-        const top = el.getBoundingClientRect().top + window.scrollY;
-        if (top <= window.scrollY + 120) activeId = id;
+        if (el.getBoundingClientRect().top <= 120) activeId = id;
       }
       return activeId;
     }

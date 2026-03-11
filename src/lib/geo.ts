@@ -29,6 +29,7 @@ export const CRISIS_COUNTRIES: CountryGeo[] = [
   { iso3: "COD", name: "DR Congo",     lat: -4.0,  lon: 21.8 },
   { iso3: "ZWE", name: "Zimbabwe",     lat:-20.0,  lon: 30.0 },
   { iso3: "MOZ", name: "Mozambique",   lat:-18.2,  lon: 35.0 },
+  { iso3: "PSE", name: "Palestine",    lat: 31.9,  lon: 35.2 },
 ];
 
 /** Equirectangular projection: lat/lon → SVG x/y */

@@ -297,8 +297,7 @@ export default function ApiAccessPage() {
       for (const id of ids) {
         const el = document.getElementById(id);
         if (!el) continue;
-        const top = el.getBoundingClientRect().top + window.scrollY;
-        if (top <= window.scrollY + 120) activeId = id;
+        if (el.getBoundingClientRect().top <= 120) activeId = id;
       }
       return activeId;
     }
@@ -306,7 +305,7 @@ export default function ApiAccessPage() {
     window.addEventListener("scroll", onScroll, { passive: true });
     setActive(getActive());
     // Delegated click on nav — works regardless of when refs populate
-    const nav = document.querySelector(".methodology-toc");
+    const nav = document.querySelector(".api-toc");
     function onNavClick(e: Event) {
       const a = (e.target as HTMLElement).closest("a[href^='#']");
       if (!a) return;
@@ -441,7 +440,7 @@ export default function ApiAccessPage() {
       <div className="methodology-layout" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, boxSizing: "border-box" }}>
 
         {/* Sidebar TOC */}
-        <nav className="methodology-toc" style={{ position: "sticky", top: 64, alignSelf: "start", padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
+        <nav className="api-toc" style={{ position: "sticky", top: 64, alignSelf: "start", padding: "48px 32px 48px 0", borderRight: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 12 }}>Contents</div>
           {TOC.map(({ id, label }) => (
             <a key={id} href={`#${id}`} ref={(el) => { tocRefs.current[id] = el; }} style={{

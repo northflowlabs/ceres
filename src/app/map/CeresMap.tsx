@@ -80,6 +80,12 @@ const COUNTRY_NAMES: Record<string, string> = {
 function fmtPct(v: number | null | undefined) { if (v == null) return "—"; return `${(v * 100).toFixed(1)}%`; }
 function fmtScore(v: number) { return (v * 100).toFixed(0); }
 
+function isoFromProps(p: Record<string, string>): string {
+  const raw = p.ISO_A3 ?? p.iso_a3 ?? p.ADM0_A3 ?? "";
+  if (raw === "-99" || raw === "PSX" || raw === "") return p.ISO_A3_EH ?? p.WB_A3 ?? raw;
+  return raw;
+}
+
 function stressBar(v: number) {
   const col = v >= 0.65 ? "#C0392B" : v >= 0.45 ? "#D97706" : v >= 0.25 ? "#2E7D32" : "#A8A29E";
   return (
@@ -185,7 +191,7 @@ export default function CeresMap() {
       L.geoJSON(geoData, {
         style: (feature) => {
           const p = feature?.properties ?? {};
-          const iso = p.ISO_A3 ?? p.iso_a3 ?? p.ADM0_A3 ?? p.ISO_A3_EH ?? "";
+          const iso = isoFromProps(p);
           const pred = cMap.get(iso);
           const tier = pred?.alert_tier ?? "TIER-3";
           return {
@@ -198,7 +204,7 @@ export default function CeresMap() {
         },
         onEachFeature: (feature, leafletLayer) => {
           const p = feature?.properties ?? {};
-          const iso = p.ISO_A3 ?? p.iso_a3 ?? p.ADM0_A3 ?? p.ISO_A3_EH ?? "";
+          const iso = isoFromProps(p);
           const pred = cMap.get(iso);
           if (!pred) return;
           // Set pointer cursor on monitored countries
