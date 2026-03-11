@@ -202,7 +202,7 @@ export default function WorldRiskMap({ predictions, onSelect, selected }: WorldR
         })}
 
         {/* Predictions that don't have a CRISIS_COUNTRIES entry */}
-        {predictions.filter(p => !CRISIS_COUNTRIES.find(c => c.iso3 === p.region_id)).map((pred) => {
+        {predictions.filter(p => !CRISIS_COUNTRIES.find(c => c.iso3 === p.region_id) && (p.lat !== 0 || p.lon !== 0) && p.lat != null && p.lon != null).map((pred) => {
           const [cx, cy] = project(pred.lat, pred.lon, W, H);
           const color = tierColor(pred.alert_tier);
           const r = 5 + pred.p_ipc3plus_90d * 12;
