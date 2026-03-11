@@ -181,7 +181,8 @@ export default function CeresMap() {
 
       L.geoJSON(geoData, {
         style: (feature) => {
-          const iso = feature?.properties?.ISO_A3 ?? feature?.properties?.iso_a3 ?? "";
+          const p = feature?.properties ?? {};
+          const iso = p.ISO_A3 ?? p.iso_a3 ?? p.ADM0_A3 ?? p.ISO_A3_EH ?? "";
           const pred = cMap.get(iso);
           const tier = pred?.alert_tier ?? "TIER-3";
           return {
@@ -193,18 +194,25 @@ export default function CeresMap() {
           };
         },
         onEachFeature: (feature, leafletLayer) => {
-          const iso = feature?.properties?.ISO_A3 ?? feature?.properties?.iso_a3 ?? "";
+          const p = feature?.properties ?? {};
+          const iso = p.ISO_A3 ?? p.iso_a3 ?? p.ADM0_A3 ?? p.ISO_A3_EH ?? "";
           const pred = cMap.get(iso);
           if (!pred) return;
+          // Set pointer cursor on monitored countries
+          const el = (leafletLayer as any).getElement?.();
+          if (el) el.style.cursor = "pointer";
           leafletLayer.on({
+            add: () => {
+              const el2 = (leafletLayer as any).getElement?.();
+              if (el2) el2.style.cursor = "pointer";
+            },
             mouseover: (e) => {
               e.target.setStyle({ weight: 2.5, fillOpacity: Math.min(1, (TIER_FILL_OPACITY[pred.alert_tier] ?? 0.12) + 0.2) });
+              const el3 = e.target.getElement?.();
+              if (el3) el3.style.cursor = "pointer";
             },
             mouseout: (e) => {
-              e.target.setStyle({
-                weight: 1.2,
-                fillOpacity: TIER_FILL_OPACITY[pred.alert_tier] ?? 0.12,
-              });
+              e.target.setStyle({ weight: 1.2, fillOpacity: TIER_FILL_OPACITY[pred.alert_tier] ?? 0.12 });
             },
             click: () => {
               setSelected({
