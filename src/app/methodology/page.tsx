@@ -207,6 +207,10 @@ export default function MethodologyPage() {
               SI₉₀ = [P̂₅, P̂₉₅] where P̂ₖ is the k-th percentile of the input-perturbation distribution<br />
               n_replications = 2,000 · Empirical SI coverage target: ≥88% (populating from Sep 2026)
             </div>
+            <div style={{ borderLeft: "3px solid var(--warning)", background: "#FFFBEB", border: "1px solid rgba(217,119,6,0.2)", borderLeftWidth: 3, borderLeftColor: "var(--warning)", padding: "16px 20px", margin: "32px 0 0" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--warning)", marginBottom: 8 }}>Coefficient Update — 11 March 2026</div>
+              <p style={{ fontSize: 13, color: "var(--ink-mid)", margin: 0, lineHeight: 1.75 }}>Following live deployment, the initial coefficients (arXiv v1) were found to produce logit saturation across the monitored-country distribution — all 43 regions returned P(IPC 3+) &gt; 0.99, eliminating discriminative utility. The intercept was adjusted from −2.10 to −4.50, composite_stress β from 5.80 to 3.20, convergence_score β from 2.20 to 1.40, and n_independent β from 0.40 to 0.20. The recalibrated model produces meaningful separation across the full CSS range (P = 0.036 at CSS = 0.15 through P = 0.994 at CSS = 0.85). Updated coefficients will be reflected in arXiv v2, planned alongside first prospective validation results Q3 2026.</p>
+            </div>
           </section>
 
           <section id="tiers" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
@@ -234,7 +238,7 @@ export default function MethodologyPage() {
           <section id="calibration" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 6 — Validation & Calibration</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Model Performance</h2>
-            <p style={s}>CERES is validated against 847 region-months of published IPC outcomes spanning six countries and three famine-grade events between 2022 and 2025. Four performance targets are set and continuously tracked.</p>
+            <p style={s}>CERES is validated against 87 IPC transition records spanning 31 countries between 2011 and 2023. Four prospective performance targets are set and will be populated as T+90 grading accumulates from May 2026.</p>
             <div className="methodology-metrics-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
               {METRICS.map(({ val, label, note }) => (
                 <div key={label} style={{ background: "white", padding: 20 }}>
