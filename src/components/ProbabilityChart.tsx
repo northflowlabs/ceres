@@ -17,9 +17,9 @@ interface ChartRow {
   name: string;
   region_id: string;
   ipc3: number;
-  ipc4: number;
-  ci_lo: number;
-  ci_hi: number;
+  ipc4: number | null;
+  ci_lo: number | null;
+  ci_hi: number | null;
   err: [number, number];
   tier: string;
 }
@@ -37,12 +37,12 @@ const CustomTooltip = ({ active, payload }: any) => {
         </div>
         <div className="flex justify-between gap-4">
           <span className="text-slate-400">P(IPC 4+)</span>
-          <span className="font-mono text-orange-400">{pct(d.ipc4)}</span>
+          <span className="font-mono text-orange-400">{d.ipc4 != null ? pct(d.ipc4) : "—"}</span>
         </div>
         <div className="flex justify-between gap-4">
           <span className="text-slate-400">90% CI</span>
           <span className="font-mono text-slate-300">
-            [{pct(d.ci_lo)}–{pct(d.ci_hi)}]
+            {d.ci_lo != null && d.ci_hi != null ? `[${pct(d.ci_lo)}–${pct(d.ci_hi)}]` : "Pending"}
           </span>
         </div>
       </div>
@@ -60,7 +60,9 @@ export default function ProbabilityChart({ predictions, onSelect, selected }: Pr
       ipc4: p.p_ipc4plus_90d,
       ci_lo: p.ci_90_low,
       ci_hi: p.ci_90_high,
-      err: [p.p_ipc3plus_90d - p.ci_90_low, p.ci_90_high - p.p_ipc3plus_90d] as [number, number],
+      err: (p.ci_90_low != null && p.ci_90_high != null)
+        ? [p.p_ipc3plus_90d - p.ci_90_low, p.ci_90_high - p.p_ipc3plus_90d] as [number, number]
+        : [0, 0] as [number, number],
       tier: p.alert_tier,
     }));
 

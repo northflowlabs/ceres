@@ -77,7 +77,7 @@ export default function PredictionCard({ prediction: p, rank, onClick }: Predict
                 {pct(p.p_ipc3plus_90d)}
               </span>
               <span className="text-[10px] text-slate-600 font-mono">
-                {ciStr(p.ci_90_low, p.ci_90_high)}
+                {p.ci_90_low != null && p.ci_90_high != null ? ciStr(p.ci_90_low, p.ci_90_high) : "Pending"}
               </span>
             </div>
           </div>
@@ -87,8 +87,8 @@ export default function PredictionCard({ prediction: p, rank, onClick }: Predict
             <div
               className="absolute h-full rounded-full opacity-30"
               style={{
-                left:  `${p.ci_90_low * 100}%`,
-                width: `${(p.ci_90_high - p.ci_90_low) * 100}%`,
+                left:  p.ci_90_low != null ? `${p.ci_90_low * 100}%` : "0%",
+                width: p.ci_90_low != null && p.ci_90_high != null ? `${(p.ci_90_high - p.ci_90_low) * 100}%` : "0%",
                 backgroundColor: stressColor(p.p_ipc3plus_90d),
               }}
             />
@@ -106,7 +106,7 @@ export default function PredictionCard({ prediction: p, rank, onClick }: Predict
         {/* ── Secondary metrics ─────────────────────────────────────── */}
         <div className="grid grid-cols-3 gap-2 mb-4">
           {[
-            { label: "P(IPC 4+)", value: pct(p.p_ipc4plus_90d), color: stressColor(p.p_ipc4plus_90d) },
+            { label: "P(IPC 4+)", value: p.p_ipc4plus_90d != null ? pct(p.p_ipc4plus_90d) : "—", color: stressColor(p.p_ipc4plus_90d ?? 0) },
             { label: "Forecast",  value: ipcPhaseLabel(p.ipc_phase_forecast), color: "#e2e8f0" },
             { label: "Stress",    value: `${(css * 100).toFixed(0)}%`, color: stressColor(css) },
           ].map(({ label, value, color }) => (
