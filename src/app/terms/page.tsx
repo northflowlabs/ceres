@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Use — CERES",
-  description: "Terms of Use for CERES — Calibrated Early-warning & Risk Evaluation System. Northflow Technologies AS.",
+  description: "Terms of Use for CERES — Calibrated Early-warning and Risk Estimation System. Northflow Technologies AS.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://ceres.northflow.no/terms" },
 };

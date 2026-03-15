@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — CERES",
-  description: "Privacy Policy for CERES — Calibrated Early-warning & Risk Evaluation System. Northflow Technologies AS.",
+  description: "Privacy Policy for CERES — Calibrated Early-warning and Risk Estimation System. Northflow Technologies AS.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://ceres.northflow.no/privacy" },
 };
