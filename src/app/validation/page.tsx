@@ -199,7 +199,7 @@ export default function ValidationPage() {
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
           {hasLive
             ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {grades.length} predictions graded against published IPC outcomes at T+90 days. This record updates automatically each week.</>
-            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> These are back-validation estimates from 847 region-months (2022–2025). Coefficients were set with knowledge of these outcomes — in-sample consistency check only, not a prospective performance claim. Prospective grading begins May 2026.</>
+            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> These are back-validation estimates from 87 IPC transition records, 31 countries, 2011–2023. Coefficients were set with knowledge of these outcomes — in-sample consistency check only, not a prospective performance claim. Prospective grading begins May 2026.</>
           }
         </p>
 

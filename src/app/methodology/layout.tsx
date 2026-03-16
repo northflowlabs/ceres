@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CERES Methodology — Calibrated Famine Forecasting",
     description:
-      "Full technical specification of the CERES forecasting pipeline: 8 data sources, composite stress scoring, calibrated logistic model, IPC tier classification.",
+      "Full technical specification of the CERES forecasting pipeline: six data streams, composite stress scoring, calibrated logistic model, IPC tier classification.",
     url: "https://ceres.northflow.no/methodology",
     type: "article",
   },
