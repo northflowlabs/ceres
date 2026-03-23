@@ -40,16 +40,43 @@ function StatCard({ val, label, sub, accent = false }: { val: string; label: str
   );
 }
 
+interface TierCounts {
+  tier1: number;
+  tier2: number;
+  tier3: number;
+}
+
+function countTiers(predictions: Array<{ alert_tier?: string }>): TierCounts {
+  let t1 = 0, t2 = 0, t3 = 0;
+  for (const p of predictions) {
+    if (p.alert_tier === "TIER-1") t1++;
+    else if (p.alert_tier === "TIER-2") t2++;
+    else t3++;
+  }
+  return { tier1: t1, tier2: t2, tier3: t3 };
+}
+
 export default function ImpactPage() {
   const [stats,   setStats]   = useState<ImpactStats | null>(null);
+  const [tiers,   setTiers]   = useState<TierCounts | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/v1/impact`)
+    const impactFetch = fetch(`${API_BASE}/v1/impact`)
       .then(r => r.json())
       .then(d => setStats(d))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {});
+
+    const predsFetch = fetch(`${API_BASE}/v1/predictions?limit=200`)
+      .then(r => r.json())
+      .then((preds: Array<{ alert_tier?: string }>) => {
+        if (Array.isArray(preds) && preds.length > 0) {
+          setTiers(countTiers(preds));
+        }
+      })
+      .catch(() => {});
+
+    Promise.allSettled([impactFetch, predsFetch]).finally(() => setLoading(false));
   }, []);
 
   const s = stats;
@@ -122,8 +149,8 @@ export default function ImpactPage() {
         <div className="impact-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           <StatCard val={loading ? "—" : `${s?.weekly_runs_completed ?? 0}`}  label="Weekly Runs" sub={s?.earliest_run ? `Since ${s.earliest_run}` : "Archiving active"} />
           <StatCard val={loading ? "—" : `${s?.total_snapshots ?? 0}`}        label="Archived Snapshots" sub="Region × week records" />
-          <StatCard val={loading ? "—" : `${s?.tier1_active_regions ?? 0}`}   label="Active Tier I Regions" sub="Current high-risk alerts" />
-          <StatCard val={loading ? "—" : `${s?.data_sources ?? 8}`}           label="Data Sources" sub="Open, public inputs only" />
+          <StatCard val={loading ? "—" : `${tiers?.tier1 ?? s?.tier1_active_regions ?? 0}`}   label="Active Tier I Regions" sub="Current high-risk alerts" />
+          <StatCard val={loading ? "—" : `${s?.data_sources ?? 6}`}           label="Data Sources" sub="Open, public inputs only" />
         </div>
 
         {/* What this means — narrative */}
@@ -145,15 +172,15 @@ export default function ImpactPage() {
         </div>
 
         {/* Current risk snapshot */}
-        {s && (s.tier1_active_regions > 0 || s.tier2_active_regions > 0) && (
+        {(tiers || s) && (
           <div style={{ margin: "48px 0 0", paddingTop: 48, borderTop: "1px solid var(--border-light)" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Current Risk Landscape</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Active Alerts — {new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</h2>
             <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
               {[
-                { tier: "TIER-1", n: s.tier1_active_regions, color: "var(--crisis)",  bg: "#FEF2F2", label: "Critical — IPC Phase 4+ likely" },
-                { tier: "TIER-2", n: s.tier2_active_regions, color: "var(--warning)", bg: "#FFFBEB", label: "Warning — IPC Phase 3+ likely" },
-                { tier: "TIER-3", n: s.tier3_active_regions, color: "var(--watch)",   bg: "#F0FDF4", label: "Watch — Elevated stress signals" },
+                { tier: "TIER-1", n: tiers?.tier1 ?? s?.tier1_active_regions ?? 0, color: "var(--crisis)",  bg: "#FEF2F2", label: "Critical — IPC Phase 4+ likely" },
+                { tier: "TIER-2", n: tiers?.tier2 ?? s?.tier2_active_regions ?? 0, color: "var(--warning)", bg: "#FFFBEB", label: "Warning — IPC Phase 3+ likely" },
+                { tier: "TIER-3", n: tiers?.tier3 ?? s?.tier3_active_regions ?? 0, color: "var(--watch)",   bg: "#F0FDF4", label: "Watch — Elevated stress signals" },
               ].map(({ tier, n, color, bg, label }) => (
                 <div key={tier} style={{ background: bg, border: `1px solid ${color}`, padding: "20px 28px", minWidth: 160 }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, color, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 4 }}>{tier}</div>
