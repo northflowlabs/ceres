@@ -5,6 +5,20 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8100",
   },
+  async redirects() {
+    return [
+      {
+        source: "/track-record",
+        destination: "/validation",
+        permanent: true,
+      },
+      {
+        source: "/sub-national",
+        destination: "/subnational",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

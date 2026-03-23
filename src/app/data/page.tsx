@@ -27,14 +27,14 @@ const SOURCES = [
     type: "climate",
   },
   {
-    id: "ACLED",
-    full: "Armed Conflict Location & Event Data Project",
-    provider: "ACLED",
+    id: "UCDP GED",
+    full: "Uppsala Conflict Data Program — Georeferenced Event Dataset",
+    provider: "Uppsala University",
     cadence: "Weekly",
     latency: "~3 days",
     resolution: "Point / Admin1 aggregate",
     vars: ["Conflict events (4-week)", "Fatality count", "Actor type", "Event type"],
-    url: "https://acleddata.com",
+    url: "https://ucdp.uu.se",
     type: "conflict",
   },
   {
@@ -111,7 +111,7 @@ const TYPE_LABELS: Record<string, string> = {
 const PIPELINE_USE = [
   { signal: "CHIRPS SPI-3",            weight: "Drought stress sub-score",        stage: "Stress scoring"       },
   { signal: "MODIS NDVI anomaly",       weight: "Vegetation stress sub-score",     stage: "Stress scoring"       },
-  { signal: "ACLED conflict events",    weight: "Conflict intensity sub-score",    stage: "Stress scoring"       },
+  { signal: "UCDP GED conflict events",  weight: "Conflict intensity sub-score",    stage: "Stress scoring"       },
   { signal: "IPC phase estimate",       weight: "Food security phase sub-score",   stage: "Stress scoring"       },
   { signal: "WFP VAM food access",      weight: "Food access sub-score",           stage: "Stress scoring"       },
   { signal: "FAO GIEWS price index",    weight: "Market deviation sub-score",      stage: "Stress scoring"       },
@@ -135,7 +135,7 @@ export default function DataPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Data Sources</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          CERES ingests six formal model inputs (CHIRPS, MODIS NDVI, ACLED, IPC, WFP VAM, FAO GIEWS) plus two supplementary streams (FEWS NET, UNHCR) used for signal corroboration and hypothesis generation. All sources are publicly available. No proprietary data is used.
+          CERES ingests six formal model inputs (CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, FAO GIEWS). FEWS NET projections are used as a supplementary cross-check. UNHCR displacement data is not currently an active model input. All sources are publicly available. No proprietary data is used.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (

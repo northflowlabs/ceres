@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   keywords: [
     "famine early warning", "food security forecast", "IPC Phase 3", "IPC Phase 4", "famine prediction",
     "FEWS NET", "WFP", "OCHA", "humanitarian intelligence", "food crisis", "acute food insecurity",
-    "sensitivity intervals", "CHIRPS", "MODIS", "ACLED", "food security", "Brier score", "anticipatory action",
+    "sensitivity intervals", "CHIRPS", "MODIS", "UCDP GED", "food security", "Brier score", "anticipatory action",
     "CERES", "Northflow Technologies", "open humanitarian data",
   ],
   authors: [{ name: "Tom Danny S. Pedersen", url: "https://northflow.no" }],

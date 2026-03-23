@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "About — CERES Famine Intelligence System",
@@ -23,6 +24,31 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/about" },
 };
 
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Northflow Technologies AS",
+  url: "https://northflow.no",
+  logo: "https://northflow.no/logo.png",
+  sameAs: [
+    "https://www.linkedin.com/company/northflow-technologies",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "ceres@northflow.no",
+    contactType: "technical support",
+  },
+};
+
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <Script
+        id="org-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
+      {children}
+    </>
+  );
 }
