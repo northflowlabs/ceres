@@ -81,7 +81,7 @@ export default function HeroSection({ nRegions, nCritical, nWarning, lastUpdated
 
             {/* Credential strip */}
             <div className="flex flex-wrap gap-2 text-[10px] font-mono text-slate-600 uppercase tracking-widest">
-              {["CHIRPS · Rainfall", "MODIS · Vegetation", "FEWS NET · IPC", "ACLED · Conflict", "WFP · Food Access"].map((s) => (
+              {["CHIRPS · Rainfall", "MODIS · Vegetation", "FEWS NET · IPC", "UCDP GED · Conflict", "WFP · Food Access"].map((s) => (
                 <span key={s} className="glass-light rounded-full px-2.5 py-1 text-slate-500">{s}</span>
               ))}
             </div>

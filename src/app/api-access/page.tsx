@@ -617,10 +617,10 @@ export default function ApiAccessPage() {
             <p style={pStyle}>
               CERES prediction archives are available as HXL-tagged CSV, free and unauthenticated, for direct use
               in humanitarian data workflows, HDX pipelines, and academic research. Licensed under{" "}
-              <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>ODbL</a>.
-              Submissions to the{" "}
-              <a href="https://data.humdata.org" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>OCHA Humanitarian Data Exchange (HDX)</a>{" "}
-              are in progress.
+              <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
+              Published on the{" "}
+              <a href="https://data.humdata.org/dataset/global-ceres-famine-risk-predictions" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>OCHA Humanitarian Data Exchange (HDX)</a>{" "}
+              since March 2026.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
               {[
@@ -752,7 +752,7 @@ export default function ApiAccessPage() {
               {"  "}<Key>"text"</Key>{": "}<Str>"Armed conflict has severely disrupted agricultural labour..."</Str>{",\n"}
               {"  "}<Key>"evidence"</Key>{": [\n"}
               {"    {\n"}
-              {"      "}<Key>"source"</Key>{": "}<Str>"ACLED"</Str>{",\n"}
+              {"      "}<Key>"source"</Key>{": "}<Str>"UCDP GED"</Str>{",\n"}
               {"      "}<Key>"variable"</Key>{": "}<Str>"conflict_events_4wk"</Str>{",\n"}
               {"      "}<Key>"observed"</Key>{": "}<Num>312</Num>{",\n"}
               {"      "}<Key>"threshold"</Key>{": "}<Num>50</Num>{",\n"}

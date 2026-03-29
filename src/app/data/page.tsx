@@ -237,7 +237,7 @@ export default function DataPage() {
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.75, maxWidth: 640 }}>
             All CERES predictions are freely available as HXL-tagged CSV — no authentication required.
             Compatible with HDX pipelines, Excel, R, Python, and Tableau.
-            Licensed under <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>ODbL</a>.
+            Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
           </p>
           <div className="data-sources-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 16 }}>
             {[

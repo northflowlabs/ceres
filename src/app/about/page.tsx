@@ -15,7 +15,7 @@ const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "vs. 30–45 days for existing EWS" },
   { num: "87",       label: "Validation Records",       note: "IPC transition records, 2011–2023, 31 countries" },
   { num: "Pending",  label: "Brier Score",              note: "Target <0.10 — prospective grading from May 2026" },
-  { num: "6",        label: "Data Streams",              note: "CHIRPS · MODIS NDVI · ACLED · IPC · WFP VAM · FAO/WFP" },
+  { num: "6",        label: "Data Streams",              note: "CHIRPS · MODIS NDVI · UCDP GED · IPC · WFP VAM · FAO/WFP" },
 ];
 
 const p = { fontSize: 15, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.85 } as const;

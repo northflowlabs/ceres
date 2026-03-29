@@ -434,7 +434,7 @@ export default function RegionPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 6 }}>Methodology</div>
             <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: 0 }}>
               Forecasts are generated weekly by the CERES pipeline using a composite weighted logistic model. Current scores reflect
-              live data ingested from CHIRPS, MODIS NDVI, ACLED, IPC, WFP VAM, and FAO GIEWS. Model coefficients were
+              live data ingested from CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, and FAO GIEWS. Model coefficients were
               initialised with author-specified values informed by IPC transition records across Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021)
               — see the <Link href="/methodology#model" style={{ color: "var(--earth)", textDecoration: "none" }}>Methodology page</Link> for the recalibration history and current production coefficients.
               Probabilities represent the likelihood of escalation to IPC Phase 3 or above within 90 days from the reference date.

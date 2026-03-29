@@ -25,16 +25,16 @@ const PIPELINE_STEPS = [
 ];
 
 const ARCHETYPES = [
-  { type: "Conflict-driven",    signals: "ACLED, FEWS NET, UNHCR",       regions: "Sudan, Somalia, Yemen, South Sudan" },
+  { type: "Conflict-driven",    signals: "UCDP GED, FEWS NET",            regions: "Sudan, Somalia, Yemen, South Sudan" },
   { type: "Climate-driven",     signals: "CHIRPS, MODIS NDVI, FAO GIEWS", regions: "Sahel, Horn (off-conflict seasons)" },
   { type: "Economic/market",    signals: "WFP VAM, FEWS NET prices",      regions: "Urban centres, import-dependent regions" },
   { type: "Multi-causal",       signals: "All streams",                   regions: "Active conflict zones with drought overlay" },
 ];
 
 const TIERS = [
-  { color: "var(--crisis)",  name: "Tier I · Critical", thresh: "> 90%",   desc: "IPC Phase 4–5 (Emergency or Famine) probable within 90 days. Immediate humanitarian pre-positioning recommended." },
-  { color: "var(--warning)", name: "Tier II · Warning", thresh: "70–90%",  desc: "IPC Phase 3 (Crisis) likely within 90 days. Enhanced monitoring and contingency planning indicated." },
-  { color: "var(--watch)",   name: "Tier III · Watch",  thresh: "50–70%",  desc: "Elevated risk of IPC Phase 3 deterioration. Situational monitoring and early preparedness recommended." },
+  { color: "var(--crisis)",  name: "Tier I · Critical", thresh: "≥ 70%",   desc: "IPC Phase 3+ (Crisis or above) probable within 90 days. Immediate humanitarian pre-positioning recommended." },
+  { color: "var(--warning)", name: "Tier II · Warning", thresh: "45–69%",  desc: "IPC Phase 3 (Crisis) likely within 90 days. Enhanced monitoring and contingency planning indicated." },
+  { color: "var(--watch)",   name: "Tier III · Watch",  thresh: "< 45%",   desc: "Elevated stress signals. Situational monitoring and early preparedness recommended." },
 ];
 
 const METRICS = [
@@ -151,7 +151,7 @@ export default function MethodologyPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>The HGE: From Signals to Hypotheses</h2>
             <p style={s}>The Hypothesis Generation Engine (HGE) is the core intelligence layer that distinguishes CERES from threshold-based early warning systems. Rather than flagging when a single indicator crosses a threshold, HGE synthesises multi-source signal convergence into causal hypotheses — ranked, evidenced explanations of <em>why</em> risk is elevated.</p>
             <h3 style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Signal Convergence Detection</h3>
-            <p style={s}>HGE monitors for simultaneous stress elevation across independent data streams. When two or more signals from different domains (e.g. CHIRPS rainfall deficit + ACLED conflict escalation + WFP VAM food access deterioration) converge on the same Admin1 region in the same time window, this constitutes a convergence event — a materially stronger signal than any single indicator in isolation.</p>
+            <p style={s}>HGE monitors for simultaneous stress elevation across independent data streams. When two or more signals from different domains (e.g. CHIRPS rainfall deficit + UCDP GED conflict events + WFP VAM food access deterioration) converge on the same Admin1 region in the same time window, this constitutes a convergence event — a materially stronger signal than any single indicator in isolation.</p>
             <h3 style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>Hypothesis Taxonomy</h3>
             <p style={s}>Each convergence event is classified into one of four primary causal archetypes:</p>
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", margin: "24px 0", fontSize: 13, minWidth: 420 }}>
@@ -243,7 +243,7 @@ export default function MethodologyPage() {
               { title: "Data Latency",           body: "Several input streams (IPC, FAO GIEWS) are updated bi-annually or monthly. Between updates, predictions rely on interpolated or lagged data, which may not capture rapidly deteriorating situations driven by sudden shocks (conflict escalation, flash flooding)." },
               { title: "Admin1 Resolution",       body: "Predictions are generated at Admin1 (provincial) level. Intra-provincial heterogeneity — particularly in large regions like Oromia (Ethiopia) or Jonglei (South Sudan) — may be significant. Admin1 classifications mask sub-national variation that field assessments would capture." },
               { title: "Model Transferability",   body: "The logistic model is trained on six countries in the Horn of Africa and Arabian Peninsula. Performance in geographically or structurally distinct contexts (South Asia, Central America) has not been validated and should not be assumed." },
-              { title: "Conflict Dynamics",       body: "ACLED conflict data captures reported events with variable reporting lag. In active conflict zones, the most acute areas may be the least reported. CERES may systematically under-estimate risk in media-dark conflict environments." },
+              { title: "Conflict Dynamics",       body: "Conflict data is sourced from UCDP GED (Uppsala Conflict Data Program, Uppsala University). UCDP GED captures georeferenced conflict events with approximately 3 days reporting lag for candidate data. In active conflict zones, the most acute areas may be the least reported. CERES may systematically under-estimate risk in media-dark conflict environments." },
             ].map(({ title, body }) => (
               <div key={title}>
                 <h3 style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, margin: "32px 0 12px" }}>{title}</h3>

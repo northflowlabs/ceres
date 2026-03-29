@@ -478,7 +478,7 @@ export default function Dashboard() {
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.8 }}>
               IPC Phase 3+ probability · Logistic model + sensitivity intervals<br />
-              Data: CHIRPS · MODIS · ACLED · FEWS NET · WFP VAM · FAO<br />
+              Data: CHIRPS · MODIS · UCDP GED · FEWS NET · WFP VAM · FAO<br />
               {lastUpdated ? `Ref: ${formatDate(lastUpdated)}` : "Loading…"} · HGE v1.0
             </div>
           </div>
@@ -493,9 +493,9 @@ export default function Dashboard() {
           }}>
             <div className="panel-label" style={{ marginBottom: 8 }}>Risk Classification</div>
             {[
-              { color: "#C0392B", label: "Critical (>90% · IPC Phase 4–5 likely)" },
-              { color: "#D97706", label: "Warning (70–90% · IPC Phase 3 likely)" },
-              { color: "#2E7D32", label: "Watch (50–70% · Elevated risk)" },
+              { color: "#C0392B", label: "Critical (≥70% · IPC Phase 4–5 likely)" },
+              { color: "#D97706", label: "Warning (45–69% · IPC Phase 3 likely)" },
+              { color: "#2E7D32", label: "Watch (<45% · Elevated stress signals)" },
             ].map(({ color, label }) => (
               <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5, fontSize: 11, color: "var(--ink-mid)" }}>
                 <div style={{ width: 14, height: 14, borderRadius: 1, background: color, flexShrink: 0 }} />
@@ -716,7 +716,7 @@ export default function Dashboard() {
               {[
                 { name: "CHIRPS",    val: `${Math.round((selPred.composite_stress_score - 0.3) * -100)}%`, level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
                 { name: "NDVI",      val: `−${(selPred.composite_stress_score * 0.3).toFixed(2)}`, level: selPred.p_ipc3plus_90d > 0.7 ? 4 : 2 },
-                { name: "ACLED",     val: selPred.p_ipc3plus_90d > 0.8 ? "+HIGH" : "MOD",         level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
+                { name: "UCDP GED",  val: selPred.p_ipc3plus_90d > 0.8 ? "+HIGH" : "MOD",         level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
                 { name: "IPC",       val: `PH ${selPred.ipc_phase_forecast}`,                      level: Math.round(selPred.ipc_phase_forecast) },
                 { name: "WFP VAM",   val: selPred.p_ipc4plus_90d > 0.5 ? "HIGH" : "MOD",          level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
                 { name: "FAO GIEWS", val: selPred.alert_tier === "TIER-1" ? "ALERT" : "WATCH",     level: selPred.alert_tier === "TIER-1" ? 5 : 3 },
@@ -1011,7 +1011,7 @@ export default function Dashboard() {
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Signal Convergence</div>
               {[
                 { name: "CHIRPS",  level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
-                { name: "ACLED",   level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
+                { name: "UCDP GED", level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
                 { name: "IPC",     level: Math.round(selPred.ipc_phase_forecast) },
                 { name: "WFP VAM", level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
               ].map(({ name, level }) => {

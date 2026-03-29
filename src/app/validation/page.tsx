@@ -177,7 +177,7 @@ export default function ValidationPage() {
           </div>
           {hasLive
             ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>● Live — {grades.length} graded</span>
-            : <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>In-sample · back-validation 2022–2025</span>
+            : <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>In-sample · back-validation 2011–2023</span>
           }
         </div>
         <div className="validation-metrics-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "10px 0 0" }}>
@@ -281,7 +281,7 @@ export default function ValidationPage() {
         {/* Calibration */}
         <div style={{ margin: "48px 0", paddingTop: 40, borderTop: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>
-            {hasLive ? "Live Calibration — Forward Validation" : "Retrospective Calibration — 2022–2025"}
+            {hasLive ? "Live Calibration — Forward Validation" : "Retrospective Calibration — 2011–2023"}
           </div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>
             {hasLive ? `${grades.length} Graded Predictions · Live Brier Score` : "87 IPC Records · 31 Countries · 4 Back-validation Cases"}
