@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
-const API_BASE = "https://ceres-core-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://ceres-core-production.up.railway.app";
 
 const TIER_LABELS: Record<string, string> = {
   free:          "Open Research",
