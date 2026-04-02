@@ -172,6 +172,67 @@ export interface GradingLedger {
   metrics: AggregateMetrics;
 }
 
+// ── Validation Ledger (new verification architecture) ──────────────────────
+export interface LedgerPrediction {
+  prediction_id:       string;
+  region_id:           string;
+  reference_date:      string;
+  grading_date:        string;
+  p_ipc3plus:          number;
+  si_low:              number;
+  si_high:             number;
+  alert_tier:          string;
+  hypothesis_id:       string;
+  pipeline_commit_hash: string;
+  // Awaiting fields
+  grade_attempts?:     number;
+  last_grade_attempt?: string;
+  days_overdue?:       number;
+  // Graded fields
+  grade_source?:       string;
+  grade_date?:         string;
+  grade_source_type?:  string;
+  observed_phase?:     number;
+  binary_outcome?:     number;
+  brier_contribution?: number;
+  in_si?:              number;
+  grade_notes?:        string;
+}
+
+export interface LedgerResponse {
+  status: string;
+  count:  number;
+  predictions: LedgerPrediction[];
+}
+
+export interface ValidationMetrics {
+  total_predictions:    number;
+  graded:               number | null;
+  pending:              number | null;
+  awaiting_data:        number | null;
+  unresolvable:         number | null;
+  brier_score:          number | null;
+  brier_decomposition:  { reliability: number; resolution: number; uncertainty: number } | null;
+  skill_score:          number | null;
+  si_coverage:          number | null;
+  grade_source_breakdown: Record<string, number>;
+  n_graded_for_metrics: number;
+}
+
+export interface CalibrationBin {
+  bin_low:              number;
+  bin_high:             number;
+  mean_predicted:       number;
+  observed_frequency:   number;
+  count:                number;
+}
+
+export interface CalibrationResponse {
+  bins:     CalibrationBin[];
+  n_graded: number;
+  status:   string;
+}
+
 export interface ReportMeta {
   run_id:      string;
   filename:    string;
@@ -244,4 +305,8 @@ export const api = {
   admin2Predictions: (countryId?: string, tier?: string) => apiFetch<Admin2Prediction[]>(`/v1/admin2/predictions${countryId ? `?country_id=${countryId}` : ""}${tier ? `${countryId ? "&" : "?"}tier=${tier}` : ""}`),
   admin2Country:  (countryId: string)       => apiFetch<Admin2Prediction[]>(`/v1/admin2/${countryId}`),
   admin2Countries: ()                       => apiFetch<string[]>("/v1/admin2/countries"),
+  // Validation ledger (verification architecture)
+  validationLedger: (status: string)       => apiFetch<LedgerResponse>(`/v1/validation/ledger?status=${status}`),
+  validationMetrics: ()                    => apiFetch<ValidationMetrics>("/v1/validation/metrics"),
+  validationCalibration: ()                => apiFetch<CalibrationResponse>("/v1/validation/calibration"),
 };
