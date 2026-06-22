@@ -75,11 +75,21 @@ export default function RootLayout({
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
+              // Consent Mode v2: deny everything until the visitor consents via
+              // Samtykkr. Samtykkr's engine pushes the 'update' on consent.
+              gtag('consent', 'default', {
+                ad_storage: 'denied', analytics_storage: 'denied',
+                ad_user_data: 'denied', ad_personalization: 'denied',
+                functionality_storage: 'denied', personalization_storage: 'denied',
+                security_storage: 'granted'
+              });
               gtag('js', new Date());
               gtag('config', 'G-GQX8JPPF85', { page_path: window.location.pathname });
             `,
           }}
         />
+        {/* Samtykkr: lawful cookie consent (gates Consent Mode above). */}
+        <script async src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
