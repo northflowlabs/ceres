@@ -3,8 +3,8 @@ import SiteFooter from "@/components/SiteFooter";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy — CERES",
-  description: "Cookie Policy for CERES — Northflow Technologies AS.",
+  title: "Cookie Policy | CERES",
+  description: "Cookie Policy for CERES. Northflow Technologies AS.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://ceres.northflow.no/cookies" },
 };
@@ -59,28 +59,28 @@ export default function CookiesPage() {
                   type: "Essential",
                   purpose: "Keeps you logged in to your CERES account during a session.",
                   duration: "Session (deleted on browser close)",
-                  consent: "No — essential",
+                  consent: "No: essential",
                 },
                 {
                   name: "CSRF token",
                   type: "Essential",
                   purpose: "Protects against cross-site request forgery attacks.",
                   duration: "Session",
-                  consent: "No — essential",
+                  consent: "No: essential",
                 },
                 {
                   name: "Google Analytics 4 (_ga, _ga_*)",
                   type: "Analytics",
                   purpose: "Measures page views, session duration, and anonymous user behaviour to help us understand how CERES is used and improve the service. IP anonymisation is enabled. No personal data is shared with Google.",
                   duration: "Up to 14 months",
-                  consent: "Yes — analytics consent required",
+                  consent: "Yes: analytics consent required",
                 },
                 {
                   name: "Cookie consent preference",
                   type: "Functional",
                   purpose: "Stores your cookie consent decision so we do not ask repeatedly.",
                   duration: "12 months",
-                  consent: "No — stores your choice",
+                  consent: "No: stores your choice",
                 },
               ].map(({ name, type, purpose, duration, consent }, i) => (
                 <tr key={name} style={{ background: i % 2 === 1 ? "white" : "transparent" }}>
@@ -109,7 +109,7 @@ export default function CookiesPage() {
 
         <h2 style={h2}>4. Analytics Cookies (Google Analytics 4)</h2>
         <p style={p}>
-          We use Google Analytics 4 to understand how visitors use CERES — which pages are visited, how long sessions last, and what device types are used. This helps us improve the platform.
+          We use Google Analytics 4 to understand how visitors use CERES: which pages are visited, how long sessions last, and what device types are used. This helps us improve the platform.
         </p>
         <p style={p}>
           GA4 analytics are only loaded if you have given consent. IP addresses are anonymised before being sent to Google. We do not use GA4 for advertising or remarketing. Google processes data under a Data Processing Addendum in compliance with GDPR.
@@ -122,13 +122,13 @@ export default function CookiesPage() {
         <p style={p}>You can manage cookies in several ways:</p>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
-            <strong>Browser settings</strong> — most browsers allow you to block or delete cookies via their settings menu. Note that disabling essential cookies will prevent you from logging in.
+            <strong>Browser settings</strong>: most browsers allow you to block or delete cookies via their settings menu. Note that disabling essential cookies will prevent you from logging in.
           </li>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
-            <strong>Google Analytics opt-out</strong> — install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>GA opt-out add-on</a>.
+            <strong>Google Analytics opt-out</strong>: install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>GA opt-out add-on</a>.
           </li>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
-            <strong>Contact us</strong> — email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a> with any cookie-related requests.
+            <strong>Contact us</strong>: email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a> with any cookie-related requests.
           </li>
         </ul>
 

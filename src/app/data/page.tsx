@@ -17,7 +17,7 @@ const SOURCES = [
   },
   {
     id: "MODIS NDVI",
-    full: "Terra/Aqua Moderate Resolution Imaging Spectroradiometer — Vegetation Index",
+    full: "Terra/Aqua Moderate Resolution Imaging Spectroradiometer, Vegetation Index",
     provider: "NASA / USGS LPDAAC",
     cadence: "16-day composite",
     latency: "~8 days",
@@ -28,7 +28,7 @@ const SOURCES = [
   },
   {
     id: "UCDP GED",
-    full: "Uppsala Conflict Data Program — Georeferenced Event Dataset",
+    full: "Uppsala Conflict Data Program, Georeferenced Event Dataset",
     provider: "Uppsala University",
     cadence: "Weekly",
     latency: "~3 days",
@@ -39,12 +39,12 @@ const SOURCES = [
   },
   {
     id: "FEWS NET",
-    full: "Famine Early Warning Systems Network",
+    full: "Famine Early Warning Systems Network (supplementary cross-check, not a core model input)",
     provider: "USAID",
     cadence: "Monthly / Bi-annual",
     latency: "~14 days",
     resolution: "Admin1",
-    vars: ["IPC phase estimates", "Market prices", "Food access outlook", "Livelihood stress"],
+    vars: ["Outlook corroboration", "Market price cross-check", "Food access outlook", "Livelihood stress"],
     url: "https://fews.net",
     type: "food",
   },
@@ -83,7 +83,7 @@ const SOURCES = [
   },
   {
     id: "UNHCR",
-    full: "United Nations High Commissioner for Refugees — Displacement Data",
+    full: "United Nations High Commissioner for Refugees, Displacement Data (supplementary, not currently an active model input)",
     provider: "UNHCR",
     cadence: "Monthly",
     latency: "~30 days",
@@ -135,7 +135,7 @@ export default function DataPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Data Sources</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          CERES ingests six formal model inputs (CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, FAO GIEWS). FEWS NET projections are used as a supplementary cross-check. UNHCR displacement data is not currently an active model input. All sources are publicly available. No proprietary data is used.
+          CERES draws on six core model inputs (CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, FAO GIEWS) plus two supplementary sources. The eight cards below cover all of them: the six core inputs, plus FEWS NET as a corroboration cross-check and UNHCR displacement data, neither of which is an active model input. All sources are publicly available. No proprietary data is used.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (
@@ -235,7 +235,7 @@ export default function DataPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Open Data</div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>Download CERES Predictions</h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.75, maxWidth: 640 }}>
-            All CERES predictions are freely available as HXL-tagged CSV — no authentication required.
+            All CERES predictions are freely available as HXL-tagged CSV, no authentication required.
             Compatible with HDX pipelines, Excel, R, Python, and Tableau.
             Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
           </p>
@@ -243,7 +243,7 @@ export default function DataPage() {
             {[
               {
                 label: "Latest Snapshot",
-                sub: "One row per region — current run",
+                sub: "One row per region, current run",
                 desc: "Best for dashboards, situational awareness, and map data integrations.",
                 url: "https://ceres-core-production.up.railway.app/v1/export/hdx?latest=true",
                 tag: "HXL-tagged",

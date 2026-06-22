@@ -84,7 +84,7 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
           </div>
         </Link>
 
-        {/* Desktop nav links — hidden on mobile */}
+        {/* Desktop nav links: hidden on mobile */}
         {!isMobile && (
           <div style={{ display: "flex", alignItems: "center", padding: "0 8px", flexShrink: 1, minWidth: 0 }}>
             {PRIMARY_LINKS.map(({ href, label }) => {
@@ -145,7 +145,7 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
           </div>
         )}
 
-        {/* Desktop CTA — hidden on mobile */}
+        {/* Desktop CTA: hidden on mobile */}
         {!isMobile && (
           <div style={{
             marginLeft: "auto", display: "flex", alignItems: "center",
@@ -161,7 +161,7 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
           </div>
         )}
 
-        {/* Hamburger button — shown on mobile only */}
+        {/* Hamburger button: shown on mobile only */}
         {isMobile && (
           <button
             onClick={() => setOpen(true)}

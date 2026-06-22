@@ -90,7 +90,7 @@ export default function Admin1DrillDown({ countryId, countryName }: Admin1DrillD
     <div className="w-full">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-white">Sub-national Stress — {countryName}</h3>
+          <h3 className="text-sm font-semibold text-white">Sub-national Stress: {countryName}</h3>
           <p className="text-xs text-slate-500 mt-0.5">{signals.length} admin-1 units · click column to sort</p>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function Admin1DrillDown({ countryId, countryName }: Admin1DrillD
                       {ipcPhaseLabel(s.current_ipc_phase)}
                     </span>
                   ) : (
-                    <span className="text-slate-600">—</span>
+                    <span className="text-slate-600">n/a</span>
                   )}
                 </td>
                 <td className="py-2.5 px-3 min-w-[100px]">

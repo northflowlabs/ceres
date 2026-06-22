@@ -31,7 +31,7 @@ function tierBg(tier: string) {
   return "#F0FDF4";
 }
 
-function fmtPct(n: number | null | undefined) { if (n == null) return "—"; return `${(n * 100).toFixed(1)}%`; }
+function fmtPct(n: number | null | undefined) { if (n == null) return "n/a"; return `${(n * 100).toFixed(1)}%`; }
 
 function WidgetContent() {
   const params   = useSearchParams();
@@ -114,7 +114,7 @@ function WidgetContent() {
             {!compact && (
               <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <span style={{ fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: tierColor(r.alert_tier), opacity: 0.9 }}>{r.alert_tier}</span>
-                <span style={{ fontSize: 9, color: inkMid }}>CI [{fmtPct(r.sensitivity_interval_low)}–{fmtPct(r.sensitivity_interval_high)}]</span>
+                <span style={{ fontSize: 9, color: inkMid }}>90% SI [{fmtPct(r.sensitivity_interval_low)}–{fmtPct(r.sensitivity_interval_high)}]</span>
                 <span style={{ fontSize: 9, color: inkMid }}>IPC {r.ipc_phase_forecast}+</span>
               </div>
             )}

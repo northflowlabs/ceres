@@ -10,11 +10,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "CERES — Famine Early Warning · 43 Countries · Weekly IPC Forecasts",
+  title: "CERES · Famine Early Warning · 43 Countries · Weekly IPC Forecasts",
   description:
-    "CERES publishes calibrated 90-day probability forecasts of IPC Phase 3+, 4+, and Famine conditions " +
-    "for 43 high-risk countries — updated weekly, with sensitivity intervals and a public verification ledger. " +
-    "Free for humanitarian, academic, and governmental use.",
+    "Calibrated 90-day probability forecasts of IPC Phase 3+, 4+, and Famine for 43 high-risk countries. Updated weekly, with sensitivity intervals and a ledger.",
   keywords: [
     "famine early warning", "food security forecast", "IPC Phase 3", "IPC Phase 4", "famine prediction",
     "FEWS NET", "WFP", "OCHA", "humanitarian intelligence", "food crisis", "acute food insecurity",
@@ -25,26 +23,26 @@ export const metadata: Metadata = {
   creator: "Northflow Technologies AS",
   publisher: "Northflow Technologies AS",
   openGraph: {
-    title: "CERES — Calibrated Famine Early Warning · 43 Countries",
+    title: "CERES · Calibrated Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 countries. " +
       "The only open system with confidence intervals and a public write-once verification ledger.",
     type: "website",
     locale: "en_US",
     url: "https://ceres.northflow.no",
-    siteName: "CERES — Northflow Technologies",
+    siteName: "CERES · Northflow Technologies",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CERES — Calibrated Famine Early Warning System · 43 Countries · Weekly IPC Forecasts",
+        alt: "CERES · Calibrated Famine Early Warning System · 43 Countries · Weekly IPC Forecasts",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CERES — Calibrated Famine Early Warning · 43 Countries",
+    title: "CERES · Calibrated Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts. " +
       "Confidence intervals + public verification ledger. Free for humanitarian use.",
@@ -87,19 +85,47 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "CERES",
+              "alternateName": "Calibrated Early-warning and Risk Estimation System",
+              "url": "https://ceres.northflow.no",
+              "inLanguage": "en",
+              "publisher": {
+                "@type": "Organization",
+                "@id": "https://northflow.no/#org",
+                "name": "Northflow Technologies AS",
+                "url": "https://northflow.no"
+              }
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               "name": "CERES",
               "alternateName": "Calibrated Early-warning and Risk Estimation System",
               "description": "Automated probabilistic forecasting system for acute food insecurity. Generates weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 high-risk countries.",
+              "disambiguatingDescription": "Famine early-warning system by Northflow Technologies; not the NASA CERES radiation instrument or the dwarf planet Ceres.",
               "url": "https://ceres.northflow.no",
               "applicationCategory": "HumanitarianApplication",
+              "applicationSubCategory": "Humanitarian early warning",
               "operatingSystem": "Web",
               "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free for humanitarian and academic use" },
               "author": {
-                "@type": "Person",
-                "name": "Tom Danny S. Pedersen",
-                "affiliation": { "@type": "Organization", "name": "Northflow Technologies AS", "url": "https://northflow.no" }
+                "@type": "Organization",
+                "@id": "https://northflow.no/#org",
+                "name": "Northflow Technologies AS",
+                "url": "https://northflow.no"
               },
+              "publisher": { "@id": "https://northflow.no/#org" },
+              "sameAs": [
+                "https://arxiv.org/abs/2603.09425",
+                "https://data.humdata.org/dataset/global-ceres-famine-risk-predictions",
+                "https://github.com/northflowlabs/ceres-core"
+              ],
               "keywords": "famine early warning, food security, IPC, FEWS NET, humanitarian intelligence, food crisis, acute food insecurity",
               "license": "https://creativecommons.org/licenses/by/4.0/",
               "isAccessibleForFree": true,

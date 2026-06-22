@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Leaflet overrides — parchment/editorial ─────────────────────── */
+/* ─── Leaflet overrides: parchment/editorial ─────────────────────── */
 .leaflet-container {
   background: #D4C5B0 !important;
   font-family: 'Source Serif 4', Georgia, serif !important;

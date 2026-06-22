@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Validation — CERES Famine Intelligence System",
+  title: "Validation · CERES Famine Intelligence System",
   description:
     "CERES prediction validation ledger. Live accuracy metrics, calibration charts, and retrospective grading of all timestamped forecasts against IPC Phase 3+ outcomes.",
   keywords: [
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "prediction accuracy", "food security forecasting", "CERES validation", "Northflow",
   ],
   openGraph: {
-    title: "CERES Validation Ledger — Prediction Accuracy & Calibration",
+    title: "CERES Validation Ledger · Prediction Accuracy & Calibration",
     description:
       "Every CERES prediction is timestamped and graded against IPC outcomes at T+90 days. Full calibration ledger published openly.",
     url: "https://ceres.northflow.no/validation",
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CERES Validation — Prediction Accuracy",
-    description: "Timestamped famine forecasts graded against IPC outcomes. Prospective verification from May 2026.",
+    title: "CERES Validation · Prediction Accuracy",
+    description: "Timestamped famine forecasts graded against IPC outcomes at T+90. First graded outcomes expected Aug-Oct 2026.",
   },
   alternates: { canonical: "https://ceres.northflow.no/validation" },
 };

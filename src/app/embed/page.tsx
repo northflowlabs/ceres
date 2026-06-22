@@ -126,7 +126,7 @@ export default function EmbedPage() {
                 style={{ accentColor: "var(--earth)", width: 14, height: 14 }}
               />
               <label htmlFor="compact" style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-mid)", cursor: "pointer" }}>
-                Compact mode (smaller rows, no CI)
+                Compact mode (smaller rows, no sensitivity interval)
               </label>
             </div>
 
@@ -196,7 +196,7 @@ export default function EmbedPage() {
             />
           </div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 8, letterSpacing: "0.06em" }}>
-            Preview loads live data — may take a moment
+            Preview loads live data, may take a moment
           </div>
 
           {/* Usage notes */}

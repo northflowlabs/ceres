@@ -26,7 +26,7 @@ function tierBg(tier: string) {
 }
 
 function fmtPct(n: number | null | undefined) {
-  if (n == null) return "—";
+  if (n == null) return "n/a";
   return `${(n * 100).toFixed(1)}%`;
 }
 
@@ -70,7 +70,7 @@ function Sparkline({ data, width = 320, height = 80 }: { data: RegionSnapshot[];
       {/* 50% line */}
       <line x1={0} y1={height - 0.5 * (height - 8) - 4} x2={width} y2={height - 0.5 * (height - 8) - 4}
         stroke="var(--border)" strokeWidth={1} strokeDasharray="3 3" />
-      {/* CI band */}
+      {/* SI band */}
       {pts.ciPath && <path d={pts.ciPath} fill="var(--earth)" fillOpacity={0.1} />}
       {/* Main line */}
       <path d={pts.linePath} fill="none" stroke="var(--earth)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
@@ -159,7 +159,7 @@ export default function TrackerPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>CERES Track Record</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          The complete public history of CERES predictions — weekly snapshots per region, confidence trends, and verified outcomes. Every run archived since launch.
+          The complete public history of CERES predictions: weekly snapshots per region, probability trends with sensitivity intervals, and verified outcomes. Every run archived since launch.
         </p>
       </div>
 
@@ -172,7 +172,7 @@ export default function TrackerPage() {
               { val: String(archiveStats.total_runs),      label: "Weekly Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Archiving active" },
               { val: String(archiveStats.total_regions),   label: "Regions Tracked",   note: "Monitored globally"  },
               { val: String(pendingPredictions.length),    label: "Pending Grading",   note: "Awaiting T+90 outcome" },
-              { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "—", label: "Verified Hit Rate", note: grades.length > 0 ? `${grades.length} graded` : "Grading from May 2026" },
+              { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "Pending", label: "Verified Hit Rate", note: grades.length > 0 ? `${grades.length} graded` : "First grades Aug–Oct 2026" },
             ].map(({ val, label, note }) => (
               <div key={label} style={{ background: "white", padding: 24 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>
@@ -199,7 +199,7 @@ export default function TrackerPage() {
         {archiveTab === "timeline" && (
           latest.length === 0 ? (
             <div style={{ padding: "60px 0", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>
-              No archive data yet — run the weekly pipeline to begin building the history.
+              No archive data yet. Run the weekly pipeline to begin building the history.
             </div>
           ) : (
             <div className="tracker-panel-grid" style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 0, border: "1px solid var(--border)" }}>
@@ -270,7 +270,7 @@ export default function TrackerPage() {
                     ) : history.length >= 2 ? (
                       <div style={{ marginBottom: 24 }}>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>
-                          P(IPC3+ / 90d) — {history.length} weeks · 90% CI band
+                          P(IPC3+ / 90d), {history.length} weeks · 90% sensitivity interval (SI)
                         </div>
                         <div style={{ position: "relative" }}>
                           <div style={{ position: "absolute", right: 0, top: 0, fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>100%</div>
@@ -286,7 +286,7 @@ export default function TrackerPage() {
                       </div>
                     ) : (
                       <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", padding: "12px 0 24px" }}>
-                        Only {history.length} run recorded — chart requires ≥ 2 weekly runs.
+                        Only {history.length} run recorded: chart requires ≥ 2 weekly runs.
                       </div>
                     )}
 
@@ -294,7 +294,7 @@ export default function TrackerPage() {
                     {sortedHistory.length > 0 && (
                       <div style={{ borderTop: "1px solid var(--border-light)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "100px 80px 80px 80px 80px 1fr", gap: 0, padding: "8px 0", borderBottom: "1px solid var(--border)" }}>
-                          {["Run date", "P(IPC3+)", "CI Low", "CI High", "Tier", "Drivers"].map(h => (
+                          {["Run date", "P(IPC3+)", "SI Low", "SI High", "Tier", "Drivers"].map(h => (
                             <div key={h} style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", padding: "0 6px" }}>{h}</div>
                           ))}
                         </div>
@@ -302,8 +302,8 @@ export default function TrackerPage() {
                           <div key={s.run_id} style={{ display: "grid", gridTemplateColumns: "100px 80px 80px 80px 80px 1fr", gap: 0, padding: "8px 0", borderBottom: "1px solid var(--border-light)" }}>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink)" }}>{fmtDateShort(s.run_date)}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: tierColor(s.alert_tier), fontWeight: 600 }}>{fmtPct(s.p_ipc3plus_90d)}</div>
-                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{s.sensitivity_interval_low != null ? fmtPct(s.sensitivity_interval_low) : "—"}</div>
-                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{s.sensitivity_interval_high != null ? fmtPct(s.sensitivity_interval_high) : "—"}</div>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{s.sensitivity_interval_low != null ? fmtPct(s.sensitivity_interval_low) : "n/a"}</div>
+                            <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{s.sensitivity_interval_high != null ? fmtPct(s.sensitivity_interval_high) : "n/a"}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "0 6px", color: tierColor(s.alert_tier) }}>{s.alert_tier}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "0 6px", color: "var(--ink-light)" }}>{s.driver_types.slice(0, 3).join(", ")}</div>
                           </div>
@@ -328,9 +328,9 @@ export default function TrackerPage() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, marginBottom: 48 }}>
                 <div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What this section will show</div>
-                  <h2 style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, marginBottom: 16, lineHeight: 1.3 }}>The permanent record of what CERES predicted — and whether it was right</h2>
-                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>When the first predictions reach their T+90 horizon, this section auto-populates with IPC-verified outcomes.</p>
-                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Misses are as visible as hits. No curation, no removal.</p>
+                  <h2 style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, marginBottom: 16, lineHeight: 1.3 }}>The permanent record of what CERES predicted, and whether it was right</h2>
+                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>The first T+90 horizons were reached in June 2026. This section auto-populates as IPC/FEWS NET publish the observed outcome for each window, which lags the target by 2{"–"}4 months, so the first verified outcomes land Aug{"–"}Oct 2026.</p>
+                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Outcomes are graded against published observations only, never against forecasts. Misses are as visible as hits. No curation, no removal.</p>
                 </div>
                 <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>First predictions pending grading</div>
@@ -394,12 +394,12 @@ export default function TrackerPage() {
                       <div style={{ border: "1px solid var(--border-light)", padding: "10px 12px" }}>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 8, textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>IPC Outcome</div>
                         <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: g.actual_ipc_phase >= 3 ? "var(--crisis)" : "var(--watch)" }}>Phase {g.actual_ipc_phase}</div>
-                        <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{IPC_LABELS[Math.round(g.actual_ipc_phase)] ?? "—"}</div>
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{IPC_LABELS[Math.round(g.actual_ipc_phase)] ?? "n/a"}</div>
                       </div>
                     </div>
                     <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>
                       Brier <strong style={{ color: "var(--ink)" }}>{g.brier_score.toFixed(4)}</strong>
-                      {" · "}CI covered <strong style={{ color: g.ci_covered ? "var(--watch)" : "var(--crisis)" }}>{g.ci_covered ? "Yes" : "No"}</strong>
+                      {" · "}SI covered <strong style={{ color: g.ci_covered ? "var(--watch)" : "var(--crisis)" }}>{g.ci_covered ? "Yes" : "No"}</strong>
                       {" · "}Graded {fmtDate(g.graded_at)}
                     </div>
                   </div>
@@ -413,7 +413,7 @@ export default function TrackerPage() {
         {archiveTab === "pending" && (
           <div>
             <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.7, maxWidth: 680 }}>
-              Every prediction below was issued publicly before the outcome is known. Each carries a hard 90-day horizon date — the date on which the grading module will query IPC Phase data and record the outcome automatically.
+              Every prediction below was issued publicly before the outcome is known. Each carries a hard 90-day horizon date: the date on which the grading module queries IPC Phase data and records the outcome automatically.
             </p>
             <div style={{ border: "1px solid var(--border)", overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
@@ -426,7 +426,7 @@ export default function TrackerPage() {
                 </thead>
                 <tbody>
                   {pendingPredictions.length === 0 ? (
-                    <tr><td colSpan={7} style={{ padding: "32px 14px", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>No pending predictions — run the weekly pipeline first.</td></tr>
+                    <tr><td colSpan={7} style={{ padding: "32px 14px", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>No pending predictions. Run the weekly pipeline first.</td></tr>
                   ) : pendingPredictions.map(r => {
                     const urgency = r.daysUntil <= 14 ? "var(--crisis)" : r.daysUntil <= 30 ? "var(--warning)" : "var(--ink-light)";
                     return (
@@ -454,7 +454,7 @@ export default function TrackerPage() {
               </table>
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 16 }}>
-              Grading is fully automated — no human intervention. At T+90 the system queries IPC Global Platform for the latest published phase and records the Brier score and tier outcome. Results appear in the Verified Outcomes tab.
+              Grading is fully automated, with no human intervention. Once a prediction passes T+90, the system queries the IPC Global Platform and FEWS NET each week for the published observed Current-Situation phase, then records the Brier score and tier outcome the moment that data is released (typically 2–4 months after the target window). Results appear in the Verified Outcomes tab.
             </p>
           </div>
         )}
@@ -464,7 +464,7 @@ export default function TrackerPage() {
           <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 600, marginBottom: 10 }}>The public record is permanent</div>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", margin: 0, lineHeight: 1.75 }}>
             Every prediction on this page was issued publicly before the outcome was known. None have been removed. None have been edited post-hoc.
-            Grading is automated — the system queries FEWS NET / IPC Phase data at T+90 days and records the result without human intervention.
+            Grading is automated: the system queries FEWS NET / IPC Phase data at T+90 days and records the result without human intervention.
             Brier scores and calibration metrics on the <a href="/validation" style={{ color: "var(--earth)" }}>Validation page</a> are derived directly from this ledger.
           </p>
         </div>

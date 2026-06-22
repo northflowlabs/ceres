@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "API Access — CERES Famine Intelligence System",
+  title: "API Access · CERES Famine Intelligence System",
   description:
     "Programmatic access to CERES predictions, hypotheses, and Admin1 signal data. Free for academic and humanitarian use. Tier A open research, Tier B institutional, Tier C sovereign/custom.",
   keywords: [
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "humanitarian data", "open API", "Northflow API", "famine forecasting API",
   ],
   openGraph: {
-    title: "CERES API — Programmatic Access to Famine Forecasts",
+    title: "CERES API · Programmatic Access to Famine Forecasts",
     description:
       "Free API access for academic and humanitarian organisations. Calibrated 90-day IPC Phase 3+ predictions, hypothesis data, and Admin1 signal breakdown.",
     url: "https://ceres.northflow.no/api-access",

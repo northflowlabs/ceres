@@ -93,7 +93,7 @@ export default function LeafletRiskMap({
           const color      = editorialColor(p.alert_tier);
           const isSelected = selected?.region_id === p.region_id;
 
-          // Outer ring (280 km) + inner dot (80 km) — matches the reference design
+          // Outer ring (280 km) + inner dot (80 km), matches the reference design
           const outer = L.circle([lat, lon], {
             radius: 280000,
             color,

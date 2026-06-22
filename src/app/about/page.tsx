@@ -4,18 +4,18 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
 const ADAPTERS = [
-  { color: "var(--watch)",   name: "GAIA — Astrophysics",        desc: "Space research intelligence · ESO, ESA, academic journals · Operational" },
-  { color: "var(--warning)", name: "ORION — Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus · In development" },
-  { color: "var(--watch)",   name: "OFW — Deforestation",        desc: "EU DG ENV, NGOs, investigative journalists · In development" },
-  { color: "var(--watch)",   name: "MARVIS — Maritime",          desc: "Maritime AI Validation & Intelligence System · In development" },
-  { color: "var(--earth)",   name: "CERES — Famine Early Warning", desc: "This system · Probabilistic · 43 countries · Live" },
+  { color: "var(--watch)",   name: "GAIA · Astrophysics",        desc: "Space research intelligence · ESO, ESA, academic journals · Operational" },
+  { color: "var(--warning)", name: "ORION · Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus · In development" },
+  { color: "var(--watch)",   name: "OFW · Deforestation",        desc: "EU DG ENV, NGOs, investigative journalists · In development" },
+  { color: "var(--watch)",   name: "MARVIS · Maritime",          desc: "Maritime AI Validation & Intelligence System · In development" },
+  { color: "var(--earth)",   name: "CERES · Famine Early Warning", desc: "This system · Probabilistic · 43 countries · Live" },
 ];
 
 const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "vs. 30–45 days for existing EWS" },
   { num: "87",       label: "Validation Records",       note: "IPC transition records, 2011–2023, 31 countries" },
-  { num: "Pending",  label: "Brier Score",              note: "Target <0.10 — prospective grading from May 2026" },
-  { num: "6",        label: "Data Streams",              note: "CHIRPS · MODIS NDVI · UCDP GED · IPC · WFP VAM · FAO/WFP" },
+  { num: "Pending",  label: "Brier Score",              note: "Target <0.10; first graded outcomes Aug–Oct 2026" },
+  { num: "6",        label: "Model Inputs",              note: "CHIRPS · MODIS NDVI · UCDP GED · IPC · WFP VAM · FAO GIEWS" },
 ];
 
 const p = { fontSize: 15, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.85 } as const;
@@ -34,7 +34,7 @@ export default function AboutPage() {
           </div>
           <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 24 }}>Built to close the humanitarian lead-time gap</h1>
           <p style={p}>CERES was built because the gap between when a famine becomes predictable and when the humanitarian system acts is measured in lives. Current early warning systems provide 30–45 days of actionable lead time. Pre-positioning food aid, mobilising logistics, and securing emergency funding requires 60–90 days.</p>
-          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises six data streams into 90-day famine risk predictions — designed to give the humanitarian system the lead time it currently lacks.</p>
+          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises six core data streams into 90-day famine risk predictions, designed to give the humanitarian system the lead time it currently lacks.</p>
           <p style={p}>It is free. It is open. Its methodology is published. Its predictions are timestamped and graded against outcomes. It is built to be scrutinised.</p>
         </div>
         <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
@@ -60,9 +60,9 @@ export default function AboutPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {[
-              { title: "Open by design",            body: "The methodology is published. The code is public. Every prediction is timestamped and graded against real-world outcomes. We built CERES to be examined — by scientists, by funders, by the people whose lives depend on getting this right." },
+              { title: "Open by design",            body: "The methodology is published. The code is public. Every prediction is timestamped and graded against real-world outcomes. We built CERES to be examined: by scientists, by funders, by the people whose lives depend on getting this right." },
               { title: "Calibrated, not overconfident", body: "CERES never gives you a single number and calls it certainty. Every forecast carries a 90% sensitivity interval, built from 2,000 input-perturbation replications. Honest uncertainty is more useful to a humanitarian programme officer than false precision." },
-              { title: "Built to be proven wrong",  body: "Every prediction CERES issues is publicly recorded before the outcome is known. If we are wrong, it is visible. That is not a vulnerability — it is the point. A forecast system that cannot be falsified is not a forecast system." },
+              { title: "Built to be proven wrong",  body: "Every prediction CERES issues is publicly recorded before the outcome is known. If we are wrong, it is visible. That is not a vulnerability: it is the point. A forecast system that cannot be falsified is not a forecast system." },
             ].map(({ title, body }) => (
               <div key={title} style={{ borderLeft: "2px solid #44403C", paddingLeft: 16 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 4 }}>{title}</div>
@@ -81,8 +81,8 @@ export default function AboutPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Northflow Technologies</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>The HGE Platform</h2>
-            <p style={p}>CERES is built on the <strong style={{ color: "var(--ink)" }}>Hypothesis Generation Engine (HGE)</strong> — AI-native infrastructure developed by Northflow Technologies for institutional-grade intelligence across complex, data-rich domains.</p>
-            <p style={p}>HGE is designed to do one thing: synthesise multi-source signals into ranked, evidenced, falsifiable hypotheses. It is not a dashboard. It is not a threshold alert system. It is a system that reads the evidence and tells you — with calibrated confidence — what it thinks is happening and why.</p>
+            <p style={p}>CERES is built on the <strong style={{ color: "var(--ink)" }}>Hypothesis Generation Engine (HGE)</strong>, AI-native infrastructure developed by Northflow Technologies for institutional-grade intelligence across complex, data-rich domains.</p>
+            <p style={p}>HGE is designed to do one thing: synthesise multi-source signals into ranked, evidenced, falsifiable hypotheses. It is not a dashboard. It is not a threshold alert system. It is a system that reads the evidence and tells you, with calibrated confidence, what it thinks is happening and why.</p>
             <p style={p}>CERES is HGE Adapter #5. Each adapter applies the same hypothesis engine to a different domain. The same rigour. The same calibration standards. The same commitment to auditable reasoning.</p>
           </div>
           <div>
@@ -109,13 +109,13 @@ export default function AboutPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Scope &amp; Limits</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>What CERES Is Not</h2>
             <p style={p}>CERES is a research and early warning tool. It is <strong style={{ color: "var(--ink)" }}>not</strong> an operational replacement for IPC field assessments, humanitarian programme decisions, or famine declarations.</p>
-            <p style={p}>Only the IPC Global Platform, through its established cadre process and field verification, has the mandate to declare famine (IPC Phase 5). A CERES Tier I prediction indicates a high probability of reaching IPC Phase 3+ — a signal for preparedness, not a declaration.</p>
+            <p style={p}>Only the IPC Global Platform, through its established cadre process and field verification, has the mandate to declare famine (IPC Phase 5). A CERES Tier I prediction indicates a high probability of reaching IPC Phase 3+: a signal for preparedness, not a declaration.</p>
             <p style={p}>CERES predictions should be interpreted alongside, not instead of, FEWS NET situation reports, WFP VAM assessments, and field-based humanitarian intelligence.</p>
           </div>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Institutional Context</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
-            <p style={p}>Every design decision in CERES — from the calibrated confidence intervals to the publicly timestamped prediction ledger to the published limitations section — is made with institutional reviewers in mind.</p>
+            <p style={p}>Every design decision in CERES, from the calibrated sensitivity intervals to the publicly timestamped prediction ledger to the published limitations section, is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders. It is built to withstand scrutiny, not to impress with outputs.</p>
             <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. The model was initialised against 87 IPC transition records (2011–2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
           </div>
@@ -129,7 +129,7 @@ export default function AboutPage() {
           <div className="about-contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0", boxSizing: "border-box" }}>
             {[
               { label: "Research & Academic",        title: "Methodology Review",     body: "For peer review, co-authorship, or academic collaboration on the validation dataset."               },
-              { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, NGOs — for data sharing, co-validation, or integration into existing EWS workflows." },
+              { label: "Humanitarian Organisations", title: "Operational Partnership", body: "WFP, FAO, OCHA, and NGOs, for data sharing, co-validation, or integration into existing EWS workflows." },
               { label: "Funders & Institutions",     title: "Programme Funding",      body: "For foundation programme officers, EU funding bodies, and institutional investors in humanitarian AI."  },
             ].map(({ label, title, body }) => (
               <div key={title} style={{ background: "white", padding: 24 }}>

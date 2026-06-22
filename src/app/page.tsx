@@ -100,7 +100,7 @@ export default function Dashboard() {
         const full = await api.hypothesis(p.hypothesis_id);
         setDeepHyp(full);
       } catch {
-        // fallback to shallow hyp — no-op
+        // fallback to shallow hyp, no-op
       } finally {
         setDeepLoading(false);
       }
@@ -142,6 +142,13 @@ export default function Dashboard() {
         alignItems: "stretch",
         gap: 0,
       }}>
+        {/* SEO h1: visually hidden, real heading text for crawlers */}
+        <h1 style={{
+          position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+          overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0,
+        }}>
+          CERES, Probabilistic Famine Early Warning: 90-day IPC Phase 3+ forecasts for 43 high-risk countries, updated weekly.
+        </h1>
         {/* Logo */}
         <div style={{
           display: "flex", alignItems: "center", gap: 14,
@@ -161,13 +168,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Meta — hidden on compact/mobile */}
+        {/* Meta: hidden on compact/mobile */}
         {!isCompact && <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexShrink: 1, overflow: "hidden" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
             {lastUpdated ? `LAST UPDATED: ${formatDate(lastUpdated).toUpperCase()}` : "LOADING…"} · 90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
           </span>
           <span style={{ fontStyle: "italic", color: "var(--ink-light)", fontSize: 12 }}>
-            Northflow Technologies — Open Humanitarian Intelligence
+            Northflow Technologies · Open Humanitarian Intelligence
           </span>
           {n1 > 0 && (
             <div style={{
@@ -185,7 +192,7 @@ export default function Dashboard() {
           )}
         </div>}
 
-        {/* Nav links — hidden on mobile */}
+        {/* Nav links: hidden on mobile */}
         {!isMobile && <div style={{ display: "flex", alignItems: "center", padding: "0 16px", borderRight: "1px solid var(--border)" }}>
           {([
             { href: "/",            label: "Dashboard"    },
@@ -207,7 +214,7 @@ export default function Dashboard() {
           ))}
         </div>}
 
-        {/* Pipeline status — hidden on mobile */}
+        {/* Pipeline status: hidden on mobile */}
         {!isMobile && <div style={{
           display: "flex", alignItems: "center", gap: 8,
           padding: "0 0 0 24px",
@@ -232,7 +239,7 @@ export default function Dashboard() {
             {loading ? "…" : "REFRESH"}
           </button>
         </div>}
-        {/* Hamburger — mobile only */}
+        {/* Hamburger: mobile only */}
         {isMobile && (
           <button
             onClick={() => setMenuOpen(true)}
@@ -322,7 +329,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* ── LEFT PANEL — Region list ─────────────────────────────── */}
+        {/* ── LEFT PANEL: Region list ─────────────────────────────── */}
         <aside className={`dashboard-panel-list${mobileTab === "regions" ? " mobile-active" : ""}`} style={{
           borderRight: "1px solid var(--border)",
           overflowY: "auto",
@@ -351,7 +358,7 @@ export default function Dashboard() {
             ].map(({ num, label, color }) => (
               <div key={label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <span style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, lineHeight: 1, color }}>
-                  {loading ? "—" : num}
+                  {loading ? "·" : num}
                 </span>
                 <span className="panel-label" style={{ marginBottom: 0 }}>{label}</span>
               </div>
@@ -430,7 +437,7 @@ export default function Dashboard() {
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginBottom: 8 }}>
                     {p.sensitivity_interval_low != null && p.sensitivity_interval_high != null
                       ? `SI [${pct(p.sensitivity_interval_low)} – ${pct(p.sensitivity_interval_high)}] · Input-perturbation`
-                      : "SI Pending · Populating May 2026"}
+                      : "SI Pending"}
                   </div>
 
                   {/* Drivers + brief link */}
@@ -464,7 +471,7 @@ export default function Dashboard() {
             />
           )}
 
-          {/* Map overlay — run info */}
+          {/* Map overlay: run info */}
           <div style={{
             position: "absolute", top: 16, left: 16, zIndex: 800,
             background: "rgba(245,240,232,0.95)",
@@ -474,11 +481,11 @@ export default function Dashboard() {
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
           }}>
             <div style={{ fontFamily: "var(--display)", fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
-              90-Day Famine Risk — Active Monitoring
+              90-Day Famine Risk: Active Monitoring
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.8 }}>
               IPC Phase 3+ probability · Logistic model + sensitivity intervals<br />
-              Data: CHIRPS · MODIS · UCDP GED · FEWS NET · WFP VAM · FAO<br />
+              Data: CHIRPS · MODIS NDVI · UCDP GED · IPC · WFP VAM · FAO GIEWS<br />
               {lastUpdated ? `Ref: ${formatDate(lastUpdated)}` : "Loading…"} · HGE v1.0
             </div>
           </div>
@@ -513,7 +520,7 @@ export default function Dashboard() {
           </div>
         </main>
 
-        {/* ── RIGHT PANEL — Hypothesis + Signals + Ledger ─────────── */}
+        {/* ── RIGHT PANEL: Hypothesis + Signals + Ledger ─────────── */}
         <aside ref={detailPanelRef} className={`dashboard-panel-detail${mobileTab === "detail" ? " mobile-active" : ""}`} style={{
           borderLeft: "1px solid var(--border)",
           overflowY: "auto",
@@ -564,7 +571,7 @@ export default function Dashboard() {
           {hyp && selPred && (
             <div style={{ padding: "20px 20px 16px", borderBottom: "1px solid var(--border-light)" }} className="animate-fade-in">
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                <div className="panel-label" style={{ marginBottom: 0 }}>Active Hypotheses — HGE Engine</div>
+                <div className="panel-label" style={{ marginBottom: 0 }}>Active Hypotheses · HGE Engine</div>
                 {deepLoading && (
                   <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.08em" }}>LOADING…</span>
                 )}
@@ -628,10 +635,10 @@ export default function Dashboard() {
                 </div>
               ))}
 
-              {/* Evidence table — only available from deep fetch */}
+              {/* Evidence table: only available from deep fetch */}
               {(hyp.evidence ?? []).length > 0 && (
                 <div style={{ marginTop: 16 }}>
-                  <div className="panel-label" style={{ marginBottom: 8 }}>Evidence Records — {(hyp.evidence ?? []).length} items</div>
+                  <div className="panel-label" style={{ marginBottom: 8 }}>Evidence Records · {(hyp.evidence ?? []).length} items</div>
                   <div style={{ overflowX: "auto" }}>
                     <table className="evidence-table">
                       <thead>
@@ -673,7 +680,7 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* Narrative summary — plain-English analysis */}
+          {/* Narrative summary: plain-English analysis */}
           {selPred && hyp && (
             <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }} className="animate-fade-in">
               <div className="panel-label" style={{ marginBottom: 10 }}>Intelligence Summary</div>
@@ -682,7 +689,7 @@ export default function Dashboard() {
                 <strong style={{ color: selPred.alert_tier === "TIER-1" ? "var(--crisis)" : selPred.alert_tier === "TIER-2" ? "var(--warning)" : "var(--watch)" }}>
                   {Math.round(selPred.p_ipc3plus_90d * 100)}% probability
                 </strong>{" "}
-                of reaching IPC Phase 3+ (Crisis) within 90 days — classified as{" "}
+                of reaching IPC Phase 3+ (Crisis) within 90 days, classified as{" "}
                 <strong style={{ color: "var(--ink)" }}>{selPred.alert_tier}</strong>.{" "}
                 {(selPred.driver_types ?? []).length > 0
                   ? `The primary drivers are ${(selPred.driver_types ?? []).slice(0, 3).join(", ").toLowerCase()}, with ${selPred.n_signals_flagged ?? 0} elevated signals detected across ${selPred.flagged_sources ?? "multiple data sources"}.`
@@ -692,7 +699,7 @@ export default function Dashboard() {
                   <>The 90% sensitivity interval spans{" "}
                   <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.sensitivity_interval_low * 100)}%–{Math.round(selPred.sensitivity_interval_high * 100)}%</strong>,{" "}
                   reflecting {(selPred.sensitivity_interval_high - selPred.sensitivity_interval_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}."</>
-                ) : "Sensitivity interval data is pending and will populate from May 2026."}
+                ) : "Sensitivity interval data is pending for this region."}
               </p>
               <p style={{ fontSize: 12, lineHeight: 1.7, color: "var(--ink-mid)", margin: 0 }}>
                 {hyp.description
@@ -700,10 +707,10 @@ export default function Dashboard() {
                   : `The composite stress score of ${Math.round(selPred.composite_stress_score * 100)}% indicates ${selPred.composite_stress_score > 0.7 ? "critical" : selPred.composite_stress_score > 0.5 ? "elevated" : "moderate"} overall risk.`
                 }{" "}
                 {selPred.is_compound
-                  ? "This is a compound crisis — multiple independent stressors are reinforcing each other, which significantly elevates forecast confidence."
+                  ? "This is a compound crisis: multiple independent stressors are reinforcing each other, which significantly elevates forecast confidence."
                   : selPred.convergence_score > 0.7
                   ? "Strong signal convergence across independent data sources increases confidence in this assessment."
-                  : "Monitor closely — signal convergence is moderate and conditions may change with incoming data."
+                  : "Monitor closely: signal convergence is moderate and conditions may change with incoming data."
                 }
               </p>
             </div>
@@ -814,7 +821,7 @@ export default function Dashboard() {
                                 {Math.round(a.composite_stress_score * 100)}%
                               </td>
                               <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                                {a.current_ipc_phase != null ? `Ph ${a.current_ipc_phase.toFixed(1)}` : "—"}
+                                {a.current_ipc_phase != null ? `Ph ${a.current_ipc_phase.toFixed(1)}` : "n/a"}
                               </td>
                               <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: "var(--mono)",
                                 fontSize: 10, color: a.conflict_stress >= 0.5 ? "var(--crisis)" : "var(--ink-light)" }}>
@@ -844,11 +851,11 @@ export default function Dashboard() {
           <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>
             <div className="panel-label" style={{ marginBottom: 10 }}>Forecast Accuracy Ledger</div>
             {[
-              { label: "Predictions tracked", val: hypotheses.length > 0 ? String(hypotheses.length) : "—" },
-              { label: "Brier score",          val: "Populating May 2026" },
-              { label: "SI coverage (90%)",    val: "Populating May 2026" },
-              { label: "Tier-1 precision",     val: "Populating May 2026" },
-              { label: "Tier-1 recall",        val: "Populating May 2026" },
+              { label: "Predictions tracked", val: hypotheses.length > 0 ? String(hypotheses.length) : "n/a" },
+              { label: "Brier score",          val: "Grading from Aug 2026" },
+              { label: "SI coverage (90%)",    val: "Grading from Aug 2026" },
+              { label: "Tier-1 precision",     val: "Grading from Aug 2026" },
+              { label: "Tier-1 recall",        val: "Grading from Aug 2026" },
             ].map(({ label, val }) => (
               <div key={label} style={{
                 display: "flex", justifyContent: "space-between", alignItems: "baseline",
@@ -885,7 +892,7 @@ export default function Dashboard() {
           }}>
             All predictions are timestamped, falsifiable, and graded against IPC outcomes at T+90 days.
             Not for operational use without institutional validation.
-            Open methodology — published arXiv:2603.09425 (March 2026).
+            Open methodology, published arXiv:2603.09425 (March 2026).
           </div>
         </aside>
       </div>
@@ -950,7 +957,7 @@ export default function Dashboard() {
                 <span style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic" }}>P(IPC 3+ · 90d)</span>
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 10 }}>
-                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? `90% SI [${pct(selPred.sensitivity_interval_low)} – ${pct(selPred.sensitivity_interval_high)}] · ${selPred.ci_method ?? "Bootstrap"}` : "Sensitivity interval: Pending"}
+                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? `90% SI [${pct(selPred.sensitivity_interval_low)} – ${pct(selPred.sensitivity_interval_high)}] · ${selPred.ci_method ?? "Input-perturbation"}` : "Sensitivity interval: Pending"}
               </div>
               <div style={{ height: 6, background: "var(--border-light)", borderRadius: 3, position: "relative" }}>
                 {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null && (

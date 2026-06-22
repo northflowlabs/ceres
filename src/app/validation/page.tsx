@@ -12,12 +12,12 @@ function tierColor(tier: string) {
 }
 
 function fmt(n: number | null | undefined, decimals = 3) {
-  if (n === null || n === undefined) return "—";
+  if (n === null || n === undefined) return "n/a";
   return n.toFixed(decimals);
 }
 
 function fmtPct(n: number | null | undefined) {
-  if (n === null || n === undefined) return "—";
+  if (n === null || n === undefined) return "n/a";
   return `${(n * 100).toFixed(1)}%`;
 }
 
@@ -90,7 +90,7 @@ export default function ValidationPage() {
       setSubMsg(r.message);
       setEmail("");
     } catch {
-      setSubMsg("Subscription failed \u2014 please try again.");
+      setSubMsg("Subscription failed. Please try again.");
     } finally {
       setSubLoading(false);
     }
@@ -139,8 +139,8 @@ export default function ValidationPage() {
             Accuracy Metrics
           </div>
           {hasGrades
-            ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>{"\u25CF"} Live \u2014 {nGraded} graded</span>
-            : <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>{totalPredictions} predictions \u00B7 grading from Jun 2026</span>
+            ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>{"\u25CF"} Live \u00B7 {nGraded} graded</span>
+            : <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>{totalPredictions} predictions \u00B7 first grades expected Aug\u2013Oct 2026</span>
           }
         </div>
         <div className="validation-metrics-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "10px 0 0" }}>
@@ -151,7 +151,7 @@ export default function ValidationPage() {
               <div style={{ fontSize: 12, color: "var(--ink-light)" }}>
                 Target {target}{" "}
                 {isPending
-                  ? <span style={{ color: "var(--warning)", fontWeight: 500 }}>{"\u23F3"} Grading from Jun 2026</span>
+                  ? <span style={{ color: "var(--warning)", fontWeight: 500 }}>{"\u23F3"} Expected Aug\u2013Oct 2026</span>
                   : <span style={{ color: pass ? "var(--watch)" : "var(--crisis)", fontWeight: 500 }}>{pass ? "\u2713 Met" : "\u2717 Missed"}</span>
                 }
               </div>
@@ -162,11 +162,11 @@ export default function ValidationPage() {
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
           {hasGrades
             ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {nGraded} predictions graded against published IPC outcomes at T+90 days. This record updates automatically each week.</>
-            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued and awaiting grading. First grading window opens June 7, 2026 (March 9 run + 90 days). Brier decomposition computed automatically when {"\u2265"}10 predictions are graded.</>
+            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued; the first T+90 grading windows opened June 2026. Observed IPC/FEWS NET classifications publish on a 2{"\u2013"}4 month lag, so the earliest grades land Aug{"\u2013"}Oct 2026. Grading is automated and pre-registered: the Brier decomposition computes the moment {"\u2265"}10 outcomes are published, with no manual intervention.</>
           }
         </p>
 
-        {/* ── SECTION 1: PENDING — grading_date in future ───────────── */}
+        {/* ── SECTION 1: PENDING (grading_date in future) ───────────── */}
         <div style={{ marginTop: 40 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16 }}>
             <div>
@@ -212,22 +212,28 @@ export default function ValidationPage() {
           )}
         </div>
 
-        {/* ── SECTION 2: AWAITING DATA — grading_date passed, not yet graded ── */}
+        {/* ── SECTION 2: AWAITING DATA (grading_date passed, not yet graded) ── */}
         {awaiting.length > 0 && (
           <div style={{ marginTop: 40 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16 }}>
               <div>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--warning)", marginBottom: 10 }}>Awaiting IPC Data</div>
-                <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Grading Window Open \u2014 Outcome Data Pending</h2>
+                <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Grading Window Open: Outcome Data Pending</h2>
               </div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--warning)", letterSpacing: "0.06em" }}>
-                {awaiting.length} awaiting
+              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", letterSpacing: "0.06em" }}>
+                {awaiting.length} in grading queue
               </div>
             </div>
+
+            {/* Observation-lag explainer: turns the awaiting state into a rigour signal */}
+            <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
+              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> IPC/FEWS NET classifications, never against forecasts. IPC and FEWS NET publish observed Current-Situation phases on a <strong style={{ color: "var(--ink)" }}>2{"–"}4 month lag</strong>, so the June 2026 windows resolve from roughly <strong style={{ color: "var(--ink)" }}>Aug{"–"}Oct 2026</strong> onward. The grader runs automatically every Monday and writes a grade the moment upstream data lands. We do not grade early against partial or projected data: that restraint is what makes this ledger trustworthy.
+            </div>
+
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
               <thead>
                 <tr>
-                  {["Region", "Issued", "P(IPC 3+)", "Grading Date", "Days Overdue", "Attempts"].map(h => (
+                  {["Region", "Issued", "P(IPC 3+)", "Horizon Reached", "Window Open", "Checks"].map(h => (
                     <th key={h} style={th}>{h}</th>
                   ))}
                 </tr>
@@ -239,7 +245,7 @@ export default function ValidationPage() {
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{fmtDate(p.reference_date)}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", color: tierColor(p.alert_tier) }}>{fmtPct(p.p_ipc3plus)}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10 }}>{fmtDate(p.grading_date)}</td>
-                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--warning)" }}>{p.days_overdue ?? 0}d</td>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{p.days_overdue ?? 0}d</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{p.grade_attempts ?? 0}</td>
                   </tr>
                 ))}
@@ -248,12 +254,12 @@ export default function ValidationPage() {
           </div>
         )}
 
-        {/* ── SECTION 3: GRADED — grade_source NOT NULL ───────────── */}
+        {/* ── SECTION 3: GRADED (grade_source NOT NULL) ───────────── */}
         <div style={{ marginTop: 40 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16 }}>
             <div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>Public Prediction Ledger</div>
-              <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Graded Predictions \u2014 Forward Validation</h2>
+              <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Graded Predictions: Forward Validation</h2>
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", textAlign: "right" }}>
               {loading ? "Loading\u2026" : `${graded.length} graded \u00B7 T+90 days`}
@@ -285,7 +291,7 @@ export default function ValidationPage() {
                         ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "2px 6px", background: "#F0FDF4", color: "var(--watch)", border: "1px solid rgba(46,125,50,0.2)" }}>{"\u2713"}</span>
                         : g.in_si === 0
                           ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "2px 6px", background: "#FEF2F2", color: "var(--crisis)", border: "1px solid rgba(192,57,43,0.2)" }}>{"\u2717"}</span>
-                          : <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>\u2014</span>
+                          : <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>n/a</span>
                       }
                     </td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{g.grade_source}</td>
@@ -295,9 +301,9 @@ export default function ValidationPage() {
             </table></div>
           ) : (
             <div style={{ border: "1px solid var(--border)", background: "white", padding: "40px 32px", textAlign: "center" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 12 }}>NO GRADED PREDICTIONS YET</div>
-              <p style={{ fontSize: 14, color: "var(--ink-mid)", maxWidth: 480, margin: "0 auto", lineHeight: 1.7 }}>
-                First grading window opens June 7, 2026 (March 9 run + 90 days). IPC outcome grading will occur automatically when OCHA/IPC publish the classification for each monitored region. This ledger updates every Monday.
+              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 12 }}>FIRST GRADES EXPECTED AUG–OCT 2026</div>
+              <p style={{ fontSize: 14, color: "var(--ink-mid)", maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>
+                The first T+90 grading windows opened June 2026. Grades are written automatically once IPC/FEWS NET publish the observed Current-Situation classification for each region, which lags the target window by 2{"–"}4 months. {awaiting.length > 0 ? `${awaiting.length} predictions are in the grading queue now.` : ""} This ledger updates every Monday and nothing is graded against projected data.
               </p>
             </div>
           )}
@@ -307,7 +313,7 @@ export default function ValidationPage() {
         <div className="newsletter-cta" style={{ background: "var(--ink)", padding: "32px 40px", margin: "40px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Free Intelligence Newsletter</div>
-            <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Monthly CERES Intelligence Letter \u2014 free</div>
+            <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Monthly CERES Intelligence Letter, free</div>
             <div style={{ fontSize: 13, color: "#78716C", lineHeight: 1.6 }}>Top risk regions, system status, and a note from our founder. Sent the first Monday of each month to all free subscribers.</div>
           </div>
           <form onSubmit={handleSubscribe} style={{ display: "flex", gap: 8, flexShrink: 0 }}>
@@ -327,7 +333,7 @@ export default function ValidationPage() {
         {/* Calibration & Reliability */}
         <div style={{ margin: "48px 0", paddingTop: 40, borderTop: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>
-            {hasGrades ? `Live Calibration \u2014 ${nGraded} Graded Predictions` : "Calibration \u2014 Awaiting Prospective Data"}
+            {hasGrades ? `Live Calibration \u00b7 ${nGraded} Graded Predictions` : "Calibration \u00b7 Awaiting Prospective Data"}
           </div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>
             {hasGrades ? `Reliability Diagram \u00B7 Brier = ${fmt(metrics?.brier_score, 4)}` : "87 IPC Records \u00B7 31 Countries \u00B7 4 Back-validation Cases"}
@@ -336,14 +342,14 @@ export default function ValidationPage() {
             {hasGrades
               ? "Calibration computed from live graded predictions. Bins show the fraction of events that actually occurred (amber) vs. ideal calibration (grey). Each bin label is the predicted probability range."
               : calStatus === "insufficient_data"
-                ? `${totalPredictions} predictions issued, awaiting first grading cycle (June 2026). Calibration diagram will populate automatically as predictions are graded against IPC outcomes.`
+                ? `${totalPredictions} predictions issued; first outcomes expected Aug–Oct 2026 as IPC/FEWS NET publish observed classifications. The reliability diagram populates automatically as predictions are graded against those outcomes.`
                 : "Model initialised against 87 IPC transition records (2011\u20132023, 31 countries). 4 data-complete back-validation cases."
             }
           </p>
 
           {/* Reliability Diagram */}
           <div style={{ border: "1px solid var(--border)", background: "white", padding: 24, marginBottom: 32 }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>Reliability Diagram \u2014 Predicted vs. Observed Probability</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>Reliability Diagram \u00b7 Predicted vs. Observed Probability</div>
             <div style={{ fontSize: 12, color: "var(--ink-light)", marginBottom: 16 }}>Perfect calibration lies on the diagonal. Points above = underconfident; below = overconfident.</div>
             <svg viewBox="0 0 320 260" style={{ width: "100%", maxWidth: 480, display: "block" }} aria-label="Reliability diagram">
               {[0,20,40,60,80,100].map(v => (
@@ -405,7 +411,7 @@ export default function ValidationPage() {
                         {actual !== null && <div style={{ position: "absolute", height: "100%", width: `${actual}%`, background: "var(--earth)", borderRadius: 1, opacity: 0.7 }} />}
                       </div>
                       <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink)", textAlign: "right" }}>
-                        {actual !== null ? `${actual.toFixed(0)}%` : "\u2014"}{bin.count > 0 ? <span style={{ color: "var(--ink-light)", fontSize: 9 }}> ({bin.count})</span> : null}
+                        {actual !== null ? `${actual.toFixed(0)}%` : "n/a"}{bin.count > 0 ? <span style={{ color: "var(--ink-light)", fontSize: 9 }}> ({bin.count})</span> : null}
                       </span>
                     </div>
                   );
@@ -428,7 +434,7 @@ export default function ValidationPage() {
                       { label: "Resolution",      val: fmt(metrics.brier_decomposition.resolution, 4) },
                       { label: "Uncertainty",      val: fmt(metrics.brier_decomposition.uncertainty, 4) },
                       { label: "Skill Score (BSS)", val: fmt(metrics.skill_score, 4) },
-                      { label: "SI Coverage",     val: metrics.si_coverage !== null ? fmtPct(metrics.si_coverage) : "\u2014" },
+                      { label: "SI Coverage",     val: metrics.si_coverage !== null ? fmtPct(metrics.si_coverage) : "n/a" },
                       { label: "Predictions graded", val: `${nGraded}` },
                     ].map(({ label, val }, i) => (
                       <tr key={label} style={{ borderBottom: i < 6 ? "1px solid var(--border-light)" : "none" }}>
@@ -462,7 +468,7 @@ export default function ValidationPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>Pre-Registered Calibration Protocol</div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>What We Commit to Measuring</h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 24, lineHeight: 1.75, maxWidth: 720 }}>
-            Table 1 from the CERES preprint. These metrics were pre-registered before any prospective outcome data was collected. No metrics will be selectively reported {"\u2014"} all graded predictions remain permanently visible. Minimum sample sizes are fixed; targets cannot be revised retroactively.
+            Table 1 from the CERES preprint. These metrics were pre-registered before any prospective outcome data was collected. No metrics will be selectively reported: all graded predictions remain permanently visible. Minimum sample sizes are fixed; targets cannot be revised retroactively.
           </p>
           <div style={{ border: "1px solid var(--border)", overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
@@ -502,7 +508,7 @@ export default function ValidationPage() {
         <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "28px 32px", margin: "40px 0" }}>
           <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 600, marginBottom: 10 }}>The CERES Transparency Commitment</div>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", margin: 0, lineHeight: 1.75 }}>
-            Every prediction CERES issues is permanently recorded in this ledger with a timestamp, probability estimate, confidence interval, and T+90 day grading date. We do not remove predictions that prove incorrect. We analyse and publish the reasons for forecast errors. The accuracy record here is the complete record {"\u2014"} there is no curated subset. This is the foundation of institutional trust.
+            Every prediction CERES issues is permanently recorded in this ledger with a timestamp, probability estimate, 90% sensitivity interval, and T+90 day grading date. We do not remove predictions that prove incorrect. We analyse and publish the reasons for forecast errors. The accuracy record here is the complete record: there is no curated subset. This is the foundation of institutional trust.
           </p>
         </div>
 

@@ -3,8 +3,8 @@ import SiteFooter from "@/components/SiteFooter";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — CERES",
-  description: "Privacy Policy for CERES — Calibrated Early-warning and Risk Estimation System. Northflow Technologies AS.",
+  title: "Privacy Policy | CERES",
+  description: "Privacy Policy for CERES, the Calibrated Early-warning and Risk Estimation System. Northflow Technologies AS.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://ceres.northflow.no/privacy" },
 };
@@ -49,18 +49,18 @@ export default function PrivacyPage() {
         <h2 style={h2}>2. What Data We Collect</h2>
         <p style={p}>We collect only the data necessary to provide the CERES service:</p>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Email address</strong> — when you subscribe to the free newsletter, sign up for a paid API tier, or contact us. Used to send the service you subscribed to and to manage your account.</li>
-          <li style={li}><strong>Organisation name</strong> — optionally provided during API subscription. Used for billing and account management only.</li>
-          <li style={li}><strong>Payment data</strong> — handled entirely by Stripe. We do not store card numbers or payment credentials. Stripe acts as an independent data processor under their own privacy policy.</li>
-          <li style={li}><strong>Usage data</strong> — anonymised analytics via Google Analytics 4 (if enabled). Includes pages visited, session duration, and device type. No personally identifiable information is transmitted to Google Analytics.</li>
-          <li style={li}><strong>API request logs</strong> — IP address and request timestamps for authenticated API calls. Retained for 30 days for security and abuse prevention.</li>
+          <li style={li}><strong>Email address</strong>: collected when you subscribe to the free newsletter, sign up for a paid API tier, or contact us. Used to send the service you subscribed to and to manage your account.</li>
+          <li style={li}><strong>Organisation name</strong>: optionally provided during API subscription. Used for billing and account management only.</li>
+          <li style={li}><strong>Payment data</strong>: handled entirely by Stripe. We do not store card numbers or payment credentials. Stripe acts as an independent data processor under its own privacy policy.</li>
+          <li style={li}><strong>Usage data</strong>: anonymised analytics via Google Analytics 4 (if enabled). Includes pages visited, session duration, and device type. No personally identifiable information is transmitted to Google Analytics.</li>
+          <li style={li}><strong>API request logs</strong>: IP address and request timestamps for authenticated API calls. Retained for 30 days for security and abuse prevention.</li>
         </ul>
 
         <h2 style={h2}>3. Legal Basis for Processing</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Contract performance (Art. 6(1)(b) GDPR)</strong> — processing your email and billing data to provide the API service or newsletter you signed up for.</li>
-          <li style={li}><strong>Legitimate interests (Art. 6(1)(f) GDPR)</strong> — security logging, fraud prevention, and platform analytics.</li>
-          <li style={li}><strong>Consent (Art. 6(1)(a) GDPR)</strong> — where you have given explicit consent, such as accepting cookie tracking for analytics.</li>
+          <li style={li}><strong>Contract performance (Art. 6(1)(b) GDPR)</strong>: processing your email and billing data to provide the API service or newsletter you signed up for.</li>
+          <li style={li}><strong>Legitimate interests (Art. 6(1)(f) GDPR)</strong>: security logging, fraud prevention, and platform analytics.</li>
+          <li style={li}><strong>Consent (Art. 6(1)(a) GDPR)</strong>: where you have given explicit consent, such as accepting cookie tracking for analytics.</li>
         </ul>
 
         <h2 style={h2}>4. How We Use Your Data</h2>
@@ -76,29 +76,29 @@ export default function PrivacyPage() {
 
         <h2 style={h2}>5. Data Processors and Third Parties</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Stripe Inc.</strong> — payment processing. <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Stripe Privacy Policy</a></li>
-          <li style={li}><strong>Google LLC (Analytics)</strong> — anonymised website analytics. Data processed under a Data Processing Addendum. IP anonymisation enabled. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Privacy Policy</a></li>
-          <li style={li}><strong>Railway Inc.</strong> — cloud infrastructure hosting the API backend. Data processed within EU/EEA or under Standard Contractual Clauses.</li>
-          <li style={li}><strong>Vercel Inc.</strong> — frontend hosting. Data processed under Vercel&rsquo;s Data Processing Addendum.</li>
+          <li style={li}><strong>Stripe Inc.</strong>: payment processing. <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Stripe Privacy Policy</a></li>
+          <li style={li}><strong>Google LLC (Analytics)</strong>: anonymised website analytics. Data processed under a Data Processing Addendum, with IP anonymisation enabled. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Privacy Policy</a></li>
+          <li style={li}><strong>Railway Inc.</strong>: cloud infrastructure hosting the API backend. Data processed within the EU/EEA or under Standard Contractual Clauses.</li>
+          <li style={li}><strong>Vercel Inc.</strong>: frontend hosting. Data processed under Vercel&rsquo;s Data Processing Addendum.</li>
         </ul>
 
         <h2 style={h2}>6. Data Retention</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Newsletter subscribers</strong> — retained until you unsubscribe.</li>
-          <li style={li}><strong>API subscribers</strong> — retained for the duration of the subscription plus 2 years for accounting purposes.</li>
-          <li style={li}><strong>API request logs</strong> — 30 days.</li>
-          <li style={li}><strong>Analytics data</strong> — Google Analytics default retention (14 months).</li>
+          <li style={li}><strong>Newsletter subscribers</strong>: retained until you unsubscribe.</li>
+          <li style={li}><strong>API subscribers</strong>: retained for the duration of the subscription plus 2 years for accounting purposes.</li>
+          <li style={li}><strong>API request logs</strong>: 30 days.</li>
+          <li style={li}><strong>Analytics data</strong>: Google Analytics default retention (14 months).</li>
         </ul>
 
         <h2 style={h2}>7. Your Rights Under GDPR</h2>
         <p style={p}>You have the following rights regarding your personal data:</p>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Right of access</strong> — request a copy of the personal data we hold about you.</li>
-          <li style={li}><strong>Right to rectification</strong> — request correction of inaccurate data.</li>
-          <li style={li}><strong>Right to erasure</strong> — request deletion of your data (&ldquo;right to be forgotten&rdquo;), subject to legal retention obligations.</li>
-          <li style={li}><strong>Right to data portability</strong> — receive your data in a machine-readable format.</li>
-          <li style={li}><strong>Right to object</strong> — object to processing based on legitimate interests.</li>
-          <li style={li}><strong>Right to withdraw consent</strong> — where processing is based on consent, you may withdraw at any time.</li>
+          <li style={li}><strong>Right of access</strong>: request a copy of the personal data we hold about you.</li>
+          <li style={li}><strong>Right to rectification</strong>: request correction of inaccurate data.</li>
+          <li style={li}><strong>Right to erasure</strong>: request deletion of your data (&ldquo;right to be forgotten&rdquo;), subject to legal retention obligations.</li>
+          <li style={li}><strong>Right to data portability</strong>: receive your data in a machine-readable format.</li>
+          <li style={li}><strong>Right to object</strong>: object to processing based on legitimate interests.</li>
+          <li style={li}><strong>Right to withdraw consent</strong>: where processing is based on consent, you may withdraw at any time.</li>
         </ul>
         <p style={p}>To exercise any of these rights, contact us at <a href={`mailto:${EMAIL}`} style={{ color: "var(--earth)" }}>{EMAIL}</a>. We will respond within 30 days.</p>
         <p style={p}>You also have the right to lodge a complaint with the Norwegian Data Protection Authority (Datatilsynet) at <a href="https://www.datatilsynet.no" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>datatilsynet.no</a>.</p>
@@ -116,7 +116,7 @@ export default function PrivacyPage() {
 
         <h2 style={h2}>10. Security</h2>
         <p style={p}>
-          We implement appropriate technical and organisational measures to protect your personal data, including HTTPS encryption in transit, access controls, and regular security reviews. No system is completely secure — please contact us immediately if you suspect a data breach.
+          We implement appropriate technical and organisational measures to protect your personal data, including HTTPS encryption in transit, access controls, and regular security reviews. No system is completely secure: please contact us immediately if you suspect a data breach.
         </p>
 
         <h2 style={h2}>11. Changes to This Policy</h2>

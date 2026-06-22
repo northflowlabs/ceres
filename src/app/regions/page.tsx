@@ -6,7 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { api, Prediction } from "@/lib/api";
 
-function pct(n: number | null | undefined) { if (n == null) return "—"; return `${(n * 100).toFixed(1)}%`; }
+function pct(n: number | null | undefined) { if (n == null) return "n/a"; return `${(n * 100).toFixed(1)}%`; }
 function tierColor(t: string) { return t === "TIER-1" ? "#C0392B" : t === "TIER-2" ? "#D97706" : "#2E7D32"; }
 function tierLabel(t: string) { return t === "TIER-1" ? "Critical" : t === "TIER-2" ? "Warning" : "Watch"; }
 function tierBg(t: string)    { return t === "TIER-1" ? "#FEF2F2" : t === "TIER-2" ? "#FFFBEB" : "#F0FDF4"; }
@@ -147,7 +147,7 @@ export default function RegionsPage() {
                       <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>P(IPC 3+ · 90d)</span>
                     </div>
 
-                    {/* CI bar */}
+                    {/* Sensitivity interval bar */}
                     <div style={{ height: 5, background: "var(--border-light)", borderRadius: 3, marginBottom: 10, position: "relative" }}>
                       {p.sensitivity_interval_low != null && p.sensitivity_interval_high != null && (
                         <div style={{ position: "absolute", height: "100%", borderRadius: 3, left: `${p.sensitivity_interval_low * 100}%`, width: `${(p.sensitivity_interval_high - p.sensitivity_interval_low) * 100}%`, background: color, opacity: 0.25 }} />
@@ -158,7 +158,7 @@ export default function RegionsPage() {
                     {/* Footer row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                        IPC {p.ipc_phase_forecast} · {IPC_LABELS[p.ipc_phase_forecast] ?? "—"}
+                        IPC {p.ipc_phase_forecast} · {IPC_LABELS[p.ipc_phase_forecast] ?? "n/a"}
                         {p.driver_types?.length > 0 && (
                           <span style={{ marginLeft: 8, color: "var(--ink-light)" }}>· {p.driver_types.slice(0, 2).join(", ")}</span>
                         )}

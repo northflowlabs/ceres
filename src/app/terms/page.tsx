@@ -3,8 +3,8 @@ import SiteFooter from "@/components/SiteFooter";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Use — CERES",
-  description: "Terms of Use for CERES — Calibrated Early-warning and Risk Estimation System. Northflow Technologies AS.",
+  title: "Terms of Use | CERES",
+  description: "Terms of Use for CERES, the Calibrated Early-warning and Risk Estimation System. Northflow Technologies AS.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://ceres.northflow.no/terms" },
 };
@@ -44,7 +44,7 @@ export default function TermsPage() {
 
         <h2 style={h2}>1. The Service</h2>
         <p style={p}>
-          CERES provides calibrated probabilistic forecasts of acute food insecurity (IPC Phase 3+) at Admin1 level across high-risk countries, updated weekly. The Service includes the public dashboard, the REST API, email alerts, intelligence reports, and supporting documentation.
+          CERES provides calibrated probabilistic forecasts of acute food insecurity (IPC Phase 3+). Headline forecasts are issued at national level across 43 high-risk countries, with sub-national (Admin1 and, where available, Admin2) breakdowns, and are updated weekly. The Service includes the public dashboard, the REST API, email alerts, intelligence reports, and supporting documentation.
         </p>
         <p style={p}>
           The Service is provided by Northflow Technologies AS, a Norwegian technology company. Norwegian law applies to these Terms.
@@ -68,12 +68,12 @@ export default function TermsPage() {
 
         <h2 style={h2}>4. Paid API Subscriptions</h2>
         <p style={p}>
-          Paid subscriptions (Tier B — Professional, Tier C — Institutional) are billed monthly via Stripe. By subscribing you authorise Northflow to charge your payment method on a recurring monthly basis until you cancel.
+          Paid subscriptions (Tier B Professional, Tier C Institutional) are billed monthly via Stripe. By subscribing you authorise Northflow to charge your payment method on a recurring monthly basis until you cancel.
         </p>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Cancellation</strong> — you may cancel at any time via your account portal. Cancellation takes effect at the end of the current billing period. No refunds are issued for partial months.</li>
-          <li style={li}><strong>Overuse</strong> — exceeding your monthly API request quota will result in rate-limiting. We will notify you and offer the option to upgrade before suspending access.</li>
-          <li style={li}><strong>Acceptable use</strong> — API access may not be resold, sublicensed, or used to train competing machine learning models without prior written agreement.</li>
+          <li style={li}><strong>Cancellation</strong>: you may cancel at any time via your account portal. Cancellation takes effect at the end of the current billing period. No refunds are issued for partial months.</li>
+          <li style={li}><strong>Overuse</strong>: exceeding your monthly API request quota will result in rate-limiting. We will notify you and offer the option to upgrade before suspending access.</li>
+          <li style={li}><strong>Acceptable use</strong>: API access may not be resold, sublicensed, or used to train competing machine learning models without prior written agreement.</li>
         </ul>
 
         <h2 style={h2}>5. Intellectual Property</h2>
@@ -81,10 +81,10 @@ export default function TermsPage() {
           The CERES platform, codebase, and methodology documentation are the intellectual property of Northflow Technologies AS. The underlying open-source components retain their respective licences.
         </p>
         <p style={p}>
-          <strong>Open data</strong>: Prediction outputs published by CERES are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>. You may use, share, and adapt them freely provided you give attribution: <em>&ldquo;CERES / Northflow Technologies AS — ceres.northflow.no&rdquo;</em>.
+          <strong>Open data</strong>: Prediction outputs published by CERES are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>. You may use, share, and adapt them freely provided you give attribution: <em>&ldquo;CERES / Northflow Technologies AS, ceres.northflow.no&rdquo;</em>.
         </p>
         <p style={p}>
-          <strong>API outputs</strong>: Data retrieved via the authenticated API (including confidence intervals, driver hypotheses, and Admin1 signals) may be used in research, reporting, and operational planning. Commercial redistribution of raw API outputs requires a Tier C licence agreement.
+          <strong>API outputs</strong>: Data retrieved via the authenticated API (including sensitivity intervals, driver hypotheses, and Admin1 signals) may be used in research, reporting, and operational planning. Commercial redistribution of raw API outputs requires a Tier C licence agreement.
         </p>
 
         <h2 style={h2}>6. Acceptable Use</h2>
@@ -98,12 +98,12 @@ export default function TermsPage() {
           <li style={li}>Interfere with the security, integrity, or availability of the Service</li>
         </ul>
 
-        <h2 style={h2}>7. Disclaimer — Research Tool, Not Operational Authority</h2>
+        <h2 style={h2}>7. Disclaimer: Research Tool, Not Operational Authority</h2>
         <p style={p}>
           <strong>CERES is a research and early warning tool. It is not an operational humanitarian authority.</strong>
         </p>
         <p style={p}>
-          Only the IPC Global Platform, through its established field-based Cadre Harmonisé or IPC Acute Food Insecurity process, has the mandate to classify and declare famine (IPC Phase 5). A CERES Tier I prediction indicates a high statistical probability of reaching IPC Phase 3 or above within 90 days — it is a signal for preparedness and monitoring, not a famine declaration.
+          Only the IPC Global Platform, through its established field-based Cadre Harmonisé or IPC Acute Food Insecurity process, has the mandate to classify and declare famine (IPC Phase 5). A CERES Tier I prediction indicates a high statistical probability of reaching IPC Phase 3 or above within 90 days. It is a signal for preparedness and monitoring, not a famine declaration.
         </p>
         <p style={p}>
           CERES predictions are probabilistic estimates based on satellite, conflict, and market data. They carry uncertainty. They may be wrong. They should always be interpreted alongside field intelligence, FEWS NET situation reports, WFP VAM assessments, and direct humanitarian expertise.

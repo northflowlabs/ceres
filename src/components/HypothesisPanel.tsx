@@ -41,7 +41,7 @@ export default function HypothesisPanel({ hypothesis: initial, onClose }: Hypoth
       .finally(() => setFetching(false));
   }, [initial.hypothesis_id]);
 
-  // Safe accessors — flat fields always present; nested arrays may be absent in summary
+  // Safe accessors: flat fields always present; nested arrays may be absent in summary
   const p3   = h.p_ipc3plus_90d ?? 0;
   const p4   = h.p_ipc4plus_90d ?? 0;
   const pFam = h.p_famine_90d   ?? 0;
@@ -133,7 +133,7 @@ export default function HypothesisPanel({ hypothesis: initial, onClose }: Hypoth
                 </div>
                 {primary && (
                   <div className="text-[10px] text-slate-600 mt-1 font-mono">
-                    CI {ciStr(ciLo, ciHi)}
+                    SI {ciStr(ciLo, ciHi)}
                   </div>
                 )}
               </div>
@@ -190,7 +190,7 @@ export default function HypothesisPanel({ hypothesis: initial, onClose }: Hypoth
               {/* CI bar */}
               <div className="bg-[#0a1628] rounded-xl p-4 border border-[#1f2d40]">
                 <div className="flex items-center justify-between mb-2 text-xs text-slate-500">
-                  <span>90% Confidence Interval — P(IPC 3+)</span>
+                  <span>90% Sensitivity Interval (SI), P(IPC 3+)</span>
                   <span className="font-mono">{ciMethod}</span>
                 </div>
                 <div className="relative h-3 bg-slate-800 rounded-full overflow-hidden">
@@ -389,7 +389,7 @@ export default function HypothesisPanel({ hypothesis: initial, onClose }: Hypoth
                           {e.threshold.toFixed(3)}
                         </td>
                         <td className="py-2.5 px-3 text-slate-600 italic hidden md:table-cell">
-                          {e.note || "—"}
+                          {e.note || "n/a"}
                         </td>
                       </tr>
                     ))}

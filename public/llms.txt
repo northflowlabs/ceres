@@ -1,0 +1,57 @@
+# CERES
+
+> CERES (Calibrated Early-warning and Risk Estimation System) is an open, automated famine early-warning system operated by Northflow Technologies AS. It issues calibrated 90-day probability forecasts of acute food insecurity (IPC Phase 3+, Phase 4+, and Famine) for 43 high-risk countries, refreshed every Monday at 06:00 UTC.
+
+## What CERES is
+
+- Operator: Northflow Technologies AS (https://northflow.no). CERES runs as HGE Adapter #5 on the Northflow inference engine.
+- Coverage: 43 high-risk countries.
+- Horizon: 90-day probability forecasts.
+- Cadence: weekly, issued every Monday at 06:00 UTC.
+- Outputs: P(IPC Phase 3+ 90d), P(IPC Phase 4+ 90d), P(Famine 90d), a composite stress score, an alert tier, and a 90% sensitivity interval per region.
+
+## Data inputs
+
+CERES draws on six core public data streams:
+
+1. CHIRPS rainfall
+2. MODIS NDVI vegetation
+3. UCDP GED conflict events
+4. IPC classifications
+5. WFP VAM market data
+6. FAO GIEWS
+
+FEWS NET is used as a supplementary cross-check, not a core input. UNHCR is not an active input.
+
+## Model and validation
+
+- Method: calibrated logistic regression over the six public data streams, with input-perturbation sensitivity intervals (n=2,000 draws per prediction).
+- Initialisation accuracy: AUC 0.84 on a held-out split of 87 IPC transition records across 31 countries (2011-2023).
+- Forward validation: every prediction is timestamped, publicly recorded, and graded against published IPC outcomes at the T+90 horizon. Predictions have been issued since the 28 Feb 2026 launch; the first T+90 grading windows opened June 2026 and the first graded outcomes are expected Aug-Oct 2026.
+
+## Important distinction
+
+CERES does not declare famine. Only the IPC Global Platform declares Famine (IPC Phase 5). A CERES Tier-1 alert indicates a high probability of a region reaching IPC Phase 3+; it is an early-warning signal, not an official classification.
+
+CERES is the Northflow famine early-warning system. It is not the NASA CERES radiation instrument and not the dwarf planet Ceres.
+
+## Licence
+
+Predictions are published under Creative Commons Attribution 4.0 (CC BY 4.0), free for humanitarian, academic, and governmental use.
+
+## Key pages
+
+- About: https://ceres.northflow.no/about
+- Methodology: https://ceres.northflow.no/methodology
+- Data sources: https://ceres.northflow.no/data
+- Validation ledger: https://ceres.northflow.no/validation
+
+## External references
+
+- Preprint: https://arxiv.org/abs/2603.09425
+- Dataset (HDX): https://data.humdata.org/dataset/global-ceres-famine-risk-predictions
+- Source code: https://github.com/northflowlabs/ceres-core
+
+## Citation
+
+Pedersen, T. D. S. (2026). CERES: A Probabilistic Early Warning System for Acute Food Insecurity. arXiv:2603.09425.

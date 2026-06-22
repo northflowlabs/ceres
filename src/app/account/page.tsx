@@ -282,7 +282,7 @@ export default function AccountPage() {
       window.history.replaceState({}, "", url.toString());
       await fetchMe(session_token);
     } catch {
-      setError("Login failed — please try again.");
+      setError("Login failed. Please try again.");
       setLoading(false);
     }
   }
@@ -408,7 +408,7 @@ export default function AccountPage() {
               )}
               <div style={{ marginLeft: "auto", borderLeft: "1px solid var(--border-light)", paddingLeft: 16 }}>
                 <span style={s.label}>Billing period</span>
-                <div style={{ fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", marginTop: 2 }}>{me.month_bucket || "—"}</div>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", marginTop: 2 }}>{me.month_bucket || "n/a"}</div>
               </div>
             </div>
 
@@ -417,7 +417,7 @@ export default function AccountPage() {
               {[
                 { label: "Requests this month", val: me.requests_this_month.toLocaleString(), sub: isUnlimited ? "Unlimited plan" : `of ${me.monthly_limit.toLocaleString()} limit` },
                 { label: "Remaining",           val: isUnlimited ? "∞" : me.remaining.toLocaleString(), sub: isUnlimited ? "No cap" : "resets 1st of month" },
-                { label: "Usage",               val: isUnlimited ? "—" : `${usagePct.toFixed(1)}%`, sub: isUnlimited ? "Unlimited" : usagePct >= 90 ? "Near limit" : "Healthy", color: isUnlimited ? "var(--earth)" : usageColor },
+                { label: "Usage",               val: isUnlimited ? "n/a" : `${usagePct.toFixed(1)}%`, sub: isUnlimited ? "Unlimited" : usagePct >= 90 ? "Near limit" : "Healthy", color: isUnlimited ? "var(--earth)" : usageColor },
               ].map(({ label, val, sub, color }) => (
                 <div key={label} style={{ background: "white", padding: "24px 28px" }}>
                   <span style={s.label}>{label}</span>
@@ -455,7 +455,7 @@ export default function AccountPage() {
                   </button>
                 </div>
                 <p style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginTop: 10, lineHeight: 1.7 }}>
-                  Full key was emailed at subscription time — check your inbox. Header: <code style={{ background: "var(--parchment-dark)", padding: "1px 4px" }}>X-API-Key: your_full_key</code>
+                  Full key was emailed at subscription time: check your inbox. Header: <code style={{ background: "var(--parchment-dark)", padding: "1px 4px" }}>X-API-Key: your_full_key</code>
                 </p>
               </div>
             )}
@@ -472,7 +472,7 @@ export default function AccountPage() {
               </div>
             </div>
 
-            {/* Watchlist — available to all subscribers */}
+            {/* Watchlist: available to all subscribers */}
             <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
                 Custom Watchlist
@@ -514,7 +514,7 @@ export default function AccountPage() {
               <div style={{ marginBottom: 20 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                   <label style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)" }}>
-                    Alert Threshold — P(IPC 3+) ≥
+                    Alert Threshold · P(IPC 3+) ≥
                   </label>
                   <span style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: watchThreshold >= 0.90 ? "var(--crisis)" : watchThreshold >= 0.70 ? "var(--warning, #D97706)" : "var(--watch)" }}>
                     {Math.round(watchThreshold * 100)}%
@@ -527,10 +527,10 @@ export default function AccountPage() {
                   style={{ width: "100%", accentColor: "var(--earth)" }}
                 />
                 <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 4 }}>
-                  <span>10% — All signals</span>
-                  <span style={{ color: "var(--watch)" }}>50% — Watch</span>
-                  <span style={{ color: "var(--warning, #D97706)" }}>70% — Warning</span>
-                  <span style={{ color: "var(--crisis)" }}>90% — Critical only</span>
+                  <span>10% · All signals</span>
+                  <span style={{ color: "var(--watch)" }}>50% · Watch</span>
+                  <span style={{ color: "var(--warning, #D97706)" }}>70% · Warning</span>
+                  <span style={{ color: "var(--crisis)" }}>90% · Critical only</span>
                 </div>
               </div>
 
@@ -567,14 +567,14 @@ export default function AccountPage() {
               )}
             </div>
 
-            {/* PDF Intelligence Briefs — Professional/Institutional */}
+            {/* PDF Intelligence Briefs: Professional/Institutional */}
             {["professional", "institutional", "admin"].includes(me.tier) && (
               <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
                   PDF Intelligence Briefs
                 </div>
                 <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 16px" }}>
-                  Multi-page weekly intelligence briefs — cover, executive summary, full predictions table, and methodology. Sent to your email each Monday.
+                  Multi-page weekly intelligence briefs: cover, executive summary, full predictions table, and methodology. Sent to your email each Monday.
                   {me.tier === "institutional" && me.org_name && (
                     <span style={{ color: "var(--earth)" }}> White-labelled for <strong>{me.org_name}</strong>.</span>
                   )}
@@ -586,7 +586,7 @@ export default function AccountPage() {
 
                 {!briefsLoading && briefs.length === 0 && (
                   <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 0 }}>
-                    No briefs available yet — they are generated and sent each Monday after the weekly pipeline run.
+                    No briefs available yet. They are generated and sent each Monday after the weekly pipeline run.
                   </p>
                 )}
 
@@ -617,14 +617,14 @@ export default function AccountPage() {
               </div>
             )}
 
-            {/* Team Members — Institutional only */}
+            {/* Team Members: Institutional only */}
             {["institutional", "admin"].includes(me.tier) && (
               <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
                   Team Members
                 </div>
                 <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 20px" }}>
-                  Invite colleagues to access this Institutional account — they inherit your tier, org name, API access, and PDF briefs. Up to 10 members.
+                  Invite colleagues to access this Institutional account. They inherit your tier, org name, API access, and PDF briefs. Up to 10 members.
                 </p>
 
                 {teamLoading && <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>Loading team…</div>}
@@ -695,11 +695,11 @@ export default function AccountPage() {
                   </button>
                 </div>
                 {inviteError && <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginTop: 8 }}>{inviteError}</div>}
-                {inviteSent && <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--watch)", marginTop: 8 }}>✓ Invite sent — they can sign in at ceres.northflow.no/login</div>}
+                {inviteSent && <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--watch)", marginTop: 8 }}>✓ Invite sent. They can sign in at ceres.northflow.no/login</div>}
               </div>
             )}
 
-            {/* Named contacts — Institutional only */}
+            {/* Named contacts: Institutional only */}
             {["institutional", "admin"].includes(me.tier) && (
               <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
@@ -772,7 +772,7 @@ export default function AccountPage() {
               </div>
             )}
 
-            {/* Webhook management — Professional/Institutional only */}
+            {/* Webhook management: Professional/Institutional only */}
             {["professional", "institutional"].includes(me.tier) && (
               <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
@@ -850,7 +850,7 @@ export default function AccountPage() {
             </div>
 
             <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 40, lineHeight: 1.7 }}>
-              Your API key is sensitive — never share it publicly. If compromised, email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a> to rotate it. Usage counters reset on the 1st of each month UTC.
+              Your API key is sensitive: never share it publicly. If compromised, email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a> to rotate it. Usage counters reset on the 1st of each month UTC.
             </p>
           </>
         )}

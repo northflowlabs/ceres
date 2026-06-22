@@ -9,7 +9,7 @@ import { api, Prediction, Hypothesis, Admin1Signal, RegionSnapshot } from "@/lib
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function pct(n: number | null | undefined) { if (n == null) return "—"; return `${(n * 100).toFixed(1)}%`; }
+function pct(n: number | null | undefined) { if (n == null) return "n/a"; return `${(n * 100).toFixed(1)}%`; }
 function pctInt(n: number) { return `${Math.round(n * 100)}%`; }
 
 function tierColor(tier: string) {
@@ -87,7 +87,7 @@ function Sparkline({ data }: { data: RegionSnapshot[] }) {
         {/* 75% guide */}
         <line x1={0} y1={H - 0.75*(H-10) - 5} x2={W} y2={H - 0.75*(H-10) - 5}
           stroke="var(--border)" strokeWidth={1} strokeDasharray="4 4" />
-        {/* CI band */}
+        {/* Sensitivity interval band */}
         {pts.ci && <path d={pts.ci} fill={color} fillOpacity={0.1} />}
         {/* Main line */}
         <path d={pts.line} fill="none" stroke={color} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
@@ -96,7 +96,7 @@ function Sparkline({ data }: { data: RegionSnapshot[] }) {
       </svg>
       <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginTop: 6 }}>
         <span>{firstDate}</span>
-        <span style={{ color: "var(--ink-mid)" }}>P(IPC Phase 3+ within 90 days) — weekly runs</span>
+        <span style={{ color: "var(--ink-mid)" }}>P(IPC Phase 3+ within 90 days) · weekly runs</span>
         <span>{lastDate}</span>
       </div>
     </div>
@@ -278,11 +278,11 @@ export default function RegionPage() {
 
         {/* ── Stat strip ───────────────────────────────────────── */}
         <div className="region-stat-strip" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
-          <StatBox label="P(IPC 4+) 90d"   value={pred.p_ipc4plus_90d != null ? pct(pred.p_ipc4plus_90d) : "—"}    accent={color} />
-          <StatBox label="P(Famine) 90d"    value={pred.p_famine_90d != null ? pct(pred.p_famine_90d) : "—"}      sub="IPC Phase 5" accent={(pred.p_famine_90d ?? 0) > 0.15 ? color : undefined} />
+          <StatBox label="P(IPC 4+) 90d"   value={pred.p_ipc4plus_90d != null ? pct(pred.p_ipc4plus_90d) : "n/a"}    accent={color} />
+          <StatBox label="P(Famine) 90d"    value={pred.p_famine_90d != null ? pct(pred.p_famine_90d) : "n/a"}      sub="IPC Phase 5" accent={(pred.p_famine_90d ?? 0) > 0.15 ? color : undefined} />
           <StatBox label="IPC Phase Forecast" value={`Phase ${pred.ipc_phase_forecast}`} sub={IPC_LABELS[pred.ipc_phase_forecast]} accent={pred.ipc_phase_forecast >= 3 ? color : undefined} />
           <StatBox label="Composite Stress" value={`${(pred.composite_stress_score * 100).toFixed(0)}/100`} sub="0 = low · 100 = extreme" />
-          <StatBox label="Sensitivity Interval" value={pred.sensitivity_interval_low != null && pred.sensitivity_interval_high != null ? `${pct(pred.sensitivity_interval_low)} – ${pct(pred.sensitivity_interval_high)}` : "Pending"} sub={pred.sensitivity_interval_low != null ? "90% SI · P(IPC 3+)" : "Populating from May 2026"} />
+          <StatBox label="Sensitivity Interval" value={pred.sensitivity_interval_low != null && pred.sensitivity_interval_high != null ? `${pct(pred.sensitivity_interval_low)} – ${pct(pred.sensitivity_interval_high)}` : "Pending"} sub={pred.sensitivity_interval_low != null ? "90% SI · P(IPC 3+)" : "Populating from current runs"} />
         </div>
 
         {/* ── Two-column: Trend + Drivers ──────────────────────── */}
@@ -294,7 +294,7 @@ export default function RegionPage() {
               Historical Trend
             </div>
             <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 20 }}>
-              P(IPC 3+) — {history.length} weekly runs
+              P(IPC 3+) · {history.length} weekly runs
             </div>
             <Sparkline data={history} />
             {history.length === 0 && (
@@ -331,7 +331,7 @@ export default function RegionPage() {
             {/* Convergence note */}
             {pred.is_compound && (
               <div style={{ marginTop: 16, padding: "10px 14px", background: "#FEF2F2", border: "1px solid #FECACA", fontFamily: "var(--mono)", fontSize: 10, color: "#C0392B", letterSpacing: "0.04em" }}>
-                ⚠ COMPOUND CRISIS — multiple drivers converging simultaneously
+                ⚠ COMPOUND CRISIS · multiple drivers converging simultaneously
               </div>
             )}
           </div>
@@ -359,7 +359,7 @@ export default function RegionPage() {
               Sub-national
             </div>
             <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 20 }}>
-              Admin Level 1 — Stress by Region
+              Admin Level 1 · Stress by Region
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {sortedAdmin1.map(a => {
@@ -408,7 +408,7 @@ export default function RegionPage() {
           {[
             {
               title: "FEWS NET Comparison",
-              desc: "Side-by-side view of CERES forecast vs. current FEWS NET classification. Highlights where CERES diverges from the consensus — early warning of emerging disagreements.",
+              desc: "Side-by-side view of CERES forecast vs. current FEWS NET classification. Highlights where CERES diverges from the consensus: early warning of emerging disagreements.",
             },
             {
               title: "IPC Assessment Countdown",
@@ -435,8 +435,8 @@ export default function RegionPage() {
             <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: 0 }}>
               Forecasts are generated weekly by the CERES pipeline using a composite weighted logistic model. Current scores reflect
               live data ingested from CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, and FAO GIEWS. Model coefficients were
-              initialised with author-specified values informed by IPC transition records across Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021)
-              — see the <Link href="/methodology#model" style={{ color: "var(--earth)", textDecoration: "none" }}>Methodology page</Link> for the recalibration history and current production coefficients.
+              initialised with author-specified values informed by IPC transition records across Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021).
+              See the <Link href="/methodology#model" style={{ color: "var(--earth)", textDecoration: "none" }}>Methodology page</Link> for the recalibration history and current production coefficients.
               Probabilities represent the likelihood of escalation to IPC Phase 3 or above within 90 days from the reference date.
               &nbsp;<Link href="/methodology" style={{ color: "var(--earth)", textDecoration: "none" }}>Full methodology →</Link>
             </p>

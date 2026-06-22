@@ -67,7 +67,7 @@ export default function LoginPage() {
                 Check your inbox at <strong>{email}</strong>.
               </p>
               <p style={{ fontSize: 13, color: "var(--ink-light)", lineHeight: 1.7 }}>
-                The link expires in 15 minutes. Click it to sign in — no password needed.
+                The link expires in 15 minutes. Click it to sign in. No password needed.
                 If you don&rsquo;t see it, check your spam folder.
               </p>
             </div>

@@ -21,7 +21,7 @@ export default function SiteFooter() {
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>CERES</div>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Calibrated Early-warning and Risk Estimation System</p>
-          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Automated probabilistic forecasting system for acute food insecurity. Generates 90-day ahead probability estimates of IPC Phase 3+, 4+, and 5 conditions for 43 high-risk countries, updated weekly. Fuses six data streams — CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, and FAO/WFP — through a logistic scoring model with parametric input-perturbation intervals (n=2,000 draws). Free for humanitarian and academic use.</p>
+          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Automated probabilistic forecasting system for acute food insecurity. Generates 90-day ahead probability estimates of IPC Phase 3+, 4+, and 5 conditions for 43 high-risk countries, updated weekly. Fuses six data streams (CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, and FAO GIEWS) through a logistic scoring model with input-perturbation intervals (n=2,000 draws). Free for humanitarian and academic use.</p>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Open Humanitarian Intelligence<br />Northflow Technologies · 2026</p>
         </div>
         <div>
@@ -40,7 +40,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div className="footer-bottom" style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.4.0 · HGE Adapter #5 · Live since 28 Feb 2026 · <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "#57534E", textDecoration: "underline" }}>arXiv:2603.09425</a></span>
+        <span>CERES v0.5.0 · HGE Adapter #5 · Live since 28 Feb 2026 · <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "#57534E", textDecoration: "underline" }}>arXiv:2603.09425</a></span>
         <span style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
           <Link href="/privacy" style={{ color: "#57534E", textDecoration: "none" }}>Privacy Policy</Link>
           <Link href="/cookies" style={{ color: "#57534E", textDecoration: "none" }}>Cookies</Link>

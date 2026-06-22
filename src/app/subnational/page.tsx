@@ -222,8 +222,8 @@ export default function SubnationalPage() {
         </h1>
         <p style={{ fontSize: 16, color: "var(--ink-mid)", maxWidth: 720, lineHeight: 1.7, fontWeight: 300 }}>
           {resolution === "admin1"
-            ? <>Probabilistic 90-day IPC Phase 3+ forecasts disaggregated to Admin1 (province / state / region) level across {activeLoading ? "—" : activeRows.length} units in {activeLoading ? "—" : nCountries} countries.</>
-            : <>District-level disaggregation for the top 10 crisis countries across {activeLoading ? "—" : activeRows.length} Admin2 units. Signals inherited from parent Admin1 where district-level grid data is sparse.</>
+            ? <>Probabilistic 90-day IPC Phase 3+ forecasts disaggregated to Admin1 (province / state / region) level across {activeLoading ? "…" : activeRows.length} Admin1 regions in {activeLoading ? "…" : nCountries} countries.</>
+            : <>District-level disaggregation for the top 10 crisis countries across {activeLoading ? "…" : activeRows.length} Admin2 units. Signals inherited from parent Admin1 where district-level grid data is sparse.</>
           }
         </p>
         {/* Resolution tabs */}
@@ -243,10 +243,10 @@ export default function SubnationalPage() {
         </div>
         <div style={{ display: "flex", gap: 40, marginTop: 32, flexWrap: "wrap" }}>
           {[
-            { num: activeLoading ? "—" : activeRows.length, label: resolution === "admin1" ? "Admin1 Units" : "Admin2 Units", color: "var(--ink)"     },
-            { num: activeLoading ? "—" : nCountries,        label: "Countries",             color: "var(--earth)"   },
-            { num: activeLoading ? "—" : tier1Count,        label: "TIER-1 · Critical",     color: "var(--crisis)"  },
-            { num: activeLoading ? "—" : tier2Count,        label: "TIER-2 · Warning",      color: "var(--warning)" },
+            { num: activeLoading ? "…" : activeRows.length, label: resolution === "admin1" ? "Admin1 Regions" : "Admin2 Units", color: "var(--ink)"     },
+            { num: activeLoading ? "…" : nCountries,        label: "Countries",             color: "var(--earth)"   },
+            { num: activeLoading ? "…" : tier1Count,        label: "TIER-1 · Critical",     color: "var(--crisis)"  },
+            { num: activeLoading ? "…" : tier2Count,        label: "TIER-2 · Warning",      color: "var(--warning)" },
           ].map(({ num, label, color }) => (
             <div key={label}>
               <div style={{ fontFamily: "var(--display)", fontSize: 32, fontWeight: 700, color, lineHeight: 1 }}>{num}</div>
@@ -383,7 +383,7 @@ export default function SubnationalPage() {
                         }}>
                           Ph {a.current_ipc_phase.toFixed(1)}
                         </span>
-                      ) : <span style={{ color: "var(--border)" }}>—</span>}
+                      ) : <span style={{ color: "var(--border)" }}>n/a</span>}
                     </td>
                   </tr>
                 );

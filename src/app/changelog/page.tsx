@@ -30,89 +30,89 @@ const TYPE_LABELS: Record<string, string> = {
 
 const CHANGELOG: ChangeEntry[] = [
   {
+    date: "2026-03-11",
+    version: "v0.5",
+    type: "model",
+    title: "Coefficient recalibration: logit saturation fix",
+    body: "Following live deployment, the initial IPC Phase 3+ coefficients (arXiv v1) were found to produce logit saturation: all 43 monitored countries returned P(IPC 3+) > 0.99, eliminating discriminative utility. Root cause: the additive stack of composite_stress (5.80), convergence_score (2.20), and n_independent (0.40 × 4 signals) dominated the intercept for any country with three or more elevated signals. Coefficients adjusted: intercept −2.10 to −4.50, composite_stress β 5.80 to 3.20, convergence_score β 2.20 to 1.40, n_independent β 0.40 to 0.20. Recalibrated model produces P = 0.036–0.994 across the monitored-country CSS range. Same fix applied to admin1.py, admin2.py, and scenario.py. Updated coefficients documented in Appendix C of the preprint and on the Methodology page. arXiv v2 planned Q3 2026.",
+    breaking: true,
+  },
+  {
     date: "2026-03-02",
     version: "v0.4",
     type: "platform",
     title: "Impact page, embeddable widget, CSV data exports, named alert contacts",
-    body: "Added donor-facing /impact page with live accuracy statistics and downloadable datasets. Embeddable risk widget at /widget for partner org integration. Three CSV export endpoints: current predictions, full archive, and grading ledger. Named-contact alert routing for Institutional subscribers — set specific contacts per region for Tier I alerts. Public changelog added.",
+    body: "Added donor-facing /impact page with live activity statistics and downloadable datasets. Embeddable risk widget at /widget for partner org integration. Three CSV export endpoints: current predictions, full archive, and grading ledger. Named-contact alert routing for Institutional subscribers, setting specific contacts per region for Tier I alerts. Public changelog added.",
   },
   {
     date: "2026-03-01",
     version: "v0.3",
     type: "platform",
-    title: "Full mobile responsive pass — all pages",
+    title: "Full mobile responsive pass across all pages",
     body: "Comprehensive mobile CSS overrides across every page. Navigation, dashboard, account, subnational, validation, API access, methodology, tracker, about, data, and login pages all optimised for 320–768px viewports. Mobile bottom sheet for dashboard detail view. Hamburger menu confirmed functional.",
   },
   {
     date: "2026-03-01",
     version: "v0.3",
     type: "api",
-    title: "Custom watchlists — per-subscriber region filter and probability threshold",
+    title: "Custom watchlists: per-subscriber region filter and probability threshold",
     body: "Subscribers can now set a watchlist of specific regions and a probability threshold. Alerts and digests will be filtered to watchlist regions only if configured. Available to all paid subscribers via the account page. GET and PUT /v1/auth/watchlist endpoints added.",
   },
   {
     date: "2026-02-28",
     version: "v0.2",
     type: "platform",
-    title: "CERES public launch — 121 regions, 15 countries",
-    body: "Initial public release of CERES. Predictions issued for 121 Admin1 regions across 15 countries at highest food insecurity risk: Ethiopia, Somalia, Sudan, South Sudan, Kenya, Yemen, Niger, Mali, Burkina Faso, Haiti, Afghanistan, Syria, DRC, Zimbabwe, Mozambique. All predictions timestamped and graded at T+90 days.",
-  },
-  {
-    date: "2026-03-11",
-    version: "v0.5",
-    type: "model",
-    title: "Coefficient recalibration — logit saturation fix",
-    body: "Following live deployment, the initial IPC 3+ coefficients (arXiv v1) were found to produce logit saturation: all 43 monitored regions returned P(IPC 3+) > 0.99, eliminating discriminative utility. Root cause: the additive stack of composite_stress (5.80), convergence_score (2.20), and n_independent (0.40 × 4 signals) dominated the intercept for any country with ≥3 elevated signals. Coefficients adjusted: intercept −2.10→−4.50, composite_stress β 5.80→3.20, convergence_score β 2.20→1.40, n_independent β 0.40→0.20. Recalibrated model produces P = 0.036–0.994 across the monitored-country CSS range. Same fix applied to admin1.py, admin2.py, and scenario.py. Updated coefficients documented in Appendix C of the preprint and on the Methodology page. arXiv v2 planned Q3 2026.",
-    breaking: true,
+    title: "CERES public launch: 43 high-risk countries",
+    body: "Initial public release of CERES. Predictions issued at national level across 43 high-risk countries, with Admin1 disaggregation where data permits, including Ethiopia, Somalia, Sudan, South Sudan, Kenya, Yemen, Niger, Mali, Burkina Faso, Haiti, Afghanistan, Syria, DRC, Zimbabwe, and Mozambique. All predictions timestamped and graded at T+90 days.",
   },
   {
     date: "2026-02-28",
     version: "v0.2",
     type: "model",
-    title: "Logistic model initialised with author-specified coefficients — 87 IPC transition records",
-    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011–2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Bootstrap resampling (2,000 input-perturbation replications) for sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets — grading begins May 2026 when first predictions reach their T+90 horizon. See Validation page for live progress.",
+    title: "Logistic model initialised with author-specified coefficients: 87 IPC transition records",
+    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011–2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2–4 month lag, the first graded results are expected Aug–Oct 2026. See Validation page for live progress.",
   },
   {
     date: "2026-02-27",
     version: "v0.2",
     type: "data",
-    title: "Eight data streams integrated — CHIRPS, MODIS NDVI, ACLED, FEWS NET, WFP VAM, FAO GIEWS, IPC, UNHCR",
-    body: "Pipeline ingests eight open data streams. Climate: CHIRPS dekadal precipitation (SPI-3, SPI-6, rainfall deficit), MODIS NDVI 16-day composite (vegetation stress). Conflict: ACLED weekly events (4-week rolling, fatality count, actor type). Food: FEWS NET IPC estimates and market prices, WFP VAM food consumption score and rCSI, FAO GIEWS crop outlook. Displacement: UNHCR Admin1 IDP and refugee flows. Grading: IPC cadre outcomes at T+90.",
+    title: "Six core data streams integrated, plus two supplementary sources",
+    body: "Pipeline ingests six core model inputs. Climate: CHIRPS dekadal precipitation (SPI-3, SPI-6, rainfall deficit) and MODIS NDVI 16-day composite (vegetation stress). Conflict: UCDP GED georeferenced events (4-week rolling, fatality count, actor type). Food: IPC acute food insecurity phase, WFP VAM food consumption score and rCSI, and FAO GIEWS market and cereal prices. Two supplementary sources support hypothesis corroboration without entering the model: FEWS NET outlooks as a cross-check and UNHCR Admin1 displacement data. Grading: IPC cadre outcomes at T+90.",
   },
   {
     date: "2026-02-26",
     version: "v0.1",
     type: "methodology",
-    title: "HGE Adapter #5 — Hypothesis Generation Engine applied to food security",
+    title: "HGE Adapter #5: Hypothesis Generation Engine applied to food security",
     body: "CERES is built on the Hypothesis Generation Engine (HGE), Northflow Technologies' institutional-grade hypothesis synthesis infrastructure. HGE synthesises multi-source signals into ranked, evidenced, falsifiable hypotheses. CERES is Adapter #5. The same calibration standards, uncertainty quantification, and auditability requirements apply as to all HGE adapters.",
   },
   {
     date: "2026-02-24",
     version: "v0.1",
     type: "api",
-    title: "API v1 — predictions, hypotheses, Admin1 signals, grading ledger, archive",
+    title: "API v1: predictions, hypotheses, Admin1 signals, grading ledger, archive",
     body: "Public API launched at ceres-core-production.up.railway.app. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/admin1 (Admin1 stress signals), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX). Auth: Bearer API key header. Rate limits: 500/month (Free), 10,000/month (Professional), unlimited (Institutional).",
   },
   {
     date: "2026-02-20",
     version: "v0.1",
     type: "platform",
-    title: "Track record archive — weekly prediction snapshots",
+    title: "Track record archive: weekly prediction snapshots",
     body: "Every weekly pipeline run archives a snapshot of all region predictions. The /tracker page displays the full time series per region with sparklines, trend indicators, and verification outcomes. Archive statistics: total runs, regions tracked, snapshot count, earliest run date.",
   },
   {
     date: "2026-02-15",
     version: "v0.1",
     type: "platform",
-    title: "Subnational resolution — Admin1 signal breakdown across 121 units",
-    body: "CERES disaggregates crisis signals to Admin1 (province/state/region) level. The /subnational page displays composite stress scores and sub-scores (drought, conflict, food access, IPC stress, price stress) for all monitored administrative units. Sortable, filterable, downloadable.",
+    title: "Subnational resolution: Admin1 signal breakdown",
+    body: "CERES disaggregates crisis signals to Admin1 (province/state/region) level across the monitored Admin1 regions. The /subnational page displays composite stress scores and sub-scores (drought, conflict, food access, IPC stress, price stress) for all monitored administrative units. Sortable, filterable, downloadable.",
   },
   {
     date: "2026-02-10",
     version: "v0.1",
     type: "model",
-    title: "Three-tier alert classification — TIER-1, TIER-2, TIER-3",
-    body: "TIER-1: P(IPC Phase 3+) ≥ 0.70 or P(IPC 4+) ≥ 0.50 — high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC Phase 3+) ≥ 0.45 or CRITICAL convergence — elevated risk, enhanced monitoring. TIER-3: P < 0.45 — watch status, included in weekly digest. Thresholds author-specified at initialisation; prospective calibration ongoing from May 2026.",
+    title: "Three-tier alert classification: TIER-1, TIER-2, TIER-3",
+    body: "TIER-1: P(IPC 3+) ≥ 0.70 or P(IPC 4+) ≥ 0.50, high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC 3+) 0.45–0.69 or CRITICAL convergence, elevated risk, enhanced monitoring. TIER-3: P(IPC 3+) < 0.45, watch status, included in weekly digest. Thresholds author-specified at initialisation; prospective calibration ongoing as graded outcomes accumulate from Aug–Oct 2026.",
   },
 ];
 
@@ -137,7 +137,7 @@ export default function ChangelogPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Changelog</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          Every model update, methodology change, data source addition, and platform release — documented publicly in chronological order. CERES does not make undisclosed changes to its prediction system.
+          Every model update, methodology change, data source addition, and platform release, documented publicly in chronological order. CERES does not make undisclosed changes to its prediction system.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (

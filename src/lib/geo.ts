@@ -1,5 +1,5 @@
 /**
- * Minimal world map geo data — country centroids + ISO-3 codes
+ * Minimal world map geo data: country centroids + ISO-3 codes
  * for plotting risk markers on an SVG equirectangular projection.
  * Full choropleth paths omitted to stay bundle-light; we use
  * proportional circles on a clean basemap SVG.

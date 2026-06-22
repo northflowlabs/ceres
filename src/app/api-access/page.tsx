@@ -7,8 +7,8 @@ import SiteFooter from "@/components/SiteFooter";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://ceres-core-production.up.railway.app";
 
 const TIER_LABELS: Record<string, string> = {
-  professional:  "CERES Professional — $199 / month",
-  institutional: "CERES Institutional — $999 / month",
+  professional:  "CERES Professional · $199 / month",
+  institutional: "CERES Institutional · $999 / month",
 };
 
 function CheckoutModal({
@@ -188,7 +188,7 @@ const TIERS = [
       "Weekly intelligence digest",
       "Weekly PDF intelligence briefs (downloadable)",
       "Webhook delivery to any endpoint",
-      "Custom watchlist — region + threshold filter",
+      "Custom watchlist: region + threshold filter",
       "Priority email support",
     ],
   },
@@ -201,10 +201,10 @@ const TIERS = [
     features: [
       "Everything in Tier B",
       "Unlimited API requests",
-      "Named alert contacts — per-region routing",
-      "Weekly PDF briefs — white-labelled with org name",
-      "Scenario / counterfactual API — model 'what if' driver changes",
-      "Team accounts — up to 10 logins under one subscription",
+      "Named alert contacts: per-region routing",
+      "Weekly PDF briefs, white-labelled with org name",
+      "Scenario / counterfactual API: model 'what if' driver changes",
+      "Team accounts: up to 10 logins under one subscription",
       "Custom region coverage on request",
       "SLA & dedicated integration support",
       "Designed for WFP · FAO · OCHA · ECHO · Foundations",
@@ -284,7 +284,7 @@ export default function ApiAccessPage() {
       if (!resp.ok) throw new Error(`Error ${resp.status}`);
       setFreeSuccess(true);
     } catch (err) {
-      setFreeError(err instanceof Error ? err.message : "Something went wrong — try again or email ceres@northflow.no");
+      setFreeError(err instanceof Error ? err.message : "Something went wrong. Try again or email ceres@northflow.no");
     } finally {
       setFreeLoading(false);
     }
@@ -322,7 +322,7 @@ export default function ApiAccessPage() {
       const data = await resp.json();
       window.location.href = data.checkout_url;
     } catch (err) {
-      setCheckoutError(err instanceof Error ? err.message : "Checkout failed — try again or email ceres@northflow.no");
+      setCheckoutError(err instanceof Error ? err.message : "Checkout failed. Try again or email ceres@northflow.no");
       setCheckoutLoading(false);
     }
   }
@@ -342,7 +342,7 @@ export default function ApiAccessPage() {
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--watch)", marginBottom: 12 }}>✓ Subscribed</div>
                 <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 12 }}>You&rsquo;re in.</div>
                 <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, marginBottom: 24 }}>
-                  Check your inbox — a personal note from our founder Tom is on its way. You&rsquo;ll receive the monthly CERES Intelligence Letter on the first Monday of each month.
+                  Check your inbox: a personal note from our founder Tom is on its way. You&rsquo;ll receive the monthly CERES Intelligence Letter on the first Monday of each month.
                 </p>
                 <button
                   onClick={() => { setFreeModal(false); setFreeSuccess(false); setFreeEmail(""); }}
@@ -353,10 +353,10 @@ export default function ApiAccessPage() {
               </>
             ) : (
               <>
-                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 8 }}>Open Research — Free</div>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 8 }}>Open Research · Free</div>
                 <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 8 }}>Monthly Intelligence Letter</div>
                 <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.6, marginBottom: 20 }}>
-                  Free newsletter sent the first Monday of each month — top risk regions, system status, and a note from our founder Tom. No payment required.
+                  Free newsletter sent the first Monday of each month: top risk regions, system status, and a note from our founder Tom. No payment required.
                 </p>
                 <form onSubmit={handleFreeSubscribe} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   <div>
@@ -445,7 +445,7 @@ export default function ApiAccessPage() {
         <article className="methodology-article api-article" style={{ padding: "48px 0 48px 56px" }}>
 
           <section id="access" style={section}>
-            <div style={sectionLabel}>§ 1 — Access</div>
+            <div style={sectionLabel}>§ 1 · Access</div>
             <h2 style={h2Style}>Access Tiers</h2>
             <p style={pStyle}>All tiers access the same endpoints and data quality. Free subscribers receive the monthly intelligence newsletter. Paid tiers unlock higher request volume, real-time Tier I/II email alerts, a weekly digest, weekly PDF intelligence briefs, and webhook delivery to any endpoint.</p>
 
@@ -520,17 +520,17 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="auth" style={section}>
-            <div style={sectionLabel}>&sect; 2 &mdash; Authentication</div>
+            <div style={sectionLabel}>&sect; 2 &middot; Authentication</div>
             <h2 style={h2Style}>Authentication &amp; Account</h2>
             <p style={pStyle}>
-              Tier A (Open Research) endpoints are unauthenticated — no key required.
+              Tier A (Open Research) endpoints are unauthenticated: no key required.
               Tier B and C endpoints require an <code style={{ fontFamily: "var(--mono)", fontSize: 12 }}>X-API-Key</code> header.
               Your key is emailed immediately after a successful Stripe checkout.
             </p>
             <Code>
-              <Cm># Tier A — no authentication needed{"\n"}</Cm>
+              <Cm># Tier A: no authentication needed{"\n"}</Cm>
               {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>{"\n\n"}
-              <Cm># Tier B / C — include your API key{"\n"}</Cm>
+              <Cm># Tier B / C: include your API key{"\n"}</Cm>
               {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/reports</Str>{"\n"}
               <Key>{"X-API-Key"}</Key>{": "}<Str>ceres_xxxxxxxxxxxxxxxxxxxxxxxx</Str>
             </Code>
@@ -538,7 +538,7 @@ export default function ApiAccessPage() {
             <p style={pStyle}>
               Sign in to your account at{" "}
               <a href="/login" style={{ color: "var(--earth)" }}>ceres.northflow.no/login</a>{" "}
-              using a one-time magic link sent to your registered email — no password needed.
+              using a one-time magic link sent to your registered email. No password needed.
               From the account portal you can view your API key prefix, current usage,
               manage your billing subscription, and register webhook endpoints.
             </p>
@@ -553,7 +553,7 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="alerts" style={section}>
-            <div style={sectionLabel}>&sect; 3 &mdash; Alerts</div>
+            <div style={sectionLabel}>&sect; 3 &middot; Alerts</div>
             <h2 style={h2Style}>Alerts &amp; Intelligence Delivery</h2>
             <p style={pStyle}>
               CERES delivers intelligence through three channels depending on your tier:
@@ -562,25 +562,25 @@ export default function ApiAccessPage() {
               {[
                 {
                   label: "Monthly Newsletter",
-                  tier: "Tier A — Free",
+                  tier: "Tier A · Free",
                   color: "var(--ink-light)",
                   desc: "Monthly intelligence letter summarising the top risk regions, system status, and a note from Tom. Sent the first Monday of each month to all free subscribers.",
                 },
                 {
                   label: "Weekly Digest",
-                  tier: "Tier B/C — Paid",
+                  tier: "Tier B/C · Paid",
                   color: "var(--earth)",
                   desc: "Every Monday morning: top-5 regions by risk score, trend arrows vs. the previous week, and a brief founder's analysis. Delivered to all active paid subscribers.",
                 },
                 {
                   label: "Real-time Alerts",
-                  tier: "Tier B/C — Paid",
+                  tier: "Tier B/C · Paid",
                   color: "var(--crisis)",
                   desc: "Immediate email and/or webhook notification when any monitored region escalates to Tier I (Critical) or Tier II (Warning). Register webhook endpoints from your account portal.",
                 },
                 {
                   label: "PDF Intelligence Briefs",
-                  tier: "Tier B/C — Paid",
+                  tier: "Tier B/C · Paid",
                   color: "var(--earth)",
                   desc: "Weekly multi-page PDF report: cover, executive summary, full predictions table, and methodology. Auto-emailed after each pipeline run. Downloadable from your account portal. Tier C receives a white-labelled version with your organisation's name on the cover.",
                 },
@@ -599,8 +599,8 @@ export default function ApiAccessPage() {
               {"Content-Type: application/json\n\n"}
               {"{{\n"}
               {"  "}<Key>"event"</Key>{": "}<Str>"ceres_alert"</Str>{",\n"}
-              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260303-060012"</Str>{",\n"}
-              {"  "}<Key>"timestamp"</Key>{": "}<Str>"2026-03-03T06:00:12Z"</Str>{",\n"}
+              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260309-060000"</Str>{",\n"}
+              {"  "}<Key>"timestamp"</Key>{": "}<Str>"2026-03-09T06:00:00Z"</Str>{",\n"}
               {"  "}<Key>"n_alerts"</Key>{": "}<Num>2</Num>{",\n"}
               {"  "}<Key>"alerts"</Key>{": [\n"}
               {"    {{ "}<Key>"region_id"</Key>{": "}<Str>"SDN"</Str>{", "}<Key>"alert_tier"</Key>{": "}<Str>"TIER-1"</Str>{", "}<Key>"p_ipc3plus_90d"</Key>{": "}<Num>0.966</Num>{" }}\n"}
@@ -609,10 +609,10 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="hdx" style={section}>
-            <div style={sectionLabel}>&sect; 4 &mdash; Open Data</div>
-            <h2 style={h2Style}>Open Data — HXL-Tagged CSV</h2>
+            <div style={sectionLabel}>&sect; 4 &middot; Open Data</div>
+            <h2 style={h2Style}>Open Data: HXL-Tagged CSV</h2>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "#F0FDF4", color: "var(--watch)", border: "1px solid rgba(46,125,50,0.3)", padding: "4px 10px", marginBottom: 16 }}>
-              ● Live — No authentication required
+              ● Live · No authentication required
             </div>
             <p style={pStyle}>
               CERES prediction archives are available as HXL-tagged CSV, free and unauthenticated, for direct use
@@ -626,13 +626,13 @@ export default function ApiAccessPage() {
               {[
                 {
                   label: "Latest Snapshot",
-                  desc: "One row per monitored region — most recent pipeline run only. Suitable for dashboards and current situational awareness.",
+                  desc: "One row per monitored country, most recent pipeline run only. Suitable for dashboards and current situational awareness.",
                   url: `${API_BASE}/v1/export/hdx?latest=true`,
-                  badge: "43 regions",
+                  badge: "43 countries",
                 },
                 {
                   label: "Full Archive",
-                  desc: "All weekly runs since launch — one row per region per run. Suitable for time-series analysis and calibration research.",
+                  desc: "All weekly runs since launch, one row per country per run. Suitable for time-series analysis and calibration research.",
                   url: `${API_BASE}/v1/export/hdx`,
                   badge: "All runs",
                 },
@@ -664,22 +664,22 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="base" style={section}>
-            <div style={sectionLabel}>&sect; 5 &mdash; Base URL</div>
+            <div style={sectionLabel}>&sect; 5 &middot; Base URL</div>
             <h2 style={h2Style}>Connection</h2>
             <Code>
               <Cm># Production base URL{"\n"}</Cm>
               {"Base URL: "}<Str>https://ceres-core-production.up.railway.app</Str>{"\n\n"}
               <Cm># All endpoints require the version prefix{"\n"}</Cm>
               {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>{"\n\n"}
-              <Cm># Tier B/C authentication — header, not Bearer token{"\n"}</Cm>
+              <Cm># Tier B/C authentication: header, not Bearer token{"\n"}</Cm>
               {"X-API-Key: "}<Str>ceres_xxxxxxxxxxxxxxxxxxxxxxxx</Str>{"\n\n"}
-              <Cm># Tier A — no key required{"\n"}</Cm>
+              <Cm># Tier A: no key required{"\n"}</Cm>
               {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>
             </Code>
           </section>
 
           <section id="predictions" style={section}>
-            <div style={sectionLabel}>&sect; 6 &mdash; Endpoints</div>
+            <div style={sectionLabel}>&sect; 6 &middot; Endpoints</div>
             <h2 style={h2Style}>Predictions</h2>
 
             <Endpoint method="GET" path="/v1/predictions" desc="All active regional forecasts">
@@ -687,8 +687,8 @@ export default function ApiAccessPage() {
               {"GET /v1/predictions?tier=1&format=json\n\n"}
               <Cm># Response{"\n"}</Cm>
               {"{\n"}
-              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260228-160603"</Str>{",\n"}
-              {"  "}<Key>"generated_at"</Key>{": "}<Str>"2026-02-28T16:06:03Z"</Str>{",\n"}
+              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260309-060000"</Str>{",\n"}
+              {"  "}<Key>"generated_at"</Key>{": "}<Str>"2026-03-09T06:00:00Z"</Str>{",\n"}
               {"  "}<Key>"horizon_days"</Key>{": "}<Num>90</Num>{",\n"}
               {"  "}<Key>"predictions"</Key>{": [\n"}
               {"    {\n"}
@@ -783,16 +783,16 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="formats" style={section}>
-            <div style={sectionLabel}>&sect; 7 &mdash; Response Format</div>
+            <div style={sectionLabel}>&sect; 7 &middot; Response Format</div>
             <h2 style={h2Style}>Response Format</h2>
-            <p style={pStyle}>All endpoints return JSON. Dates are ISO 8601. Probabilities are floats in [0, 1]. Confidence intervals are 90% input-perturbation sensitivity intervals.</p>
+            <p style={pStyle}>All endpoints return JSON. Dates are ISO 8601. Probabilities are floats in [0, 1]. Uncertainty bounds are 90% input-perturbation sensitivity intervals (SI).</p>
             <Code>
               <Cm># Standard envelope{"\n"}</Cm>
               {"{\n"}
-              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260228-160603"</Str>{",\n"}
-              {"  "}<Key>"generated_at"</Key>{": "}<Str>"2026-02-28T16:06:03Z"</Str>{",\n"}
+              {"  "}<Key>"run_id"</Key>{": "}<Str>"CERES-20260309-060000"</Str>{",\n"}
+              {"  "}<Key>"generated_at"</Key>{": "}<Str>"2026-03-09T06:00:00Z"</Str>{",\n"}
               {"  "}<Key>"horizon_days"</Key>{": "}<Num>90</Num>{",\n"}
-              {"  "}<Key>"reference_date"</Key>{": "}<Str>"2026-02-28"</Str>{",\n"}
+              {"  "}<Key>"reference_date"</Key>{": "}<Str>"2026-03-09"</Str>{",\n"}
               {"  "}<Key>"data"</Key>{": { ... }\n}"}
             </Code>
             <Code>
@@ -806,9 +806,9 @@ export default function ApiAccessPage() {
           </section>
 
           <section id="attribution" style={{ marginBottom: 0, paddingBottom: 0, scrollMarginTop: 80 }}>
-            <div style={sectionLabel}>&sect; 8 &mdash; Attribution</div>
+            <div style={sectionLabel}>&sect; 8 &middot; Attribution</div>
             <h2 style={h2Style}>Attribution Requirements</h2>
-            <p style={pStyle}>All use of CERES data — whether in publications, dashboards, or operational systems — requires attribution to Northflow Technologies and CERES.</p>
+            <p style={pStyle}>All use of CERES data, whether in publications, dashboards, or operational systems, requires attribution to Northflow Technologies and CERES.</p>
             <Code>
               <Cm># Required attribution string{"\n"}</Cm>
               <Str>"Source: CERES (Calibrated Early-warning and Risk Estimation System),{"\n"} Northflow Technologies, 2026. ceres.northflow.no"</Str>

@@ -1,5 +1,5 @@
 export function pct(v: number | null | undefined): string {
-  if (v == null) return "—";
+  if (v == null) return "–";
   return `${(v * 100).toFixed(1)}%`;
 }
 

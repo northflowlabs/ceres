@@ -1,6 +1,22 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /account/
+Disallow: /login/
 Disallow: /api/admin/
 Disallow: /v1/admin/
+
+# Major AI crawlers, explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://ceres.northflow.no/sitemap.xml

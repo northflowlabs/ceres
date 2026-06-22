@@ -81,7 +81,7 @@ const COUNTRY_NAMES: Record<string, string> = {
 // Map standard ISO-3166-1 codes (used in GeoJSON) to API region_ids where they differ
 const ISO_TO_API: Record<string, string> = { NER: "NIG" };
 
-function fmtPct(v: number | null | undefined) { if (v == null) return "—"; return `${(v * 100).toFixed(1)}%`; }
+function fmtPct(v: number | null | undefined) { if (v == null) return "n/a"; return `${(v * 100).toFixed(1)}%`; }
 function fmtScore(v: number) { return (v * 100).toFixed(0); }
 
 function isoFromProps(p: Record<string, string>): string {
@@ -181,7 +181,7 @@ export default function CeresMap() {
     layerGroupRef.current.clearLayers();
 
     if (layer === "country") {
-      // Build lookup synchronously from current predictions state — avoids ref timing issues
+      // Build lookup synchronously from current predictions state, avoids ref timing issues
       const cMap = new Map(predictions.map(p => [p.region_id ?? p.country_id, p]));
 
       // Fetch country GeoJSON
@@ -285,7 +285,7 @@ export default function CeresMap() {
       });
 
     } else {
-      // Admin2 — smaller circles
+      // Admin2: smaller circles
       a2preds.forEach(p => {
         if (p.centroid_lat == null || p.centroid_lon == null) return;
         const tier = p.alert_tier;
@@ -336,7 +336,7 @@ export default function CeresMap() {
       {/* Map container */}
       <div style={{ flex: 1, position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
 
-        {/* Zoom controls — bottom-left inside container (avoids overflow:hidden clipping) */}
+        {/* Zoom controls: bottom-left inside container (avoids overflow:hidden clipping) */}
         <div style={{
           position: "absolute", bottom: 16, left: 12, zIndex: 1000,
           display: "flex", flexDirection: "column", gap: 1,
@@ -355,7 +355,7 @@ export default function CeresMap() {
           ))}
         </div>
 
-        {/* Layer switcher — top-right */}
+        {/* Layer switcher: top-right */}
         <div style={{
           position: "absolute", top: 12, right: 12, zIndex: 1000,
           background: "white", border: "1px solid var(--border)", display: "flex", gap: 0,
@@ -409,19 +409,19 @@ export default function CeresMap() {
           ))}
           <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#C0392B", lineHeight: 1 }}>{loadingData ? "—" : t1}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#C0392B", lineHeight: 1 }}>{loadingData ? "…" : t1}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-1</div>
             </div>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#D97706", lineHeight: 1 }}>{loadingData ? "—" : t2}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#D97706", lineHeight: 1 }}>{loadingData ? "…" : t2}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-2</div>
             </div>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#78716C", lineHeight: 1 }}>{loadingData ? "—" : t3}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#78716C", lineHeight: 1 }}>{loadingData ? "…" : t3}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-3</div>
             </div>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink-light)", lineHeight: 1 }}>{loadingData ? "—" : activePreds.length}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink-light)", lineHeight: 1 }}>{loadingData ? "…" : activePreds.length}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Total</div>
             </div>
           </div>
@@ -465,7 +465,7 @@ export default function CeresMap() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginBottom: 20 }}>
               {selected.ciLow != null && selected.ciHigh != null
                 ? `SI [${fmtPct(selected.ciLow)} – ${fmtPct(selected.ciHigh)}] · Input-perturbation`
-                : "SI Pending · Populating May 2026"}
+                : "SI Pending · First graded outcomes Aug–Oct 2026"}
             </div>
 
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Stress Drivers</div>
