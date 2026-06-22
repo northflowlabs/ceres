@@ -88,8 +88,8 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Samtykkr: lawful cookie consent (gates Consent Mode above). */}
-        <script async src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196" />
+        {/* Samtykkr: lawful cookie consent (gates Consent Mode above). English + ceres ink accent. */}
+        <script async src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
