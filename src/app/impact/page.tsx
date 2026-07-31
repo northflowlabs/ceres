@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://ceres-core-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
 
 interface ImpactStats {
   regions_monitored:      number;

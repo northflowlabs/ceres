@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://ceres-core-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 
 // ── Natural Earth country GeoJSON (via CDN) ────────────────────────────────
 const COUNTRY_GEOJSON_URL = "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson";

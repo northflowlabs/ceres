@@ -21,7 +21,7 @@ A Next.js application that visualises weekly probabilistic famine risk predictio
 ## Live System
 
 **Dashboard:** [ceres.northflow.no](https://ceres.northflow.no)
-**API:** [ceres-core-production.up.railway.app](https://ceres-core-production.up.railway.app)
+**API:** [api.ceres.northflow.no](https://api.ceres.northflow.no)
 **HDX Dataset:** [data.humdata.org/dataset/global-ceres-famine-risk-predictions](https://data.humdata.org/dataset/global-ceres-famine-risk-predictions)
 
 ---
@@ -52,7 +52,7 @@ npm install
 npm run dev
 ```
 
-The dashboard connects to the production API at `ceres-core-production.up.railway.app` by default. To point at a local backend:
+The dashboard connects to the production API at `api.ceres.northflow.no` by default. To point at a local backend:
 
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev

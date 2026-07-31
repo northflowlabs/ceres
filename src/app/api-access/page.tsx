@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://ceres-core-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
 
 const TIER_LABELS: Record<string, string> = {
   professional:  "CERES Professional · $199 / month",
@@ -529,9 +529,9 @@ export default function ApiAccessPage() {
             </p>
             <Code>
               <Cm># Tier A: no authentication needed{"\n"}</Cm>
-              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>{"\n\n"}
+              {"GET "}<Str>https://api.ceres.northflow.no/v1/predictions</Str>{"\n\n"}
               <Cm># Tier B / C: include your API key{"\n"}</Cm>
-              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/reports</Str>{"\n"}
+              {"GET "}<Str>https://api.ceres.northflow.no/v1/reports</Str>{"\n"}
               <Key>{"X-API-Key"}</Key>{": "}<Str>ceres_xxxxxxxxxxxxxxxxxxxxxxxx</Str>
             </Code>
             <h3 style={h3Style}>Account Portal</h3>
@@ -668,13 +668,13 @@ export default function ApiAccessPage() {
             <h2 style={h2Style}>Connection</h2>
             <Code>
               <Cm># Production base URL{"\n"}</Cm>
-              {"Base URL: "}<Str>https://ceres-core-production.up.railway.app</Str>{"\n\n"}
+              {"Base URL: "}<Str>https://api.ceres.northflow.no</Str>{"\n\n"}
               <Cm># All endpoints require the version prefix{"\n"}</Cm>
-              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>{"\n\n"}
+              {"GET "}<Str>https://api.ceres.northflow.no/v1/predictions</Str>{"\n\n"}
               <Cm># Tier B/C authentication: header, not Bearer token{"\n"}</Cm>
               {"X-API-Key: "}<Str>ceres_xxxxxxxxxxxxxxxxxxxxxxxx</Str>{"\n\n"}
               <Cm># Tier A: no key required{"\n"}</Cm>
-              {"GET "}<Str>https://ceres-core-production.up.railway.app/v1/predictions</Str>
+              {"GET "}<Str>https://api.ceres.northflow.no/v1/predictions</Str>
             </Code>
           </section>
 

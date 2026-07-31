@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://ceres-core-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 
 const COUNTRY_NAMES: Record<string, string> = {
   ETH: "Ethiopia",       SOM: "Somalia",          SDN: "Sudan",

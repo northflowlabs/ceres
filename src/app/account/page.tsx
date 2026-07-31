@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://ceres-core-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
 
 const TIER_LABELS: Record<string, string> = {
   free:          "Open Research",
@@ -466,7 +466,7 @@ export default function AccountPage() {
               <div style={{ background: "#1C1917", padding: "16px 20px", fontFamily: "var(--mono)", fontSize: 12, color: "#D4C5A9", lineHeight: 2 }}>
                 <span style={{ color: "#6E7681" }}># Authenticate all requests{"\n"}</span>
                 <span style={{ color: "#9ECBFF" }}>curl </span>
-                <span style={{ color: "#F4A261" }}>https://ceres-core-production.up.railway.app/v1/predictions</span>
+                <span style={{ color: "#F4A261" }}>https://api.ceres.northflow.no/v1/predictions</span>
                 {" "}<span style={{ color: "#9ECBFF" }}>-H</span>
                 {" "}<span style={{ color: "#F4A261" }}>"X-API-Key: YOUR_KEY"</span>
               </div>
