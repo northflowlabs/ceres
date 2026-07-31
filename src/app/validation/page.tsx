@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import { api, LedgerPrediction, ValidationMetrics, CalibrationBin } from "@/lib/api";
+import { api, API_BASE, LedgerPrediction, ValidationMetrics, CalibrationBin, WithdrawalsResponse } from "@/lib/api";
 
 function tierColor(tier: string) {
   if (tier === "TIER-1") return "var(--crisis)";
@@ -66,6 +66,7 @@ export default function ValidationPage() {
   const [metrics, setMetrics]       = useState<ValidationMetrics | null>(null);
   const [calBins, setCalBins]       = useState<CalibrationBin[]>([]);
   const [calStatus, setCalStatus]   = useState("loading");
+  const [withdrawals, setWithdrawals] = useState<WithdrawalsResponse | null>(null);
   const [loading, setLoading]       = useState(true);
   const [email, setEmail]           = useState("");
   const [subMsg, setSubMsg]         = useState("");
@@ -78,6 +79,7 @@ export default function ValidationPage() {
       api.validationLedger("graded").then(d => setGraded(d.predictions)).catch(() => {}),
       api.validationMetrics().then(d => setMetrics(d)).catch(() => {}),
       api.validationCalibration().then(d => { setCalBins(d.bins); setCalStatus(d.status); }).catch(() => {}),
+      api.validationWithdrawals().then(d => setWithdrawals(d)).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -162,7 +164,7 @@ export default function ValidationPage() {
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
           {hasGrades
             ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {nGraded} predictions graded against published IPC outcomes at T+90 days. This record updates automatically each week.</>
-            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued; the first T+90 grading windows opened June 2026. Observed IPC/FEWS NET classifications publish on a 2{"\u2013"}4 month lag, so the earliest grades land Aug{"\u2013"}Oct 2026. Grading is automated and pre-registered: the Brier decomposition computes the moment {"\u2265"}10 outcomes are published, with no manual intervention.</>
+            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}; the first T+90 grading windows opened June 2026. Observed IPC/FEWS NET classifications publish on a 2{"\u2013"}4 month lag, so the earliest grades land Aug{"\u2013"}Oct 2026. Grading is automated and pre-registered: the Brier decomposition computes the moment {"\u2265"}10 outcomes are published, with no manual intervention.</>
           }
         </p>
 
@@ -308,6 +310,53 @@ export default function ValidationPage() {
             </div>
           )}
         </div>
+
+        {/* ── SECTION 4: WITHDRAWN FROM THE SCORE ──────────────────────
+            Every forecasting system eventually decides that part of its
+            record should not count. Most make that call privately and the
+            record simply gets shorter. This section exists so ours cannot. */}
+        {withdrawals && withdrawals.n_withdrawn > 0 && (
+          <div style={{ marginTop: 48, paddingTop: 40, borderTop: "1px solid var(--border-light)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16, gap: 24, flexWrap: "wrap" }}>
+              <div>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--crisis)", marginBottom: 10 }}>Withdrawn From The Score</div>
+                <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Forecasts We Ruled Out, And Why</h2>
+              </div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", textAlign: "right" }}>
+                {withdrawals.n_withdrawn} of {withdrawals.n_issued} issued
+                {withdrawals.share_withdrawn !== null && <> {"·"} {(withdrawals.share_withdrawn * 100).toFixed(1)}%</>}
+              </div>
+            </div>
+
+            <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--crisis)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
+              During build-out, two satellite adapters fell back to synthetic data when their live sources failed, and expert priors were still in place. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page and <strong style={{ color: "var(--ink)" }}>can never be scored, for us or against us</strong>. A run that could be withdrawn after its outcome were known would make the remaining score meaningless, so a withdrawal is permanent and dated. Reasons are corrected by appending, never by overwriting.
+            </div>
+
+            <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
+              <thead>
+                <tr>{["Run Issued", "Forecasts", "Regions", "Withdrawn On", "Stated Reason"].map(h => <th key={h} style={th}>{h}</th>)}</tr>
+              </thead>
+              <tbody>
+                {withdrawals.withdrawals.map((w, i) => (
+                  <tr key={`${w.reference_date}-${i}`}>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap", verticalAlign: "top" }}>{fmtDate(w.reference_date)}</td>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 11, verticalAlign: "top" }}>{w.n_predictions}</td>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 11, verticalAlign: "top" }}>{w.n_regions}</td>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", whiteSpace: "nowrap", verticalAlign: "top" }}>{fmtDate(w.withdrawn_at)}</td>
+                    <td style={{ ...td(i%2===1), fontSize: 12, color: "var(--ink-mid)", lineHeight: 1.65, whiteSpace: "pre-wrap", verticalAlign: "top" }}>{w.void_reason}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table></div>
+
+            <p style={{ fontSize: 12, color: "var(--ink-light)", marginTop: 14, lineHeight: 1.7 }}>
+              Read the withdrawn forecasts themselves at{" "}
+              <a href={`${API_BASE}/v1/validation/ledger?status=voided`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)" }}>/v1/validation/ledger?status=voided</a>
+              {", "}or the register at{" "}
+              <a href={`${API_BASE}/v1/validation/withdrawals`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)" }}>/v1/validation/withdrawals</a>.
+            </p>
+          </div>
+        )}
 
         {/* Newsletter subscription */}
         <div className="newsletter-cta" style={{ background: "var(--ink)", padding: "32px 40px", margin: "40px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>

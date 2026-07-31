@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
 
 export interface Prediction {
   region_id: string;
@@ -197,6 +197,26 @@ export interface LedgerPrediction {
   brier_contribution?: number;
   in_si?:              number;
   grade_notes?:        string;
+  // Withdrawn fields
+  voided_at?:          string;
+  void_reason?:        string;
+}
+
+// One run withdrawn from the score, with the reason stated at the time.
+export interface Withdrawal {
+  reference_date: string;
+  n_predictions:  number;
+  n_regions:      number;
+  withdrawn_at:   string;
+  void_reason:    string;
+}
+
+export interface WithdrawalsResponse {
+  n_withdrawn:     number;
+  n_issued:        number;
+  share_withdrawn: number | null;
+  policy:          string;
+  withdrawals:     Withdrawal[];
 }
 
 export interface LedgerResponse {
@@ -214,6 +234,9 @@ export interface ValidationMetrics {
   // Predictions withdrawn from the score but kept on the record. Reported so a
   // voided run cannot quietly shrink the denominator.
   voided:               number | null;
+  // Predictions that cannot say which code produced them. Published rather
+  // than merely absent: the silent version of this ran unnoticed for months.
+  provenance_unknown:   number | null;
   brier_score:          number | null;
   brier_decomposition:  { reliability: number; resolution: number; uncertainty: number } | null;
   skill_score:          number | null;
@@ -312,4 +335,5 @@ export const api = {
   validationLedger: (status: string)       => apiFetch<LedgerResponse>(`/v1/validation/ledger?status=${status}`),
   validationMetrics: ()                    => apiFetch<ValidationMetrics>("/v1/validation/metrics"),
   validationCalibration: ()                => apiFetch<CalibrationResponse>("/v1/validation/calibration"),
+  validationWithdrawals: ()                => apiFetch<WithdrawalsResponse>("/v1/validation/withdrawals"),
 };
