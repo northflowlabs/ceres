@@ -61,7 +61,7 @@ const faqJsonLd = {
       name: "How accurate is CERES?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "At initialisation, the model reached AUC 0.84 on a held-out split of 87 IPC transition records across 31 countries (2011-2023). Forward accuracy (Brier score, sensitivity-interval coverage, and tier precision) is graded openly as predictions reach their T+90 horizon, with the first graded outcomes expected Aug-Oct 2026.",
+        text: "At initialisation, the model reached AUC 0.84 on a held-out split of 87 IPC transition records across 31 countries (2011-2023). Forward accuracy (Brier score, sensitivity-interval coverage, and tier precision) is graded openly as predictions reach their T+90 horizon, and grading is live: current Brier score, sensitivity-interval coverage and skill score are published on the Validation page.",
       },
     },
     {
@@ -85,7 +85,7 @@ const faqJsonLd = {
       name: "How is CERES validated?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Every prediction is timestamped, publicly recorded, and graded against published IPC outcomes at the T+90 horizon. The model was initialised on a held-out split (AUC 0.84) of 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. Predictions have been issued since the 28 Feb 2026 launch; the first T+90 grading windows opened June 2026 and the first graded outcomes are expected Aug-Oct 2026.",
+        text: "Every prediction is timestamped, publicly recorded, and graded against published IPC outcomes at the T+90 horizon. The model was initialised on a held-out split (AUC 0.84) of 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. Predictions have been issued since the 28 Feb 2026 launch, the first T+90 grading windows opened June 2026, and graded outcomes are published as the observed IPC data arrives.",
       },
     },
     {

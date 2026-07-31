@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import LiveAccuracyMetrics from "@/components/LiveAccuracyMetrics";
 
 const TOC = [
   { id: "overview",     label: "Overview" },
@@ -35,13 +36,6 @@ const TIERS = [
   { color: "var(--crisis)",  name: "Tier I · Critical", thresh: "≥ 70%",   desc: "IPC Phase 3+ (Crisis or above) probable within 90 days. Immediate humanitarian pre-positioning recommended." },
   { color: "var(--warning)", name: "Tier II · Warning", thresh: "45–69%",  desc: "IPC Phase 3 (Crisis) likely within 90 days. Enhanced monitoring and contingency planning indicated." },
   { color: "var(--watch)",   name: "Tier III · Watch",  thresh: "< 45%",   desc: "Elevated stress signals. Situational monitoring and early preparedness recommended." },
-];
-
-const METRICS = [
-  { val: "Pending", label: "Brier Score",          note: "Target <0.10. T+90 grading windows open June 2026; first graded values expected Aug–Oct 2026." },
-  { val: "Pending", label: "SI Coverage (90%)",    note: "Target >88%. Empirical coverage of the 90% sensitivity interval, populating as graded outcomes accumulate from Aug–Oct 2026." },
-  { val: "Pending", label: "Tier-I Precision",     note: "Target >80%, populating once 30 Tier-I alerts have been graded (from Aug–Oct 2026)." },
-  { val: "Pending", label: "Tier-I Recall",        note: "Target >85%, populating once 10 IPC Phase 4+ events have been graded (from Aug–Oct 2026)." },
 ];
 
 export default function MethodologyPage() {
@@ -192,7 +186,7 @@ export default function MethodologyPage() {
             <div className="methodology-formula" style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", lineHeight: 2, overflowX: "auto" }}>
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Sensitivity Interval Construction</div>
               SI₉₀ = [P̂₅, P̂₉₅] where P̂ₖ is the k-th percentile of the input-perturbation distribution<br />
-              n_replications = 2,000 · Empirical SI coverage target: ≥88% (populating as graded outcomes accumulate from Aug–Oct 2026)
+              n_replications = 2,000 · Empirical SI coverage target: ≥88% (populating as graded outcomes accumulate)
             </div>
             <div style={{ borderLeft: "3px solid var(--warning)", background: "#FFFBEB", border: "1px solid rgba(217,119,6,0.2)", borderLeftWidth: 3, borderLeftColor: "var(--warning)", padding: "16px 20px", margin: "32px 0 0" }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--warning)", marginBottom: 8 }}>Coefficient Update, 11 March 2026</div>
@@ -225,15 +219,9 @@ export default function MethodologyPage() {
           <section id="calibration" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 6 · Validation & Calibration</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Model Performance</h2>
-            <p style={s}>CERES is initialised against 87 IPC transition records spanning 31 countries between 2011 and 2023. Four prospective performance targets are set: T+90 grading windows open June 2026, and because observed IPC outcomes publish on a 2–4 month lag, the first graded values are expected Aug–Oct 2026.</p>
-            <div className="methodology-metrics-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
-              {METRICS.map(({ val, label, note }) => (
-                <div key={label} style={{ background: "white", padding: 20 }}>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>
-                  <div style={{ fontFamily: "var(--display)", fontSize: 32, fontWeight: 700, color: "var(--earth)", lineHeight: 1, marginBottom: 4 }}>{val}</div>
-                  <p style={{ fontSize: 12, color: "var(--ink-light)", margin: 0 }}>{note}</p>
-                </div>
-              ))}
+            <p style={s}>CERES is initialised against 87 IPC transition records spanning 31 countries between 2011 and 2023, against four prospective performance targets. Observed IPC outcomes publish on a 2 to 4 month lag, so a prediction is graded well after its T+90 horizon passes. The figures below are read live from the verification ledger.</p>
+            <div style={{ margin: "24px 0" }}>
+              <LiveAccuracyMetrics compact />
             </div>
           </section>
 

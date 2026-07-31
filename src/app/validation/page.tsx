@@ -140,7 +140,7 @@ export default function ValidationPage() {
           </div>
           {hasGrades
             ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>{"\u25CF"} Live \u00B7 {nGraded} graded</span>
-            : <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>{totalPredictions} predictions \u00B7 first grades expected Aug\u2013Oct 2026</span>
+            : <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>{totalPredictions} predictions \u00B7 awaiting first grades</span>
           }
         </div>
         <div className="validation-metrics-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "10px 0 0" }}>
@@ -342,7 +342,7 @@ export default function ValidationPage() {
             {hasGrades
               ? "Calibration computed from live graded predictions. Bins show the fraction of events that actually occurred (amber) vs. ideal calibration (grey). Each bin label is the predicted probability range."
               : calStatus === "insufficient_data"
-                ? `${totalPredictions} predictions issued; first outcomes expected Aug–Oct 2026 as IPC/FEWS NET publish observed classifications. The reliability diagram populates automatically as predictions are graded against those outcomes.`
+                ? `${totalPredictions} predictions issued; outcomes are graded as IPC/FEWS NET publish observed classifications. The reliability diagram populates automatically as predictions are graded against those outcomes.`
                 : "Model initialised against 87 IPC transition records (2011\u20132023, 31 countries). 4 data-complete back-validation cases."
             }
           </p>
