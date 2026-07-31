@@ -465,7 +465,7 @@ export default function CeresMap() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginBottom: 20 }}>
               {selected.ciLow != null && selected.ciHigh != null
                 ? `SI [${fmtPct(selected.ciLow)} – ${fmtPct(selected.ciHigh)}] · Input-perturbation`
-                : "SI Pending · First graded outcomes Aug–Oct 2026"}
+                : "SI Pending · awaiting graded IPC outcomes"}
             </div>
 
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Stress Drivers</div>

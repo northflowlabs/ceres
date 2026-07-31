@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import LiveAccuracyMetrics from "@/components/LiveAccuracyMetrics";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
 
@@ -98,11 +99,11 @@ export default function ImpactPage() {
               CERES<br />Impact Record
             </h1>
             <p style={{ ...p, fontSize: 17, fontWeight: 300 }}>
-              The public operational record of CERES: every alert issued and every prediction logged for grading, in numbers, with sources, updated automatically from live data. Forward accuracy results are forthcoming as the first T+90 grading windows resolve.
+              The public operational record of CERES: every alert issued and every prediction logged for grading, in numbers, with sources, updated automatically from live data. Forward accuracy is graded as observed IPC outcomes are published.
             </p>
             {s && !s.is_live && (
               <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "8px 14px", display: "inline-block", letterSpacing: "0.06em" }}>
-                ※ CERES launched 28 February 2026 · First T+90 grading windows opened June 2026 · First graded outcomes expected Aug–Oct 2026 · Pre-registered protocol published
+                ※ CERES launched 28 February 2026 · First T+90 grading windows opened June 2026 · Pre-registered protocol published
               </div>
             )}
             {s?.is_live && (
@@ -131,17 +132,17 @@ export default function ImpactPage() {
       <div className="impact-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", boxSizing: "border-box" }}>
 
         {/* Primary stats grid */}
-        <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "48px 0 10px" }}>Forecast Accuracy (first results Aug–Oct 2026)</div>
+        <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "48px 0 10px" }}>Forecast Accuracy</div>
         <div className="impact-grid-4 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 2 }}>
           <StatCard val={loading ? "…" : s?.tier1_hit_rate_pct != null ? `${s.tier1_hit_rate_pct}%` : "Pending"} label="Tier I Hit Rate" sub={s?.tier1_hit_rate_pct != null ? "Of alerts that proved correct" : "Target Sep 2026 · 30 TIER-1 alerts required"} accent />
-          <StatCard val={loading ? "…" : s?.avg_brier_score != null ? `${s.avg_brier_score}` : "Pending"} label="Brier Score" sub={s?.avg_brier_score != null ? "Target < 0.10 · lower = better" : "First grades Aug–Oct 2026 · 100 predictions required"} />
+          <StatCard val={loading ? "…" : s?.avg_brier_score != null ? `${s.avg_brier_score}` : "Pending"} label="Brier Score" sub={s?.avg_brier_score != null ? "Target < 0.10 · lower = better" : "Awaiting grades · 100 predictions required"} />
           <StatCard val={loading ? "…" : s?.ci_coverage_pct != null ? `${s.ci_coverage_pct}%` : "Pending"} label="SI Coverage" sub={s?.ci_coverage_pct != null ? "90% SI contains actual outcome" : "Target Sep 2026 · 200 predictions required"} />
           <StatCard val={loading ? "…" : (s?.avg_lead_time_days ?? 0) > 0 ? `${s!.avg_lead_time_days} days` : "Pending"} label="Avg Lead Time" sub={(s?.avg_lead_time_days ?? 0) > 0 ? "Before IPC phase escalation" : "Populating as T+90 grades accumulate"} />
         </div>
         <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           <StatCard val={loading ? "…" : `${s?.tier1_alerts_issued ?? 0}`}   label="Tier I Alerts Issued"    sub="High-probability crisis warnings issued" />
-          <StatCard val={loading ? "…" : s?.tier1_alerts_verified != null && s.tier1_alerts_issued > 0 ? `${s.tier1_alerts_verified}` : "Pending"} label="Verified Correct" sub={s?.tier1_alerts_verified != null && s.tier1_alerts_issued > 0 ? "Confirmed by IPC outcome at T+90" : "First graded outcomes Aug–Oct 2026"} />
-          <StatCard val={loading ? "…" : `${s?.predictions_graded ?? 0}`}    label="Predictions Graded"      sub={s?.predictions_graded ? "Region-weeks assessed at T+90" : "First graded outcomes Aug–Oct 2026 · T+90 horizon"} />
+          <StatCard val={loading ? "…" : s?.tier1_alerts_verified != null && s.tier1_alerts_issued > 0 ? `${s.tier1_alerts_verified}` : "Pending"} label="Verified Correct" sub={s?.tier1_alerts_verified != null && s.tier1_alerts_issued > 0 ? "Confirmed by IPC outcome at T+90" : "Awaiting graded IPC outcomes"} />
+          <StatCard val={loading ? "…" : `${s?.predictions_graded ?? 0}`}    label="Predictions Graded"      sub={s?.predictions_graded ? "Region-weeks assessed at T+90" : "Awaiting graded IPC outcomes · T+90 horizon"} />
         </div>
 
         {/* Operational stats */}
@@ -160,7 +161,10 @@ export default function ImpactPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>90 days. That is the target.</h2>
             <p style={p}>Standard humanitarian early warning systems issue effective alerts 30–45 days before crisis thresholds. Pre-positioning food aid and mobilising emergency logistics requires 60–90 days minimum. CERES is designed to close that gap.</p>
             <p style={p}>CERES issues 90-day horizon predictions, each carrying a calibrated probability, a 90% sensitivity interval, and named driver causes. Every prediction is timestamped on issue and graded against IPC Phase 3+ outcomes when the T+90 date arrives.</p>
-            <p style={p}>Prospective hit rate and lead time metrics will populate automatically as graded predictions accumulate. The first T+90 grading windows opened June 2026, and the first graded outcomes are expected Aug–Oct 2026. Performance targets: Brier score &lt;0.10 · Tier I precision &gt;80% · SI coverage &gt;88%.</p>
+            <p style={p}>The first T+90 grading windows opened June 2026, and observed IPC outcomes publish on a 2 to 4 month lag, so grading trails the horizon. Current figures against the pre-registered targets are below, read live from the verification ledger.</p>
+            <div style={{ margin: "20px 0 0" }}>
+              <LiveAccuracyMetrics compact />
+            </div>
           </div>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>How We Verify</div>

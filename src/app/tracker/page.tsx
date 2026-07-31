@@ -172,7 +172,7 @@ export default function TrackerPage() {
               { val: String(archiveStats.total_runs),      label: "Weekly Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Archiving active" },
               { val: String(archiveStats.total_regions),   label: "Regions Tracked",   note: "Monitored globally"  },
               { val: String(pendingPredictions.length),    label: "Pending Grading",   note: "Awaiting T+90 outcome" },
-              { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "Pending", label: "Verified Hit Rate", note: grades.length > 0 ? `${grades.length} graded` : "First grades Aug–Oct 2026" },
+              { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "Pending", label: "Verified Hit Rate", note: grades.length > 0 ? `${grades.length} graded` : "Awaiting graded IPC outcomes" },
             ].map(({ val, label, note }) => (
               <div key={label} style={{ background: "white", padding: 24 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>

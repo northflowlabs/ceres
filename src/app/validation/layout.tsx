@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CERES Validation · Prediction Accuracy",
-    description: "Timestamped famine forecasts graded against IPC outcomes at T+90. First graded outcomes expected Aug-Oct 2026.",
+    description: "Timestamped famine forecasts graded against IPC outcomes at T+90. Live Brier score, sensitivity-interval coverage and skill score against published IPC outcomes.",
   },
   alternates: { canonical: "https://ceres.northflow.no/validation" },
 };

@@ -211,6 +211,9 @@ export interface ValidationMetrics {
   pending:              number | null;
   awaiting_data:        number | null;
   unresolvable:         number | null;
+  // Predictions withdrawn from the score but kept on the record. Reported so a
+  // voided run cannot quietly shrink the denominator.
+  voided:               number | null;
   brier_score:          number | null;
   brier_decomposition:  { reliability: number; resolution: number; uncertainty: number } | null;
   skill_score:          number | null;

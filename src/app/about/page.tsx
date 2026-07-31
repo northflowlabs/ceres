@@ -14,7 +14,7 @@ const ADAPTERS = [
 const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "vs. 30–45 days for existing EWS" },
   { num: "87",       label: "Validation Records",       note: "IPC transition records, 2011–2023, 31 countries" },
-  { num: "Pending",  label: "Brier Score",              note: "Target <0.10; first graded outcomes Aug–Oct 2026" },
+  { num: "T+90",     label: "Grading Horizon",         note: "Graded against published IPC outcomes; live figures on the Validation page" },
   { num: "6",        label: "Model Inputs",              note: "CHIRPS · MODIS NDVI · UCDP GED · IPC · WFP VAM · FAO GIEWS" },
 ];
 
