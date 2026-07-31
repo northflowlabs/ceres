@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/data" },
 };
 
-const HDX_BASE = "https://ceres-core-production.up.railway.app";
+const HDX_BASE = "https://api.ceres.northflow.no";
 
 const datasetJsonLd = {
   "@context": "https://schema.org",
