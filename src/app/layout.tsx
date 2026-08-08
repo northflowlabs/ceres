@@ -133,8 +133,7 @@ export default function RootLayout({
               "publisher": { "@id": "https://northflow.no/#org" },
               "sameAs": [
                 "https://arxiv.org/abs/2603.09425",
-                "https://data.humdata.org/dataset/global-ceres-famine-risk-predictions",
-                "https://github.com/northflowlabs/ceres-core"
+                            "https://github.com/northflowlabs/ceres-core"
               ],
               "keywords": "famine early warning, food security, IPC, FEWS NET, humanitarian intelligence, food crisis, acute food insecurity",
               "license": "https://creativecommons.org/licenses/by/4.0/",

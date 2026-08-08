@@ -245,7 +245,8 @@ export default function ImpactPage() {
           </div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.7 }}>
             All datasets licensed under <strong style={{ color: "var(--ink)" }}>CC BY 4.0</strong>. Attribution: <em>CERES / Northflow Technologies AS, ceres.northflow.no</em><br />
-            Published on <a href="https://data.humdata.org/dataset/global-ceres-famine-risk-predictions" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>OCHA HDX</a> since March 2026.
+            Published on OCHA HDX from March to April 2026, then withdrawn while a better-suited
+            HDX listing is arranged. Served directly here in the meantime.
           </div>
         </div>
 

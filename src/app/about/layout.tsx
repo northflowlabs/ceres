@@ -34,7 +34,6 @@ const orgJsonLd = {
   sameAs: [
     "https://www.linkedin.com/company/northflow-technologies",
     "https://arxiv.org/abs/2603.09425",
-    "https://data.humdata.org/dataset/global-ceres-famine-risk-predictions",
     "https://github.com/northflowlabs/ceres-core",
   ],
   contactPoint: {

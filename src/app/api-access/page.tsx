@@ -618,9 +618,9 @@ export default function ApiAccessPage() {
               CERES prediction archives are available as HXL-tagged CSV, free and unauthenticated, for direct use
               in humanitarian data workflows, HDX pipelines, and academic research. Licensed under{" "}
               <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
-              Published on the{" "}
-              <a href="https://data.humdata.org/dataset/global-ceres-famine-risk-predictions" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>OCHA Humanitarian Data Exchange (HDX)</a>{" "}
-              since March 2026.
+              Published on the OCHA Humanitarian Data Exchange from March to April 2026, then
+              withdrawn while a listing better suited to HDX&apos;s relief collections is arranged.
+              The archives below are served directly and are not affected.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
               {[
