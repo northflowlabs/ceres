@@ -6,8 +6,14 @@ export const metadata: Metadata = {
   description:
     "About CERES and Northflow Technologies. Built to close the humanitarian lead-time gap. Open, falsifiable, probabilistic 90-day famine forecasting built on the HGE inference engine.",
   keywords: [
-    "Northflow Technologies", "CERES about", "humanitarian AI", "famine early warning",
-    "HGE inference engine", "food security", "open intelligence", "Tom Danny Pedersen",
+    "Northflow Technologies",
+    "CERES about",
+    "humanitarian AI",
+    "famine early warning",
+    "HGE inference engine",
+    "food security",
+    "open intelligence",
+    "Tom Danny Pedersen",
   ],
   openGraph: {
     title: "About CERES: Built to Close the Humanitarian Lead-Time Gap",
@@ -19,7 +25,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "About CERES · Northflow Technologies",
-    description: "Open, falsifiable 90-day famine forecasting. Built to close the humanitarian lead-time gap.",
+    description:
+      "Open, falsifiable 90-day famine forecasting. Built to close the humanitarian lead-time gap.",
   },
   alternates: { canonical: "https://ceres.northflow.no/about" },
 };
@@ -34,7 +41,6 @@ const orgJsonLd = {
   sameAs: [
     "https://www.linkedin.com/company/northflow-technologies",
     "https://arxiv.org/abs/2603.09425",
-    "https://github.com/northflowlabs/ceres-core",
   ],
   contactPoint: {
     "@type": "ContactPoint",
