@@ -14,10 +14,27 @@ export const metadata: Metadata = {
   description:
     "Calibrated 90-day probability forecasts of IPC Phase 3+, 4+, and Famine for 43 high-risk countries. Updated weekly, with sensitivity intervals and a ledger.",
   keywords: [
-    "famine early warning", "food security forecast", "IPC Phase 3", "IPC Phase 4", "famine prediction",
-    "FEWS NET", "WFP", "OCHA", "humanitarian intelligence", "food crisis", "acute food insecurity",
-    "sensitivity intervals", "CHIRPS", "MODIS", "UCDP GED", "food security", "Brier score", "anticipatory action",
-    "CERES", "Northflow Technologies", "open humanitarian data",
+    "famine early warning",
+    "food security forecast",
+    "IPC Phase 3",
+    "IPC Phase 4",
+    "famine prediction",
+    "FEWS NET",
+    "WFP",
+    "OCHA",
+    "humanitarian intelligence",
+    "food crisis",
+    "acute food insecurity",
+    "sensitivity intervals",
+    "CHIRPS",
+    "MODIS",
+    "UCDP GED",
+    "food security",
+    "Brier score",
+    "anticipatory action",
+    "CERES",
+    "Northflow Technologies",
+    "open humanitarian data",
   ],
   authors: [{ name: "Tom Danny S. Pedersen", url: "https://northflow.no" }],
   creator: "Northflow Technologies AS",
@@ -53,9 +70,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no" },
   metadataBase: new URL("https://ceres.northflow.no"),
   icons: {
-    icon:    "/ceres-logo-web.png",
+    icon: "/ceres-logo-web.png",
     shortcut: "/ceres-logo-web.png",
-    apple:   "/ceres-logo-web.png",
+    apple: "/ceres-logo-web.png",
   },
 };
 
@@ -68,8 +85,15 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -89,24 +113,28 @@ export default function RootLayout({
           }}
         />
         {/* Samtykkr: lawful cookie consent (gates Consent Mode above). English + ceres ink accent. */}
-        <script async src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left" />
+        <script
+          async
+          src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "CERES",
-              "alternateName": "Calibrated Early-warning and Risk Estimation System",
-              "url": "https://ceres.northflow.no",
-              "inLanguage": "en",
-              "publisher": {
+              name: "CERES",
+              alternateName:
+                "Calibrated Early-warning and Risk Estimation System",
+              url: "https://ceres.northflow.no",
+              inLanguage: "en",
+              publisher: {
                 "@type": "Organization",
                 "@id": "https://northflow.no/#org",
-                "name": "Northflow Technologies AS",
-                "url": "https://northflow.no"
-              }
-            })
+                name: "Northflow Technologies AS",
+                url: "https://northflow.no",
+              },
+            }),
           }}
         />
         <script
@@ -115,35 +143,44 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              "name": "CERES",
-              "alternateName": "Calibrated Early-warning and Risk Estimation System",
-              "description": "Automated probabilistic forecasting system for acute food insecurity. Generates weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 high-risk countries.",
-              "disambiguatingDescription": "Famine early-warning system by Northflow Technologies; not the NASA CERES radiation instrument or the dwarf planet Ceres.",
-              "url": "https://ceres.northflow.no",
-              "applicationCategory": "HumanitarianApplication",
-              "applicationSubCategory": "Humanitarian early warning",
-              "operatingSystem": "Web",
-              "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free for humanitarian and academic use" },
-              "author": {
+              name: "CERES",
+              alternateName:
+                "Calibrated Early-warning and Risk Estimation System",
+              description:
+                "Automated probabilistic forecasting system for acute food insecurity. Generates weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 high-risk countries.",
+              disambiguatingDescription:
+                "Famine early-warning system by Northflow Technologies; not the NASA CERES radiation instrument or the dwarf planet Ceres.",
+              url: "https://ceres.northflow.no",
+              applicationCategory: "HumanitarianApplication",
+              applicationSubCategory: "Humanitarian early warning",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free for humanitarian and academic use",
+              },
+              author: {
                 "@type": "Organization",
                 "@id": "https://northflow.no/#org",
-                "name": "Northflow Technologies AS",
-                "url": "https://northflow.no"
+                name: "Northflow Technologies AS",
+                url: "https://northflow.no",
               },
-              "publisher": { "@id": "https://northflow.no/#org" },
-              "sameAs": [
-                "https://arxiv.org/abs/2603.09425",
-                            "https://github.com/northflowlabs/ceres-core"
-              ],
-              "keywords": "famine early warning, food security, IPC, FEWS NET, humanitarian intelligence, food crisis, acute food insecurity",
-              "license": "https://creativecommons.org/licenses/by/4.0/",
-              "isAccessibleForFree": true,
-              "inLanguage": "en"
-            })
+              publisher: { "@id": "https://northflow.no/#org" },
+              sameAs: ["https://arxiv.org/abs/2603.09425"],
+              keywords:
+                "famine early warning, food security, IPC, FEWS NET, humanitarian intelligence, food crisis, acute food insecurity",
+              license: "https://creativecommons.org/licenses/by/4.0/",
+              isAccessibleForFree: true,
+              inLanguage: "en",
+            }),
           }}
         />
       </head>
-      <body className="min-h-screen antialiased" style={{ background: "#F5F0E8", color: "#1C1917" }}>
+      <body
+        className="min-h-screen antialiased"
+        style={{ background: "#F5F0E8", color: "#1C1917" }}
+      >
         {children}
       </body>
     </html>
