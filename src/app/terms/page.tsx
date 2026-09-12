@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/terms" },
 };
 
-const LAST_UPDATED = "3 March 2026";
+const LAST_UPDATED = "12 September 2026";
 
 export default function TermsPage() {
   const h2 = { fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, marginBottom: 12, marginTop: 40, lineHeight: 1.2 } as const;

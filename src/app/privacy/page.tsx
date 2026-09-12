@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/privacy" },
 };
 
-const LAST_UPDATED = "3 March 2026";
+const LAST_UPDATED = "12 September 2026";
 const CONTROLLER = "Northflow Technologies AS";
 const ORG_NUMBER = "936 979 815";
 const EMAIL = "ceres@northflow.no";
