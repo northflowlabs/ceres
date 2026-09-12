@@ -49,8 +49,7 @@ Predictions are published under Creative Commons Attribution 4.0 (CC BY 4.0), fr
 ## External references
 
 - Preprint: https://arxiv.org/abs/2603.09425
-- Dataset (HDX): https://data.humdata.org/dataset/global-ceres-famine-risk-predictions
-- Source code: https://github.com/northflowlabs/ceres-core
+- API documentation: https://api.ceres.northflow.no/docs
 
 ## Citation
 

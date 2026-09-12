@@ -13,7 +13,6 @@ A Next.js application that visualises weekly probabilistic famine risk predictio
 
 [![Deploy](https://img.shields.io/badge/deployed-Vercel-black)](https://ceres.northflow.no)
 [![arXiv](https://img.shields.io/badge/arXiv-2603.09425-b31b1b)](https://arxiv.org/abs/2603.09425)
-[![HDX](https://img.shields.io/badge/HDX-live-009EDB)](https://data.humdata.org/dataset/global-ceres-famine-risk-predictions)
 [![License](https://img.shields.io/badge/license-CC%20BY%204.0-green)](LICENSE)
 
 ---
@@ -21,8 +20,7 @@ A Next.js application that visualises weekly probabilistic famine risk predictio
 ## Live System
 
 **Dashboard:** [ceres.northflow.no](https://ceres.northflow.no)
-**API:** [api.ceres.northflow.no](https://api.ceres.northflow.no)
-**HDX Dataset:** [data.humdata.org/dataset/global-ceres-famine-risk-predictions](https://data.humdata.org/dataset/global-ceres-famine-risk-predictions)
+**API:** [api.ceres.northflow.no](https://api.ceres.northflow.no/docs)
 
 ---
 
@@ -37,7 +35,7 @@ A Next.js application that visualises weekly probabilistic famine risk predictio
 | Sub-national | `/subnational` | Admin1 stress breakdown across monitored countries |
 | Validation | `/validation` | Public prediction ledger (pending, awaiting, graded) |
 | Methodology | `/methodology` | Full technical documentation |
-| Data Sources | `/data` | Six data streams, pipeline integration, open downloads |
+| Data Sources | `/data` | Model inputs, the grading source, and how the pipeline uses them |
 | API Access | `/api-access` | Tier access, pricing, endpoint documentation |
 | About | `/about` | System overview, HGE platform context |
 
@@ -67,7 +65,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
 - **Maps:** Leaflet / React-Leaflet
 - **Charts:** Recharts
 - **Deployment:** Vercel
-- **API:** CERES Core ([northflowlabs/ceres-core](https://github.com/northflowlabs/ceres-core))
+- **API:** the CERES public API, documented at [api.ceres.northflow.no/docs](https://api.ceres.northflow.no/docs)
 
 ---
 
@@ -91,7 +89,7 @@ src/
 │   └── api.ts                # CERES API client
 ├── components/               # Shared UI components
 └── public/
-    ├── sitemap.xml
+    ├── llms.txt
     └── robots.txt
 ```
 
@@ -103,7 +101,7 @@ The validation page displays the complete public record of CERES predictions:
 
 **Pending**: predictions waiting for their T+90 grading window
 **Awaiting Data**: grading window open, IPC/FEWS NET data not yet available
-**Graded**: predictions graded against published IPC outcomes
+**Graded**: predictions graded against the observed phase published by the IPC or FEWS NET
 
 Metrics displayed when graded predictions accumulate:
 - Brier Score decomposed into reliability, resolution, uncertainty
@@ -130,9 +128,8 @@ First grading window: **7 June 2026** (March 9 predictions + 90 days).
 
 ## Related
 
-- **Backend:** [northflowlabs/ceres-core](https://github.com/northflowlabs/ceres-core): pipeline, API, grading architecture
 - **Methodology:** [arXiv:2603.09425](https://arxiv.org/abs/2603.09425)
-- **Open Data:** [OCHA HDX](https://data.humdata.org/dataset/global-ceres-famine-risk-predictions)
+- **API documentation:** [api.ceres.northflow.no/docs](https://api.ceres.northflow.no/docs)
 
 ---
 
