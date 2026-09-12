@@ -5,25 +5,25 @@ import SiteFooter from "@/components/SiteFooter";
 
 const SOURCES = [
   {
-    id: "CHIRPS",
-    full: "Climate Hazards Group InfraRed Precipitation with Station data",
-    provider: "UC Santa Barbara / USGS",
-    cadence: "Dekadal (10-day)",
-    latency: "~5 days",
-    resolution: "0.05°",
-    vars: ["Precipitation anomaly", "SPI-3", "SPI-6", "Rainfall deficit"],
-    url: "https://www.chc.ucsb.edu/data/chirps",
+    id: "NASA POWER",
+    full: "NASA Langley POWER project, corrected precipitation (PRECTOTCORR)",
+    provider: "NASA Langley",
+    cadence: "Monthly",
+    latency: "1 to 3 months",
+    resolution: "Country centroid point",
+    vars: ["Precipitation (PRECTOTCORR)", "Precipitation anomaly", "Baseline 2001 to 2020"],
+    url: "https://power.larc.nasa.gov/",
     type: "climate",
   },
   {
     id: "MODIS NDVI",
-    full: "Terra/Aqua Moderate Resolution Imaging Spectroradiometer, Vegetation Index",
-    provider: "NASA / USGS LPDAAC",
+    full: "Moderate Resolution Imaging Spectroradiometer, Vegetation Index (MOD13Q1)",
+    provider: "NASA / ORNL DAAC",
     cadence: "16-day composite",
     latency: "~8 days",
-    resolution: "250m / 500m",
-    vars: ["NDVI anomaly", "Vegetation stress index", "Growing season deviation"],
-    url: "https://lpdaac.usgs.gov/products/mod13q1v061/",
+    resolution: "Country centroid point",
+    vars: ["NDVI", "NDVI anomaly", "Baseline 2015 to 2020"],
+    url: "https://modis.ornl.gov/",
     type: "climate",
   },
   {
@@ -33,64 +33,42 @@ const SOURCES = [
     cadence: "Weekly",
     latency: "~3 days",
     resolution: "Point / Admin1 aggregate",
-    vars: ["Conflict events (4-week)", "Fatality count", "Actor type", "Event type"],
+    vars: ["Conflict events", "Fatality count"],
     url: "https://ucdp.uu.se",
     type: "conflict",
   },
   {
+    id: "IPC / CH",
+    full: "Integrated Food Security Phase Classification and Cadre Harmonisé, read through OCHA's HDX HAPI",
+    provider: "IPC / CH via HDX HAPI",
+    cadence: "Bi-annual",
+    latency: "~60 days",
+    resolution: "Country",
+    vars: ["IPC phase classification", "Cadre Harmonisé phase classification"],
+    url: "https://hapi.humdata.org/",
+    type: "food",
+  },
+  {
+    id: "WFP Prices",
+    full: "World Food Programme market-level commodity prices, read through OCHA's HDX HAPI",
+    provider: "WFP via HDX HAPI",
+    cadence: "Monthly",
+    latency: "~30 days",
+    resolution: "Market level",
+    vars: ["Market-level commodity prices"],
+    url: "https://hapi.humdata.org/",
+    type: "food",
+  },
+  {
     id: "FEWS NET",
-    full: "Famine Early Warning Systems Network (supplementary cross-check, not a core model input)",
+    full: "Famine Early Warning Systems Network (grades forecasts, not a model input)",
     provider: "USAID",
     cadence: "Monthly / Bi-annual",
     latency: "~14 days",
-    resolution: "Admin1",
-    vars: ["Outlook corroboration", "Market price cross-check", "Food access outlook", "Livelihood stress"],
+    resolution: "Sub-national areas",
+    vars: ["Current Situation phase classification"],
     url: "https://fews.net",
     type: "food",
-  },
-  {
-    id: "WFP VAM",
-    full: "World Food Programme Vulnerability Analysis and Mapping",
-    provider: "WFP",
-    cadence: "Monthly / mVAM surveys",
-    latency: "~30 days",
-    resolution: "Admin1 / Admin2",
-    vars: ["Food consumption score", "Reduced coping strategy index", "mVAM phone surveys"],
-    url: "https://vam.wfp.org",
-    type: "food",
-  },
-  {
-    id: "FAO GIEWS",
-    full: "Global Information and Early Warning System on Food and Agriculture",
-    provider: "FAO",
-    cadence: "Monthly / Seasonal",
-    latency: "~14 days",
-    resolution: "Country / Admin1",
-    vars: ["Crop production outlook", "Cereal balance sheets", "Import dependency", "Food price index"],
-    url: "https://www.fao.org/giews/en/",
-    type: "food",
-  },
-  {
-    id: "IPC",
-    full: "Integrated Food Security Phase Classification",
-    provider: "IPC Global Platform",
-    cadence: "Bi-annual",
-    latency: "~60 days",
-    resolution: "Admin1 / Admin2",
-    vars: ["Acute food insecurity phase (1–5)", "Population in each phase", "Area phase classification"],
-    url: "https://www.ipcinfo.org",
-    type: "food",
-  },
-  {
-    id: "UNHCR",
-    full: "United Nations High Commissioner for Refugees, Displacement Data (supplementary, not currently an active model input)",
-    provider: "UNHCR",
-    cadence: "Monthly",
-    latency: "~30 days",
-    resolution: "Country / Admin1",
-    vars: ["Forced displacement (IDPs)", "Refugee outflows", "Return movements", "Camp population"],
-    url: "https://www.unhcr.org/refugee-statistics/",
-    type: "displacement",
   },
 ];
 
@@ -98,26 +76,21 @@ const TYPE_COLORS: Record<string, string> = {
   climate:      "var(--watch)",
   conflict:     "var(--crisis)",
   food:         "var(--earth)",
-  displacement: "var(--warning)",
 };
 
 const TYPE_LABELS: Record<string, string> = {
   climate:      "Climate",
   conflict:     "Conflict",
   food:         "Food Security",
-  displacement: "Displacement",
 };
 
 const PIPELINE_USE = [
-  { signal: "CHIRPS SPI-3",            weight: "Drought stress sub-score",        stage: "Stress scoring"       },
+  { signal: "NASA POWER rainfall anomaly", weight: "Drought stress sub-score",        stage: "Stress scoring"       },
   { signal: "MODIS NDVI anomaly",       weight: "Vegetation stress sub-score",     stage: "Stress scoring"       },
   { signal: "UCDP GED conflict events",  weight: "Conflict intensity sub-score",    stage: "Stress scoring"       },
-  { signal: "IPC phase estimate",       weight: "Food security phase sub-score",   stage: "Stress scoring"       },
-  { signal: "WFP VAM food access",      weight: "Food access sub-score",           stage: "Stress scoring"       },
-  { signal: "FAO GIEWS price index",    weight: "Market deviation sub-score",      stage: "Stress scoring"       },
-  { signal: "IPC cadre outcome",        weight: "Ground-truth for grading",        stage: "Calibration (T+90d)"  },
-  { signal: "FEWS NET outlook",         weight: "Signal corroboration (supplementary)", stage: "Hypothesis generation" },
-  { signal: "UNHCR displacement",       weight: "Signal corroboration (supplementary)", stage: "Hypothesis generation" },
+  { signal: "IPC / CH phase classification", weight: "Food security phase and food access sub-scores", stage: "Stress scoring" },
+  { signal: "WFP market prices",        weight: "Market deviation sub-score",      stage: "Stress scoring"       },
+  { signal: "IPC or FEWS NET observed phase", weight: "Outcome each forecast is graded against", stage: "Grading (T+90d)" },
 ];
 
 export default function DataPage() {
@@ -135,7 +108,7 @@ export default function DataPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Data Sources</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          CERES draws on six core model inputs (CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, FAO GIEWS) plus two supplementary sources. The eight cards below cover all of them: the six core inputs, plus FEWS NET as a corroboration cross-check and UNHCR displacement data, neither of which is an active model input. All sources are publicly available. No proprietary data is used.
+          CERES draws on public model inputs for rainfall (NASA POWER), vegetation (MODIS NDVI), conflict (UCDP GED), food security phase (IPC and Cadre Harmonisé) and market prices (WFP), plus FEWS NET, whose observed classifications grade the forecasts and are not a model input. The cards below cover all of them. All sources are publicly available. No proprietary data is used.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (

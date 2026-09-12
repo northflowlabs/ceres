@@ -38,6 +38,14 @@ const orgJsonLd = {
   name: "Northflow Technologies AS",
   url: "https://northflow.no",
   logo: "https://ceres.northflow.no/ceres-logo-web.png",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Jåttåveien 92",
+    postalCode: "4020",
+    addressLocality: "Stavanger",
+    addressCountry: "NO",
+  },
+  telephone: "+47 95 08 50 45",
   sameAs: [
     "https://www.linkedin.com/company/northflow-technologies",
     "https://arxiv.org/abs/2603.09425",
@@ -74,7 +82,7 @@ const faqJsonLd = {
       name: "What data does CERES use?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "CERES draws on six core public data streams: CHIRPS rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC classifications, WFP VAM market data, and FAO GIEWS. FEWS NET is used as a supplementary cross-check rather than a core input.",
+        text: "CERES draws on public data streams: NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé classifications, and WFP market prices. FEWS NET is not a model input: its observed classifications are used to grade forecasts.",
       },
     },
     {

@@ -4,22 +4,22 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Data Sources · CERES Famine Intelligence System",
   description:
-    "CERES ingests six data streams: CHIRPS rainfall, MODIS NDVI, UCDP GED conflict, IPC, WFP VAM, and FAO GIEWS. Full provenance and pipeline integration documented.",
+    "CERES ingests NASA POWER rainfall, MODIS NDVI, UCDP GED conflict, IPC and Cadre Harmonisé phases, and WFP market prices. Full provenance and pipeline integration documented.",
   keywords: [
-    "CHIRPS", "MODIS NDVI", "UCDP GED", "FEWS NET", "WFP VAM", "FAO GIEWS", "IPC data",
+    "NASA POWER", "MODIS NDVI", "UCDP GED", "FEWS NET", "WFP market prices", "HDX HAPI", "IPC data", "Cadre Harmonisé",
     "famine data sources", "food security data", "open data", "CERES",
   ],
   openGraph: {
-    title: "CERES Data Sources · Six Data Streams for Famine Forecasting",
+    title: "CERES Data Sources · Public Data Streams for Famine Forecasting",
     description:
-      "Satellite, conflict, and market data across six data streams. Full provenance, cadence, latency, and pipeline integration.",
+      "Satellite, conflict, food security, and market data from public sources. Full provenance, cadence, latency, and pipeline integration.",
     url: "https://ceres.northflow.no/data",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "CERES Data Sources",
-    description: "Six data streams powering CERES 90-day famine forecasts. Full provenance published.",
+    description: "Public data streams powering CERES 90-day famine forecasts. Full provenance published.",
   },
   alternates: { canonical: "https://ceres.northflow.no/data" },
 };
@@ -44,12 +44,28 @@ const datasetJsonLd = {
     "@id": "https://northflow.no/#org",
     name: "Northflow Technologies AS",
     url: "https://northflow.no",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Jåttåveien 92",
+      postalCode: "4020",
+      addressLocality: "Stavanger",
+      addressCountry: "NO",
+    },
+    telephone: "+47 95 08 50 45",
   },
   publisher: {
     "@type": "Organization",
     "@id": "https://northflow.no/#org",
     name: "Northflow Technologies AS",
     url: "https://northflow.no",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Jåttåveien 92",
+      postalCode: "4020",
+      addressLocality: "Stavanger",
+      addressCountry: "NO",
+    },
+    telephone: "+47 95 08 50 45",
   },
   keywords: [
     "famine early warning",
@@ -58,11 +74,11 @@ const datasetJsonLd = {
     "acute food insecurity",
     "humanitarian data",
     "probabilistic forecast",
-    "CHIRPS",
+    "NASA POWER",
     "MODIS NDVI",
     "UCDP GED",
-    "WFP VAM",
-    "FAO GIEWS",
+    "Cadre Harmonisé",
+    "WFP market prices",
   ],
   temporalCoverage: "2026-03-09/..",
   spatialCoverage: "43 high-risk countries (global)",
@@ -75,7 +91,7 @@ const datasetJsonLd = {
     "90% sensitivity interval",
   ],
   measurementTechnique:
-    "Calibrated logistic regression over the six public data streams (CHIRPS, MODIS NDVI, UCDP GED, IPC, WFP VAM, FAO GIEWS) with input-perturbation sensitivity intervals (n=2,000 draws per prediction).",
+    "Calibrated logistic regression over public data streams (NASA POWER rainfall, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé classifications, WFP market prices) with input-perturbation sensitivity intervals (n=2,000 draws per prediction).",
   isBasedOn: "https://arxiv.org/abs/2603.09425",
   distribution: [
     {

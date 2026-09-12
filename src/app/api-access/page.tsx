@@ -776,7 +776,7 @@ export default function ApiAccessPage() {
               {"      "}<Key>"name"</Key>{": "}<Str>"Oromia"</Str>{",\n"}
               {"      "}<Key>"composite_stress"</Key>{": "}<Num>0.61</Num>{",\n"}
               {"      "}<Key>"ipc_phase_current"</Key>{": "}<Num>3</Num>{",\n"}
-              {"      "}<Key>"signals"</Key>{": { "}<Str>"chirps"</Str>{": "}<Num>-1.8</Num>{", "}<Str>"ndvi"</Str>{": "}<Num>-0.14</Num>{" ... }\n"}
+              {"      "}<Key>"signals"</Key>{": { "}<Str>"rainfall"</Str>{": "}<Num>-1.8</Num>{", "}<Str>"ndvi"</Str>{": "}<Num>-0.14</Num>{" ... }\n"}
               {"    }\n"}
               {"  ]\n}"}
             </Endpoint>

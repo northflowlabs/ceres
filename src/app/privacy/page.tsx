@@ -9,10 +9,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/privacy" },
 };
 
-const LAST_UPDATED = "3 March 2026";
+const LAST_UPDATED = "12 September 2026";
 const CONTROLLER = "Northflow Technologies AS";
+const ORG_NUMBER = "936 979 815";
 const EMAIL = "ceres@northflow.no";
-const ADDRESS = "Norway";
+const STREET = "Jåttåveien 92";
+const POSTAL_CITY = "4020 Stavanger";
+const COUNTRY = "Norway";
+const PHONE = "+47 95 08 50 45";
+const PHONE_HREF = "tel:+4795085045";
 
 export default function PrivacyPage() {
   const h2 = { fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, marginBottom: 12, marginTop: 40, lineHeight: 1.2 } as const;
@@ -42,7 +47,11 @@ export default function PrivacyPage() {
         <p style={p}>
           The data controller responsible for your personal data is:<br /><br />
           <strong>{CONTROLLER}</strong><br />
-          {ADDRESS}<br />
+          Org. no. {ORG_NUMBER}<br />
+          {STREET}<br />
+          {POSTAL_CITY}<br />
+          {COUNTRY}<br />
+          <a href={PHONE_HREF} style={{ color: "var(--earth)" }}>{PHONE}</a><br />
           <a href={`mailto:${EMAIL}`} style={{ color: "var(--earth)" }}>{EMAIL}</a>
         </p>
 
@@ -128,6 +137,10 @@ export default function PrivacyPage() {
         <p style={p}>
           For any privacy-related questions or requests:<br /><br />
           <strong>{CONTROLLER}</strong><br />
+          {STREET}<br />
+          {POSTAL_CITY}<br />
+          {COUNTRY}<br />
+          <a href={PHONE_HREF} style={{ color: "var(--earth)" }}>{PHONE}</a><br />
           <a href={`mailto:${EMAIL}`} style={{ color: "var(--earth)" }}>{EMAIL}</a>
         </p>
 

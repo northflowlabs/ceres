@@ -7,13 +7,13 @@ export const metadata: Metadata = {
     "Full technical methodology for CERES: data pipeline, composite stress scoring, logistic regression model, IPC tier classification, calibration process, known limitations, and citation guide.",
   keywords: [
     "famine forecasting methodology", "IPC phase classification", "logistic regression",
-    "bootstrap confidence intervals", "CHIRPS", "MODIS NDVI", "UCDP GED", "food security model",
+    "bootstrap confidence intervals", "NASA POWER", "MODIS NDVI", "UCDP GED", "food security model",
     "HGE inference engine", "CERES", "Northflow",
   ],
   openGraph: {
     title: "CERES Methodology · Calibrated Famine Forecasting",
     description:
-      "Full technical specification of the CERES forecasting pipeline: six data streams, composite stress scoring, calibrated logistic model, IPC tier classification.",
+      "Full technical specification of the CERES forecasting pipeline: public data inputs, composite stress scoring, calibrated logistic model, IPC tier classification.",
     url: "https://ceres.northflow.no/methodology",
     type: "article",
   },
@@ -38,6 +38,14 @@ const articleJsonLd = {
       "@id": "https://northflow.no/#org",
       name: "Northflow Technologies AS",
       url: "https://northflow.no",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Jåttåveien 92",
+        postalCode: "4020",
+        addressLocality: "Stavanger",
+        addressCountry: "NO",
+      },
+      telephone: "+47 95 08 50 45",
     },
   },
   publisher: {
@@ -45,6 +53,14 @@ const articleJsonLd = {
     "@id": "https://northflow.no/#org",
     name: "Northflow Technologies AS",
     url: "https://northflow.no",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Jåttåveien 92",
+      postalCode: "4020",
+      addressLocality: "Stavanger",
+      addressCountry: "NO",
+    },
+    telephone: "+47 95 08 50 45",
   },
   datePublished: "2026-03",
   identifier: "arXiv:2603.09425",
