@@ -61,12 +61,12 @@ const SOURCES = [
   },
   {
     id: "FEWS NET",
-    full: "Famine Early Warning Systems Network (supplementary cross-check, not a core model input)",
+    full: "Famine Early Warning Systems Network (grades forecasts, not a model input)",
     provider: "USAID",
     cadence: "Monthly / Bi-annual",
     latency: "~14 days",
-    resolution: "Admin1",
-    vars: ["Outlook corroboration", "Market price cross-check", "Food access outlook", "Livelihood stress"],
+    resolution: "Sub-national areas",
+    vars: ["Current Situation phase classification"],
     url: "https://fews.net",
     type: "food",
   },
@@ -90,8 +90,7 @@ const PIPELINE_USE = [
   { signal: "UCDP GED conflict events",  weight: "Conflict intensity sub-score",    stage: "Stress scoring"       },
   { signal: "IPC / CH phase classification", weight: "Food security phase and food access sub-scores", stage: "Stress scoring" },
   { signal: "WFP market prices",        weight: "Market deviation sub-score",      stage: "Stress scoring"       },
-  { signal: "IPC cadre outcome",        weight: "Ground-truth for grading",        stage: "Calibration (T+90d)"  },
-  { signal: "FEWS NET outlook",         weight: "Signal corroboration (supplementary)", stage: "Hypothesis generation" },
+  { signal: "IPC or FEWS NET observed phase", weight: "Outcome each forecast is graded against", stage: "Grading (T+90d)" },
 ];
 
 export default function DataPage() {
@@ -109,7 +108,7 @@ export default function DataPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Data Sources</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          CERES draws on public model inputs for rainfall (NASA POWER), vegetation (MODIS NDVI), conflict (UCDP GED), food security phase (IPC and Cadre Harmonisé) and market prices (WFP), plus FEWS NET as a corroboration cross-check that is not a model input. The cards below cover all of them. All sources are publicly available. No proprietary data is used.
+          CERES draws on public model inputs for rainfall (NASA POWER), vegetation (MODIS NDVI), conflict (UCDP GED), food security phase (IPC and Cadre Harmonisé) and market prices (WFP), plus FEWS NET, whose observed classifications grade the forecasts and are not a model input. The cards below cover all of them. All sources are publicly available. No proprietary data is used.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (

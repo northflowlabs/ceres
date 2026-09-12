@@ -21,13 +21,13 @@ CERES draws on these public data streams:
 4. IPC and Cadre Harmonisé phase classifications, via OCHA's HDX HAPI
 5. WFP market-level commodity prices, via OCHA's HDX HAPI
 
-FEWS NET is used as a supplementary cross-check, not a core input. UNHCR is not an active input.
+FEWS NET is not a model input: its observed classifications are used to grade forecasts. UNHCR is not an active input.
 
 ## Model and validation
 
 - Method: calibrated logistic regression over these public data streams, with input-perturbation sensitivity intervals (n=2,000 draws per prediction).
 - Initialisation accuracy: AUC 0.84 on a held-out split of 87 IPC transition records across 31 countries (2011-2023).
-- Forward validation: every prediction is timestamped, publicly recorded, and graded against published IPC outcomes at the T+90 horizon. Predictions have been issued since the 28 Feb 2026 launch; the first T+90 grading windows opened June 2026 and the first graded outcomes are expected Aug-Oct 2026.
+- Forward validation: every prediction is timestamped and publicly recorded before its outcome is known, and graded at the T+90 horizon against the observed phase published by the IPC or FEWS NET. Predictions have been issued since the 28 Feb 2026 launch, and graded outcomes are published on the validation ledger as they settle.
 
 ## Important distinction
 

@@ -82,7 +82,7 @@ const faqJsonLd = {
       name: "What data does CERES use?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "CERES draws on public data streams: NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé classifications, and WFP market prices. FEWS NET is used as a supplementary cross-check rather than a core input.",
+        text: "CERES draws on public data streams: NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé classifications, and WFP market prices. FEWS NET is not a model input: its observed classifications are used to grade forecasts.",
       },
     },
     {
