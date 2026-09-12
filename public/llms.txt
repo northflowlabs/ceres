@@ -13,20 +13,19 @@
 
 ## Data inputs
 
-CERES draws on six core public data streams:
+CERES draws on these public data streams:
 
-1. CHIRPS rainfall
-2. MODIS NDVI vegetation
-3. UCDP GED conflict events
-4. IPC classifications
-5. WFP VAM market data
-6. FAO GIEWS
+1. NASA POWER rainfall (PRECTOTCORR), at each country's centroid point
+2. MODIS NDVI vegetation (MOD13Q1, via the ORNL DAAC web service), at each country's centroid point
+3. UCDP GED conflict events and fatalities
+4. IPC and Cadre Harmonisé phase classifications, via OCHA's HDX HAPI
+5. WFP market-level commodity prices, via OCHA's HDX HAPI
 
 FEWS NET is used as a supplementary cross-check, not a core input. UNHCR is not an active input.
 
 ## Model and validation
 
-- Method: calibrated logistic regression over the six public data streams, with input-perturbation sensitivity intervals (n=2,000 draws per prediction).
+- Method: calibrated logistic regression over these public data streams, with input-perturbation sensitivity intervals (n=2,000 draws per prediction).
 - Initialisation accuracy: AUC 0.84 on a held-out split of 87 IPC transition records across 31 countries (2011-2023).
 - Forward validation: every prediction is timestamped, publicly recorded, and graded against published IPC outcomes at the T+90 horizon. Predictions have been issued since the 28 Feb 2026 launch; the first T+90 grading windows opened June 2026 and the first graded outcomes are expected Aug-Oct 2026.
 

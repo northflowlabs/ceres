@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "food crisis",
     "acute food insecurity",
     "sensitivity intervals",
-    "CHIRPS",
+    "NASA POWER",
     "MODIS",
     "UCDP GED",
     "food security",

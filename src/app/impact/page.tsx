@@ -151,7 +151,7 @@ export default function ImpactPage() {
           <StatCard val={loading ? "…" : `${s?.weekly_runs_completed ?? 0}`}  label="Weekly Runs" sub={s?.earliest_run ? `Since ${s.earliest_run}` : "Archiving active"} />
           <StatCard val={loading ? "…" : `${s?.total_snapshots ?? 0}`}        label="Archived Snapshots" sub="Region × week records" />
           <StatCard val={loading ? "…" : `${tiers?.tier1 ?? s?.tier1_active_regions ?? 0}`}   label="Active Tier I Regions" sub="Current high-risk alerts" />
-          <StatCard val={loading ? "…" : `${s?.data_sources ?? 6}`}           label="Data Sources" sub="Open, public inputs only" />
+          <StatCard val={loading ? "…" : "5"}           label="Data Sources" sub="Open, public inputs only" />
         </div>
 
         {/* What this means: narrative */}

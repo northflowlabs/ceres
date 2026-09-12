@@ -485,7 +485,7 @@ export default function Dashboard() {
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.8 }}>
               IPC Phase 3+ probability · Logistic model + sensitivity intervals<br />
-              Data: CHIRPS · MODIS NDVI · UCDP GED · IPC · WFP VAM · FAO GIEWS<br />
+              Data: NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices<br />
               {lastUpdated ? `Ref: ${formatDate(lastUpdated)}` : "Loading…"} · HGE v1.0
             </div>
           </div>
@@ -721,12 +721,11 @@ export default function Dashboard() {
             <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>
               <div className="panel-label" style={{ marginBottom: 10 }}>Signal Convergence Matrix</div>
               {[
-                { name: "CHIRPS",    val: `${Math.round((selPred.composite_stress_score - 0.3) * -100)}%`, level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
+                { name: "NASA POWER", val: `${Math.round((selPred.composite_stress_score - 0.3) * -100)}%`, level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
                 { name: "NDVI",      val: `−${(selPred.composite_stress_score * 0.3).toFixed(2)}`, level: selPred.p_ipc3plus_90d > 0.7 ? 4 : 2 },
                 { name: "UCDP GED",  val: selPred.p_ipc3plus_90d > 0.8 ? "+HIGH" : "MOD",         level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
                 { name: "IPC",       val: `PH ${selPred.ipc_phase_forecast}`,                      level: Math.round(selPred.ipc_phase_forecast) },
-                { name: "WFP VAM",   val: selPred.p_ipc4plus_90d > 0.5 ? "HIGH" : "MOD",          level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
-                { name: "FAO GIEWS", val: selPred.alert_tier === "TIER-1" ? "ALERT" : "WATCH",     level: selPred.alert_tier === "TIER-1" ? 5 : 3 },
+                { name: "WFP prices", val: selPred.p_ipc4plus_90d > 0.5 ? "HIGH" : "MOD",          level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
               ].map(({ name, val, level }) => {
                 const color = level >= 4 ? "var(--crisis)" : level === 3 ? "var(--warning)" : "var(--watch)";
                 return (
@@ -1017,10 +1016,10 @@ export default function Dashboard() {
             <div style={{ padding: "14px 20px 28px" }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Signal Convergence</div>
               {[
-                { name: "CHIRPS",  level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
+                { name: "NASA POWER", level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
                 { name: "UCDP GED", level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
                 { name: "IPC",     level: Math.round(selPred.ipc_phase_forecast) },
-                { name: "WFP VAM", level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
+                { name: "WFP prices", level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
               ].map(({ name, level }) => {
                 const c = level >= 4 ? "var(--crisis)" : level === 3 ? "var(--warning)" : "var(--watch)";
                 return (

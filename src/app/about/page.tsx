@@ -15,7 +15,7 @@ const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "vs. 30–45 days for existing EWS" },
   { num: "87",       label: "Validation Records",       note: "IPC transition records, 2011–2023, 31 countries" },
   { num: "T+90",     label: "Grading Horizon",         note: "Graded against published IPC outcomes; live figures on the Validation page" },
-  { num: "6",        label: "Model Inputs",              note: "CHIRPS · MODIS NDVI · UCDP GED · IPC · WFP VAM · FAO GIEWS" },
+  { num: "5",        label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
 
 const p = { fontSize: 15, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.85 } as const;
@@ -34,7 +34,7 @@ export default function AboutPage() {
           </div>
           <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 24 }}>Built to close the humanitarian lead-time gap</h1>
           <p style={p}>CERES was built because the gap between when a famine becomes predictable and when the humanitarian system acts is measured in lives. Current early warning systems provide 30–45 days of actionable lead time. Pre-positioning food aid, mobilising logistics, and securing emergency funding requires 60–90 days.</p>
-          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises six core data streams into 90-day famine risk predictions, designed to give the humanitarian system the lead time it currently lacks.</p>
+          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises public rainfall, vegetation, conflict, food security and market data into 90-day famine risk predictions, designed to give the humanitarian system the lead time it currently lacks.</p>
           <p style={p}>It is free. It is open. Its methodology is published. Its predictions are timestamped and graded against outcomes. It is built to be scrutinised.</p>
         </div>
         <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
