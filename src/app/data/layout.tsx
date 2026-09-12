@@ -44,12 +44,28 @@ const datasetJsonLd = {
     "@id": "https://northflow.no/#org",
     name: "Northflow Technologies AS",
     url: "https://northflow.no",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Jåttåveien 92",
+      postalCode: "4020",
+      addressLocality: "Stavanger",
+      addressCountry: "NO",
+    },
+    telephone: "+47 95 08 50 45",
   },
   publisher: {
     "@type": "Organization",
     "@id": "https://northflow.no/#org",
     name: "Northflow Technologies AS",
     url: "https://northflow.no",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Jåttåveien 92",
+      postalCode: "4020",
+      addressLocality: "Stavanger",
+      addressCountry: "NO",
+    },
+    telephone: "+47 95 08 50 45",
   },
   keywords: [
     "famine early warning",

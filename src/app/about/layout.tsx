@@ -38,6 +38,14 @@ const orgJsonLd = {
   name: "Northflow Technologies AS",
   url: "https://northflow.no",
   logo: "https://ceres.northflow.no/ceres-logo-web.png",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Jåttåveien 92",
+    postalCode: "4020",
+    addressLocality: "Stavanger",
+    addressCountry: "NO",
+  },
+  telephone: "+47 95 08 50 45",
   sameAs: [
     "https://www.linkedin.com/company/northflow-technologies",
     "https://arxiv.org/abs/2603.09425",

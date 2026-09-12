@@ -147,6 +147,10 @@ export default function TermsPage() {
         <p style={p}>
           For questions about these Terms:<br /><br />
           <strong>Northflow Technologies AS</strong><br />
+          Jåttåveien 92<br />
+          4020 Stavanger<br />
+          Norway<br />
+          <a href="tel:+4795085045" style={{ color: "var(--earth)" }}>+47 95 08 50 45</a><br />
           <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>
         </p>
 

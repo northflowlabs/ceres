@@ -5,6 +5,7 @@
 ## What CERES is
 
 - Operator: Northflow Technologies AS (https://northflow.no). CERES runs as HGE Adapter #5 on the Northflow inference engine.
+- Operator address: Northflow Technologies AS, org. no. 936 979 815, Jåttåveien 92, 4020 Stavanger, Norway. Phone +47 95 08 50 45.
 - Coverage: 43 high-risk countries.
 - Horizon: 90-day probability forecasts.
 - Cadence: weekly, issued every Monday at 06:00 UTC.

@@ -34,6 +34,8 @@ export default function SiteFooter() {
         </div>
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>Northflow Technologies</div>
+          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Northflow Technologies AS<br />Org. no. 936 979 815<br />Jåttåveien 92, 4020 Stavanger, Norway</p>
+          <a href="tel:+4795085045" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>+47 95 08 50 45</a>
           <a href="mailto:ceres@northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>ceres@northflow.no</a>
           <a href="https://northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>northflow.no</a>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Research-grade forecasts. Not a substitute for field-based IPC assessment or operational humanitarian decision-making.</p>

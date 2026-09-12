@@ -148,6 +148,9 @@ export default function AboutPage() {
           }}>
             ceres@northflow.no → Get in touch
           </a>
+          <p style={{ fontSize: 13, color: "var(--ink-light)", lineHeight: 1.6, margin: "16px 0 0" }}>
+            Northflow Technologies AS · Jåttåveien 92, 4020 Stavanger, Norway · <a href="tel:+4795085045" style={{ color: "var(--earth)", textDecoration: "none" }}>+47 95 08 50 45</a>
+          </p>
         </div>
 
       </div>
