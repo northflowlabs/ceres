@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
-import { cartoTileUrl, CARTO_ATTRIBUTION } from "@/lib/basemap";
+import { basemapTileUrl, BASEMAP_ATTRIBUTION } from "@/lib/basemap";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 
@@ -154,9 +154,8 @@ export default function CeresMap() {
         zoomControl: false,
       });
 
-      L.tileLayer(cartoTileUrl("light_nolabels"), {
-        attribution: CARTO_ATTRIBUTION,
-        subdomains: "abcd",
+      L.tileLayer(basemapTileUrl("Canvas/World_Light_Gray_Base"), {
+        attribution: BASEMAP_ATTRIBUTION,
         maxZoom: 19,
       }).addTo(map);
 
