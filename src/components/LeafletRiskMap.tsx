@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { Prediction } from "@/lib/api";
 import { pct, tierLabel } from "@/lib/utils";
 import { CRISIS_COUNTRIES } from "@/lib/geo";
-import { cartoTileUrl, CARTO_ATTRIBUTION } from "@/lib/basemap";
+import { basemapTileUrl, BASEMAP_ATTRIBUTION } from "@/lib/basemap";
 
 interface LeafletRiskMapProps {
   predictions: Prediction[];
@@ -47,9 +47,8 @@ export default function LeafletRiskMap({
         maxZoom: 10,
       });
 
-      L.tileLayer(cartoTileUrl("rastertiles/voyager"), {
-        attribution: CARTO_ATTRIBUTION,
-        subdomains: "abcd",
+      L.tileLayer(basemapTileUrl("World_Street_Map"), {
+        attribution: BASEMAP_ATTRIBUTION,
         maxZoom: 19,
         opacity: 0.75,
       }).addTo(map);
