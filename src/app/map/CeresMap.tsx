@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
+import { cartoTileUrl, CARTO_ATTRIBUTION } from "@/lib/basemap";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 
@@ -153,8 +154,8 @@ export default function CeresMap() {
         zoomControl: false,
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
-        attribution: "© OpenStreetMap contributors © CARTO",
+      L.tileLayer(cartoTileUrl("light_nolabels"), {
+        attribution: CARTO_ATTRIBUTION,
         subdomains: "abcd",
         maxZoom: 19,
       }).addTo(map);
