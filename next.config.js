@@ -29,6 +29,12 @@ const nextConfig = {
         destination: "/subnational",
         permanent: true,
       },
+      {
+        // API sign-up is closed; the free downloads live on /data.
+        source: "/api-access",
+        destination: "/data",
+        permanent: false,
+      },
     ];
   },
 };

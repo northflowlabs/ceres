@@ -68,9 +68,6 @@ export default function ValidationPage() {
   const [calStatus, setCalStatus]   = useState("loading");
   const [withdrawals, setWithdrawals] = useState<WithdrawalsResponse | null>(null);
   const [loading, setLoading]       = useState(true);
-  const [email, setEmail]           = useState("");
-  const [subMsg, setSubMsg]         = useState("");
-  const [subLoading, setSubLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -82,21 +79,6 @@ export default function ValidationPage() {
       api.validationWithdrawals().then(d => setWithdrawals(d)).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubLoading(true);
-    try {
-      const r = await api.subscribeEmail(email);
-      setSubMsg(r.message);
-      setEmail("");
-    } catch {
-      setSubMsg("Subscription failed. Please try again.");
-    } finally {
-      setSubLoading(false);
-    }
-  };
 
   const totalPredictions = metrics?.total_predictions ?? 0;
   const nGraded = metrics?.n_graded_for_metrics ?? 0;
@@ -358,25 +340,21 @@ export default function ValidationPage() {
           </div>
         )}
 
-        {/* Newsletter subscription */}
+        {/* Ledger downloads */}
         <div className="newsletter-cta" style={{ background: "var(--ink)", padding: "32px 40px", margin: "40px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
-          <div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Free Intelligence Newsletter</div>
-            <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Monthly CERES Intelligence Letter, free</div>
-            <div style={{ fontSize: 13, color: "#78716C", lineHeight: 1.6 }}>Top risk regions, system status, and a note from our founder. Sent the first Monday of each month to all free subscribers.</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Open ledger</div>
+            <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Check every grade yourself</div>
+            <div style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.6 }}>The full ledger and the metrics above are open JSON, free under CC BY 4.0. Research collaboration: <a href="mailto:ceres@northflow.no" style={{ color: "var(--parchment)" }}>ceres@northflow.no</a></div>
           </div>
-          <form onSubmit={handleSubscribe} style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-            <input
-              type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.org"
-              style={{ fontFamily: "var(--mono)", fontSize: 12, padding: "10px 16px", background: "#2c2825", border: "1px solid #44403C", color: "var(--parchment)", outline: "none", width: 220 }}
-              required
-            />
-            <button type="submit" disabled={subLoading} style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--earth)", color: "white", border: "none", padding: "10px 20px", cursor: "pointer", whiteSpace: "nowrap" }}>
-              {subLoading ? "\u2026" : "Subscribe \u2192"}
-            </button>
-          </form>
-          {subMsg && <div style={{ width: "100%", fontFamily: "var(--mono)", fontSize: 11, color: "#A8A29E", marginTop: -16 }}>{subMsg}</div>}
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <a href={`${API_BASE}/v1/validation/ledger?status=graded&limit=1000`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", background: "var(--earth)", color: "white", padding: "10px 20px", whiteSpace: "nowrap" }}>
+              Graded ledger
+            </a>
+            <a href={`${API_BASE}/v1/validation/metrics`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", color: "#A8A29E", border: "1px solid #44403C", padding: "10px 20px", whiteSpace: "nowrap" }}>
+              Metrics
+            </a>
+          </div>
         </div>
 
         {/* Calibration & Reliability */}

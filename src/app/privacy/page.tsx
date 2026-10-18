@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/privacy" },
 };
 
-const LAST_UPDATED = "12 September 2026";
+const LAST_UPDATED = "19 October 2026";
 const CONTROLLER = "Northflow Technologies AS";
 const ORG_NUMBER = "936 979 815";
 const EMAIL = "ceres@northflow.no";
@@ -58,26 +58,23 @@ export default function PrivacyPage() {
         <h2 style={h2}>2. What Data We Collect</h2>
         <p style={p}>We collect only the data necessary to provide the CERES service:</p>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Email address</strong>: collected when you subscribe to the free newsletter, sign up for a paid API tier, or contact us. Used to send the service you subscribed to and to manage your account.</li>
-          <li style={li}><strong>Organisation name</strong>: optionally provided during API subscription. Used for billing and account management only.</li>
-          <li style={li}><strong>Payment data</strong>: handled entirely by Stripe. We do not store card numbers or payment credentials. Stripe acts as an independent data processor under its own privacy policy.</li>
+          <li style={li}><strong>Email address and organisation name</strong>: collected when you contact us, and held for people who signed up to the CERES newsletter or an API plan earlier. Used to answer you and to keep those existing records.</li>
+          <li style={li}><strong>Payment data</strong>: earlier API plans were paid through Stripe. We have never stored card numbers or payment credentials. Stripe acts as an independent data processor under its own privacy policy.</li>
           <li style={li}><strong>Usage data</strong>: anonymised analytics via Google Analytics 4 (if enabled). Includes pages visited, session duration, and device type. No personally identifiable information is transmitted to Google Analytics.</li>
-          <li style={li}><strong>API request logs</strong>: IP address and request timestamps for authenticated API calls. Retained for 30 days for security and abuse prevention.</li>
+          <li style={li}><strong>API request logs</strong>: IP address and request timestamps for API calls. Retained for 30 days for security and abuse prevention.</li>
         </ul>
 
         <h2 style={h2}>3. Legal Basis for Processing</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Contract performance (Art. 6(1)(b) GDPR)</strong>: processing your email and billing data to provide the API service or newsletter you signed up for.</li>
+          <li style={li}><strong>Contract performance (Art. 6(1)(b) GDPR)</strong>: processing the email and billing records of earlier newsletter and API sign-ups.</li>
           <li style={li}><strong>Legitimate interests (Art. 6(1)(f) GDPR)</strong>: security logging, fraud prevention, and platform analytics.</li>
           <li style={li}><strong>Consent (Art. 6(1)(a) GDPR)</strong>: where you have given explicit consent, such as accepting cookie tracking for analytics.</li>
         </ul>
 
         <h2 style={h2}>4. How We Use Your Data</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}>Sending the monthly CERES Intelligence Letter (free subscribers)</li>
-          <li style={li}>Sending your API key and Tier I/II alerts (paid subscribers)</li>
-          <li style={li}>Processing payments and managing subscriptions via Stripe</li>
-          <li style={li}>Responding to support and institutional enquiries</li>
+          <li style={li}>Responding to research and institutional enquiries</li>
+          <li style={li}>Keeping the records of earlier subscriptions that accounting law requires</li>
           <li style={li}>Monitoring platform health and preventing abuse</li>
           <li style={li}>Improving the service through anonymised usage analytics</li>
         </ul>
@@ -85,7 +82,7 @@ export default function PrivacyPage() {
 
         <h2 style={h2}>5. Data Processors and Third Parties</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Stripe Inc.</strong>: payment processing. <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Stripe Privacy Policy</a></li>
+          <li style={li}><strong>Stripe Inc.</strong>: payment processing for earlier API plans. <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Stripe Privacy Policy</a></li>
           <li style={li}><strong>Google LLC (Analytics)</strong>: anonymised website analytics. Data processed under a Data Processing Addendum, with IP anonymisation enabled. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Privacy Policy</a></li>
           <li style={li}><strong>Railway Inc.</strong>: cloud infrastructure hosting the API backend. Data processed within the EU/EEA or under Standard Contractual Clauses.</li>
           <li style={li}><strong>Vercel Inc.</strong>: frontend hosting. Data processed under Vercel&rsquo;s Data Processing Addendum.</li>
@@ -93,8 +90,9 @@ export default function PrivacyPage() {
 
         <h2 style={h2}>6. Data Retention</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Newsletter subscribers</strong>: retained until you unsubscribe.</li>
-          <li style={li}><strong>API subscribers</strong>: retained for the duration of the subscription plus 2 years for accounting purposes.</li>
+          <li style={li}><strong>Earlier newsletter sign-ups</strong>: retained until you ask us to remove them.</li>
+          <li style={li}><strong>Earlier API plans</strong>: retained for the duration of the plan plus 2 years for accounting purposes.</li>
+          <li style={li}><strong>Enquiries</strong>: retained for as long as the conversation is relevant.</li>
           <li style={li}><strong>API request logs</strong>: 30 days.</li>
           <li style={li}><strong>Analytics data</strong>: Google Analytics default retention (14 months).</li>
         </ul>
@@ -130,7 +128,7 @@ export default function PrivacyPage() {
 
         <h2 style={h2}>11. Changes to This Policy</h2>
         <p style={p}>
-          We may update this Privacy Policy from time to time. The date at the top of this page reflects the most recent revision. Material changes will be communicated by email to active subscribers.
+          We may update this Privacy Policy from time to time. The date at the top of this page reflects the most recent revision. Material changes are published on this page with a new date.
         </p>
 
         <h2 style={h2}>12. Contact</h2>

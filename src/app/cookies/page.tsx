@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/cookies" },
 };
 
-const LAST_UPDATED = "12 September 2026";
+const LAST_UPDATED = "19 October 2026";
 
 export default function CookiesPage() {
   const h2 = { fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, marginBottom: 12, marginTop: 40, lineHeight: 1.2 } as const;
@@ -55,13 +55,6 @@ export default function CookiesPage() {
             <tbody>
               {[
                 {
-                  name: "Session authentication token",
-                  type: "Essential",
-                  purpose: "Keeps you logged in to your CERES account during a session.",
-                  duration: "Session (deleted on browser close)",
-                  consent: "No: essential",
-                },
-                {
                   name: "CSRF token",
                   type: "Essential",
                   purpose: "Protects against cross-site request forgery attacks.",
@@ -104,7 +97,7 @@ export default function CookiesPage() {
 
         <h2 style={h2}>3. Essential Cookies</h2>
         <p style={p}>
-          Essential cookies are strictly necessary for the website to function. They enable core features such as account login and security. These cookies cannot be disabled, as doing so would break the site. No consent is required to place them under GDPR (Recital 25, ePrivacy Directive).
+          Essential cookies are strictly necessary for the website to function. They provide core features such as security. These cookies cannot be disabled, as doing so would break the site. No consent is required to place them under GDPR (Recital 25, ePrivacy Directive).
         </p>
 
         <h2 style={h2}>4. Analytics Cookies (Google Analytics 4)</h2>

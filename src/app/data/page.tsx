@@ -208,7 +208,7 @@ export default function DataPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Open Data</div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>Download CERES Predictions</h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.75, maxWidth: 640 }}>
-            All CERES predictions are freely available as HXL-tagged CSV, no authentication required.
+            Every CERES forecast is free to download as HXL-tagged CSV or JSON, with no account and no key.
             Compatible with HDX pipelines, Excel, R, Python, and Tableau.
             Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
           </p>
@@ -230,10 +230,10 @@ export default function DataPage() {
               },
               {
                 label: "Grading Ledger",
-                sub: "Predictions + IPC outcomes",
-                desc: "All predictions that have reached T+90, with actual IPC phase and Brier scores.",
-                url: "https://api.ceres.northflow.no/v1/export/grades/csv",
-                tag: "CSV",
+                sub: "Graded predictions with IPC outcomes",
+                desc: "Every prediction graded at T+90, with the observed IPC phase, the grading source and its Brier contribution.",
+                url: "https://api.ceres.northflow.no/v1/validation/ledger?status=graded&limit=1000",
+                tag: "JSON",
               },
             ].map(({ label, sub, desc, url, tag }) => (
               <div key={label} style={{ background: "white", padding: 24 }}>
@@ -257,8 +257,32 @@ export default function DataPage() {
           </div>
           <p style={{ fontSize: 12, color: "var(--ink-light)" }}>
             HXL format: Row 1 = column headers · Row 2 = HXL hashtags · Row 3+ = data.
-            {" "}<a href="/api-access#hdx" style={{ color: "var(--earth)" }}>Full API documentation →</a>
           </p>
+
+          <div style={{ marginTop: 32, border: "1px solid var(--border)", background: "white", padding: 24 }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Open endpoints</div>
+            <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: "0 0 16px", maxWidth: 640 }}>
+              The same data the dashboard reads, open to anyone. No key, no sign-up.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {[
+                { label: "Current forecasts, all regions", fmt: "JSON", url: "https://api.ceres.northflow.no/v1/predictions" },
+                { label: "Current forecasts, all regions", fmt: "CSV",  url: "https://api.ceres.northflow.no/v1/export/predictions/csv" },
+                { label: "Weekly forecast archive",        fmt: "CSV",  url: "https://api.ceres.northflow.no/v1/export/archive/csv" },
+                { label: "Validation metrics",             fmt: "JSON", url: "https://api.ceres.northflow.no/v1/validation/metrics" },
+                { label: "Driver hypotheses",              fmt: "JSON", url: "https://api.ceres.northflow.no/v1/hypotheses" },
+              ].map(({ label, fmt, url }) => (
+                <a key={url} href={url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 12, alignItems: "baseline", flexWrap: "wrap", textDecoration: "none", color: "var(--ink)", fontSize: 13 }}>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--watch)", border: "1px solid rgba(46,125,50,0.3)", padding: "1px 6px", flexShrink: 0 }}>{fmt}</span>
+                  <span style={{ flexShrink: 0 }}>{label}</span>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)", overflowWrap: "anywhere", minWidth: 0 }}>{url.replace("https://", "")}</span>
+                </a>
+              ))}
+            </div>
+            <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.7, margin: "16px 0 0" }}>
+              Research collaboration: <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>
+            </p>
+          </div>
         </div>
 
         {/* Data principles */}

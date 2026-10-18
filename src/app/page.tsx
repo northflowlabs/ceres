@@ -202,7 +202,6 @@ export default function Dashboard() {
             { href: "/data",        label: "Data Sources" },
             { href: "/validation",  label: "Validation"   },
             { href: "/about",       label: "About"        },
-            { href: "/api-access",  label: "API"          },
           ] as const).map(({ href, label }) => (
             <Link key={href} href={href} style={{
               fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em",
@@ -279,7 +278,6 @@ export default function Dashboard() {
             { href: "/validation",  label: "Validation"   },
             { href: "/tracker",     label: "Track Record" },
             { href: "/about",       label: "About"        },
-            { href: "/api-access",  label: "API"          },
           ] as const).map(({ href, label }) => (
             <Link key={href} href={href} onClick={() => setMenuOpen(false)} style={{
               fontFamily: "var(--display)", fontSize: 22, fontWeight: 600,

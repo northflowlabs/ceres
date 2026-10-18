@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: "CERES · Calibrated Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts. " +
-      "Confidence intervals + public verification ledger. Free for humanitarian use.",
+      "Confidence intervals + public verification ledger. Open data under CC BY 4.0.",
     images: ["/og-image.png"],
     creator: "@northflowno",
   },
@@ -166,7 +166,7 @@ export default function RootLayout({
                 "@type": "Offer",
                 price: "0",
                 priceCurrency: "USD",
-                description: "Free for humanitarian and academic use",
+                description: "Open data under CC BY 4.0",
               },
               author: {
                 "@type": "Organization",

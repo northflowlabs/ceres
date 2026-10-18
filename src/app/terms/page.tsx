@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/terms" },
 };
 
-const LAST_UPDATED = "12 September 2026";
+const LAST_UPDATED = "19 October 2026";
 
 export default function TermsPage() {
   const h2 = { fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, marginBottom: 12, marginTop: 40, lineHeight: 1.2 } as const;
@@ -44,36 +44,29 @@ export default function TermsPage() {
 
         <h2 style={h2}>1. The Service</h2>
         <p style={p}>
-          CERES provides calibrated probabilistic forecasts of acute food insecurity (IPC Phase 3+). Headline forecasts are issued at national level across 43 high-risk countries, with sub-national (Admin1 and, where available, Admin2) breakdowns, and are updated weekly. The Service includes the public dashboard, the REST API, email alerts, intelligence reports, and supporting documentation.
+          CERES provides calibrated probabilistic forecasts of acute food insecurity (IPC Phase 3+). Headline forecasts are issued at national level across 43 high-risk countries, with sub-national (Admin1 and, where available, Admin2) breakdowns, and are updated weekly. The Service includes the public dashboard, the open data downloads, the public REST API, and supporting documentation.
         </p>
         <p style={p}>
           The Service is provided by Northflow Technologies AS, a Norwegian technology company. Norwegian law applies to these Terms.
         </p>
 
-        <h2 style={h2}>2. Eligibility and Accounts</h2>
+        <h2 style={h2}>2. Access</h2>
         <p style={p}>
-          The Service is available to individuals, organisations, researchers, and humanitarian entities worldwide. To access paid API tiers, you must create an account and provide accurate registration information. You are responsible for maintaining the confidentiality of your API key and account credentials.
-        </p>
-        <p style={p}>
-          You must be at least 18 years of age or the legal age of majority in your jurisdiction to subscribe to paid tiers.
+          The Service is available to individuals, organisations, researchers, and humanitarian entities worldwide. The dashboard, the open data downloads and the public API endpoints are free and need no account. Research collaborations are agreed in writing through <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>.
         </p>
 
-        <h2 style={h2}>3. Free Tier and Open Access</h2>
+        <h2 style={h2}>3. Open Access</h2>
         <p style={p}>
-          The CERES public dashboard, free newsletter, and Tier A API access (500 requests/month) are available without charge. Open data published under CC BY 4.0 may be freely downloaded, used, and redistributed with attribution.
+          Open data published under CC BY 4.0 may be downloaded, used, adapted, and redistributed, including commercially, with attribution.
         </p>
         <p style={p}>
-          We reserve the right to modify, suspend, or discontinue free tier access at any time with reasonable notice.
+          We may change or limit the public endpoints with reasonable notice, for example to protect the Service from abuse.
         </p>
 
-        <h2 style={h2}>4. Paid API Subscriptions</h2>
-        <p style={p}>
-          Paid subscriptions (Tier B Professional, Tier C Institutional) are billed monthly via Stripe. By subscribing you authorise Northflow to charge your payment method on a recurring monthly basis until you cancel.
-        </p>
+        <h2 style={h2}>4. API Use</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
-          <li style={li}><strong>Cancellation</strong>: you may cancel at any time via your account portal. Cancellation takes effect at the end of the current billing period. No refunds are issued for partial months.</li>
-          <li style={li}><strong>Overuse</strong>: exceeding your monthly API request quota will result in rate-limiting. We will notify you and offer the option to upgrade before suspending access.</li>
-          <li style={li}><strong>Acceptable use</strong>: API access may not be resold, sublicensed, or used to train competing machine learning models without prior written agreement.</li>
+          <li style={li}><strong>Fair use</strong>: automated clients should keep request volume reasonable. Heavy traffic may be rate-limited.</li>
+          <li style={li}><strong>Earlier plans</strong>: API plans agreed before 19 October 2026 continue on the terms that applied when they were agreed. To cancel one, write to <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>.</li>
         </ul>
 
         <h2 style={h2}>5. Intellectual Property</h2>
@@ -84,7 +77,7 @@ export default function TermsPage() {
           <strong>Open data</strong>: Prediction outputs published by CERES are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>. You may use, share, and adapt them freely provided you give attribution: <em>&ldquo;CERES / Northflow Technologies AS, ceres.northflow.no&rdquo;</em>.
         </p>
         <p style={p}>
-          <strong>API outputs</strong>: Data retrieved via the authenticated API (including sensitivity intervals, driver hypotheses, and Admin1 signals) may be used in research, reporting, and operational planning. Commercial redistribution of raw API outputs requires a Tier C licence agreement.
+          <strong>API outputs</strong>: Data returned by the public API, including sensitivity intervals, driver hypotheses, and Admin1 signals, is covered by the same CC BY 4.0 licence.
         </p>
 
         <h2 style={h2}>6. Acceptable Use</h2>
@@ -122,12 +115,12 @@ export default function TermsPage() {
 
         <h2 style={h2}>9. Service Availability</h2>
         <p style={p}>
-          We aim to maintain high availability but do not guarantee uninterrupted access. The weekly pipeline runs on a best-effort basis. Scheduled maintenance, infrastructure incidents, or upstream data source outages may cause delays or gaps in predictions. We will communicate significant outages via the changelog and, where relevant, by email to active subscribers.
+          We aim to maintain high availability but do not guarantee uninterrupted access. The weekly pipeline runs on a best-effort basis. Scheduled maintenance, infrastructure incidents, or upstream data source outages may cause delays or gaps in predictions. We communicate significant outages via the changelog.
         </p>
 
         <h2 style={h2}>10. Termination</h2>
         <p style={p}>
-          We reserve the right to suspend or terminate access to the Service, with or without notice, if you violate these Terms or engage in conduct that is harmful to the platform, other users, or third parties. Paid subscribers will receive a pro-rata refund for any remaining prepaid period.
+          We reserve the right to suspend or terminate access to the Service, with or without notice, if you violate these Terms or engage in conduct that is harmful to the platform, other users, or third parties. Holders of an earlier paid plan receive a pro-rata refund for any remaining prepaid period.
         </p>
 
         <h2 style={h2}>11. Governing Law and Dispute Resolution</h2>
@@ -140,7 +133,7 @@ export default function TermsPage() {
 
         <h2 style={h2}>12. Changes to These Terms</h2>
         <p style={p}>
-          We may update these Terms from time to time. Material changes will be communicated by email to active subscribers at least 14 days before taking effect. Continued use of the Service after the effective date constitutes acceptance of the updated Terms.
+          We may update these Terms from time to time. Material changes are published on this page at least 14 days before taking effect. Continued use of the Service after the effective date constitutes acceptance of the updated Terms.
         </p>
 
         <h2 style={h2}>13. Contact</h2>

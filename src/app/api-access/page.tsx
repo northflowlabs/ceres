@@ -405,7 +405,7 @@ export default function ApiAccessPage() {
           error={checkoutError}
         />
       )}
-      <SiteNav ctaHref="mailto:ceres@northflow.no" ctaLabel="Request Access →" />
+      <SiteNav />
 
       {/* Page header */}
       <div className="page-header" style={{ borderBottom: "1px solid var(--border)", padding: "60px 40px 48px", maxWidth: 1100, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
