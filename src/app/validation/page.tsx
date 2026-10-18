@@ -211,7 +211,7 @@ export default function ValidationPage() {
 
             {/* Observation-lag explainer: turns the awaiting state into a rigour signal */}
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> IPC/FEWS NET classifications, never against forecasts. IPC and FEWS NET publish observed Current-Situation phases on a <strong style={{ color: "var(--ink)" }}>2{"–"}4 month lag</strong>, so the June 2026 windows resolve from roughly <strong style={{ color: "var(--ink)" }}>Aug{"–"}Oct 2026</strong> onward. The grader runs automatically every Monday and writes a grade the moment upstream data lands. We do not grade early against partial or projected data: that restraint is what makes this ledger trustworthy.
+              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> IPC/FEWS NET classifications, never against forecasts. IPC and FEWS NET publish observed Current-Situation phases on a <strong style={{ color: "var(--ink)" }}>2{"-"}4 month lag</strong>, so the June 2026 windows resolve from roughly <strong style={{ color: "var(--ink)" }}>Aug{"-"}Oct 2026</strong> onward. The grader runs automatically every Monday and writes a grade the moment upstream data lands. We do not grade early against partial or projected data: that restraint is what makes this ledger trustworthy.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
@@ -285,9 +285,9 @@ export default function ValidationPage() {
             </table></div>
           ) : (
             <div style={{ border: "1px solid var(--border)", background: "white", padding: "40px 32px", textAlign: "center" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 12 }}>FIRST GRADES EXPECTED AUG–OCT 2026</div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 12 }}>FIRST GRADES EXPECTED AUG-OCT 2026</div>
               <p style={{ fontSize: 14, color: "var(--ink-mid)", maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>
-                The first T+90 grading windows opened June 2026. Grades are written automatically once IPC/FEWS NET publish the observed Current-Situation classification for each region, which lags the target window by 2{"–"}4 months. {awaiting.length > 0 ? `${awaiting.length} predictions are in the grading queue now.` : ""} This ledger updates every Monday and nothing is graded against projected data.
+                The first T+90 grading windows opened June 2026. Grades are written automatically once IPC/FEWS NET publish the observed Current-Situation classification for each region, which lags the target window by 2{"-"}4 months. {awaiting.length > 0 ? `${awaiting.length} predictions are in the grading queue now.` : ""} This ledger updates every Monday and nothing is graded against projected data.
               </p>
             </div>
           )}

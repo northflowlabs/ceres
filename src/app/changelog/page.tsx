@@ -63,7 +63,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.2",
     type: "model",
     title: "Logistic model initialised with author-specified coefficients: 87 IPC transition records",
-    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011–2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2–4 month lag, the first graded results are expected Aug–Oct 2026. See Validation page for live progress.",
+    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011-2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2-4 month lag, the first graded results are expected Aug-Oct 2026. See Validation page for live progress.",
   },
   {
     date: "2026-02-27",

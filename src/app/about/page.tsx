@@ -12,8 +12,8 @@ const ADAPTERS = [
 ];
 
 const STATS = [
-  { num: "90d",      label: "Forecast Horizon",        note: "vs. 30–45 days for existing EWS" },
-  { num: "87",       label: "Validation Records",       note: "IPC transition records, 2011–2023, 31 countries" },
+  { num: "90d",      label: "Forecast Horizon",        note: "vs. 30-45 days for existing EWS" },
+  { num: "87",       label: "Validation Records",       note: "IPC transition records, 2011-2023, 31 countries" },
   { num: "T+90",     label: "Grading Horizon",         note: "Graded against published IPC outcomes; live figures on the Validation page" },
   { num: "5",        label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
@@ -33,7 +33,7 @@ export default function AboutPage() {
             About CERES
           </div>
           <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 24 }}>Built to close the humanitarian lead-time gap</h1>
-          <p style={p}>CERES was built because the gap between when a famine becomes predictable and when the humanitarian system acts is measured in lives. Current early warning systems provide 30–45 days of actionable lead time. Pre-positioning food aid, mobilising logistics, and securing emergency funding requires 60–90 days.</p>
+          <p style={p}>CERES was built because the gap between when a famine becomes predictable and when the humanitarian system acts is measured in lives. Current early warning systems provide 30-45 days of actionable lead time. Pre-positioning food aid, mobilising logistics, and securing emergency funding requires 60-90 days.</p>
           <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises public rainfall, vegetation, conflict, food security and market data into 90-day famine risk predictions, designed to give the humanitarian system the lead time it currently lacks.</p>
           <p style={p}>It is free. It is open. Its methodology is published. Its predictions are timestamped and graded against outcomes. It is built to be scrutinised.</p>
         </div>
@@ -117,7 +117,7 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
             <p style={p}>Every design decision in CERES, from the calibrated sensitivity intervals to the publicly timestamped prediction ledger to the published limitations section, is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders. It is built to withstand scrutiny, not to impress with outputs.</p>
-            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. The model was initialised against 87 IPC transition records (2011–2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
+            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. The model was initialised against 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
           </div>
         </div>
 

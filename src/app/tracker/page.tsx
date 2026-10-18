@@ -259,7 +259,7 @@ export default function TrackerPage() {
                           {fmtPct(selSnap.p_ipc3plus_90d)}
                         </div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: tierColor(selSnap.alert_tier), marginTop: 4 }}>
-                          {selSnap.alert_tier}{selSnap.sensitivity_interval_low != null && selSnap.sensitivity_interval_high != null ? ` · SI [${fmtPct(selSnap.sensitivity_interval_low)}–${fmtPct(selSnap.sensitivity_interval_high)}]` : ""}
+                          {selSnap.alert_tier}{selSnap.sensitivity_interval_low != null && selSnap.sensitivity_interval_high != null ? ` · SI [${fmtPct(selSnap.sensitivity_interval_low)}-${fmtPct(selSnap.sensitivity_interval_high)}]` : ""}
                         </div>
                       </div>
                     </div>
@@ -329,7 +329,7 @@ export default function TrackerPage() {
                 <div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What this section will show</div>
                   <h2 style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, marginBottom: 16, lineHeight: 1.3 }}>The permanent record of what CERES predicted, and whether it was right</h2>
-                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>The first T+90 horizons were reached in June 2026. This section auto-populates as IPC/FEWS NET publish the observed outcome for each window, which lags the target by 2{"–"}4 months, so the first verified outcomes land Aug{"–"}Oct 2026.</p>
+                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>The first T+90 horizons were reached in June 2026. This section auto-populates as IPC/FEWS NET publish the observed outcome for each window, which lags the target by 2{"-"}4 months, so the first verified outcomes land Aug{"-"}Oct 2026.</p>
                   <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Outcomes are graded against published observations only, never against forecasts. Misses are as visible as hits. No curation, no removal.</p>
                 </div>
                 <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
@@ -454,7 +454,7 @@ export default function TrackerPage() {
               </table>
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 16 }}>
-              Grading is fully automated, with no human intervention. Once a prediction passes T+90, the system queries the IPC Global Platform and FEWS NET each week for the published observed Current-Situation phase, then records the Brier score and tier outcome the moment that data is released (typically 2–4 months after the target window). Results appear in the Verified Outcomes tab.
+              Grading is fully automated, with no human intervention. Once a prediction passes T+90, the system queries the IPC Global Platform and FEWS NET each week for the published observed Current-Situation phase, then records the Brier score and tier outcome the moment that data is released (typically 2-4 months after the target window). Results appear in the Verified Outcomes tab.
             </p>
           </div>
         )}

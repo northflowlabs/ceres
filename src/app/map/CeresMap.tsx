@@ -464,7 +464,7 @@ export default function CeresMap() {
             {/* Sensitivity interval row */}
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginBottom: 20 }}>
               {selected.ciLow != null && selected.ciHigh != null
-                ? `SI [${fmtPct(selected.ciLow)} – ${fmtPct(selected.ciHigh)}] · Input-perturbation`
+                ? `SI [${fmtPct(selected.ciLow)} to ${fmtPct(selected.ciHigh)}] · Input-perturbation`
                 : "SI Pending · awaiting graded IPC outcomes"}
             </div>
 
