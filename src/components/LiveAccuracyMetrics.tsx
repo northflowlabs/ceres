@@ -216,7 +216,7 @@ export default function LiveAccuracyMetrics({ compact = false }: { compact?: boo
           </div>
           <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.75 }}>
             <li>
-              <strong>The alert you act on is right 9 times in 10.</strong> Of {t1Issued} TIER-I escalations
+              <strong>The alert you act on: {fmtPct(g?.tier1_precision, 0)} confirmed.</strong> Of {t1Issued} TIER-I escalations
               issued, {g?.tier1_n_correct ?? 0} were confirmed by the observed IPC classification at T+90.
             </li>
             <li>

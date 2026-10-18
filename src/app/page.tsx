@@ -6,6 +6,8 @@ import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import { api, Prediction, Hypothesis, Admin1Signal } from "@/lib/api";
 import { tierLabel, formatDate, pct } from "@/lib/utils";
+import { worldRegion } from "@/lib/regionNames";
+import LedgerSummary from "@/components/LedgerSummary";
 
 const LeafletRiskMap = dynamic(() => import("@/components/LeafletRiskMap"), { ssr: false });
 
@@ -314,7 +316,10 @@ export default function Dashboard() {
       <div style={{
         display: "grid",
         gridTemplateColumns: "320px 1fr 300px",
-        flex: 1,
+        // One row the height of the viewport: the side panels scroll inside it
+        // and the map gets a viewport-sized box instead of the list's height.
+        gridTemplateRows: "minmax(0, 1fr)",
+        flex: "none",
         height: "calc(100vh - 65px)",
         overflow: "hidden",
       }} className="dashboard-grid">
@@ -395,7 +400,7 @@ export default function Dashboard() {
                     <div>
                       <div style={{ fontFamily: "var(--display)", fontSize: 15, fontWeight: 600 }}>{p.region_name}</div>
                       <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                        {p.region_id} · {p.region_name.includes("Africa") || ["SDN","SOM","ETH","SSD","KEN","NGA"].includes(p.region_id) ? "Africa" : "Global"}
+                        {p.region_id}{worldRegion(p.region_id) ? ` · ${worldRegion(p.region_id)}` : ""}
                       </div>
                     </div>
                     <span className={tierBadgeClass(p.alert_tier)}>
@@ -436,7 +441,7 @@ export default function Dashboard() {
                   </div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginBottom: 8 }}>
                     {p.sensitivity_interval_low != null && p.sensitivity_interval_high != null
-                      ? `SI [${pct(p.sensitivity_interval_low)} – ${pct(p.sensitivity_interval_high)}] · Input-perturbation`
+                      ? `SI [${pct(p.sensitivity_interval_low)} to ${pct(p.sensitivity_interval_high)}] · Input-perturbation`
                       : "SI Pending"}
                   </div>
 
@@ -500,8 +505,8 @@ export default function Dashboard() {
           }}>
             <div className="panel-label" style={{ marginBottom: 8 }}>Risk Classification</div>
             {[
-              { color: "#C0392B", label: "Critical (≥70% · IPC Phase 4–5 likely)" },
-              { color: "#D97706", label: "Warning (45–69% · IPC Phase 3 likely)" },
+              { color: "#C0392B", label: "Critical (≥70% · IPC Phase 4 or 5 likely)" },
+              { color: "#D97706", label: "Warning (45 to 69% · IPC Phase 3 likely)" },
               { color: "#2E7D32", label: "Watch (<45% · Elevated stress signals)" },
             ].map(({ color, label }) => (
               <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5, fontSize: 11, color: "var(--ink-mid)" }}>
@@ -697,7 +702,7 @@ export default function Dashboard() {
                 }{" "}
                 {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? (
                   <>The 90% sensitivity interval spans{" "}
-                  <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.sensitivity_interval_low * 100)}%–{Math.round(selPred.sensitivity_interval_high * 100)}%</strong>,{" "}
+                  <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.sensitivity_interval_low * 100)}% to {Math.round(selPred.sensitivity_interval_high * 100)}%</strong>,{" "}
                   reflecting {(selPred.sensitivity_interval_high - selPred.sensitivity_interval_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}."</>
                 ) : "Sensitivity interval data is pending for this region."}
               </p>
@@ -849,21 +854,7 @@ export default function Dashboard() {
           {/* Forecast Accuracy Ledger */}
           <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>
             <div className="panel-label" style={{ marginBottom: 10 }}>Forecast Accuracy Ledger</div>
-            {[
-              { label: "Predictions tracked", val: hypotheses.length > 0 ? String(hypotheses.length) : "n/a" },
-              { label: "Brier score",          val: "Grading from Aug 2026" },
-              { label: "SI coverage (90%)",    val: "Grading from Aug 2026" },
-              { label: "Tier-1 precision",     val: "Grading from Aug 2026" },
-              { label: "Tier-1 recall",        val: "Grading from Aug 2026" },
-            ].map(({ label, val }) => (
-              <div key={label} style={{
-                display: "flex", justifyContent: "space-between", alignItems: "baseline",
-                padding: "5px 0", borderBottom: "1px solid var(--border-light)", fontSize: 12,
-              }}>
-                <span style={{ color: "var(--ink-light)" }}>{label}</span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{val}</span>
-              </div>
-            ))}
+            <LedgerSummary />
           </div>
 
           {/* Run info */}
@@ -895,6 +886,8 @@ export default function Dashboard() {
           </div>
         </aside>
       </div>
+
+      <SiteFooter />
 
       {/* ── MOBILE BOTTOM SHEET ──────────────────────────────────────── */}
       {sheetOpen && !selPred && (
@@ -956,7 +949,7 @@ export default function Dashboard() {
                 <span style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic" }}>P(IPC 3+ · 90d)</span>
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 10 }}>
-                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? `90% SI [${pct(selPred.sensitivity_interval_low)} – ${pct(selPred.sensitivity_interval_high)}] · ${selPred.ci_method ?? "Input-perturbation"}` : "Sensitivity interval: Pending"}
+                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? `90% SI [${pct(selPred.sensitivity_interval_low)} to ${pct(selPred.sensitivity_interval_high)}] · ${selPred.ci_method ?? "Input-perturbation"}` : "Sensitivity interval: Pending"}
               </div>
               <div style={{ height: 6, background: "var(--border-light)", borderRadius: 3, position: "relative" }}>
                 {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null && (

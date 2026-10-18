@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Prediction } from "@/lib/api";
 import { pct, tierLabel } from "@/lib/utils";
 import { CRISIS_COUNTRIES } from "@/lib/geo";
@@ -11,6 +11,9 @@ interface LeafletRiskMapProps {
   selected?: Prediction | null;
   onSelect?: (p: Prediction) => void;
 }
+
+// South-west and north-east corners of the area holding most forecast regions.
+const FORECAST_BOUNDS: [[number, number], [number, number]] = [[-30, -20], [40, 95]];
 
 function editorialColor(tier: string) {
   if (tier === "TIER-1") return "#C0392B";
@@ -26,6 +29,7 @@ export default function LeafletRiskMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<any>(null);
   const markersRef   = useRef<any[]>([]);
+  const [mapReady, setMapReady] = useState(false);
 
   // Init map once
   useEffect(() => {
@@ -40,12 +44,27 @@ export default function LeafletRiskMap({
       delete (L.Icon.Default.prototype as any)._getIconUrl;
 
       const map = L.map(containerRef.current, {
-        center: [10, 38],
-        zoom: 5,
         zoomControl: false,
-        minZoom: 3,
+        minZoom: 2,
         maxZoom: 10,
       });
+
+      // Open on the forecast regions (Africa, the Middle East and South Asia)
+      // instead of a fixed zoom that can land on the Arctic before layout settles.
+      const showForecastRegions = () =>
+        map.fitBounds(FORECAST_BOUNDS, { animate: false, padding: [12, 12] });
+      showForecastRegions();
+
+      // The container can still be resizing when Leaflet measures it. Re-measure
+      // and re-centre until the first user interaction.
+      let userMoved = false;
+      map.once("dragstart zoomstart", () => { userMoved = true; });
+      const ro = new ResizeObserver(() => {
+        map.invalidateSize({ animate: false });
+        if (!userMoved) showForecastRegions();
+      });
+      ro.observe(containerRef.current);
+      (map as any)._ceresResizeObserver = ro;
 
       L.tileLayer(basemapTileUrl("World_Street_Map"), {
         attribution: BASEMAP_ATTRIBUTION,
@@ -56,24 +75,22 @@ export default function LeafletRiskMap({
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
       mapRef.current = map;
+      setMapReady(true);
     });
 
     return () => {
       cancelled = true;
-      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
+      if (mapRef.current) {
+        mapRef.current._ceresResizeObserver?.disconnect();
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
     };
   }, []);
 
-  // Draw/redraw markers
+  // Draw/redraw markers as soon as both the map and the predictions are ready
   useEffect(() => {
-    if (!mapRef.current) {
-      // Retry after map initialises
-      const t = setTimeout(() => {
-        if (!mapRef.current) return;
-        drawMarkers();
-      }, 600);
-      return () => clearTimeout(t);
-    }
+    if (!mapReady || !mapRef.current) return;
     drawMarkers();
 
     function drawMarkers() {
@@ -139,7 +156,7 @@ export default function LeafletRiskMap({
               <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
                 <span style="color:#78716C;">Sensitivity interval</span>
                 <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${color};">
-                  ${p.sensitivity_interval_low != null && p.sensitivity_interval_high != null ? `[${pct(p.sensitivity_interval_low)} – ${pct(p.sensitivity_interval_high)}]` : 'Pending'}
+                  ${p.sensitivity_interval_low != null && p.sensitivity_interval_high != null ? `[${pct(p.sensitivity_interval_low)} to ${pct(p.sensitivity_interval_high)}]` : 'Pending'}
                 </span>
               </div>
               <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
@@ -175,17 +192,17 @@ export default function LeafletRiskMap({
         });
       });
     }
-  }, [predictions, selected, onSelect]);
+  }, [mapReady, predictions, selected, onSelect]);
 
   // Fly to selected
   useEffect(() => {
-    if (!mapRef.current || !selected) return;
+    if (!mapReady || !mapRef.current || !selected) return;
     const geo = CRISIS_COUNTRIES.find(c => c.iso3 === selected.region_id);
     const lat = geo?.lat ?? selected.lat;
     const lon = geo?.lon ?? selected.lon;
     if ((lat === 0 && lon === 0) || lat == null || lon == null) return;
     mapRef.current.flyTo([lat, lon], 6, { duration: 1.2, easeLinearity: 0.4 });
-  }, [selected]);
+  }, [mapReady, selected]);
 
   return (
     <div className="relative w-full h-full" style={{ background: "#E8DFD0" }}>

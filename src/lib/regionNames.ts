@@ -53,3 +53,25 @@ export const REGION_IDS: string[] = Object.keys(REGION_NAMES);
 export function regionName(id: string): string {
   return REGION_NAMES[id] ?? id;
 }
+
+// World region for each monitored country, shown under the country name.
+const NON_AFRICA_REGION: Record<string, string> = {
+  IRQ: "Middle East",
+  PSE: "Middle East",
+  SYR: "Middle East",
+  YEM: "Middle East",
+  AFG: "South Asia",
+  BGD: "South Asia",
+  PAK: "South Asia",
+  MMR: "Southeast Asia",
+  HTI: "Caribbean",
+  GTM: "Central America",
+  HND: "Central America",
+  SLV: "Central America",
+  VEN: "South America",
+};
+
+export function worldRegion(id: string): string {
+  if (NON_AFRICA_REGION[id]) return NON_AFRICA_REGION[id];
+  return REGION_NAMES[id] ? "Africa" : "";
+}

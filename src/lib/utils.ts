@@ -1,10 +1,10 @@
 export function pct(v: number | null | undefined): string {
-  if (v == null) return "–";
+  if (v == null) return "n/a";
   return `${(v * 100).toFixed(1)}%`;
 }
 
 export function ciStr(low: number, high: number): string {
-  return `[${pct(low)}–${pct(high)}]`;
+  return `[${pct(low)} to ${pct(high)}]`;
 }
 
 export function tierLabel(tier: string): string {

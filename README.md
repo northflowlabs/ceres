@@ -13,7 +13,6 @@ A Next.js application that visualises weekly probabilistic famine risk predictio
 
 [![Deploy](https://img.shields.io/badge/deployed-Vercel-black)](https://ceres.northflow.no)
 [![arXiv](https://img.shields.io/badge/arXiv-2603.09425-b31b1b)](https://arxiv.org/abs/2603.09425)
-[![License](https://img.shields.io/badge/license-CC%20BY%204.0-green)](LICENSE)
 
 ---
 
@@ -135,7 +134,7 @@ First grading window: **7 June 2026** (March 9 predictions + 90 days).
 
 ## Licence
 
-CC BY 4.0. See [LICENSE](LICENSE) for details.
+Licence: see repository owner (Northflow Technologies AS, ceres@northflow.no).
 
 ---
 
