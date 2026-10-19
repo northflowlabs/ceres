@@ -161,6 +161,10 @@ function StatBox({ label, value, sub, accent }: { label: string; value: string; 
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// Countries the API has no sub-national (admin1) breakdown for. Skipping the
+// request avoids a 404 in the console on every one of these pages.
+const NO_ADMIN1 = new Set(["DJI", "ERI", "GMB", "GNB", "GTM", "HND", "LSO", "SLV", "SWZ"]);
+
 export default function RegionPage() {
   const { id } = useParams<{ id: string }>();
   const regionId = id?.toUpperCase() ?? "";
@@ -179,7 +183,7 @@ export default function RegionPage() {
     Promise.allSettled([
       api.prediction(regionId),
       api.archiveRegion(regionId, 52),
-      api.admin1(regionId),
+      NO_ADMIN1.has(regionId) ? Promise.resolve([] as Admin1Signal[]) : api.admin1(regionId),
     ]).then(([predRes, histRes, a1Res]) => {
       if (predRes.status === "fulfilled") {
         const p = predRes.value;
@@ -282,7 +286,7 @@ export default function RegionPage() {
           <StatBox label="P(Famine) 90d"    value={pred.p_famine_90d != null ? pct(pred.p_famine_90d) : "n/a"}      sub="IPC Phase 5" accent={(pred.p_famine_90d ?? 0) > 0.15 ? color : undefined} />
           <StatBox label="IPC Phase Forecast" value={`Phase ${pred.ipc_phase_forecast}`} sub={IPC_LABELS[pred.ipc_phase_forecast]} accent={pred.ipc_phase_forecast >= 3 ? color : undefined} />
           <StatBox label="Composite Stress" value={`${(pred.composite_stress_score * 100).toFixed(0)}/100`} sub="0 = low · 100 = extreme" />
-          <StatBox label="Sensitivity Interval" value={pred.sensitivity_interval_low != null && pred.sensitivity_interval_high != null ? `${pct(pred.sensitivity_interval_low)} – ${pct(pred.sensitivity_interval_high)}` : "Pending"} sub={pred.sensitivity_interval_low != null ? "90% SI · P(IPC 3+)" : "Populating from current runs"} />
+          <StatBox label="Sensitivity Interval" value={pred.sensitivity_interval_low != null && pred.sensitivity_interval_high != null ? `${pct(pred.sensitivity_interval_low)} to ${pct(pred.sensitivity_interval_high)}` : "Pending"} sub={pred.sensitivity_interval_low != null ? "90% SI · P(IPC 3+)" : "Populating from current runs"} />
         </div>
 
         {/* ── Two-column: Trend + Drivers ──────────────────────── */}
@@ -402,30 +406,6 @@ export default function RegionPage() {
             </div>
           </div>
         )}
-
-        {/* ── Coming soon ───────────────────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }} className="region-two-col">
-          {[
-            {
-              title: "FEWS NET Comparison",
-              desc: "Side-by-side view of CERES forecast vs. current FEWS NET classification. Highlights where CERES diverges from the consensus: early warning of emerging disagreements.",
-            },
-            {
-              title: "IPC Assessment Countdown",
-              desc: "Days until the next scheduled IPC Cadre Harmonisé or IPC acute food insecurity assessment for this region. Live verification of CERES predictions at each new release.",
-            },
-          ].map(({ title, desc }) => (
-            <div key={title} style={{ background: "white", border: "1px dashed var(--border)", padding: "24px 28px", opacity: 0.8 }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>
-                Coming Soon
-              </div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 15, fontWeight: 600, marginBottom: 10 }}>
-                {title}
-              </div>
-              <p style={{ fontSize: 13, color: "var(--ink-light)", lineHeight: 1.7, margin: 0 }}>{desc}</p>
-            </div>
-          ))}
-        </div>
 
         {/* ── Methodology note ─────────────────────────────────── */}
         <div style={{ padding: "20px 28px", background: "var(--parchment)", border: "1px solid var(--border-light)", display: "flex", gap: 16, alignItems: "flex-start" }}>

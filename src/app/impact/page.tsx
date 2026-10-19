@@ -159,7 +159,7 @@ export default function ImpactPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What These Numbers Mean</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>90 days. That is the target.</h2>
-            <p style={p}>Standard humanitarian early warning systems issue effective alerts 30–45 days before crisis thresholds. Pre-positioning food aid and mobilising emergency logistics requires 60–90 days minimum. CERES is designed to close that gap.</p>
+            <p style={p}>Standard humanitarian early warning systems issue effective alerts 30-45 days before crisis thresholds. Pre-positioning food aid and mobilising emergency logistics requires 60-90 days minimum. CERES is designed to close that gap.</p>
             <p style={p}>CERES issues 90-day horizon predictions, each carrying a calibrated probability, a 90% sensitivity interval, and named driver causes. Every prediction is timestamped on issue and graded against IPC Phase 3+ outcomes when the T+90 date arrives.</p>
             <p style={p}>The first T+90 grading windows opened June 2026, and observed IPC outcomes publish on a 2 to 4 month lag, so grading trails the horizon. Current figures against the pre-registered targets are below, read live from the verification ledger.</p>
             <div style={{ margin: "20px 0 0" }}>
@@ -220,9 +220,9 @@ export default function ImpactPage() {
               },
               {
                 label: "Grading Ledger",
-                desc:  "All graded predictions with actual IPC outcomes, Brier scores, and tier verdicts.",
-                href:  `${API_BASE}/v1/export/grades/csv`,
-                file:  "CSV",
+                desc:  "Every graded prediction with the observed IPC phase, the grading source and its Brier contribution.",
+                href:  `${API_BASE}/v1/validation/ledger?status=graded&limit=1000`,
+                file:  "JSON",
               },
             ].map(({ label, desc, href, file }) => (
               <div key={label} style={{ background: "white", padding: 24 }}>
@@ -253,18 +253,15 @@ export default function ImpactPage() {
         {/* CTA */}
         <div style={{ background: "var(--ink)", padding: "40px 48px", margin: "56px 0 0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 32 }}>
           <div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Institutional Access</div>
-            <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--parchment)", marginBottom: 8 }}>Partner with CERES</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Research collaboration</div>
+            <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--parchment)", marginBottom: 8 }}>Work with the CERES team</div>
             <div style={{ fontSize: 14, color: "#78716C", maxWidth: 500, lineHeight: 1.6 }}>
-              For WFP, FAO, OCHA, EU ECHO, academic institutions, and humanitarian funders. API access, co-validation partnerships, custom coverage, and SLA support.
+              For humanitarian agencies, academic groups and funders: co-validation against field assessments, joint studies and new country coverage.
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <a href="/api-access" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", background: "var(--earth)", color: "white", padding: "12px 28px", whiteSpace: "nowrap" }}>
-              API Access →
-            </a>
-            <a href="mailto:ceres@northflow.no" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", background: "transparent", color: "#A8A29E", padding: "12px 28px", border: "1px solid #44403C", whiteSpace: "nowrap", textAlign: "center" }}>
-              Contact us →
+            <a href="mailto:ceres@northflow.no" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textDecoration: "none", background: "transparent", color: "#A8A29E", padding: "12px 28px", border: "1px solid #44403C", whiteSpace: "nowrap", textAlign: "center" }}>
+              ceres@northflow.no
             </a>
           </div>
         </div>

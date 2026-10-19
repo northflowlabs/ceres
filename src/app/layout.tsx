@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: "CERES · Calibrated Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts. " +
-      "Confidence intervals + public verification ledger. Free for humanitarian use.",
+      "Confidence intervals + public verification ledger. Open data under CC BY 4.0.",
     images: ["/og-image.png"],
     creator: "@northflowno",
   },
@@ -115,7 +115,7 @@ export default function RootLayout({
         {/* Samtykkr: lawful cookie consent (gates Consent Mode above). English + ceres ink accent. */}
         <script
           async
-          src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left"
+          src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fnorthflow.no%2Fprivacy-policy"
         />
         <script
           type="application/ld+json"
@@ -166,7 +166,7 @@ export default function RootLayout({
                 "@type": "Offer",
                 price: "0",
                 priceCurrency: "USD",
-                description: "Free for humanitarian and academic use",
+                description: "Open data under CC BY 4.0",
               },
               author: {
                 "@type": "Organization",

@@ -37,7 +37,7 @@ CERES is the Northflow famine early-warning system. It is not the NASA CERES rad
 
 ## Licence
 
-Predictions are published under Creative Commons Attribution 4.0 (CC BY 4.0), free for humanitarian, academic, and governmental use.
+Predictions are published under Creative Commons Attribution 4.0 (CC BY 4.0): anyone may use, share and adapt them with attribution to CERES / Northflow Technologies AS. Downloads need no account or key.
 
 ## Key pages
 
@@ -49,7 +49,11 @@ Predictions are published under Creative Commons Attribution 4.0 (CC BY 4.0), fr
 ## External references
 
 - Preprint: https://arxiv.org/abs/2603.09425
-- API documentation: https://api.ceres.northflow.no/docs
+- Current forecasts (JSON): https://api.ceres.northflow.no/v1/predictions
+- Current forecasts (CSV): https://api.ceres.northflow.no/v1/export/predictions/csv
+- Weekly forecast archive (CSV): https://api.ceres.northflow.no/v1/export/archive/csv
+- Validation metrics (JSON): https://api.ceres.northflow.no/v1/validation/metrics
+- Research collaboration: ceres@northflow.no
 
 ## Citation
 

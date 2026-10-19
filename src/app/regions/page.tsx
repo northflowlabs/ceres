@@ -99,7 +99,7 @@ export default function RegionsPage() {
           <div className="regions-sort" style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
             <span style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)" }}>Sort:</span>
             <button style={btnStyle(sort === "risk")} onClick={() => setSort("risk")}>By Risk</button>
-            <button style={btnStyle(sort === "name")} onClick={() => setSort("name")}>A – Z</button>
+            <button style={btnStyle(sort === "name")} onClick={() => setSort("name")}>A to Z</button>
           </div>
         </div>
 

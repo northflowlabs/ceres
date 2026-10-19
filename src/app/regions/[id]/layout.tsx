@@ -10,7 +10,7 @@ export async function generateMetadata(
   const code = id.toUpperCase();
   const known = code in REGION_NAMES;
   const country = regionName(code);
-  const canonical = `https://ceres.northflow.no/regions/${id}`;
+  const canonical = `https://ceres.northflow.no/regions/${id.toLowerCase()}`;
 
   const title = `${country} Famine Risk: 90-Day IPC Phase 3+ Forecast | CERES`;
 

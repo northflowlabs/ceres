@@ -4,8 +4,8 @@ import { REGION_IDS } from "@/lib/regionNames";
 
 const BASE = "https://ceres.northflow.no";
 
-// Static indexable routes. Gated/private routes (/login, /account, /widget)
-// are deliberately excluded.
+// Static indexable routes. /widget and the closed routes /login, /account
+// and /api-access are deliberately excluded.
 const STATIC_ROUTES: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }> = [
   { path: "/",           changeFrequency: "weekly",  priority: 1.0 },
   { path: "/about",      changeFrequency: "monthly", priority: 0.8 },
@@ -17,7 +17,6 @@ const STATIC_ROUTES: Array<{ path: string; changeFrequency: MetadataRoute.Sitema
   { path: "/regions",    changeFrequency: "weekly",  priority: 0.9 },
   { path: "/map",        changeFrequency: "weekly",  priority: 0.8 },
   { path: "/subnational", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/api-access", changeFrequency: "monthly", priority: 0.6 },
   { path: "/changelog",  changeFrequency: "weekly",  priority: 0.5 },
   { path: "/embed",      changeFrequency: "monthly", priority: 0.4 },
 ];
@@ -47,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const regionEntries: MetadataRoute.Sitemap = regionIds.map((id) => ({
-    url: `${BASE}/regions/${id}`,
+    url: `${BASE}/regions/${id.toLowerCase()}`,
     lastModified,
     changeFrequency: "weekly",
     priority: 0.7,

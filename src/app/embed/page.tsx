@@ -213,7 +213,7 @@ export default function EmbedPage() {
               <tbody>
                 {[
                   ["theme",   "light | dark",              "light"],
-                  ["limit",   "1–15",                      "5"],
+                  ["limit",   "1-15",                      "5"],
                   ["tier",    "TIER-1 | TIER-2 | TIER-3",  "all"],
                   ["region",  "region_id e.g. ETH-TIGRAY", "all"],
                   ["compact", "true | false",               "false"],

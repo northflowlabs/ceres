@@ -98,7 +98,7 @@ const datasetJsonLd = {
       "@type": "DataDownload",
       name: "Latest snapshot (CSV)",
       encodingFormat: "text/csv",
-      contentUrl: `${HDX_BASE}/v1/export/hdx`,
+      contentUrl: `${HDX_BASE}/v1/export/hdx?latest=true`,
     },
     {
       "@type": "DataDownload",
@@ -108,9 +108,9 @@ const datasetJsonLd = {
     },
     {
       "@type": "DataDownload",
-      name: "Grading ledger (CSV)",
-      encodingFormat: "text/csv",
-      contentUrl: `${HDX_BASE}/v1/export/grades/csv`,
+      name: "Grading ledger (JSON)",
+      encodingFormat: "application/json",
+      contentUrl: `${HDX_BASE}/v1/validation/ledger?status=graded&limit=1000`,
     },
   ],
 };

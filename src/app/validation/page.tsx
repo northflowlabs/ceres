@@ -52,8 +52,8 @@ const PRE_REGISTERED_PROTOCOL = [
 const STATIC_BREAKDOWN = [
   { label: "IPC transition records",    val: "87 country-seasons"     },
   { label: "Countries represented",     val: "31"                     },
-  { label: "Time period",               val: "2011\u20132023"         },
-  { label: "Phase 4\u20135 events",     val: "18"                     },
+  { label: "Time period",               val: "2011-2023"         },
+  { label: "Phase 4-5 events",     val: "18"                     },
   { label: "Back-validation cases",     val: "4 (data-complete only)" },
   { label: "Perturbation draws",        val: "n=2,000 per prediction" },
   { label: "Interval type",             val: "Input-perturbation 90%" },
@@ -68,9 +68,6 @@ export default function ValidationPage() {
   const [calStatus, setCalStatus]   = useState("loading");
   const [withdrawals, setWithdrawals] = useState<WithdrawalsResponse | null>(null);
   const [loading, setLoading]       = useState(true);
-  const [email, setEmail]           = useState("");
-  const [subMsg, setSubMsg]         = useState("");
-  const [subLoading, setSubLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -82,21 +79,6 @@ export default function ValidationPage() {
       api.validationWithdrawals().then(d => setWithdrawals(d)).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubLoading(true);
-    try {
-      const r = await api.subscribeEmail(email);
-      setSubMsg(r.message);
-      setEmail("");
-    } catch {
-      setSubMsg("Subscription failed. Please try again.");
-    } finally {
-      setSubLoading(false);
-    }
-  };
 
   const totalPredictions = metrics?.total_predictions ?? 0;
   const nGraded = metrics?.n_graded_for_metrics ?? 0;
@@ -153,7 +135,7 @@ export default function ValidationPage() {
               <div style={{ fontSize: 12, color: "var(--ink-light)" }}>
                 Target {target}{" "}
                 {isPending
-                  ? <span style={{ color: "var(--warning)", fontWeight: 500 }}>{"\u23F3"} Expected Aug\u2013Oct 2026</span>
+                  ? <span style={{ color: "var(--warning)", fontWeight: 500 }}>{"\u23F3"} Expected Aug-Oct 2026</span>
                   : <span style={{ color: pass ? "var(--watch)" : "var(--crisis)", fontWeight: 500 }}>{pass ? "\u2713 Met" : "\u2717 Missed"}</span>
                 }
               </div>
@@ -164,7 +146,7 @@ export default function ValidationPage() {
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
           {hasGrades
             ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {nGraded} predictions graded against published IPC outcomes at T+90 days. This record updates automatically each week.</>
-            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}; the first T+90 grading windows opened June 2026. Observed IPC/FEWS NET classifications publish on a 2{"\u2013"}4 month lag, so the earliest grades land Aug{"\u2013"}Oct 2026. Grading is automated and pre-registered: the Brier decomposition computes the moment {"\u2265"}10 outcomes are published, with no manual intervention.</>
+            : <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}; the first T+90 grading windows opened June 2026. Observed IPC/FEWS NET classifications publish on a 2{"-"}4 month lag, so the earliest grades land Aug{"-"}Oct 2026. Grading is automated and pre-registered: the Brier decomposition computes the moment {"\u2265"}10 outcomes are published, with no manual intervention.</>
           }
         </p>
 
@@ -200,7 +182,7 @@ export default function ValidationPage() {
                       <span style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "2px 7px", color: tierColor(p.alert_tier), border: "1px solid currentColor", opacity: 0.85 }}>{p.alert_tier}</span>
                     </td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", color: tierColor(p.alert_tier) }}>{fmtPct(p.p_ipc3plus)}</td>
-                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>[{fmtPct(p.si_low)}\u2013{fmtPct(p.si_high)}]</td>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>[{fmtPct(p.si_low)}-{fmtPct(p.si_high)}]</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, fontWeight: 600 }}>{fmtDate(p.grading_date)}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{p.pipeline_commit_hash}</td>
                   </tr>
@@ -229,7 +211,7 @@ export default function ValidationPage() {
 
             {/* Observation-lag explainer: turns the awaiting state into a rigour signal */}
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> IPC/FEWS NET classifications, never against forecasts. IPC and FEWS NET publish observed Current-Situation phases on a <strong style={{ color: "var(--ink)" }}>2{"–"}4 month lag</strong>, so the June 2026 windows resolve from roughly <strong style={{ color: "var(--ink)" }}>Aug{"–"}Oct 2026</strong> onward. The grader runs automatically every Monday and writes a grade the moment upstream data lands. We do not grade early against partial or projected data: that restraint is what makes this ledger trustworthy.
+              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> IPC/FEWS NET classifications, never against forecasts. IPC and FEWS NET publish observed Current-Situation phases on a <strong style={{ color: "var(--ink)" }}>2-4 month lag</strong>, so the June 2026 windows resolve from roughly <strong style={{ color: "var(--ink)" }}>Aug-Oct 2026</strong> onward. The grader runs automatically every Monday and writes a grade the moment upstream data lands. We do not grade early against partial or projected data: that restraint is what makes this ledger trustworthy.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
@@ -303,9 +285,9 @@ export default function ValidationPage() {
             </table></div>
           ) : (
             <div style={{ border: "1px solid var(--border)", background: "white", padding: "40px 32px", textAlign: "center" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 12 }}>FIRST GRADES EXPECTED AUG–OCT 2026</div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 12 }}>FIRST GRADES EXPECTED AUG-OCT 2026</div>
               <p style={{ fontSize: 14, color: "var(--ink-mid)", maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>
-                The first T+90 grading windows opened June 2026. Grades are written automatically once IPC/FEWS NET publish the observed Current-Situation classification for each region, which lags the target window by 2{"–"}4 months. {awaiting.length > 0 ? `${awaiting.length} predictions are in the grading queue now.` : ""} This ledger updates every Monday and nothing is graded against projected data.
+                The first T+90 grading windows opened June 2026. Grades are written automatically once IPC/FEWS NET publish the observed Current-Situation classification for each region, which lags the target window by 2-4 months. {awaiting.length > 0 ? `${awaiting.length} predictions are in the grading queue now.` : ""} This ledger updates every Monday and nothing is graded against projected data.
               </p>
             </div>
           )}
@@ -358,25 +340,21 @@ export default function ValidationPage() {
           </div>
         )}
 
-        {/* Newsletter subscription */}
+        {/* Ledger downloads */}
         <div className="newsletter-cta" style={{ background: "var(--ink)", padding: "32px 40px", margin: "40px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
-          <div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Free Intelligence Newsletter</div>
-            <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Monthly CERES Intelligence Letter, free</div>
-            <div style={{ fontSize: 13, color: "#78716C", lineHeight: 1.6 }}>Top risk regions, system status, and a note from our founder. Sent the first Monday of each month to all free subscribers.</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Open ledger</div>
+            <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Check every grade yourself</div>
+            <div style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.6 }}>The full ledger and the metrics above are open JSON, free under CC BY 4.0. Research collaboration: <a href="mailto:ceres@northflow.no" style={{ color: "var(--parchment)" }}>ceres@northflow.no</a></div>
           </div>
-          <form onSubmit={handleSubscribe} style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-            <input
-              type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.org"
-              style={{ fontFamily: "var(--mono)", fontSize: 12, padding: "10px 16px", background: "#2c2825", border: "1px solid #44403C", color: "var(--parchment)", outline: "none", width: 220 }}
-              required
-            />
-            <button type="submit" disabled={subLoading} style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--earth)", color: "white", border: "none", padding: "10px 20px", cursor: "pointer", whiteSpace: "nowrap" }}>
-              {subLoading ? "\u2026" : "Subscribe \u2192"}
-            </button>
-          </form>
-          {subMsg && <div style={{ width: "100%", fontFamily: "var(--mono)", fontSize: 11, color: "#A8A29E", marginTop: -16 }}>{subMsg}</div>}
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <a href={`${API_BASE}/v1/validation/ledger?status=graded&limit=1000`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", background: "var(--earth)", color: "white", padding: "10px 20px", whiteSpace: "nowrap" }}>
+              Graded ledger
+            </a>
+            <a href={`${API_BASE}/v1/validation/metrics`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", color: "#A8A29E", border: "1px solid #44403C", padding: "10px 20px", whiteSpace: "nowrap" }}>
+              Metrics
+            </a>
+          </div>
         </div>
 
         {/* Calibration & Reliability */}
@@ -392,7 +370,7 @@ export default function ValidationPage() {
               ? "Calibration computed from live graded predictions. Bins show the fraction of events that actually occurred (amber) vs. ideal calibration (grey). Each bin label is the predicted probability range."
               : calStatus === "insufficient_data"
                 ? `${totalPredictions} predictions issued; outcomes are graded as IPC/FEWS NET publish observed classifications. The reliability diagram populates automatically as predictions are graded against those outcomes.`
-                : "Model initialised against 87 IPC transition records (2011\u20132023, 31 countries). 4 data-complete back-validation cases."
+                : "Model initialised against 87 IPC transition records (2011-2023, 31 countries). 4 data-complete back-validation cases."
             }
           </p>
 
@@ -449,7 +427,7 @@ export default function ValidationPage() {
               <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>Calibration by Predicted Probability Bin</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {calBins.map((bin) => {
-                  const pct = `${(bin.bin_low * 100).toFixed(0)}\u2013${(bin.bin_high * 100).toFixed(0)}%`;
+                  const pct = `${(bin.bin_low * 100).toFixed(0)}-${(bin.bin_high * 100).toFixed(0)}%`;
                   const ideal = (bin.bin_low + bin.bin_high) / 2 * 100;
                   const actual = bin.count > 0 ? bin.observed_frequency * 100 : null;
                   return (

@@ -17,6 +17,33 @@ const nextConfig = {
         ? "http://localhost:8100"
         : "https://api.ceres.northflow.no"),
   },
+  async headers() {
+    const common = [
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+    ];
+    return [
+      {
+        // Every page except the embeddable widget must never be framed.
+        source: "/((?!widget$).*)",
+        headers: [
+          ...common,
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" },
+        ],
+      },
+      {
+        // /widget is built to be embedded on other organisations' sites
+        // (see /embed), so framing stays open there.
+        source: "/widget",
+        headers: [
+          ...common,
+          { key: "Content-Security-Policy", value: "base-uri 'self'; object-src 'none'" },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {
@@ -28,6 +55,12 @@ const nextConfig = {
         source: "/sub-national",
         destination: "/subnational",
         permanent: true,
+      },
+      {
+        // API sign-up is closed; the free downloads live on /data.
+        source: "/api-access",
+        destination: "/data",
+        permanent: false,
       },
     ];
   },

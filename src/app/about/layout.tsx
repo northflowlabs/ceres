@@ -90,7 +90,7 @@ const faqJsonLd = {
       name: "Is CERES open?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. CERES predictions are published under CC BY 4.0, free for humanitarian, academic, and governmental use. The dataset is mirrored on the Humanitarian Data Exchange and the methodology is documented in the preprint arXiv:2603.09425.",
+        text: "Yes. CERES forecasts are published under CC BY 4.0: anyone may use, share and adapt them with attribution. Downloads need no account, and the methodology is documented in the preprint arXiv:2603.09425.",
       },
     },
     {

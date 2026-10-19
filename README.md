@@ -13,7 +13,7 @@ A Next.js application that visualises weekly probabilistic famine risk predictio
 
 [![Deploy](https://img.shields.io/badge/deployed-Vercel-black)](https://ceres.northflow.no)
 [![arXiv](https://img.shields.io/badge/arXiv-2603.09425-b31b1b)](https://arxiv.org/abs/2603.09425)
-[![License](https://img.shields.io/badge/license-CC%20BY%204.0-green)](LICENSE)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
 
 ---
 
@@ -36,7 +36,6 @@ A Next.js application that visualises weekly probabilistic famine risk predictio
 | Validation | `/validation` | Public prediction ledger (pending, awaiting, graded) |
 | Methodology | `/methodology` | Full technical documentation |
 | Data Sources | `/data` | Model inputs, the grading source, and how the pipeline uses them |
-| API Access | `/api-access` | Tier access, pricing, endpoint documentation |
 | About | `/about` | System overview, HGE platform context |
 
 ---
@@ -83,7 +82,6 @@ src/
 │   ├── validation/page.tsx   # Public verification ledger
 │   ├── methodology/page.tsx  # Technical documentation
 │   ├── data/page.tsx         # Data sources
-│   ├── api-access/page.tsx   # API documentation
 │   └── about/page.tsx        # System overview
 ├── lib/
 │   └── api.ts                # CERES API client
@@ -135,7 +133,9 @@ First grading window: **7 June 2026** (March 9 predictions + 90 days).
 
 ## Licence
 
-CC BY 4.0. See [LICENSE](LICENSE) for details.
+Licence: CC BY 4.0, see [LICENSE](LICENSE).
+
+Copyright Northflow Technologies AS. Research collaboration: ceres@northflow.no.
 
 ---
 

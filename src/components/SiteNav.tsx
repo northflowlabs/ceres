@@ -10,7 +10,6 @@ const PRIMARY_LINKS = [
   { href: "/map",         label: "Map"         },
   { href: "/subnational", label: "Sub-national" },
   { href: "/methodology", label: "Methodology" },
-  { href: "/api-access",  label: "API"         },
   { href: "/about",       label: "About"       },
 ];
 
@@ -22,11 +21,13 @@ const MORE_LINKS = [
   { href: "/changelog",  label: "Changelog"    },
 ];
 
-const ALL_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS, { href: "/login", label: "Sign In" }];
+const ALL_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS];
 
 const MOBILE_BREAKPOINT = 1024;
 
-export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }: { ctaHref?: string; ctaLabel?: string }) {
+const PAPER_HREF = "https://arxiv.org/abs/2603.09425";
+
+export default function SiteNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -145,19 +146,19 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
           </div>
         )}
 
-        {/* Desktop CTA: hidden on mobile */}
+        {/* Desktop paper link: hidden on mobile */}
         {!isMobile && (
           <div style={{
             marginLeft: "auto", display: "flex", alignItems: "center",
             paddingLeft: 24, borderLeft: "1px solid var(--border)",
           }}>
-            <Link href={ctaHref} style={{
+            <a href={PAPER_HREF} target="_blank" rel="noopener noreferrer" style={{
               fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em",
-              textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)",
-              padding: "8px 16px", textDecoration: "none",
+              textTransform: "uppercase", border: "1px solid var(--ink)", color: "var(--ink)",
+              padding: "8px 16px", textDecoration: "none", whiteSpace: "nowrap",
             }}>
-              {ctaLabel}
-            </Link>
+              Read the paper
+            </a>
           </div>
         )}
 
@@ -215,15 +216,22 @@ export default function SiteNav({ ctaHref = "/login", ctaLabel = "Sign In →" }
           })}
         </div>
 
-        {/* CTA */}
-        <Link href={ctaHref} onClick={() => setOpen(false)} style={{
+        {/* Paper and contact */}
+        <a href={PAPER_HREF} target="_blank" rel="noopener noreferrer" style={{
           display: "block", marginTop: 32, textAlign: "center",
           fontFamily: "var(--mono)", fontSize: 12, letterSpacing: "0.1em",
-          textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)",
+          textTransform: "uppercase", border: "1px solid var(--ink)", color: "var(--ink)",
           padding: "16px 24px", textDecoration: "none",
         }}>
-          {ctaLabel}
-        </Link>
+          Read the paper
+        </a>
+        <a href="mailto:ceres@northflow.no" style={{
+          display: "block", marginTop: 20, marginBottom: 64, textAlign: "center",
+          fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.08em",
+          color: "var(--earth)", textDecoration: "none",
+        }}>
+          Research collaboration: ceres@northflow.no
+        </a>
       </div>
     </>
   );

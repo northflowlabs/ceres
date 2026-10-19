@@ -393,7 +393,7 @@ export default function SubnationalPage() {
         </div>
 
         <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 16 }}>
-          Probability forecasts computed using the same logistic scoring model as country-level predictions, disaggregated via grid-cell intersection (~50–200 km accuracy). Rows marked "est." use country-level signals scaled by population weight where sub-national grid data is sparse. Updated weekly.
+          Probability forecasts computed using the same logistic scoring model as country-level predictions, disaggregated via grid-cell intersection (~50-200 km accuracy). Rows marked "est." use country-level signals scaled by population weight where sub-national grid data is sparse. Updated weekly.
         </p>
 
       </div>

@@ -34,29 +34,22 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.5",
     type: "model",
     title: "Coefficient recalibration: logit saturation fix",
-    body: "Following live deployment, the initial IPC Phase 3+ coefficients (arXiv v1) were found to produce logit saturation: all 43 monitored countries returned P(IPC 3+) > 0.99, eliminating discriminative utility. Root cause: the additive stack of composite_stress (5.80), convergence_score (2.20), and n_independent (0.40 × 4 signals) dominated the intercept for any country with three or more elevated signals. Coefficients adjusted: intercept −2.10 to −4.50, composite_stress β 5.80 to 3.20, convergence_score β 2.20 to 1.40, n_independent β 0.40 to 0.20. Recalibrated model produces P = 0.036–0.994 across the monitored-country CSS range. Same fix applied to admin1.py, admin2.py, and scenario.py. Updated coefficients documented in Appendix C of the preprint and on the Methodology page. arXiv v2 planned Q3 2026.",
+    body: "Following live deployment, the initial IPC Phase 3+ coefficients (arXiv v1) were found to produce logit saturation: all 43 monitored countries returned P(IPC 3+) > 0.99, eliminating discriminative utility. Root cause: the additive stack of composite_stress (5.80), convergence_score (2.20), and n_independent (0.40 × 4 signals) dominated the intercept for any country with three or more elevated signals. Coefficients adjusted: intercept −2.10 to −4.50, composite_stress β 5.80 to 3.20, convergence_score β 2.20 to 1.40, n_independent β 0.40 to 0.20. Recalibrated model produces P = 0.036 to 0.994 across the monitored-country CSS range. Same fix applied to admin1.py, admin2.py, and scenario.py. Updated coefficients documented in Appendix C of the preprint and on the Methodology page.",
     breaking: true,
   },
   {
     date: "2026-03-02",
     version: "v0.4",
     type: "platform",
-    title: "Impact page, embeddable widget, CSV data exports, named alert contacts",
-    body: "Added donor-facing /impact page with live activity statistics and downloadable datasets. Embeddable risk widget at /widget for partner org integration. Three CSV export endpoints: current predictions, full archive, and grading ledger. Named-contact alert routing for Institutional subscribers, setting specific contacts per region for Tier I alerts. Public changelog added.",
+    title: "Impact page, embeddable widget, CSV data exports",
+    body: "Added donor-facing /impact page with live activity statistics and downloadable datasets. Embeddable risk widget at /widget for partner org integration. Three CSV export endpoints: current predictions, full archive, and grading ledger. Public changelog added.",
   },
   {
     date: "2026-03-01",
     version: "v0.3",
     type: "platform",
     title: "Full mobile responsive pass across all pages",
-    body: "Comprehensive mobile CSS overrides across every page. Navigation, dashboard, account, subnational, validation, API access, methodology, tracker, about, data, and login pages all optimised for 320–768px viewports. Mobile bottom sheet for dashboard detail view. Hamburger menu confirmed functional.",
-  },
-  {
-    date: "2026-03-01",
-    version: "v0.3",
-    type: "api",
-    title: "Custom watchlists: per-subscriber region filter and probability threshold",
-    body: "Subscribers can now set a watchlist of specific regions and a probability threshold. Alerts and digests will be filtered to watchlist regions only if configured. Available to all paid subscribers via the account page. GET and PUT /v1/auth/watchlist endpoints added.",
+    body: "Comprehensive mobile CSS overrides across every page. Navigation, dashboard, subnational, validation, methodology, tracker, about and data pages all optimised for 320 to 768px viewports. Mobile bottom sheet for dashboard detail view. Hamburger menu confirmed functional.",
   },
   {
     date: "2026-02-28",
@@ -70,7 +63,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.2",
     type: "model",
     title: "Logistic model initialised with author-specified coefficients: 87 IPC transition records",
-    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011–2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2–4 month lag, the first graded results are expected Aug–Oct 2026. See Validation page for live progress.",
+    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011-2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2-4 month lag, the first graded results are expected Aug-Oct 2026. See Validation page for live progress.",
   },
   {
     date: "2026-02-27",
@@ -91,7 +84,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "api",
     title: "API v1: predictions, hypotheses, Admin1 signals, grading ledger, archive",
-    body: "Public API launched at ceres-core-production.up.railway.app. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/admin1 (Admin1 stress signals), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX). Auth: Bearer API key header. Rate limits: 500/month (Free), 10,000/month (Professional), unlimited (Institutional).",
+    body: "Public API launched at ceres-core-production.up.railway.app. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/admin1 (Admin1 stress signals), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
   },
   {
     date: "2026-02-20",
@@ -112,7 +105,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "model",
     title: "Three-tier alert classification: TIER-1, TIER-2, TIER-3",
-    body: "TIER-1: P(IPC 3+) ≥ 0.70 or P(IPC 4+) ≥ 0.50, high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC 3+) 0.45–0.69 or CRITICAL convergence, elevated risk, enhanced monitoring. TIER-3: P(IPC 3+) < 0.45, watch status, included in weekly digest. Thresholds author-specified at initialisation; prospective calibration ongoing as graded outcomes accumulate from Aug–Oct 2026.",
+    body: "TIER-1: P(IPC 3+) ≥ 0.70 or P(IPC 4+) ≥ 0.50, high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC 3+) 0.45 to 0.69 or CRITICAL convergence, elevated risk, enhanced monitoring. TIER-3: P(IPC 3+) < 0.45, watch status. Thresholds author-specified at initialisation; prospective calibration ongoing as graded outcomes accumulate from August to October 2026.",
   },
 ];
 

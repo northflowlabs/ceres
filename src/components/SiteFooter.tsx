@@ -8,7 +8,6 @@ const PAGES = [
   { href: "/subnational", label: "Sub-national" },
   { href: "/methodology", label: "Methodology"  },
   { href: "/data",        label: "Data Sources" },
-  { href: "/api-access",  label: "API Access"   },
   { href: "/embed",       label: "Embed Widget" },
   { href: "/changelog",   label: "Changelog"    },
   { href: "/about",       label: "About"        },
@@ -21,7 +20,7 @@ export default function SiteFooter() {
         <div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>CERES</div>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Calibrated Early-warning and Risk Estimation System</p>
-          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Automated probabilistic forecasting system for acute food insecurity. Generates 90-day ahead probability estimates of IPC Phase 3+, 4+, and 5 conditions for 43 high-risk countries, updated weekly. Fuses NASA POWER rainfall, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé phases, and WFP market prices through a logistic scoring model with input-perturbation intervals (n=2,000 draws). Free for humanitarian and academic use.</p>
+          <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Automated probabilistic forecasting system for acute food insecurity. Generates 90-day ahead probability estimates of IPC Phase 3+, 4+, and 5 conditions for 43 high-risk countries, updated weekly. Fuses NASA POWER rainfall, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé phases, and WFP market prices through a logistic scoring model with input-perturbation intervals (n=2,000 draws). Open data under CC BY 4.0.</p>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Open Humanitarian Intelligence<br />Northflow Technologies · 2026</p>
         </div>
         <div>
@@ -37,7 +36,7 @@ export default function SiteFooter() {
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Northflow Technologies AS<br />Org. no. 936 979 815<br />Jåttåveien 92, 4020 Stavanger, Norway</p>
           <a href="tel:+4795085045" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>+47 95 08 50 45</a>
           <a href="mailto:ceres@northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>ceres@northflow.no</a>
-          <a href="https://northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>northflow.no</a>
+          <a href="https://northflow.no/research/ceres" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>northflow.no/research/ceres</a>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Research-grade forecasts. Not a substitute for field-based IPC assessment or operational humanitarian decision-making.</p>
         </div>
       </div>
@@ -47,7 +46,7 @@ export default function SiteFooter() {
           <Link href="/privacy" style={{ color: "#57534E", textDecoration: "none" }}>Privacy Policy</Link>
           <Link href="/cookies" style={{ color: "#57534E", textDecoration: "none" }}>Cookies</Link>
           <Link href="/terms" style={{ color: "#57534E", textDecoration: "none" }}>Terms of Use</Link>
-          <span>© 2026 Northflow Technologies</span>
+          <span>© 2026 Northflow Technologies AS · Org. no. 936 979 815 · Stavanger · <a href="mailto:ceres@northflow.no" style={{ color: "#57534E", textDecoration: "none" }}>ceres@northflow.no</a></span>
         </span>
       </div>
     </footer>
