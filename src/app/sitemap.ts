@@ -46,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const regionEntries: MetadataRoute.Sitemap = regionIds.map((id) => ({
-    url: `${BASE}/regions/${id}`,
+    url: `${BASE}/regions/${id.toLowerCase()}`,
     lastModified,
     changeFrequency: "weekly",
     priority: 0.7,

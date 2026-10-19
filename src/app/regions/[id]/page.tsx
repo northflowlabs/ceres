@@ -161,6 +161,10 @@ function StatBox({ label, value, sub, accent }: { label: string; value: string; 
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// Countries the API has no sub-national (admin1) breakdown for. Skipping the
+// request avoids a 404 in the console on every one of these pages.
+const NO_ADMIN1 = new Set(["DJI", "ERI", "GMB", "GNB", "GTM", "HND", "LSO", "SLV", "SWZ"]);
+
 export default function RegionPage() {
   const { id } = useParams<{ id: string }>();
   const regionId = id?.toUpperCase() ?? "";
@@ -179,7 +183,7 @@ export default function RegionPage() {
     Promise.allSettled([
       api.prediction(regionId),
       api.archiveRegion(regionId, 52),
-      api.admin1(regionId),
+      NO_ADMIN1.has(regionId) ? Promise.resolve([] as Admin1Signal[]) : api.admin1(regionId),
     ]).then(([predRes, histRes, a1Res]) => {
       if (predRes.status === "fulfilled") {
         const p = predRes.value;

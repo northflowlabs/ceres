@@ -128,7 +128,7 @@ export default function TermsPage() {
           These Terms are governed by Norwegian law. Any disputes shall be subject to the exclusive jurisdiction of the Norwegian courts, with Oslo District Court as the agreed venue of first instance.
         </p>
         <p style={p}>
-          If you are a consumer in the EU/EEA, you retain the right to bring claims before the courts of your country of residence and to use the EU Online Dispute Resolution platform at <a href="https://ec.europa.eu/odr" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>ec.europa.eu/odr</a>.
+          If you are a consumer in the EU/EEA, you retain the right to bring claims before the courts of your country of residence.
         </p>
 
         <h2 style={h2}>12. Changes to These Terms</h2>
