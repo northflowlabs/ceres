@@ -4,10 +4,10 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
 const ADAPTERS = [
-  { color: "var(--watch)",   name: "GAIA · Astrophysics",        desc: "Space research intelligence · ESO, ESA, academic journals · Operational" },
-  { color: "var(--warning)", name: "ORION · Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus · In development" },
-  { color: "var(--watch)",   name: "OFW · Deforestation",        desc: "EU DG ENV, NGOs, investigative journalists · In development" },
-  { color: "var(--watch)",   name: "MARVIS · Maritime",          desc: "Maritime AI Validation & Intelligence System · In development" },
+  { color: "var(--watch)",   name: "GAIA · Astrophysics",        desc: "Space research intelligence from observatory data and academic journals" },
+  { color: "var(--warning)", name: "ORION · Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus" },
+  { color: "var(--watch)",   name: "OFW · Deforestation",        desc: "Deforestation evidence for regulators, NGOs and journalists" },
+  { color: "var(--watch)",   name: "MARVIS · Maritime",          desc: "Maritime AI Validation & Intelligence System" },
   { color: "var(--earth)",   name: "CERES · Famine Early Warning", desc: "This system · Probabilistic · 43 countries · Live" },
 ];
 
