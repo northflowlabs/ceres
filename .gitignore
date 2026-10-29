@@ -8,7 +8,7 @@ out/
 # Production build
 build/
 
-# Environment variables — never commit any .env file
+# Environment variables: never commit any .env file
 .env
 .env.*
 .env.local

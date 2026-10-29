@@ -81,7 +81,7 @@ export default function AboutPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Northflow Technologies</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>The HGE Platform</h2>
-            <p style={p}>CERES is built on the <strong style={{ color: "var(--ink)" }}>Hypothesis Generation Engine (HGE)</strong>, AI-native infrastructure developed by Northflow Technologies for institutional-grade intelligence across complex, data-rich domains.</p>
+            <p style={p}>CERES is built on the <strong style={{ color: "var(--ink)" }}>Hypothesis Generation Engine (HGE)</strong>, developed by Northflow Technologies AS.</p>
             <p style={p}>HGE is designed to do one thing: synthesise multi-source signals into ranked, evidenced, falsifiable hypotheses. It is not a dashboard. It is not a threshold alert system. It is a system that reads the evidence and tells you, with calibrated confidence, what it thinks is happening and why.</p>
             <p style={p}>CERES is HGE Adapter #5. Each adapter applies the same hypothesis engine to a different domain. The same rigour. The same calibration standards. The same commitment to auditable reasoning.</p>
           </div>

@@ -77,14 +77,14 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "methodology",
     title: "HGE Adapter #5: Hypothesis Generation Engine applied to food security",
-    body: "CERES is built on the Hypothesis Generation Engine (HGE), Northflow Technologies' institutional-grade hypothesis synthesis infrastructure. HGE synthesises multi-source signals into ranked, evidenced, falsifiable hypotheses. CERES is Adapter #5. The same calibration standards, uncertainty quantification, and auditability requirements apply as to all HGE adapters.",
+    body: "CERES is built on the Hypothesis Generation Engine (HGE), developed by Northflow Technologies AS. HGE synthesises multi-source signals into ranked, evidenced, falsifiable hypotheses. CERES is Adapter #5. The same calibration standards, uncertainty quantification, and auditability requirements apply as to all HGE adapters.",
   },
   {
     date: "2026-02-24",
     version: "v0.1",
     type: "api",
     title: "API v1: predictions, hypotheses, Admin1 signals, grading ledger, archive",
-    body: "Public API launched at ceres-core-production.up.railway.app. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/admin1 (Admin1 stress signals), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
+    body: "Public API launched, now served at api.ceres.northflow.no. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/admin1 (Admin1 stress signals), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
   },
   {
     date: "2026-02-20",
