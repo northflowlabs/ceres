@@ -32,10 +32,7 @@ const datasetJsonLd = {
   name: "CERES Weekly Famine Risk Predictions",
   description:
     "Weekly 90-day probabilistic forecasts of acute food insecurity for 43 high-risk countries",
-  // Was the HDX dataset URL, which now returns 404: the dataset was
-  // withdrawn while a better-suited listing is arranged. A Dataset node
-  // whose canonical url resolves to nothing is worse than one pointing at
-  // the page that actually serves the data.
+  // The canonical url is the page that serves the data.
   url: "https://ceres.northflow.no/data",
   license: "https://creativecommons.org/licenses/by/4.0/",
   isAccessibleForFree: true,

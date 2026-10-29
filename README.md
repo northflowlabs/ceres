@@ -96,7 +96,7 @@ src/
 }
 ```
 
-Research collaboration: ceres@northflow.no
+Research collaboration: hello@northflow.no
 
 ## Licence
 

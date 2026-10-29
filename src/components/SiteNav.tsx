@@ -225,12 +225,12 @@ export default function SiteNav() {
         }}>
           Read the paper
         </a>
-        <a href="mailto:ceres@northflow.no" style={{
+        <a href="mailto:hello@northflow.no" style={{
           display: "block", marginTop: 20, marginBottom: 64, textAlign: "center",
           fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.08em",
           color: "var(--earth)", textDecoration: "none",
         }}>
-          Research collaboration: ceres@northflow.no
+          Research collaboration: hello@northflow.no
         </a>
       </div>
     </>

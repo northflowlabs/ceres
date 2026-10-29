@@ -121,7 +121,7 @@ export default function CookiesPage() {
             <strong>Google Analytics opt-out</strong>: install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>GA opt-out add-on</a>.
           </li>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
-            <strong>Contact us</strong>: email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a> with any cookie-related requests. You can also call <a href="tel:+4795085045" style={{ color: "var(--earth)" }}>+47 95 08 50 45</a> or write to Northflow Technologies AS, Jåttåveien 92, 4020 Stavanger, Norway.
+            <strong>Contact us</strong>: email <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a> with any cookie-related requests. You can also call <a href="tel:+4795085045" style={{ color: "var(--earth)" }}>+47 95 08 50 45</a> or write to Northflow Technologies AS, Jåttåveien 92, 4020 Stavanger, Norway.
           </li>
         </ul>
 
@@ -137,7 +137,7 @@ export default function CookiesPage() {
 
         <h2 style={h2}>8. Contact</h2>
         <p style={p}>
-          Questions about cookies or this policy: <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a><br /><br />
+          Questions about cookies or this policy: <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a><br /><br />
           <strong>Northflow Technologies AS</strong><br />
           Jåttåveien 92<br />
           4020 Stavanger<br />

@@ -234,7 +234,7 @@ export default function EmbedPage() {
               The CERES widget is free to embed on any website. No API key required. Data is licensed under <strong style={{ color: "var(--ink)" }}>CC BY 4.0</strong>. The widget footer includes automatic attribution to ceres.northflow.no.
             </p>
             <p style={p}>
-              For custom integrations, white-label embedding, or removal of the CERES branding, contact <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>.
+              For custom integrations, white-label embedding, or removal of the CERES branding, contact <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a>.
             </p>
           </div>
         </div>

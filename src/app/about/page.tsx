@@ -4,16 +4,17 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
 const ADAPTERS = [
-  { color: "var(--watch)",   name: "GAIA · Astrophysics",        desc: "Space research intelligence from observatory data and academic journals" },
-  { color: "var(--warning)", name: "ORION · Conflict",           desc: "Conflict reconstruction intelligence · Ukraine focus" },
-  { color: "var(--watch)",   name: "OFW · Deforestation",        desc: "Deforestation evidence for regulators, NGOs and journalists" },
-  { color: "var(--watch)",   name: "MARVIS · Maritime",          desc: "Maritime AI Validation & Intelligence System" },
+  { color: "var(--watch)",   name: "LAPLACE · Astronomy",        desc: "ESA Gaia DR3 stars, read for what does not fit" },
+  { color: "var(--watch)",   name: "ORION · Infrastructure",     desc: "Power plants, bridges, schools and water systems followed from orbit · Ukraine" },
+  { color: "var(--warning)", name: "MARVIS · Maritime",          desc: "Ships, cables and pipelines on the seabed · In development" },
+  { color: "var(--watch)",   name: "AION · Longevity",           desc: "Hypotheses on ageing, published under CC BY 4.0" },
+  { color: "var(--warning)", name: "ATHENA · Women's health",    desc: "In development, opens after an ethics and regulatory review" },
   { color: "var(--earth)",   name: "CERES · Famine Early Warning", desc: "This system · Probabilistic · 43 countries · Live" },
 ];
 
 const STATS = [
-  { num: "90d",      label: "Forecast Horizon",        note: "vs. 30-45 days for existing EWS" },
-  { num: "87",       label: "Validation Records",       note: "IPC transition records, 2011-2023, 31 countries" },
+  { num: "90d",      label: "Forecast Horizon",        note: "P(IPC Phase 3+) within 90 days of issue" },
+  { num: "87",       label: "Calibration Records",      note: "IPC transition records, 2011-2023, 31 countries" },
   { num: "T+90",     label: "Grading Horizon",         note: "Graded against published IPC outcomes; live figures on the Validation page" },
   { num: "5",        label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
@@ -32,9 +33,9 @@ export default function AboutPage() {
             <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
             About CERES
           </div>
-          <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 24 }}>Built to close the humanitarian lead-time gap</h1>
-          <p style={p}>CERES was built because the gap between when a famine becomes predictable and when the humanitarian system acts is measured in lives. Current early warning systems provide 30-45 days of actionable lead time. Pre-positioning food aid, mobilising logistics, and securing emergency funding requires 60-90 days.</p>
-          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises public rainfall, vegetation, conflict, food security and market data into 90-day famine risk predictions, designed to give the humanitarian system the lead time it currently lacks.</p>
+          <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 24 }}>Built to give responders 90 days</h1>
+          <p style={p}>CERES was built because the time between when a food crisis becomes predictable and when help is in place is measured in lives. Pre-positioning food aid, mobilising logistics and securing emergency funding takes 60 to 90 days, so a warning has to come at least that early to be acted on.</p>
+          <p style={p}>CERES is an open, falsifiable, probabilistic forecasting system that synthesises public rainfall, vegetation, conflict, food security and market data into 90-day famine risk predictions, designed to give humanitarian responders that lead time.</p>
           <p style={p}>It is free. It is open. Its methodology is published. Its predictions are timestamped and graded against outcomes. It is built to be scrutinised.</p>
         </div>
         <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
@@ -139,14 +140,14 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
-          <a href="mailto:ceres@northflow.no" style={{
+          <a href="mailto:hello@northflow.no" style={{
             display: "inline-flex", alignItems: "center", gap: 10,
             fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em",
             textTransform: "uppercase", textDecoration: "none",
             background: "var(--ink)", color: "var(--parchment)",
             padding: "12px 24px", marginTop: 4,
           }}>
-            ceres@northflow.no → Get in touch
+            hello@northflow.no → Get in touch
           </a>
           <p style={{ fontSize: 13, color: "var(--ink-light)", lineHeight: 1.6, margin: "16px 0 0" }}>
             Northflow Technologies AS · Jåttåveien 92, 4020 Stavanger, Norway · <a href="tel:+4795085045" style={{ color: "var(--earth)", textDecoration: "none" }}>+47 95 08 50 45</a>

@@ -284,7 +284,7 @@ export default function ApiAccessPage() {
       if (!resp.ok) throw new Error(`Error ${resp.status}`);
       setFreeSuccess(true);
     } catch (err) {
-      setFreeError(err instanceof Error ? err.message : "Something went wrong. Try again or email ceres@northflow.no");
+      setFreeError(err instanceof Error ? err.message : "Something went wrong. Try again or email hello@northflow.no");
     } finally {
       setFreeLoading(false);
     }
@@ -322,7 +322,7 @@ export default function ApiAccessPage() {
       const data = await resp.json();
       window.location.href = data.checkout_url;
     } catch (err) {
-      setCheckoutError(err instanceof Error ? err.message : "Checkout failed. Try again or email ceres@northflow.no");
+      setCheckoutError(err instanceof Error ? err.message : "Checkout failed. Try again or email hello@northflow.no");
       setCheckoutLoading(false);
     }
   }
@@ -515,7 +515,7 @@ export default function ApiAccessPage() {
               ))}
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)" }}>
-              All paid subscriptions are billed monthly via Stripe and can be cancelled at any time. Questions? Email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>.
+              All paid subscriptions are billed monthly via Stripe and can be cancelled at any time. Questions? Email <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a>.
             </p>
           </section>
 
@@ -618,9 +618,7 @@ export default function ApiAccessPage() {
               CERES prediction archives are available as HXL-tagged CSV, free and unauthenticated, for direct use
               in humanitarian data workflows, HDX pipelines, and academic research. Licensed under{" "}
               <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
-              Published on the OCHA Humanitarian Data Exchange from March to April 2026, then
-              withdrawn while a listing better suited to HDX&apos;s relief collections is arranged.
-              The archives below are served directly and are not affected.
+              The archives below are served directly from this site.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "20px 0 24px" }}>
               {[

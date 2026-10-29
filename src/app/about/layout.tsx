@@ -4,7 +4,7 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "About · CERES Famine Intelligence System",
   description:
-    "About CERES and Northflow Technologies. Built to close the humanitarian lead-time gap. Open, falsifiable, probabilistic 90-day famine forecasting built on the HGE inference engine.",
+    "About CERES and Northflow Technologies. Open, falsifiable, probabilistic 90-day famine forecasting built on the HGE inference engine.",
   keywords: [
     "Northflow Technologies",
     "CERES about",
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
     "Tom Danny Pedersen",
   ],
   openGraph: {
-    title: "About CERES: Built to Close the Humanitarian Lead-Time Gap",
+    title: "About CERES: 90-Day Famine Risk Forecasts",
     description:
-      "CERES is an open, falsifiable forecasting system designed to give the humanitarian system the 90-day lead time it currently lacks. Built by Northflow Technologies.",
+      "CERES is an open, falsifiable forecasting system designed to give humanitarian responders 90 days to act. Built by Northflow Technologies.",
     url: "https://ceres.northflow.no/about",
     type: "website",
   },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "About CERES · Northflow Technologies",
     description:
-      "Open, falsifiable 90-day famine forecasting. Built to close the humanitarian lead-time gap.",
+      "Open, falsifiable 90-day famine forecasting, graded in public.",
   },
   alternates: { canonical: "https://ceres.northflow.no/about" },
 };
@@ -52,7 +52,7 @@ const orgJsonLd = {
   ],
   contactPoint: {
     "@type": "ContactPoint",
-    email: "ceres@northflow.no",
+    email: "hello@northflow.no",
     contactType: "technical support",
   },
 };

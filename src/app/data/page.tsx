@@ -280,7 +280,7 @@ export default function DataPage() {
               ))}
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)", lineHeight: 1.7, margin: "16px 0 0" }}>
-              Research collaboration: <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>
+              Research collaboration: <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a>
             </p>
           </div>
         </div>

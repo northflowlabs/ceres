@@ -286,10 +286,10 @@ export default function Dashboard() {
               display: "block",
             }}>{label}</Link>
           ))}
-          <a href="mailto:ceres@northflow.no" style={{
+          <a href="mailto:hello@northflow.no" style={{
             marginTop: 32, fontFamily: "var(--mono)", fontSize: 11,
             letterSpacing: "0.1em", color: "var(--earth)", textDecoration: "none",
-          }}>ceres@northflow.no</a>
+          }}>hello@northflow.no</a>
         </div>
       )}
 

@@ -52,7 +52,7 @@ export default function TermsPage() {
 
         <h2 style={h2}>2. Access</h2>
         <p style={p}>
-          The Service is available to individuals, organisations, researchers, and humanitarian entities worldwide. The dashboard, the open data downloads and the public API endpoints are free and need no account. Research collaborations are agreed in writing through <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>.
+          The Service is available to individuals, organisations, researchers, and humanitarian entities worldwide. The dashboard, the open data downloads and the public API endpoints are free and need no account. Research collaborations are agreed in writing through <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a>.
         </p>
 
         <h2 style={h2}>3. Open Access</h2>
@@ -66,7 +66,7 @@ export default function TermsPage() {
         <h2 style={h2}>4. API Use</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
           <li style={li}><strong>Fair use</strong>: automated clients should keep request volume reasonable. Heavy traffic may be rate-limited.</li>
-          <li style={li}><strong>Earlier plans</strong>: API plans agreed before 19 October 2026 continue on the terms that applied when they were agreed. To cancel one, write to <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>.</li>
+          <li style={li}><strong>Earlier plans</strong>: API plans agreed before 19 October 2026 continue on the terms that applied when they were agreed. To cancel one, write to <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a>.</li>
         </ul>
 
         <h2 style={h2}>5. Intellectual Property</h2>
@@ -144,7 +144,7 @@ export default function TermsPage() {
           4020 Stavanger<br />
           Norway<br />
           <a href="tel:+4795085045" style={{ color: "var(--earth)" }}>+47 95 08 50 45</a><br />
-          <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a>
+          <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a>
         </p>
 
         <div style={{ marginTop: 48, paddingTop: 24, borderTop: "1px solid var(--border-light)", display: "flex", gap: 24, fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.06em" }}>

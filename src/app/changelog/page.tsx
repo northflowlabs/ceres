@@ -33,8 +33,8 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-03-11",
     version: "v0.5",
     type: "model",
-    title: "Coefficient recalibration: logit saturation fix",
-    body: "Following live deployment, the initial IPC Phase 3+ coefficients (arXiv v1) were found to produce logit saturation: all 43 monitored countries returned P(IPC 3+) > 0.99, eliminating discriminative utility. Root cause: the additive stack of composite_stress (5.80), convergence_score (2.20), and n_independent (0.40 × 4 signals) dominated the intercept for any country with three or more elevated signals. Coefficients adjusted: intercept −2.10 to −4.50, composite_stress β 5.80 to 3.20, convergence_score β 2.20 to 1.40, n_independent β 0.40 to 0.20. Recalibrated model produces P = 0.036 to 0.994 across the monitored-country CSS range. Same fix applied to admin1.py, admin2.py, and scenario.py. Updated coefficients documented in Appendix C of the preprint and on the Methodology page.",
+    title: "Coefficient recalibration",
+    body: "The IPC Phase 3+ coefficients from arXiv v1 were recalibrated against the first weeks of live data, so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The recalibrated model gives P = 0.036 to 0.994 across the monitored countries. The same coefficients apply to the Admin1, Admin2 and scenario models, and are documented in Appendix C of the preprint and on the Methodology page.",
     breaking: true,
   },
   {

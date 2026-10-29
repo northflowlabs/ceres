@@ -345,7 +345,7 @@ export default function ValidationPage() {
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Open ledger</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Check every grade yourself</div>
-            <div style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.6 }}>The full ledger and the metrics above are open JSON, free under CC BY 4.0. Research collaboration: <a href="mailto:ceres@northflow.no" style={{ color: "var(--parchment)" }}>ceres@northflow.no</a></div>
+            <div style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.6 }}>The full ledger and the metrics above are open JSON, free under CC BY 4.0. Research collaboration: <a href="mailto:hello@northflow.no" style={{ color: "var(--parchment)" }}>hello@northflow.no</a></div>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <a href={`${API_BASE}/v1/validation/ledger?status=graded&limit=1000`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", background: "var(--earth)", color: "white", padding: "10px 20px", whiteSpace: "nowrap" }}>

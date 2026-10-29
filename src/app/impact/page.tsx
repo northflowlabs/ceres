@@ -159,7 +159,7 @@ export default function ImpactPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What These Numbers Mean</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>90 days. That is the target.</h2>
-            <p style={p}>Standard humanitarian early warning systems issue effective alerts 30-45 days before crisis thresholds. Pre-positioning food aid and mobilising emergency logistics requires 60-90 days minimum. CERES is designed to close that gap.</p>
+            <p style={p}>Pre-positioning food aid and mobilising emergency logistics takes 60 to 90 days. CERES forecasts 90 days ahead, so that a warning arrives while there is still time to act on it.</p>
             <p style={p}>CERES issues 90-day horizon predictions, each carrying a calibrated probability, a 90% sensitivity interval, and named driver causes. Every prediction is timestamped on issue and graded against IPC Phase 3+ outcomes when the T+90 date arrives.</p>
             <p style={p}>The first T+90 grading windows opened June 2026, and observed IPC outcomes publish on a 2 to 4 month lag, so grading trails the horizon. Current figures against the pre-registered targets are below, read live from the verification ledger.</p>
             <div style={{ margin: "20px 0 0" }}>
@@ -245,8 +245,7 @@ export default function ImpactPage() {
           </div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.7 }}>
             All datasets licensed under <strong style={{ color: "var(--ink)" }}>CC BY 4.0</strong>. Attribution: <em>CERES / Northflow Technologies AS, ceres.northflow.no</em><br />
-            Published on OCHA HDX from March to April 2026, then withdrawn while a better-suited
-            HDX listing is arranged. Served directly here in the meantime.
+            Served directly from this site, free and without registration.
           </div>
         </div>
 
@@ -260,8 +259,8 @@ export default function ImpactPage() {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <a href="mailto:ceres@northflow.no" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textDecoration: "none", background: "transparent", color: "#A8A29E", padding: "12px 28px", border: "1px solid #44403C", whiteSpace: "nowrap", textAlign: "center" }}>
-              ceres@northflow.no
+            <a href="mailto:hello@northflow.no" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textDecoration: "none", background: "transparent", color: "#A8A29E", padding: "12px 28px", border: "1px solid #44403C", whiteSpace: "nowrap", textAlign: "center" }}>
+              hello@northflow.no
             </a>
           </div>
         </div>

@@ -850,7 +850,7 @@ export default function AccountPage() {
             </div>
 
             <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 40, lineHeight: 1.7 }}>
-              Your API key is sensitive: never share it publicly. If compromised, email <a href="mailto:ceres@northflow.no" style={{ color: "var(--earth)" }}>ceres@northflow.no</a> to rotate it. Usage counters reset on the 1st of each month UTC.
+              Your API key is sensitive: never share it publicly. If compromised, email <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a> to rotate it. Usage counters reset on the 1st of each month UTC.
             </p>
           </>
         )}
