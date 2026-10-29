@@ -1,46 +1,54 @@
-<img src="public/ceres-logo.png" width="60"/>
+<a href="https://northflow.no"><img src=".github/assets/northflow-mark.svg" alt="Northflow" width="40" height="40"></a>
 
-**Northflow Technologies** · [northflow.no](https://northflow.no)
-*Institutional scientific discovery infrastructure for climate, space, and critical systems*
+# CERES
 
----
+The public website and dashboard of CERES, Northflow's weekly forecasts of acute food insecurity in 43 countries.
 
-# CERES Dashboard: Probabilistic Famine Early Warning
+[Website](https://ceres.northflow.no) · [Research page](https://research.northflow.no/systems/ceres) · [API docs](https://api.ceres.northflow.no/docs) · [Preprint](https://arxiv.org/abs/2603.09425) · [Licence](#licence)
 
-**The public-facing dashboard for CERES famine early warning forecasts.**
+[![Licence: Apache 2.0](https://img.shields.io/badge/licence-Apache%202.0-0e6b63)](LICENSE)
 
-A Next.js application that visualises weekly probabilistic famine risk predictions across 43 high-risk countries: live maps, regional breakdowns, sub-national intelligence, and a public verification ledger.
+## What this repository is
 
-[![Deploy](https://img.shields.io/badge/deployed-Vercel-black)](https://ceres.northflow.no)
-[![arXiv](https://img.shields.io/badge/arXiv-2603.09425-b31b1b)](https://arxiv.org/abs/2603.09425)
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
+This repository holds the Next.js application behind [ceres.northflow.no](https://ceres.northflow.no). It reads the forecasts from the public CERES API at [api.ceres.northflow.no](https://api.ceres.northflow.no/docs) and shows them as maps, regional pages, sub-national breakdowns and a public validation ledger.
 
----
-
-## Live System
-
-**Dashboard:** [ceres.northflow.no](https://ceres.northflow.no)
-**API:** [api.ceres.northflow.no](https://api.ceres.northflow.no/docs)
-
----
+CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probability forecasts of IPC Phase 3+, Phase 4+ and Famine conditions for 43 countries, every Monday at 06:00 UTC. Northflow Technologies AS develops and runs the forecasting engine. This repository contains the website only.
 
 ## Pages
 
-| Page | URL | Description |
-|------|-----|-------------|
-| Dashboard | `/` | Live tier distribution, global map, hypothesis analysis |
-| Regions | `/regions` | All 43 monitored countries with probability scores |
-| Region Detail | `/regions/{iso3}` | Full hypothesis chain, driver breakdown, Admin1/Admin2 |
-| Map | `/map` | Global choropleth risk map with Admin1/Admin2 layers |
-| Sub-national | `/subnational` | Admin1 stress breakdown across monitored countries |
-| Validation | `/validation` | Public prediction ledger (pending, awaiting, graded) |
-| Methodology | `/methodology` | Full technical documentation |
-| Data Sources | `/data` | Model inputs, the grading source, and how the pipeline uses them |
-| About | `/about` | System overview, HGE platform context |
+| Page | Path | Shows |
+|------|------|-------|
+| Dashboard | `/` | Tier distribution, global map, driver hypotheses |
+| Regions | `/regions` | All 43 countries with their probability scores |
+| Region detail | `/regions/{iso3}` | Hypothesis chain, drivers, Admin1 and Admin2 detail |
+| Map | `/map` | Global risk map with Admin1 and Admin2 layers |
+| Sub-national | `/subnational` | Admin1 stress across the countries covered |
+| Validation | `/validation` | The public prediction ledger: pending, awaiting data, graded |
+| Methodology | `/methodology` | Technical documentation of the method |
+| Data sources | `/data` | The model inputs and the grading source |
+| About | `/about` | System overview |
 
----
+## Data sources
 
-## Quickstart
+The forecasts draw on public data:
+
+- Rainfall from NASA POWER
+- Vegetation (NDVI) from MODIS
+- Conflict events and fatalities from UCDP GED
+- IPC and Cadre Harmonisé phase classifications, through OCHA's HDX HAPI
+- WFP market food prices, through OCHA's HDX HAPI
+
+Each forecast is graded at 90 days against the observed phase published by the IPC or FEWS NET. CERES does not declare famine: only the IPC declares Famine (IPC Phase 5).
+
+## Using the forecasts
+
+The forecasts on the site and from the public API are published under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Attribute them to "CERES / Northflow Technologies AS, ceres.northflow.no". Downloads need no account or key:
+
+- Current forecasts (JSON): https://api.ceres.northflow.no/v1/predictions
+- Current forecasts (CSV): https://api.ceres.northflow.no/v1/export/predictions/csv
+- Weekly archive (CSV): https://api.ceres.northflow.no/v1/export/archive/csv
+
+## Run it locally
 
 ```bash
 git clone https://github.com/northflowlabs/ceres
@@ -49,67 +57,33 @@ npm install
 npm run dev
 ```
 
-The dashboard connects to the production API at `api.ceres.northflow.no` by default. To point at a local backend:
+The site reads from the production API at `api.ceres.northflow.no` by default. To point it at another API:
 
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
 ```
 
----
-
 ## Stack
 
-- **Framework:** Next.js 15 (App Router)
-- **Styling:** Tailwind CSS
-- **Maps:** Leaflet / React-Leaflet
-- **Charts:** Recharts
-- **Deployment:** Vercel
-- **API:** the CERES public API, documented at [api.ceres.northflow.no/docs](https://api.ceres.northflow.no/docs)
-
----
-
-## Architecture
+- Next.js 15 (App Router) and Tailwind CSS
+- Leaflet and React-Leaflet for maps, Recharts for charts
+- Hosted on Vercel
 
 ```
 src/
 ├── app/
-│   ├── page.tsx              # Dashboard (live predictions)
-│   ├── regions/
-│   │   ├── page.tsx          # All regions
-│   │   └── [id]/page.tsx     # Region detail
-│   ├── map/page.tsx          # Global risk map
-│   ├── subnational/page.tsx  # Sub-national breakdown
-│   ├── validation/page.tsx   # Public verification ledger
-│   ├── methodology/page.tsx  # Technical documentation
-│   ├── data/page.tsx         # Data sources
-│   └── about/page.tsx        # System overview
+│   ├── page.tsx              # Dashboard
+│   ├── regions/              # All regions and region detail
+│   ├── map/                  # Global risk map
+│   ├── subnational/          # Sub-national breakdown
+│   ├── validation/           # Public validation ledger
+│   ├── methodology/          # Method documentation
+│   ├── data/                 # Data sources
+│   └── about/                # System overview
 ├── lib/
-│   └── api.ts                # CERES API client
-├── components/               # Shared UI components
-└── public/
-    ├── llms.txt
-    └── robots.txt
+│   └── api.ts                # Client for the CERES public API
+└── components/               # Shared UI components
 ```
-
----
-
-## Validation Ledger
-
-The validation page displays the complete public record of CERES predictions:
-
-**Pending**: predictions waiting for their T+90 grading window
-**Awaiting Data**: grading window open, IPC/FEWS NET data not yet available
-**Graded**: predictions graded against the observed phase published by the IPC or FEWS NET
-
-Metrics displayed when graded predictions accumulate:
-- Brier Score decomposed into reliability, resolution, uncertainty
-- Brier Skill Score (BSS) vs climatology baseline
-- Sensitivity interval coverage
-- Calibration reliability diagram
-
-First grading window: **7 June 2026** (March 9 predictions + 90 days).
-
----
 
 ## Citation
 
@@ -122,22 +96,10 @@ First grading window: **7 June 2026** (March 9 predictions + 90 days).
 }
 ```
 
----
-
-## Related
-
-- **Methodology:** [arXiv:2603.09425](https://arxiv.org/abs/2603.09425)
-- **API documentation:** [api.ceres.northflow.no/docs](https://api.ceres.northflow.no/docs)
-
----
+Research collaboration: ceres@northflow.no
 
 ## Licence
 
-Licence: CC BY 4.0, see [LICENSE](LICENSE).
+The source code in this repository is licensed under the [Apache License 2.0](LICENSE).
 
-Copyright Northflow Technologies AS. Research collaboration: ceres@northflow.no.
-
----
-
-*Built by [Northflow Technologies](https://northflow.no), open-source AI-native infrastructure for humanitarian forecasting, climate, space, and critical systems.*
-*CERES is HGE Adapter #5. Live since 28 February 2026.*
+Copyright 2026 Northflow Technologies AS

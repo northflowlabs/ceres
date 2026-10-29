@@ -817,7 +817,7 @@ export default function ApiAccessPage() {
               <Str>"Pedersen, Tom Danny S. (2026). CERES: A Probabilistic Early Warning{"\n"} System for Acute Food Insecurity. arXiv:2603.09425 [stat.AP]"</Str>
             </Code>
             <p style={{ ...pStyle, marginTop: 16 }}>
-              CERES predictions are provided under a Creative Commons Attribution 4.0 International licence (CC BY 4.0). Commercial use requires a Tier B or C agreement.
+              CERES predictions are provided under a Creative Commons Attribution 4.0 International licence (CC BY 4.0), which allows commercial use with attribution.
             </p>
           </section>
 

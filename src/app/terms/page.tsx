@@ -71,7 +71,7 @@ export default function TermsPage() {
 
         <h2 style={h2}>5. Intellectual Property</h2>
         <p style={p}>
-          The CERES platform, codebase, and methodology documentation are the intellectual property of Northflow Technologies AS. The underlying open-source components retain their respective licences.
+          The CERES forecasting engine, its models and the methodology documentation are the intellectual property of Northflow Technologies AS. The source code of this website is published under the Apache License 2.0 at <a href="https://github.com/northflowlabs/ceres" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>github.com/northflowlabs/ceres</a>. Third-party components keep their own licences.
         </p>
         <p style={p}>
           <strong>Open data</strong>: Prediction outputs published by CERES are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>. You may use, share, and adapt them freely provided you give attribution: <em>&ldquo;CERES / Northflow Technologies AS, ceres.northflow.no&rdquo;</em>.
