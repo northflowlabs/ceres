@@ -1,7 +1,6 @@
 import { unstable_cache } from "next/cache";
 import {
   API_BASE,
-  AggregateMetrics,
   ArchiveStats,
   CalibrationBin,
   CalibrationResponse,
@@ -11,6 +10,7 @@ import {
   Prediction,
   RegionSnapshot,
   ScoredRow,
+  Tier1Figures,
   ValidationMetrics,
   WithdrawalsResponse,
 } from "@/lib/api";
@@ -292,15 +292,30 @@ export async function getPublicMetrics(): Promise<ValidationMetrics | null> {
 
 export interface LedgerFigures {
   metrics: ValidationMetrics;
-  grades: AggregateMetrics;
+  tier1: Tier1Figures | null;
 }
 
+function tier1Figures(rows: ScoredRow[]): Tier1Figures {
+  const alerts = rows.filter((r) => r.alert_tier === "TIER-1");
+  const events = rows.filter((r) => r.observed_phase >= 4);
+  return {
+    alerts: alerts.length,
+    confirmed: alerts.filter((r) => r.binary_outcome === 1).length,
+    phase4Events: events.length,
+    phase4Alerted: events.filter((r) => r.alert_tier === "TIER-1").length,
+  };
+}
+
+// Counted from the rows in the score, which anyone can recount from
+// /ledger/graded.json. Rows that do not add up to the graded total give no figure
+// rather than a partial one. `npm run check:ledger` compares the counts with the
+// raw ledger and with the grades.
 export async function getLedgerFigures(): Promise<LedgerFigures | null> {
-  const [metrics, grades] = await Promise.all([
-    getPublicMetrics(),
-    read<AggregateMetrics>("/v1/grades/metrics"),
-  ]);
-  return metrics && grades ? { metrics, grades } : null;
+  const [metrics, rows] = await Promise.all([getPublicMetrics(), getScoredRows()]);
+  if (!metrics) return null;
+  const complete = rows?.length === metrics.n_graded_for_metrics;
+  if (rows && !complete) console.error(`Ledger holds ${rows.length} scored rows of ${metrics.n_graded_for_metrics}`);
+  return { metrics, tier1: rows && complete ? tier1Figures(rows) : null };
 }
 
 export async function getPredictions(): Promise<Prediction[] | null> {
@@ -390,7 +405,6 @@ export async function getImpactData(): Promise<ImpactData | null> {
 
 export interface ValidationData {
   metrics: ValidationMetrics;
-  grades: AggregateMetrics | null;
   pending: LedgerRow[];
   awaiting: LedgerRow[];
   graded: ScoredRow[];
@@ -399,9 +413,8 @@ export interface ValidationData {
 }
 
 export async function getValidationData(): Promise<ValidationData | null> {
-  const [metrics, grades, pending, awaiting, graded, calibration, withdrawals] = await Promise.all([
+  const [metrics, pending, awaiting, graded, calibration, withdrawals] = await Promise.all([
     getPublicMetrics(),
-    read<AggregateMetrics>("/v1/grades/metrics"),
     readRows("pending"),
     readRows("awaiting"),
     getScoredRows(),
@@ -412,7 +425,6 @@ export async function getValidationData(): Promise<ValidationData | null> {
   const byDate = (a: RawRow, b: RawRow) => a.grading_date.localeCompare(b.grading_date);
   return {
     metrics,
-    grades,
     pending: [...(pending ?? [])].sort(byDate).slice(0, TABLE_ROWS).map(publicRow),
     awaiting: [...(awaiting ?? [])].sort(byDate).reverse().slice(0, TABLE_ROWS).map(publicRow),
     graded: graded ?? [],

@@ -84,17 +84,6 @@ export interface GradeRecord {
   tier_correct:     boolean;
 }
 
-export interface AggregateMetrics {
-  n_graded:         number;
-  brier_score:      number | null;
-  ci_coverage:      number | null;
-  tier1_precision:  number | null;
-  tier1_recall:     number | null;
-  tier1_n_issued:   number;
-  tier1_n_correct:  number;
-  tier1_n_missed:   number;
-}
-
 // ── Validation Ledger ──────────────────────────────────────────────────────
 // What a page or a download carries for one prediction. serverData.ts builds
 // these field by field from the API's rows.
@@ -115,6 +104,16 @@ export interface ScoredRow extends LedgerRow {
   binary_outcome:     number;
   brier_contribution: number;
   in_si:              number;
+}
+
+// TIER-1 counts from the predictions in the published score. Precision is
+// confirmed / alerts. Recall follows the pre-registered protocol: of the outcomes
+// at Phase 4+, how many had a TIER-1 alert.
+export interface Tier1Figures {
+  alerts:        number;
+  confirmed:     number;
+  phase4Events:  number;
+  phase4Alerted: number;
 }
 
 // One run withdrawn from the score, with the reason stated at the time.

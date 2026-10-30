@@ -1,3 +1,5 @@
+import type { Tier1Figures } from "@/lib/api";
+
 // The pre-registered protocol on /validation. A metric is assessed against its
 // target only once its own minimum sample is reached.
 export const MIN_N = {
@@ -15,6 +17,14 @@ export const TARGETS = {
   tier1Precision: 0.8,
   tier1Recall: 0.85,
 } as const;
+
+// Null until there is something to divide by.
+export function tier1Rates(t: Tier1Figures | null) {
+  return {
+    precision: t && t.alerts > 0 ? t.confirmed / t.alerts : null,
+    recall: t && t.phase4Events > 0 ? t.phase4Alerted / t.phase4Events : null,
+  };
+}
 
 export type Assessment = "met" | "measured" | "awaiting";
 

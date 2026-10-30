@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { tier1Rates } from "@/lib/protocol";
 import type { LedgerFigures } from "@/lib/serverData";
 import { useSiteData } from "@/lib/useSiteData";
 
@@ -38,7 +39,8 @@ type Row = { label: string; val: string; note?: string };
 export default function LedgerSummary({ initial = null }: { initial?: LedgerFigures | null }) {
   const { data, failed } = useSiteData<LedgerFigures>("figures", initial);
   const v = data?.metrics ?? null;
-  const g = data?.grades ?? null;
+  const t1 = data?.tier1 ?? null;
+  const { precision, recall } = tier1Rates(t1);
   const state = v ? "ready" : failed ? "failed" : "loading";
 
   const muted = { fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.6 } as const;
@@ -57,7 +59,6 @@ export default function LedgerSummary({ initial = null }: { initial?: LedgerFigu
   }
 
   const graded = v.n_graded_for_metrics ?? 0;
-  const t1Found = (g?.tier1_n_correct ?? 0) + (g?.tier1_n_missed ?? 0);
 
   const rows: Row[] = [
     { label: "Predictions issued", val: fmtInt(v.total_predictions) },
@@ -70,13 +71,13 @@ export default function LedgerSummary({ initial = null }: { initial?: LedgerFigu
     },
     {
       label: "Tier-1 precision",
-      val: fmtPct(g?.tier1_precision) ?? "n/a",
-      note: g ? `${g.tier1_n_correct} of ${g.tier1_n_issued} alerts` : undefined,
+      val: fmtPct(precision) ?? "n/a",
+      note: t1 ? `${t1.confirmed} of ${t1.alerts} alerts` : undefined,
     },
     {
       label: "Tier-1 recall",
-      val: fmtPct(g?.tier1_recall) ?? "n/a",
-      note: g && t1Found > 0 ? `${g.tier1_n_correct} of ${t1Found} events` : undefined,
+      val: fmtPct(recall) ?? "n/a",
+      note: t1 && t1.phase4Events > 0 ? `${t1.phase4Alerted} of ${t1.phase4Events} Phase 4+ outcomes` : undefined,
     },
     { label: "SI coverage (90%)", val: fmtPct(v.si_coverage) ?? "n/a" },
   ];

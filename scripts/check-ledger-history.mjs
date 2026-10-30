@@ -35,11 +35,13 @@ async function json(url) {
 }
 
 const ledger = new Map();
+const gradedRows = [];
 const withdrawn = new Set();
 const limitHit = [];
 for (const status of ["pending", "awaiting", "graded", "voided"]) {
   const { predictions } = await json(`${API}/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`);
   if (predictions.length >= LEDGER_MAX) limitHit.push(status);
+  if (status === "graded") gradedRows.push(...predictions);
   for (const r of predictions) {
     ledger.set(`${r.region_id}|${r.reference_date}`, r);
     if (r.voided_at) withdrawn.add(`${r.region_id}|${r.reference_date}`);
@@ -171,6 +173,29 @@ for (const row of latestRows) {
   if (Number(row.p_ipc3plus_90d) !== s?.p_ipc3plus_90d) wrong.push(`latest.csv ${row.region_id}: differs from the latest run`);
 }
 
+// The TIER-1 counts on the site, recounted from the raw ledger and, on its own,
+// from the grades. Recall is Phase 4+ outcomes with a TIER-1 alert.
+const inScore = gradedRows.filter((r) =>
+  !r.voided_at && r.brier_contribution != null && r.grade_source && !["unresolvable", "disputed"].includes(r.grade_source));
+const counts = (rows, tier, phase) => {
+  const alerts = rows.filter((r) => tier(r) === "TIER-1");
+  const events = rows.filter((r) => phase(r) >= 4);
+  return {
+    alerts: alerts.length,
+    confirmed: alerts.filter((r) => phase(r) >= 3).length,
+    phase4Events: events.length,
+    phase4Alerted: events.filter((r) => tier(r) === "TIER-1").length,
+  };
+};
+const fromLedger = counts(inScore, (r) => r.alert_tier, (r) => r.observed_phase);
+const fromGrades = counts((await json(`${API}/v1/grades`)).grades, (r) => r.predicted_tier, (r) => r.actual_ipc_phase);
+const { tier1 } = await json(`${SITE}/ledger/figures.json`);
+for (const [name, source] of [["ledger", fromLedger], ["grades", fromGrades]]) {
+  if (JSON.stringify(tier1) !== JSON.stringify(source)) {
+    wrong.push(`TIER-1 counts on the site are ${JSON.stringify(tier1)}, the ${name} has ${JSON.stringify(source)}`);
+  }
+}
+
 // Fields the site must never serve, in any route or download.
 const REMOVED = ["p_ipc4plus", "p_famine"];
 const routes = [
@@ -184,6 +209,6 @@ for (const route of routes) {
   for (const field of REMOVED) if (body.includes(field)) wrong.push(`/ledger/${route} carries ${field}`);
 }
 
-console.log(`${rawCompared} first writes compared with the ledger, ${siteCompared} site rows compared with first writes, ${csvRows.length} CSV rows compared, ${wrong.length} disagree`);
+console.log(`${rawCompared} first writes compared with the ledger, ${siteCompared} site rows compared with first writes, ${csvRows.length} CSV rows compared, TIER-1 ${JSON.stringify(tier1)}, ${wrong.length} disagree`);
 for (const line of wrong.slice(0, 20)) console.log(line);
 process.exit(wrong.length > 0 || rawCompared === 0 || siteCompared === 0 || csvRows.length === 0 ? 1 : 0);

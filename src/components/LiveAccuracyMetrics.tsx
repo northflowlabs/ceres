@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ASSESSMENT_LABEL, Assessment, MIN_N, TARGETS, assess } from "@/lib/protocol";
+import { ASSESSMENT_LABEL, Assessment, MIN_N, TARGETS, assess, tier1Rates } from "@/lib/protocol";
 import type { LedgerFigures } from "@/lib/serverData";
 import { useSiteData } from "@/lib/useSiteData";
 import { fmtInt } from "@/lib/utils";
@@ -39,7 +39,8 @@ export default function LiveAccuracyMetrics({
 }) {
   const { data, failed } = useSiteData<LedgerFigures>("figures", initial);
   const v = data?.metrics ?? null;
-  const g = data?.grades ?? null;
+  const t1 = data?.tier1 ?? null;
+  const { precision, recall } = tier1Rates(t1);
 
   if (!v) {
     return (
@@ -62,9 +63,8 @@ export default function LiveAccuracyMetrics({
   const nGraded = v.n_graded_for_metrics ?? 0;
   const total = v.total_predictions ?? 0;
   const hasGrades = nGraded > 0;
-  const t1Issued = g?.tier1_n_issued ?? 0;
-  const t1Correct = g?.tier1_n_correct ?? 0;
-  const t1Events = t1Correct + (g?.tier1_n_missed ?? 0);
+  const t1Issued = t1?.alerts ?? 0;
+  const t1Events = t1?.phase4Events ?? 0;
 
   const cards: Card[] = !hasGrades
     ? [
@@ -75,18 +75,18 @@ export default function LiveAccuracyMetrics({
       ]
     : [
         {
-          val: fmtPct(g?.tier1_precision),
+          val: fmtPct(precision),
           label: "TIER-I Precision",
           target: "> 80%",
-          note: `${t1Correct} of ${t1Issued} alerts reached Phase 3+ on the FEWS NET proxy`,
-          state: assess(t1Issued, MIN_N.tier1Precision, (g?.tier1_precision ?? 0) > TARGETS.tier1Precision),
+          note: t1 ? `${t1.confirmed} of ${t1.alerts} alerts reached Phase 3+ on the FEWS NET proxy` : "",
+          state: assess(t1Issued, MIN_N.tier1Precision, (precision ?? 0) > TARGETS.tier1Precision),
         },
         {
-          val: fmtPct(g?.tier1_recall),
+          val: fmtPct(recall),
           label: "TIER-I Recall",
           target: "> 85%",
-          note: `${t1Correct} of ${t1Events} Phase 3+ outcomes on the FEWS NET proxy`,
-          state: assess(t1Events, MIN_N.tier1Recall, (g?.tier1_recall ?? 0) > TARGETS.tier1Recall),
+          note: t1 ? `${t1.phase4Alerted} of ${t1.phase4Events} Phase 4+ outcomes on the FEWS NET proxy` : "",
+          state: assess(t1Events, MIN_N.tier1Recall, (recall ?? 0) > TARGETS.tier1Recall),
         },
         {
           val: fmt(v.brier_score, 4),
@@ -173,14 +173,19 @@ export default function LiveAccuracyMetrics({
             How to read these
           </div>
           <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.75 }}>
-            <li>
-              <strong>TIER-I precision.</strong> Of {t1Issued} TIER-I alerts graded, {t1Correct} reached
-              Phase 3+ on the FEWS NET proxy at T+90.
-            </li>
-            <li>
-              <strong>TIER-I recall.</strong> Of {t1Events} graded Phase 3+ outcomes on the proxy, {t1Correct} had
-              a TIER-I alert. The others appear in the published TIER-II and TIER-III tiers.
-            </li>
+            {t1 && (
+              <li>
+                <strong>TIER-I precision.</strong> Of {t1.alerts} TIER-I alerts graded, {t1.confirmed} reached
+                Phase 3+ on the FEWS NET proxy at T+90.
+              </li>
+            )}
+            {t1 && (
+              <li>
+                <strong>TIER-I recall.</strong> Of {t1.phase4Events} graded outcomes at Phase 4+ on the FEWS NET
+                proxy, {t1.phase4Alerted} had a TIER-I alert. This is the pre-registered definition, and Phase 3
+                outcomes are not counted.
+              </li>
+            )}
             {d && (
               <li>
                 <strong>Brier decomposition.</strong> Reliability {fmt(d.reliability, 3)}, resolution{" "}

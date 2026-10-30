@@ -64,7 +64,6 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
   const graded: ScoredRow[] = data?.graded ?? [];
   const calBins = data?.calibration ?? [];
   const withdrawals = data?.withdrawals ?? null;
-  const grades = data?.grades ?? null;
 
   const totalPredictions = metrics?.total_predictions ?? 0;
   const nGraded = metrics?.n_graded_for_metrics ?? 0;
@@ -73,7 +72,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
   const hasGrades = nGraded > 0;
   const sampleOf = {
     graded: nGraded,
-    tier1: grades?.tier1_n_issued ?? 0,
+    tier1: graded.filter(g => g.alert_tier === "TIER-1").length,
     phase4: graded.filter(g => g.observed_phase >= 4).length,
   };
 
