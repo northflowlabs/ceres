@@ -32,9 +32,23 @@ const CHANGELOG: ChangeEntry[] = [
   {
     date: "2026-10-30",
     version: "v0.6",
+    type: "methodology",
+    title: "TIER-1 recall counts Phase 4+ outcomes",
+    body: "TIER-1 recall on the site now counts Phase 4+ outcomes that had a TIER-1 alert. It counted Phase 3+ outcomes before. Precision still counts alerts that reached Phase 3+. Each figure now says what it counts, and the TIER-1 counts recompute from /ledger/graded.json.",
+  },
+  {
+    date: "2026-10-30",
+    version: "v0.6",
+    type: "platform",
+    title: "Phase 4+ and Famine probabilities leave the site and downloads",
+    body: "The site and its downloads now carry the 90-day probability of IPC Phase 3+. P(IPC Phase 4+) and P(Famine) are no longer published here. The current forecasts download from /ledger/latest.csv, HXL-tagged, and /ledger/regions.json.",
+  },
+  {
+    date: "2026-10-30",
+    version: "v0.6",
     type: "platform",
     title: "Published runs defined",
-    body: "A published run is a run date in the archive that counts towards the score, with at most one row per region. Run counts, charts and the published runs CSV all use this definition. This entry replaces the descriptions of the archive in the entries of 20 February and 2 March 2026.",
+    body: "A published run is a run date in the prediction archive since 7 April 2026, with at most one row per region. Run counts, charts and the published runs CSV all use this definition. This entry replaces the descriptions of the archive in the entries of 20 February and 2 March 2026.",
   },
   {
     date: "2026-10-30",
@@ -119,7 +133,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "model",
     title: "Three-tier alert classification: TIER-1, TIER-2, TIER-3",
-    body: "TIER-1: P(IPC 3+) ≥ 0.70, high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC 3+) 0.45 to 0.69 or CRITICAL convergence, elevated risk, enhanced monitoring. TIER-3: P(IPC 3+) < 0.45, watch status. Thresholds author-specified at initialisation; prospective calibration ongoing as graded outcomes accumulate from August to October 2026.",
+    body: "TIER-1: P(IPC 3+) ≥ 0.70 or P(IPC 4+) ≥ 0.50, high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC 3+) 0.45 to 0.69 or CRITICAL convergence, elevated risk, enhanced monitoring. TIER-3: P(IPC 3+) < 0.45, watch status. Thresholds author-specified at initialisation; prospective calibration ongoing as graded outcomes accumulate from August to October 2026.",
   },
 ];
 
