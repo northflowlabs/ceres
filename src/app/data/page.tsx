@@ -208,8 +208,8 @@ export default function DataPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Open Data</div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>Download CERES Predictions</h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.75, maxWidth: 640 }}>
-            Every CERES forecast is free to download as HXL-tagged CSV or JSON, with no account and no key.
-            Compatible with HDX pipelines, Excel, R, Python, and Tableau.
+            The current forecasts, the published runs and the graded ledger are free to download, with no account and no key.
+            The current forecasts are HXL-tagged CSV, the published runs are CSV and the graded ledger is JSON.
             Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
           </p>
           <div className="data-sources-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 16 }}>

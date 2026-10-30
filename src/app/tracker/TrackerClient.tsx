@@ -178,7 +178,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
         {archiveTab === "timeline" && (
           latest.length === 0 ? (
             <div style={{ padding: "60px 0", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>
-              The archive is available at api.ceres.northflow.no/v1/archive/latest.
+              The archive is unavailable right now.
             </div>
           ) : (
             <div className="tracker-panel-grid" style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 0, border: "1px solid var(--border)" }}>

@@ -10,17 +10,17 @@ export const metadata: Metadata = {
     "IPC Phase 3 verification", "humanitarian forecast", "CERES archive", "Brier score",
   ],
   openGraph: {
-    title: "CERES Track Record · Every Prediction, Every Outcome",
+    title: "CERES Track Record · Published Runs and Graded Outcomes",
     description:
       "Archived famine forecasts for 43 countries, graded against the FEWS NET proxy. " +
-      "Full public history, no predictions removed, no cherry-picking.",
+      "Probabilities, tiers and sensitivity intervals by published run.",
     url: "https://ceres.northflow.no/tracker",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CERES Track Record · Every Prediction, Every Outcome",
+    title: "CERES Track Record · Published Runs and Graded Outcomes",
     description: "Archived famine forecasts graded against the FEWS NET proxy.",
     images: ["/og-image.png"],
   },

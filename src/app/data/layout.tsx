@@ -28,9 +28,9 @@ const HDX_BASE = "https://api.ceres.northflow.no";
 const datasetJsonLd = {
   "@context": "https://schema.org",
   "@type": "Dataset",
-  name: "CERES Weekly Famine Risk Predictions",
+  name: "CERES Famine Risk Predictions",
   description:
-    "Weekly 90-day probabilistic forecasts of acute food insecurity for 43 high-risk countries",
+    "90-day probabilistic forecasts of acute food insecurity for 43 high-risk countries",
   // The canonical url is the page that serves the data.
   url: "https://ceres.northflow.no/data",
   license: "https://creativecommons.org/licenses/by/4.0/",

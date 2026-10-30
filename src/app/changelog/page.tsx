@@ -104,7 +104,7 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-02-20",
     version: "v0.1",
     type: "platform",
-    title: "Track record archive: weekly prediction snapshots",
+    title: "Track record archive: prediction snapshots",
     body: "Each pipeline run archives a snapshot of all region predictions. The /tracker page displays the full time series per region with sparklines, trend indicators, and verification outcomes. Archive statistics: total runs, regions tracked, snapshot count, earliest run date.",
   },
   {
