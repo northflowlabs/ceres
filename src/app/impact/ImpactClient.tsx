@@ -32,8 +32,6 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
   const predictions = data?.predictions ?? null;
   const issued = data?.ledger.metrics.total_predictions ?? null;
   const regionRuns = data?.regionRuns ?? null;
-  const ledgerRuns = data?.ledgerRuns ?? 0;
-  const countries = predictions?.length ?? 0;
   const firstRun = runs?.length ? [...runs].sort()[0] : null;
 
   const count = fmtInt;
@@ -76,9 +74,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
             </div>
             {firstRun && (
               <p style={{ background: "white", padding: "14px 24px", margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--ink-light)" }}>
-                Predictions issued counts single forecasts in the verification ledger
-                {issued === ledgerRuns * countries ? `, one per country for each of its ${ledgerRuns} run dates across ${countries} countries` : ""}
-                ; published runs counts run dates in the prediction archive since {fmtDate(firstRun)}.
+                Predictions issued counts single forecasts in the verification ledger, which also holds dates outside the published archive; published runs counts run dates in the prediction archive since {fmtDate(firstRun)}.
               </p>
             )}
           </div>
