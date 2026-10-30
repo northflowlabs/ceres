@@ -4,7 +4,7 @@ import { REGION_IDS } from "@/lib/regionNames";
 const BASE = "https://ceres.northflow.no";
 
 // Static indexable routes. /widget and the closed routes /login, /account
-// and /api-access are deliberately excluded.
+// are deliberately excluded.
 const STATIC_ROUTES: Array<{ path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }> = [
   { path: "/",           changeFrequency: "weekly",  priority: 1.0 },
   { path: "/about",      changeFrequency: "monthly", priority: 0.8 },

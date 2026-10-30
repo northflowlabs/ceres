@@ -62,6 +62,16 @@ const nextConfig = {
         destination: "/data",
         permanent: false,
       },
+      {
+        source: "/subnational",
+        destination: "/regions",
+        permanent: false,
+      },
+      {
+        source: "/sub-national",
+        destination: "/regions",
+        permanent: false,
+      },
     ];
   },
 };
