@@ -15,7 +15,7 @@ const ADAPTERS = [
 const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "P(IPC Phase 3+) within 90 days of issue" },
   { num: "87",       label: "Calibration Records",      note: "IPC transition records, 2011-2023, 31 countries" },
-  { num: "T+90",     label: "Grading Horizon",         note: "Graded against observed FEWS NET outcomes; live figures on the Validation page" },
+  { num: "T+90",     label: "Grading Horizon",         note: "Graded against the FEWS NET proxy; live figures on the Validation page" },
   { num: "Open",     label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
 
@@ -54,7 +54,7 @@ export default function AboutPage() {
       <div className="about-mission-wrap" style={{ background: "var(--ink)", color: "var(--parchment)", padding: "60px 40px" }}>
         <div className="about-missions" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center", boxSizing: "border-box" }}>
           <div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 16 }}>Mission</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 16 }}>Mission</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 400, fontStyle: "italic", lineHeight: 1.4, color: "var(--parchment)" }}>
               &ldquo;Give the humanitarian system the <strong style={{ fontStyle: "normal", fontWeight: 700, color: "var(--warning)" }}>lead time</strong> it needs to act before a food crisis becomes a famine.&rdquo;
             </div>
@@ -62,12 +62,12 @@ export default function AboutPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {[
               { title: "Open by design",            body: "The methodology is published. The code of this website is public. Every prediction is timestamped and graded against real-world outcomes. We built CERES to be examined: by scientists, by funders, by the people whose lives depend on getting this right." },
-              { title: "Calibrated, not overconfident", body: "CERES never gives you a single number and calls it certainty. Every forecast carries a 90% sensitivity interval, built from 2,000 input-perturbation replications. That is what a humanitarian programme officer can plan with." },
+              { title: "Uncertainty on every forecast", body: "CERES never gives you a single number and calls it certainty. Every forecast carries a 90% sensitivity interval, built from 2,000 input-perturbation replications. That is what a humanitarian programme officer can plan with." },
               { title: "Falsifiable",  body: "Every prediction CERES issues is publicly recorded before the outcome is known, and graded in the open at T+90." },
             ].map(({ title, body }) => (
               <div key={title} style={{ borderLeft: "2px solid #44403C", paddingLeft: 16 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 4 }}>{title}</div>
-                <div style={{ fontSize: 14, color: "#78716C", lineHeight: 1.6 }}>{body}</div>
+                <div style={{ fontSize: 14, color: "#A8A29E", lineHeight: 1.6 }}>{body}</div>
               </div>
             ))}
           </div>
@@ -116,9 +116,9 @@ export default function AboutPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Institutional Context</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
-            <p style={p}>Every design decision in CERES, from the calibrated sensitivity intervals to the publicly timestamped prediction ledger to the published limitations section, is made with institutional reviewers in mind.</p>
+            <p style={p}>Every design decision in CERES, from the sensitivity intervals to the publicly timestamped prediction ledger to the published limitations section, is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders.</p>
-            <p style={p}>The prediction archive starts on 9 March 2026. Predictions are timestamped and graded against observed FEWS NET outcomes at T+90 days. The model was initialised against 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
+            <p style={p}>The prediction archive starts on 9 March 2026. Predictions are timestamped and graded against the FEWS NET proxy at T+90 days. The model was initialised against 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
           </div>
         </div>
 

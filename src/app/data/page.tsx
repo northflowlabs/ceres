@@ -90,7 +90,7 @@ const PIPELINE_USE = [
   { signal: "UCDP GED conflict events",  weight: "Conflict intensity sub-score",    stage: "Stress scoring"       },
   { signal: "IPC / CH phase classification", weight: "Food security phase and food access sub-scores", stage: "Stress scoring" },
   { signal: "WFP market prices",        weight: "Market deviation sub-score",      stage: "Stress scoring"       },
-  { signal: "IPC or FEWS NET observed phase", weight: "Outcome each forecast is graded against", stage: "Grading (T+90d)" },
+  { signal: "FEWS NET proxy", weight: "Outcome each forecast is graded against", stage: "Grading (T+90d)" },
 ];
 
 export default function DataPage() {
@@ -184,7 +184,7 @@ export default function DataPage() {
           <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 400 }}>
             <thead>
               <tr>
-                {["Signal", "Role in Pipeline", "Stage"].map(h => <th key={h} style={th}>{h}</th>)}
+                {["Signal", "Role in Pipeline", "Stage"].map(h => <th scope="col" key={h} style={th}>{h}</th>)}
               </tr>
             </thead>
             <tbody>
@@ -231,7 +231,7 @@ export default function DataPage() {
               {
                 label: "Grading Ledger",
                 sub: "Graded predictions with observed outcomes",
-                desc: "Every prediction graded at T+90, with the observed IPC phase, the grading source and its Brier contribution.",
+                desc: "Every prediction graded at T+90, with the proxy phase, the grading source and its Brier contribution.",
                 url: "https://ceres.northflow.no/ledger/graded.json",
                 tag: "JSON",
               },

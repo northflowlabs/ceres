@@ -11,9 +11,9 @@ export const metadata: Metadata = {
     "HGE inference engine", "CERES", "Northflow",
   ],
   openGraph: {
-    title: "CERES Methodology · Calibrated Famine Forecasting",
+    title: "CERES Methodology · Famine Forecasting",
     description:
-      "Full technical specification of the CERES forecasting pipeline: public data inputs, composite stress scoring, calibrated logistic model, IPC tier classification.",
+      "Full technical specification of the CERES forecasting pipeline: public data inputs, composite stress scoring, logistic model, IPC tier classification.",
     url: "https://ceres.northflow.no/methodology",
     type: "article",
   },

@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Track Record · CERES Famine Early Warning",
   description:
     "The complete public history of CERES famine predictions: weekly snapshots per region, " +
-    "confidence trends, and verified outcomes against observed FEWS NET data. Every run archived since launch.",
+    "confidence trends, and graded outcomes. Published runs since 9 March 2026.",
   keywords: [
     "famine forecast track record", "prediction history", "food security accuracy",
     "IPC Phase 3 verification", "humanitarian forecast", "CERES archive", "Brier score",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CERES Track Record · Every Prediction, Every Outcome",
     description:
-      "Weekly archived famine forecasts for 43 countries, graded against observed FEWS NET outcomes. " +
+      "Weekly archived famine forecasts for 43 countries, graded against the FEWS NET proxy. " +
       "Full public history, no predictions removed, no cherry-picking.",
     url: "https://ceres.northflow.no/tracker",
     type: "website",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CERES Track Record · Every Prediction, Every Outcome",
-    description: "Weekly archived famine forecasts graded against observed FEWS NET outcomes. Full public history.",
+    description: "Weekly archived famine forecasts graded against the FEWS NET proxy. Full public history.",
     images: ["/og-image.png"],
   },
   alternates: { canonical: "https://ceres.northflow.no/tracker" },

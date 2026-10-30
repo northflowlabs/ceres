@@ -48,7 +48,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.5",
     type: "model",
     title: "Coefficient recalibration",
-    body: "The IPC Phase 3+ coefficients from arXiv v1 were recalibrated against the first weeks of live data, so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The recalibrated model gives P = 0.036 to 0.994 across the monitored countries. The same coefficients apply to the Admin1, Admin2 and scenario models, and are documented in Appendix C of the preprint and on the Methodology page.",
+    body: "The IPC Phase 3+ coefficients from arXiv v1 were recalibrated against the first weeks of live data, so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The same coefficients apply to the Admin1, Admin2 and scenario models, and are documented in Appendix C of the preprint and on the Methodology page.",
     breaking: true,
   },
   {

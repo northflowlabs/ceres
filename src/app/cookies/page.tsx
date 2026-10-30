@@ -48,7 +48,7 @@ export default function CookiesPage() {
             <thead>
               <tr>
                 {["Cookie / Technology", "Type", "Purpose", "Duration", "Consent Required"].map(h => (
-                  <th key={h} style={th}>{h}</th>
+                  <th scope="col" key={h} style={th}>{h}</th>
                 ))}
               </tr>
             </thead>

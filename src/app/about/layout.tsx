@@ -66,7 +66,7 @@ const faqJsonLd = {
       name: "What is CERES?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "CERES (Calibrated Early-warning and Risk Estimation System) is an automated, open famine early-warning system operated by Northflow Technologies AS. It issues calibrated 90-day probability forecasts of IPC Phase 3+, Phase 4+, and Famine conditions for 43 high-risk countries, scheduled weekly.",
+        text: "CERES (Calibrated Early-warning and Risk Estimation System) is an automated, open famine early-warning system operated by Northflow Technologies AS. It issues 90-day probability forecasts of IPC Phase 3+, Phase 4+, and Famine conditions for 43 high-risk countries, scheduled weekly.",
       },
     },
     {
@@ -98,7 +98,7 @@ const faqJsonLd = {
       name: "How is CERES validated?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Every prediction is timestamped, publicly recorded, and graded against observed FEWS NET outcomes at the T+90 horizon. The model was initialised against 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. The archive starts on 9 March 2026, and graded outcomes are published as the observed data arrives.",
+        text: "Every prediction is timestamped, publicly recorded, and graded against the FEWS NET proxy after the T+90 horizon. The model was initialised against 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. The archive starts on 9 March 2026, and graded outcomes are published as the data arrives.",
       },
     },
     {

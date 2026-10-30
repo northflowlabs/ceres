@@ -41,7 +41,7 @@ The forecasts draw on public data:
 - IPC and Cadre Harmonisé phase classifications, through OCHA's HDX HAPI
 - WFP market food prices, through OCHA's HDX HAPI
 
-Each forecast is graded at 90 days against the observed phase published by the IPC or FEWS NET. CERES does not declare famine: only the IPC declares Famine (IPC Phase 5).
+Each forecast is graded after 90 days against a FEWS NET proxy: the highest Current Situation phase FEWS NET reports for any area of the country within 30 days of the grading date. CERES does not declare famine: only the IPC declares Famine (IPC Phase 5).
 
 ## Using the forecasts
 

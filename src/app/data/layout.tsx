@@ -88,7 +88,7 @@ const datasetJsonLd = {
     "90% sensitivity interval",
   ],
   measurementTechnique:
-    "Calibrated logistic regression over public data streams (NASA POWER rainfall, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé classifications, WFP market prices) with input-perturbation sensitivity intervals (n=2,000 draws per prediction).",
+    "Logistic regression over public data streams (NASA POWER rainfall, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé classifications, WFP market prices) with input-perturbation sensitivity intervals (n=2,000 draws per prediction).",
   isBasedOn: "https://arxiv.org/abs/2603.09425",
   distribution: [
     {

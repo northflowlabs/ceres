@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "CERES · Famine Early Warning · 43 Countries · Weekly IPC Forecasts",
   description:
-    "Calibrated 90-day probability forecasts of IPC Phase 3+, 4+, and Famine for 43 high-risk countries. Scheduled weekly, with sensitivity intervals and a ledger.",
+    "90-day probability forecasts of IPC Phase 3+, 4+, and Famine for 43 high-risk countries. Scheduled weekly, with sensitivity intervals and a ledger.",
   keywords: [
     "famine early warning",
     "food security forecast",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   creator: "Northflow Technologies AS",
   publisher: "Northflow Technologies AS",
   openGraph: {
-    title: "CERES · Calibrated Famine Early Warning · 43 Countries",
+    title: "CERES · Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 countries. " +
       "Sensitivity intervals on every forecast, and a public verification ledger.",
@@ -53,13 +53,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CERES · Calibrated Famine Early Warning System · 43 Countries · Weekly IPC Forecasts",
+        alt: "CERES · Famine Early Warning · 43 Countries",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CERES · Calibrated Famine Early Warning · 43 Countries",
+    title: "CERES · Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts. " +
       "Sensitivity intervals and a public verification ledger. Open data under CC BY 4.0.",
