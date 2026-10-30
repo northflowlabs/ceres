@@ -117,14 +117,11 @@ const SOURCE_LABELS: Record<string, string> = {
 
 const sourceLabel = (id: string) => SOURCE_LABELS[id] ?? id;
 
-// A summary of the grounds recorded for the four withdrawn runs. The API's text
-// calls the input fallbacks "expert priors", which would read as the model's
-// coefficients. They were hardcoded country values in the input adapters.
+// The grounds recorded for the four withdrawn runs, in the site's wording.
 const WITHDRAWAL_REASON =
   "Rainfall and vegetation inputs could fall back to mock data until 6 April 2026. UCDP conflict data was missing for Somalia, Palestine, Yemen, Afghanistan and Syria until 30 March to 1 April 2026. Hardcoded country fallback values for IPC phase, food access and prices stayed in the input adapters until 7 April 2026.";
 
-// This evidence row sums every month of the lookback window under a monthly
-// label, so its figure and its note cannot be read as what they say.
+// Evidence rows the site does not show.
 const UNREADABLE_EVIDENCE = new Set(["conflict_events_monthly"]);
 
 function publicHypothesisDetail(h: Hypothesis): Hypothesis {
@@ -143,7 +140,6 @@ function publicHypothesisDetail(h: Hypothesis): Hypothesis {
         variable: e.variable,
         observed_value: e.observed_value,
         threshold: e.threshold,
-        direction: e.direction,
         supports_hypothesis: e.supports_hypothesis,
       })),
   };
@@ -155,6 +151,7 @@ type RawRow = LedgerRow & Omit<Partial<ScoredRow>, keyof LedgerRow> & {
 };
 
 const LEDGER_MAX = 1000;
+const HYPOTHESIS_MAX = 500;
 const TABLE_ROWS = 50;
 const HISTORY_MAX = 104;
 
@@ -183,33 +180,34 @@ function publicScoredRow(r: RawRow): ScoredRow {
   };
 }
 
-// An API that answers with a total also takes an offset, and every page is read.
-// One without a total serves LEDGER_MAX rows at most, and getGradedLedger states it
-// when that starts to cost rows.
-interface LedgerPage {
-  predictions: RawRow[];
-  total?: number;
-}
-
-async function readRows(status: string): Promise<RawRow[] | null> {
-  const path = `/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`;
-  const first = await read<LedgerPage>(path);
+// A list the API answers with a total also takes an offset, and every page is read.
+// A page that cannot be read gives no list at all, never part of one. Without a
+// total the first answer is the list, and getGradedLedger states it when the limit
+// starts to cost rows.
+async function readList<R>(path: string, key: string, limit: number): Promise<R[] | null> {
+  const url = `${path}${path.includes("?") ? "&" : "?"}limit=${limit}`;
+  const rowsOf = (body: unknown) => (Array.isArray(body) ? body : (body as Record<string, R[]>)[key] ?? []) as R[];
+  const first = await read<unknown>(url);
   if (!first) return null;
-  const rows = [...first.predictions];
-  if (first.total == null) {
-    if (rows.length === LEDGER_MAX) console.error(`Ledger ${status} reached the ${LEDGER_MAX} row limit`);
+  const rows = [...rowsOf(first)];
+  const { total } = first as { total?: number };
+  if (total == null) {
+    if (rows.length === limit) console.error(`${path} reached the ${limit} row limit`);
     return rows;
   }
-  while (rows.length < first.total) {
-    const page = await read<LedgerPage>(`${path}&offset=${rows.length}`);
-    if (!page?.predictions.length) {
-      console.error(`Ledger ${status} stopped at ${rows.length} of ${first.total} rows`);
-      break;
+  while (rows.length < total) {
+    const page = await read<unknown>(`${url}&offset=${rows.length}`);
+    const more = page ? rowsOf(page) : [];
+    if (more.length === 0) {
+      console.error(`${path} stopped at ${rows.length} of ${total} rows`);
+      return null;
     }
-    rows.push(...page.predictions);
+    rows.push(...more);
   }
   return rows;
 }
+
+const readRows = (status: string) => readList<RawRow>(`/v1/validation/ledger?status=${status}`, "predictions", LEDGER_MAX);
 
 // The ledger holds what was issued for a region on a date.
 type LedgerIndex = Map<string, RawRow>;
@@ -376,22 +374,36 @@ export async function getLatestSnapshots(): Promise<RegionSnapshot[] | null> {
 export interface DashboardData {
   predictions: Prediction[];
   hypotheses: Hypothesis[];
+  complete: boolean;
   ledger: LedgerFigures | null;
+}
+
+// One hypothesis per forecast of the current run. The list holds older runs too, so
+// a forecast it does not reach is read by its id.
+async function currentHypotheses(predictions: Prediction[]): Promise<Hypothesis[]> {
+  const listed = await readList<Hypothesis>("/v1/hypotheses", "hypotheses", HYPOTHESIS_MAX).catch(() => null);
+  const byId = new Map((listed ?? []).map((h) => [h.hypothesis_id, h]));
+  const rows = await Promise.all(
+    predictions
+      .filter((p) => p.hypothesis_id)
+      .map(async (p) =>
+        byId.get(p.hypothesis_id) ??
+        (await read<Hypothesis>(`/v1/hypotheses/${encodeURIComponent(p.hypothesis_id)}`).catch(() => null)),
+      ),
+  );
+  return rows.filter((h): h is Hypothesis => h != null).map((h) => pick(h, HYPOTHESIS_FIELDS));
 }
 
 export async function getDashboardData(): Promise<DashboardData | null> {
   // The forecasts stand on their own. Without hypotheses or ledger figures the
   // panels that need them say so.
-  const [predictions, hypotheses, ledger] = await Promise.all([
-    getPredictions(),
-    read<Hypothesis[]>("/v1/hypotheses").catch(() => null),
-    getLedgerFigures().catch(() => null),
-  ]);
+  const [predictions, ledger] = await Promise.all([getPredictions(), getLedgerFigures().catch(() => null)]);
   if (!predictions) return null;
-  const run = predictions[0]?.reference_date;
+  const hypotheses = await currentHypotheses(predictions);
   return {
     predictions,
-    hypotheses: (hypotheses ?? []).filter((h) => h.reference_date === run).map((h) => pick(h, HYPOTHESIS_FIELDS)),
+    hypotheses,
+    complete: hypotheses.length === predictions.filter((p) => p.hypothesis_id).length,
     ledger,
   };
 }
@@ -501,7 +513,7 @@ export interface TrackerData {
 
 export async function getTrackerData(): Promise<TrackerData | null> {
   const [grades, archive, runs, metrics, ledger, pending] = await Promise.all([
-    read<{ grades: GradeRecord[] }>("/v1/grades"),
+    readList<GradeRecord>("/v1/grades", "grades", LEDGER_MAX),
     read<ArchiveStats>("/v1/archive/stats"),
     read<string[]>("/v1/archive/runs"),
     getPublicMetrics(),
@@ -516,7 +528,7 @@ export async function getTrackerData(): Promise<TrackerData | null> {
     .sort((a, b) => a.grading_date.localeCompare(b.grading_date))
     .slice(0, latest.length)
     .map(publicRow);
-  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive: { total_regions: archive.total_regions }, runs: publishedRuns(runs, ledger), metrics };
+  return { grades: grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive: { total_regions: archive.total_regions }, runs: publishedRuns(runs, ledger), metrics };
 }
 
 export interface MapData {

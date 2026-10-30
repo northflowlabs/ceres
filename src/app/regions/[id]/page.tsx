@@ -5,7 +5,8 @@ import { getRegionData } from "@/lib/serverData";
 
 export const revalidate = 3600;
 
-// Three reads, then one more, then one more, each bounded at 10 s.
+// Up to four rounds of reads, each bounded at 10 s: the forecast and the ledger, its
+// later pages, the history, the hypothesis.
 export const maxDuration = 40;
 
 export function generateStaticParams() {

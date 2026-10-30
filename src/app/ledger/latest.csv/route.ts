@@ -1,8 +1,9 @@
 import { csvResponse } from "@/lib/ledgerResponse";
 import { getLatestCsv } from "@/lib/serverData";
 
-// Two rounds of parallel reads, each bounded at 10 s.
-export const maxDuration = 30;
+// Up to four rounds of reads, each bounded at 10 s: the ledger, its later pages,
+// the current run and the histories.
+export const maxDuration = 40;
 
 export function GET() {
   return csvResponse(getLatestCsv, "ceres-latest.csv");

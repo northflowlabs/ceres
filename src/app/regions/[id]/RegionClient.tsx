@@ -335,7 +335,7 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
                     {ev.variable.replace(/_/g, " ")}
                   </div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                    {`${ev.observed_value?.toFixed(2)} · ${ev.direction} threshold ${ev.threshold?.toFixed(2)}`}
+                    {`Observed ${ev.observed_value?.toFixed(2)} · threshold ${ev.threshold?.toFixed(2)}`}
                   </div>
                 </div>
               ))}

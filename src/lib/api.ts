@@ -57,7 +57,6 @@ export interface Hypothesis {
     variable: string;
     observed_value: number;
     threshold: number;
-    direction: string;
     supports_hypothesis: boolean;
   }>;
 }

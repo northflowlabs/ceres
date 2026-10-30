@@ -709,7 +709,6 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                           <th scope="col">Variable</th>
                           <th scope="col">Observed</th>
                           <th scope="col">Threshold</th>
-                          <th scope="col">Dir</th>
                           <th scope="col">Result</th>
                         </tr>
                       </thead>
@@ -720,7 +719,6 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                             <td>{ev.variable}</td>
                             <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{(ev.observed_value ?? 0).toFixed(2)}</td>
                             <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{(ev.threshold ?? 0).toFixed(2)}</td>
-                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{ev.direction}</td>
                             <td>
                               <span className={ev.supports_hypothesis ? "evidence-supports" : "evidence-contradicts"}
                                 style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.06em" }}>

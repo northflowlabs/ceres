@@ -29,8 +29,9 @@ const SOURCES: Record<string, () => Promise<unknown>> = {
   "withdrawn.json": getWithdrawnRows,
 };
 
-// Two rounds of parallel reads, each bounded at 10 s.
-export const maxDuration = 30;
+// Up to four rounds of reads, each bounded at 10 s: the ledger, its later pages,
+// the current run and the histories.
+export const maxDuration = 40;
 
 export async function GET(_req: Request, { params }: { params: Promise<{ name: string }> }) {
   const { name } = await params;

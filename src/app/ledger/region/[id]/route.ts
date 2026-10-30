@@ -2,7 +2,8 @@ import { ledgerNotFound, ledgerResponse } from "@/lib/ledgerResponse";
 import { REGION_NAMES } from "@/lib/regionNames";
 import { getRegionData } from "@/lib/serverData";
 
-// Three reads, then one more, then one more, each bounded at 10 s.
+// Up to four rounds of reads, each bounded at 10 s: the forecast and the ledger, its
+// later pages, the history, the hypothesis.
 export const maxDuration = 40;
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {

@@ -52,15 +52,15 @@ async function json(url) {
   return res.json();
 }
 
-async function ledgerRows(status) {
-  const url = `${API}/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`;
+async function listRows(path, key) {
+  const url = `${API}${path}${path.includes("?") ? "&" : "?"}limit=${LEDGER_MAX}`;
   const first = await json(url);
-  const rows = [...first.predictions];
+  const rows = [...first[key]];
   if (first.total == null) return { rows, cut: rows.length >= LEDGER_MAX };
   while (rows.length < first.total) {
-    const { predictions } = await json(`${url}&offset=${rows.length}`);
-    if (predictions.length === 0) return { rows, cut: true };
-    rows.push(...predictions);
+    const page = await json(`${url}&offset=${rows.length}`);
+    if (page[key].length === 0) return { rows, cut: true };
+    rows.push(...page[key]);
   }
   return { rows, cut: false };
 }
@@ -70,7 +70,7 @@ const gradedRows = [];
 const withdrawn = new Set();
 const limitHit = [];
 for (const status of ["pending", "awaiting", "graded", "voided"]) {
-  const { rows: predictions, cut } = await ledgerRows(status);
+  const { rows: predictions, cut } = await listRows(`/v1/validation/ledger?status=${status}`, "predictions");
   if (cut) limitHit.push(status);
   if (status === "graded") gradedRows.push(...predictions);
   for (const r of predictions) {
@@ -84,7 +84,8 @@ const wrong = limitHit.map((status) => `ledger ${status}: reached the ${LEDGER_M
 const archiveKeys = new Set();
 
 // Every region the API forecasts must be in the history and the latest run.
-const regions = (await json(`${API}/v1/predictions`)).map((p) => p.region_id);
+const forecasts = await json(`${API}/v1/predictions`);
+const regions = forecasts.map((p) => p.region_id);
 for (const id of regions) {
   if (!history[id]) wrong.push(`${id}: missing from the history`);
   if (!latest.some((s) => s.region_id === id)) wrong.push(`${id}: missing from the latest run`);
@@ -241,12 +242,22 @@ const counts = (rows, tier, phase) => {
   };
 };
 const fromLedger = counts(inScore, (r) => r.alert_tier, (r) => r.observed_phase);
-const fromGrades = counts((await json(`${API}/v1/grades`)).grades, (r) => r.predicted_tier, (r) => r.actual_ipc_phase);
+const fromGrades = counts((await listRows("/v1/grades", "grades")).rows, (r) => r.predicted_tier, (r) => r.actual_ipc_phase);
 const { tier1 } = await json(`${SITE}/ledger/figures.json`);
 for (const [name, source] of [["ledger", fromLedger], ["grades", fromGrades]]) {
   if (JSON.stringify(tier1) !== JSON.stringify(source)) {
     wrong.push(`TIER-1 counts on the site are ${JSON.stringify(tier1)}, the ${name} has ${JSON.stringify(source)}`);
   }
+}
+
+// One hypothesis per forecast of the current run on the dashboard.
+const dashboard = await json(`${SITE}/ledger/dashboard.json`);
+const shown = new Map(dashboard.hypotheses.map((h) => [h.hypothesis_id, h]));
+if (!dashboard.complete) wrong.push(`dashboard: ${dashboard.hypotheses.length} hypotheses of ${forecasts.length}`);
+if (dashboard.hypotheses.length !== forecasts.length) wrong.push(`dashboard: ${dashboard.hypotheses.length} hypotheses for ${forecasts.length} forecasts`);
+for (const p of forecasts) {
+  const h = shown.get(p.hypothesis_id);
+  if (h?.reference_date !== p.reference_date) wrong.push(`dashboard ${p.region_id}: no hypothesis of the run ${p.reference_date}`);
 }
 
 // The rows behind the score, key by key in both directions.
