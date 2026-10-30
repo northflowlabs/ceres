@@ -510,7 +510,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
         <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "28px 32px", margin: "40px 0" }}>
           <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 600, marginBottom: 10 }}>The CERES Transparency Commitment</div>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", margin: 0, lineHeight: 1.75 }}>
-            Every prediction CERES issues is permanently recorded in this ledger with a timestamp, probability estimate, 90% sensitivity interval, and T+90 day grading date. The published score is computed from the rows at /ledger/graded.json.
+            Every prediction CERES issues is permanently recorded in this ledger with a timestamp, probability estimate, 90% sensitivity interval, and T+90 day grading date. The published score and the TIER-1 counts recompute from the rows at /ledger/graded.json.
           </p>
         </div>
 

@@ -20,7 +20,8 @@
 const SITE = process.argv[2] ?? "http://localhost:3100";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 
-// The API serves at most this many rows and has no offset.
+// Rows per read. An API that answers with a total also takes an offset; one without
+// serves this many at most.
 const LEDGER_MAX = 1000;
 
 // ISO 3166-1 alpha-3. The CSVs carry these; the site's ids and URLs keep NIG for Niger.
@@ -51,13 +52,26 @@ async function json(url) {
   return res.json();
 }
 
+async function ledgerRows(status) {
+  const url = `${API}/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`;
+  const first = await json(url);
+  const rows = [...first.predictions];
+  if (first.total == null) return { rows, cut: rows.length >= LEDGER_MAX };
+  while (rows.length < first.total) {
+    const { predictions } = await json(`${url}&offset=${rows.length}`);
+    if (predictions.length === 0) return { rows, cut: true };
+    rows.push(...predictions);
+  }
+  return { rows, cut: false };
+}
+
 const ledger = new Map();
 const gradedRows = [];
 const withdrawn = new Set();
 const limitHit = [];
 for (const status of ["pending", "awaiting", "graded", "voided"]) {
-  const { predictions } = await json(`${API}/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`);
-  if (predictions.length >= LEDGER_MAX) limitHit.push(status);
+  const { rows: predictions, cut } = await ledgerRows(status);
+  if (cut) limitHit.push(status);
   if (status === "graded") gradedRows.push(...predictions);
   for (const r of predictions) {
     ledger.set(`${r.region_id}|${r.reference_date}`, r);
@@ -235,8 +249,18 @@ for (const [name, source] of [["ledger", fromLedger], ["grades", fromGrades]]) {
   }
 }
 
+// The rows behind the score, key by key in both directions.
+const rowKey = (r) => `${r.region_id}|${r.reference_date}`;
+const servedScore = await json(`${SITE}/ledger/graded.json`);
+const servedKeys = servedScore.predictions.map(rowKey);
+const scoreKeys = new Set(inScore.map(rowKey));
+if (new Set(servedKeys).size !== servedKeys.length) wrong.push("graded.json: repeated rows");
+if (!servedScore.complete) wrong.push(`graded.json: ${servedScore.count} of ${servedScore.total_in_score} rows`);
+for (const key of servedKeys) if (!scoreKeys.has(key)) wrong.push(`graded.json ${key}: not in the ledger's score`);
+for (const key of scoreKeys) if (!servedKeys.includes(key)) wrong.push(`graded.json ${key}: missing`);
+
 // Fields the site must never serve, in any route or download.
-const REMOVED = ["p_ipc4plus", "p_famine"];
+const REMOVED = ["p_ipc4plus", "p_famine", "total_runs", "earliest_run", "total_snapshots"];
 const routes = [
   "dashboard.json", "figures.json", "graded.json", "impact.json", "latest.json", "map.json", "metrics.json",
   "regions.json", "tracker.json", "validation.json", "withdrawn.json", "archive.csv", "latest.csv", `region/${regions[0]}.json`,

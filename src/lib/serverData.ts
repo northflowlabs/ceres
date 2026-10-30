@@ -183,13 +183,32 @@ function publicScoredRow(r: RawRow): ScoredRow {
   };
 }
 
-// The API takes a limit and no offset, and applies its region filter after the
-// limit, so nothing past LEDGER_MAX rows can be read. getGradedLedger states it
+// An API that answers with a total also takes an offset, and every page is read.
+// One without a total serves LEDGER_MAX rows at most, and getGradedLedger states it
 // when that starts to cost rows.
+interface LedgerPage {
+  predictions: RawRow[];
+  total?: number;
+}
+
 async function readRows(status: string): Promise<RawRow[] | null> {
-  const res = await read<{ predictions: RawRow[] }>(`/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`);
-  if (res?.predictions.length === LEDGER_MAX) console.error(`Ledger ${status} reached the ${LEDGER_MAX} row limit`);
-  return res?.predictions ?? null;
+  const path = `/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`;
+  const first = await read<LedgerPage>(path);
+  if (!first) return null;
+  const rows = [...first.predictions];
+  if (first.total == null) {
+    if (rows.length === LEDGER_MAX) console.error(`Ledger ${status} reached the ${LEDGER_MAX} row limit`);
+    return rows;
+  }
+  while (rows.length < first.total) {
+    const page = await read<LedgerPage>(`${path}&offset=${rows.length}`);
+    if (!page?.predictions.length) {
+      console.error(`Ledger ${status} stopped at ${rows.length} of ${first.total} rows`);
+      break;
+    }
+    rows.push(...page.predictions);
+  }
+  return rows;
 }
 
 // The ledger holds what was issued for a region on a date.
@@ -249,9 +268,16 @@ async function getHistory(regionId: string, ledger: LedgerIndex): Promise<Region
 
 // ── What the pages and the /ledger routes serve ───────────────────────────
 // The predictions that count towards the published score, and nothing else.
+// One row per region and date, so a repeated row counts once everywhere.
 export async function getScoredRows(): Promise<ScoredRow[] | null> {
   const rows = await readRows("graded");
-  return rows ? rows.filter(isScored).map(publicScoredRow) : null;
+  if (!rows) return null;
+  const byKey = new Map<string, RawRow>();
+  for (const r of rows.filter(isScored)) {
+    const key = ledgerKey(r.region_id, r.reference_date);
+    if (!byKey.has(key)) byKey.set(key, r);
+  }
+  return [...byKey.values()].map(publicScoredRow);
 }
 
 export interface GradedLedger {
@@ -313,11 +339,11 @@ function tier1Figures(rows: ScoredRow[]): Tier1Figures {
 }
 
 // Counted from the rows in the score, which anyone can recount from
-// /ledger/graded.json. Rows that do not add up to the graded total give no figure
-// rather than a partial one. `npm run check:ledger` compares the counts with the
-// raw ledger and with the grades.
+// /ledger/graded.json. Unique rows that do not add up to the graded total, or a
+// failed read, give no counts rather than partial ones. `npm run check:ledger`
+// compares them with the raw ledger and with the grades.
 export async function getLedgerFigures(): Promise<LedgerFigures | null> {
-  const [metrics, rows] = await Promise.all([getPublicMetrics(), getScoredRows()]);
+  const [metrics, rows] = await Promise.all([getPublicMetrics(), getScoredRows().catch(() => null)]);
   if (!metrics) return null;
   const complete = rows?.length === metrics.n_graded_for_metrics;
   if (rows && !complete) console.error(`Ledger holds ${rows.length} scored rows of ${metrics.n_graded_for_metrics}`);
@@ -354,10 +380,12 @@ export interface DashboardData {
 }
 
 export async function getDashboardData(): Promise<DashboardData | null> {
+  // The forecasts stand on their own. Without hypotheses or ledger figures the
+  // panels that need them say so.
   const [predictions, hypotheses, ledger] = await Promise.all([
     getPredictions(),
-    read<Hypothesis[]>("/v1/hypotheses"),
-    getLedgerFigures(),
+    read<Hypothesis[]>("/v1/hypotheses").catch(() => null),
+    getLedgerFigures().catch(() => null),
   ]);
   if (!predictions) return null;
   const run = predictions[0]?.reference_date;
@@ -396,26 +424,23 @@ export async function getRegionData(regionId: string): Promise<RegionData | null
 
 export interface ImpactData {
   ledger: LedgerFigures;
-  archive: ArchiveStats;
   runs: string[];
   predictions: Prediction[];
   regionRuns: number;
 }
 
 export async function getImpactData(): Promise<ImpactData | null> {
-  const [ledger, archive, runs, predictions, index] = await Promise.all([
+  const [ledger, runs, predictions, index] = await Promise.all([
     getLedgerFigures(),
-    read<ArchiveStats>("/v1/archive/stats"),
     read<string[]>("/v1/archive/runs"),
     getPredictions(),
     getLedgerIndex(),
   ]);
-  if (!ledger || !archive || !runs || !predictions || !index) return null;
+  if (!ledger || !runs || !predictions || !index) return null;
   const histories = await Promise.all(predictions.map((p) => getHistory(p.region_id, index)));
   if (histories.some((h) => !h)) return null;
   return {
     ledger,
-    archive,
     runs: publishedRuns(runs, index),
     predictions,
     regionRuns: histories.reduce((n, h) => n + (h as RegionSnapshot[]).length, 0),
@@ -469,7 +494,7 @@ export interface TrackerData {
   latest: RegionSnapshot[];
   next: LedgerRow[];
   history: Record<string, RegionSnapshot[]>;
-  archive: ArchiveStats;
+  archive: Pick<ArchiveStats, "total_regions">;
   runs: string[];
   metrics: ValidationMetrics;
 }
@@ -491,7 +516,7 @@ export async function getTrackerData(): Promise<TrackerData | null> {
     .sort((a, b) => a.grading_date.localeCompare(b.grading_date))
     .slice(0, latest.length)
     .map(publicRow);
-  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive, runs: publishedRuns(runs, ledger), metrics };
+  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive: { total_regions: archive.total_regions }, runs: publishedRuns(runs, ledger), metrics };
 }
 
 export interface MapData {

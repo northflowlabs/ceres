@@ -13,8 +13,8 @@ import {
   getWithdrawnRows,
 } from "@/lib/serverData";
 
-// graded.json holds every prediction in the published score: the Brier score and
-// SI coverage on /validation recompute from it. The others feed the pages.
+// graded.json holds every prediction in the published score: the Brier score, SI
+// coverage and TIER-1 counts recompute from it. The others feed the pages.
 const SOURCES: Record<string, () => Promise<unknown>> = {
   "dashboard.json": getDashboardData,
   "figures.json": getLedgerFigures,
