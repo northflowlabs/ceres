@@ -44,7 +44,7 @@ export default function TermsPage() {
 
         <h2 style={h2}>1. The Service</h2>
         <p style={p}>
-          CERES provides probabilistic forecasts of acute food insecurity (IPC Phase 3+). Headline forecasts are issued at national level across 43 high-risk countries, on a weekly schedule. The Service includes the public dashboard, the open data downloads, the public REST API, and supporting documentation.
+          CERES provides probabilistic forecasts of acute food insecurity (IPC Phase 3+). Forecasts are issued at national level across 43 high-risk countries, on a weekly schedule. The Service includes the public dashboard, the open data downloads, the public REST API, and supporting documentation.
         </p>
         <p style={p}>
           The Service is provided by Northflow Technologies AS, a Norwegian technology company. Norwegian law applies to these Terms.

@@ -65,12 +65,12 @@ const nextConfig = {
       {
         source: "/subnational",
         destination: "/regions",
-        permanent: false,
+        permanent: true,
       },
       {
         source: "/sub-national",
         destination: "/regions",
-        permanent: false,
+        permanent: true,
       },
     ];
   },
