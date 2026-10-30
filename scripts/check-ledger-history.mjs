@@ -295,7 +295,7 @@ for (const p of forecasts) {
     if (!EVIDENCE[e.variable](e.observed_value, s?.observed)) wrong.push(`${label}: site says ${s?.observed}, observed ${e.observed_value}`);
     if (!EVIDENCE[e.variable](e.threshold, s?.threshold)) wrong.push(`${label}: site says threshold ${s?.threshold}, API has ${e.threshold}`);
     const noted = e.note?.match(/^Rainfall ([+-]\d+)%/);
-    if (noted && Math.abs(signedDeparture(s?.observed) - Number(noted[1])) > 1) wrong.push(`${label}: site says ${s?.observed}, the API's note says ${noted[1]}%`);
+    if (noted && signedDeparture(s?.observed) !== Number(noted[1])) wrong.push(`${label}: site says ${s?.observed}, the API's note says ${noted[1]}%`);
     const reached = e.direction === "below" ? e.observed_value <= e.threshold : e.observed_value >= e.threshold;
     const verdict = reached === e.supports_hypothesis ? e.supports_hypothesis : null;
     if (s?.supports !== verdict) wrong.push(`${label}: verdict is ${s?.supports}, its values give ${verdict}`);

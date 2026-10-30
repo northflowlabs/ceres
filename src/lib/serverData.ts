@@ -123,12 +123,14 @@ const WITHDRAWAL_REASON =
 
 // What each evidence variable holds, in words. A variable not named here is not
 // shown, and check:ledger fails on one it does not know.
-function departure(v: number): string {
-  const percent = Math.round(Math.abs(v) * 100);
-  return percent === 0 ? "Normal" : `${percent}% ${v > 0 ? "above" : "below"} normal`;
+// The API's note states the departure as a whole percent, so that figure stands.
+function departure(v: number, note?: string): string {
+  const stated = note?.match(/^Rainfall ([+-]\d+)%/)?.[1];
+  const percent = stated == null ? Math.round(v * 100) : Number(stated);
+  return percent === 0 ? "Normal" : `${Math.abs(percent)}% ${percent > 0 ? "above" : "below"} normal`;
 }
 
-const EVIDENCE_TEXT: Record<string, { label: string; format: (v: number) => string }> = {
+const EVIDENCE_TEXT: Record<string, { label: string; format: (v: number, note?: string) => string }> = {
   rainfall_fraction_of_normal: { label: "Rainfall against normal", format: departure },
   ndvi_anomaly_zscore: { label: "NDVI anomaly", format: (v) => `z ${v.toFixed(2)}` },
   ipc_phase: { label: "IPC phase", format: (v) => `Phase ${v}` },
@@ -141,6 +143,7 @@ interface RawEvidence {
   threshold: number | null;
   direction: string;
   supports_hypothesis: boolean;
+  note?: string;
 }
 
 type RawHypothesis = Omit<Hypothesis, "evidence"> & { evidence?: RawEvidence[] };
@@ -161,7 +164,7 @@ function publicEvidence(rows: RawEvidence[]): Hypothesis["evidence"] {
       source_id: sourceLabel(e.source_id),
       variable: e.variable,
       label: text.label,
-      observed: text.format(e.observed_value),
+      observed: text.format(e.observed_value, e.note),
       threshold: text.format(e.threshold),
       supports: evidenceVerdict(e),
     }];
