@@ -308,13 +308,13 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
                 <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Forecasts We Ruled Out, And Why</h2>
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", textAlign: "right" }}>
-                {withdrawals.n_withdrawn} of {withdrawals.n_issued} issued
+                {fmtInt(withdrawals.n_withdrawn)} of {fmtInt(withdrawals.n_issued)} issued
                 {withdrawals.share_withdrawn !== null && <> {"·"} {(withdrawals.share_withdrawn * 100).toFixed(1)}%</>}
               </div>
             </div>
 
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--crisis)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              During build-out, two satellite adapters fell back to synthetic data when their live sources failed. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page. A withdrawal is permanent and dated. The grounds below summarise what was recorded with each one.
+              The first four runs used inputs that could fall back to mock data, incomplete conflict data and hardcoded country fallback values. Every forecast from those runs is struck out. The forecasts are still here with their original probabilities. They are excluded from every metric on this page. A withdrawal is permanent and dated. The grounds below summarise what was recorded with each one.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>

@@ -8,7 +8,7 @@
 - Operator address: Northflow Technologies AS, org. no. 936 979 815, Jåttåveien 92, 4020 Stavanger, Norway. Phone +47 95 08 50 45.
 - Coverage: 43 high-risk countries.
 - Horizon: 90-day probability forecasts.
-- Cadence: weekly, scheduled weekly.
+- Cadence: scheduled weekly.
 - Outputs: P(IPC Phase 3+ 90d), P(IPC Phase 4+ 90d), P(Famine 90d), a composite stress score, an alert tier, and a 90% sensitivity interval per region.
 
 ## Data inputs
@@ -27,7 +27,7 @@ FEWS NET is not a model input: it supplies the proxy used to grade forecasts. UN
 
 - Method: logistic regression with expert-informed prior coefficients over these public data streams, with input-perturbation sensitivity intervals (n=2,000 draws per prediction).
 - Coefficients: expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), not yet fit to graded outcomes.
-- Forward validation: every prediction is timestamped and publicly recorded before its outcome is known, and graded at the T+90 horizon against a FEWS NET proxy: the highest Current Situation phase FEWS NET reports for any area of the country within 30 days of the grading date. Grades currently use this proxy. The archive starts on 9 March 2026, and graded outcomes are published on the validation ledger as they settle.
+- Forward validation: every prediction is timestamped and publicly recorded before its outcome is known, and graded at the T+90 horizon against a FEWS NET proxy: the highest Current Situation phase FEWS NET reports for any area of the country within 30 days of the grading date. Grades currently use this proxy. The published run archive starts on 7 April 2026, and graded outcomes are published on the validation ledger as they settle.
 
 ## Important distinction
 
@@ -51,7 +51,7 @@ Predictions are published under Creative Commons Attribution 4.0 (CC BY 4.0): an
 - Preprint: https://arxiv.org/abs/2603.09425
 - Current forecasts (JSON): https://api.ceres.northflow.no/v1/predictions
 - Current forecasts (CSV): https://api.ceres.northflow.no/v1/export/predictions/csv
-- Weekly forecast archive (CSV): https://api.ceres.northflow.no/v1/export/archive/csv
+- Published runs (CSV): https://ceres.northflow.no/ledger/archive.csv
 - Validation metrics (JSON): https://ceres.northflow.no/ledger/metrics.json
 - Graded predictions in the score (JSON): https://ceres.northflow.no/ledger/graded.json
 - Research collaboration: hello@northflow.no

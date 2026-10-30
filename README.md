@@ -2,7 +2,7 @@
 
 # CERES
 
-The public website and dashboard of CERES, Northflow's weekly forecasts of acute food insecurity in 43 countries.
+The public website and dashboard of CERES, Northflow's forecasts of acute food insecurity in 43 countries.
 
 [Website](https://ceres.northflow.no) · [Research page](https://research.northflow.no/systems/ceres) · [API docs](https://api.ceres.northflow.no/docs) · [Preprint](https://arxiv.org/abs/2603.09425) · [Licence](#licence)
 
@@ -22,9 +22,9 @@ CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probab
 | Regions | `/regions` | All 43 countries with their probability scores |
 | Region detail | `/regions/{iso3}` | Hypothesis chain, drivers, Admin1 and Admin2 detail |
 | Map | `/map` | Global risk map with Admin1 and Admin2 layers |
-| Sub-national | `/subnational` | Admin1 stress across the countries covered |
+| Sub-national | `/subnational` | A separate screening score from sub-national signals |
 | Validation | `/validation` | The public prediction ledger: pending, awaiting data, graded |
-| Track record | `/tracker` | Weekly snapshots per region and verified outcomes |
+| Track record | `/tracker` | Run snapshots per region and graded outcomes |
 | Impact | `/impact` | The operational record, read live from the archive and the ledger |
 | Changelog | `/changelog` | Model, data, methodology and platform changes |
 | Methodology | `/methodology` | Technical documentation of the method |
@@ -49,7 +49,7 @@ The forecasts on the site and from the public API are published under [CC BY 4.0
 
 - Current forecasts (JSON): https://api.ceres.northflow.no/v1/predictions
 - Current forecasts (CSV): https://api.ceres.northflow.no/v1/export/predictions/csv
-- Weekly archive (CSV): https://api.ceres.northflow.no/v1/export/archive/csv
+- Published runs (CSV): https://ceres.northflow.no/ledger/archive.csv
 
 ## Run it locally
 
@@ -61,6 +61,14 @@ NEXT_PUBLIC_API_URL=https://api.ceres.northflow.no npm run dev
 ```
 
 The site then runs at http://localhost:3100 and reads the public API. Without `NEXT_PUBLIC_API_URL`, a development build expects an API at http://localhost:8100. Production builds default to `api.ceres.northflow.no`.
+
+To check the run history against the raw archive and the ledger, start a production server and run the check in a second terminal:
+
+```bash
+npm run build
+npx next start --port 3100
+npm run check:ledger
+```
 
 ## Stack
 

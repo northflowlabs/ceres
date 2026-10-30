@@ -64,6 +64,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
   const [isTinyMobile, setIsTinyMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const [admin1Data, setAdmin1Data] = useState<Admin1Signal[]>([]);
   const [admin1Loading, setAdmin1Loading] = useState(false);
   const [admin1Open, setAdmin1Open] = useState(false);
@@ -89,6 +90,14 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     }
     return () => { document.body.style.overflow = ""; };
   }, [sheetOpen, menuOpen]);
+
+  // Focus moves into the sheet when it opens and back when it closes.
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const before = document.activeElement as HTMLElement | null;
+    sheetRef.current?.focus();
+    return () => before?.focus();
+  }, [sheetOpen]);
 
   useEffect(() => {
     if (!sheetOpen && !menuOpen) return;
@@ -922,6 +931,11 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
           }}
         >
           <div
+            ref={sheetRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${selPred.region_name} detail`}
+            tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             style={{
               position: "absolute", bottom: 0, left: 0, right: 0,

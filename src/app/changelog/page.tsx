@@ -48,7 +48,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.5",
     type: "model",
     title: "Coefficient adjustment",
-    body: "The IPC Phase 3+ coefficients from arXiv v1 were adjusted so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The same coefficients apply to the Admin1, Admin2 and scenario models, and are documented in Appendix C of the preprint and on the Methodology page.",
+    body: "The IPC Phase 3+ coefficients from arXiv v1 were adjusted so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The coefficients are documented in Appendix C of the preprint and on the Methodology page.",
     breaking: true,
   },
   {
@@ -70,7 +70,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.2",
     type: "platform",
     title: "CERES public launch: 43 high-risk countries",
-    body: "Initial public release of CERES. Predictions issued at national level across 43 high-risk countries, with Admin1 disaggregation where data permits, including Ethiopia, Somalia, Sudan, South Sudan, Kenya, Yemen, Niger, Mali, Burkina Faso, Haiti, Afghanistan, Syria, DRC, Zimbabwe, and Mozambique. All predictions timestamped and graded at T+90 days.",
+    body: "Initial public release of CERES. Predictions issued at national level across 43 high-risk countries, including Ethiopia, Somalia, Sudan, South Sudan, Kenya, Yemen, Niger, Mali, Burkina Faso, Haiti, Afghanistan, Syria, DRC, Zimbabwe, and Mozambique. All predictions timestamped and graded at T+90 days.",
   },
   {
     date: "2026-02-28",
@@ -105,7 +105,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "platform",
     title: "Track record archive: weekly prediction snapshots",
-    body: "Every weekly pipeline run archives a snapshot of all region predictions. The /tracker page displays the full time series per region with sparklines, trend indicators, and verification outcomes. Archive statistics: total runs, regions tracked, snapshot count, earliest run date.",
+    body: "Each pipeline run archives a snapshot of all region predictions. The /tracker page displays the full time series per region with sparklines, trend indicators, and verification outcomes. Archive statistics: total runs, regions tracked, snapshot count, earliest run date.",
   },
   {
     date: "2026-02-15",

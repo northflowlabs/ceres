@@ -76,7 +76,7 @@ const datasetJsonLd = {
     "Cadre Harmonisé",
     "WFP market prices",
   ],
-  temporalCoverage: "2026-03-09/..",
+  temporalCoverage: "2026-04-07/..",
   spatialCoverage: "43 high-risk countries (global)",
   variableMeasured: [
     "P(IPC Phase 3+ 90d)",
@@ -98,9 +98,9 @@ const datasetJsonLd = {
     },
     {
       "@type": "DataDownload",
-      name: "Full prediction archive (CSV)",
+      name: "Published runs (CSV)",
       encodingFormat: "text/csv",
-      contentUrl: `${HDX_BASE}/v1/export/hdx?archive=full`,
+      contentUrl: "https://ceres.northflow.no/ledger/archive.csv",
     },
     {
       "@type": "DataDownload",

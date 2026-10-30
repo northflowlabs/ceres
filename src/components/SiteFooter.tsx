@@ -41,7 +41,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div className="footer-bottom" style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, fontFamily: "var(--mono)", fontSize: 10, color: "#A8A29E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.6.0 · HGE Adapter #5 · Archive since 9 Mar 2026 · <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "#A8A29E", textDecoration: "underline" }}>arXiv:2603.09425</a></span>
+        <span>CERES v0.6.0 · HGE Adapter #5 · Archive since 7 Apr 2026 · <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "#A8A29E", textDecoration: "underline" }}>arXiv:2603.09425</a></span>
         <span style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
           <Link href="/privacy" style={{ color: "#A8A29E", textDecoration: "none" }}>Privacy Policy</Link>
           <Link href="/cookies" style={{ color: "#A8A29E", textDecoration: "none" }}>Cookies</Link>

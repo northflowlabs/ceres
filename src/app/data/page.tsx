@@ -222,11 +222,11 @@ export default function DataPage() {
                 tag: "HXL-tagged",
               },
               {
-                label: "Full Archive",
-                sub: "All weekly runs since launch",
+                label: "Published Runs",
+                sub: "One row per region and published run date",
                 desc: "Best for time-series analysis, trend research, and calibration studies.",
-                url: "https://api.ceres.northflow.no/v1/export/hdx",
-                tag: "HXL-tagged",
+                url: "https://ceres.northflow.no/ledger/archive.csv",
+                tag: "CSV",
               },
               {
                 label: "Grading Ledger",
@@ -268,7 +268,7 @@ export default function DataPage() {
               {[
                 { label: "Current forecasts, all regions", fmt: "JSON", url: "https://api.ceres.northflow.no/v1/predictions" },
                 { label: "Current forecasts, all regions", fmt: "CSV",  url: "https://api.ceres.northflow.no/v1/export/predictions/csv" },
-                { label: "Weekly forecast archive",        fmt: "CSV",  url: "https://api.ceres.northflow.no/v1/export/archive/csv" },
+                { label: "Published runs",                 fmt: "CSV",  url: "https://ceres.northflow.no/ledger/archive.csv" },
                 { label: "Validation metrics",             fmt: "JSON", url: "https://ceres.northflow.no/ledger/metrics.json" },
                 { label: "Driver hypotheses",              fmt: "JSON", url: "https://api.ceres.northflow.no/v1/hypotheses" },
               ].map(({ label, fmt, url }) => (

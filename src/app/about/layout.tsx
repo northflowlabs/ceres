@@ -97,7 +97,7 @@ const faqJsonLd = {
       name: "How is CERES validated?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Every prediction is timestamped, publicly recorded, and graded against the FEWS NET proxy after the T+90 horizon. The model uses expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. The archive starts on 9 March 2026, and graded outcomes are published as the data arrives.",
+        text: "Every prediction is timestamped, publicly recorded, and graded against the FEWS NET proxy after the T+90 horizon. The model uses expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. The published run archive starts on 7 April 2026, and graded outcomes are published as the data arrives.",
       },
     },
     {
