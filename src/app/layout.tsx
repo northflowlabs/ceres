@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     "Northflow Technologies",
     "open humanitarian data",
   ],
-  authors: [{ name: "Tom Danny S. Pedersen", url: "https://northflow.no" }],
+  authors: [{ name: "Tom Danny Pedersen", url: "https://northflow.no" }],
   creator: "Northflow Technologies AS",
   publisher: "Northflow Technologies AS",
   openGraph: {
     title: "CERES · Calibrated Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 countries. " +
-      "The only open system with confidence intervals and a public write-once verification ledger.",
+      "Sensitivity intervals on every forecast, and a public verification ledger.",
     type: "website",
     locale: "en_US",
     url: "https://ceres.northflow.no",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: "CERES · Calibrated Famine Early Warning · 43 Countries",
     description:
       "Weekly 90-day IPC Phase 3+, 4+, and Famine probability forecasts. " +
-      "Confidence intervals + public verification ledger. Open data under CC BY 4.0.",
+      "Sensitivity intervals and a public verification ledger. Open data under CC BY 4.0.",
     images: ["/og-image.png"],
     creator: "@northflowno",
   },

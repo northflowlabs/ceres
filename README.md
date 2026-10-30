@@ -12,7 +12,7 @@ The public website and dashboard of CERES, Northflow's weekly forecasts of acute
 
 This repository holds the Next.js application behind [ceres.northflow.no](https://ceres.northflow.no). It reads the forecasts from the public CERES API at [api.ceres.northflow.no](https://api.ceres.northflow.no/docs) and shows them as maps, regional pages, sub-national breakdowns and a public validation ledger.
 
-CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probability forecasts of IPC Phase 3+, Phase 4+ and Famine conditions for 43 countries, every Monday at 06:00 UTC. Northflow Technologies AS develops and runs the forecasting engine. This repository contains the website only.
+CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probability forecasts of IPC Phase 3+, Phase 4+ and Famine conditions for 43 countries, every Monday. Northflow Technologies AS develops and runs the forecasting engine. This repository contains the website only.
 
 ## Pages
 
@@ -24,6 +24,9 @@ CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probab
 | Map | `/map` | Global risk map with Admin1 and Admin2 layers |
 | Sub-national | `/subnational` | Admin1 stress across the countries covered |
 | Validation | `/validation` | The public prediction ledger: pending, awaiting data, graded |
+| Track record | `/tracker` | Weekly snapshots per region and verified outcomes |
+| Impact | `/impact` | The operational record, read live from the archive and the ledger |
+| Changelog | `/changelog` | Model, data, methodology and platform changes |
 | Methodology | `/methodology` | Technical documentation of the method |
 | Data sources | `/data` | The model inputs and the grading source |
 | About | `/about` | System overview |
@@ -54,14 +57,10 @@ The forecasts on the site and from the public API are published under [CC BY 4.0
 git clone https://github.com/northflowlabs/ceres
 cd ceres
 npm install
-npm run dev
+NEXT_PUBLIC_API_URL=https://api.ceres.northflow.no npm run dev
 ```
 
-The site reads from the production API at `api.ceres.northflow.no` by default. To point it at another API:
-
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
-```
+The site then runs at http://localhost:3100 and reads the public API. Without `NEXT_PUBLIC_API_URL`, a development build expects an API at http://localhost:8100. Production builds default to `api.ceres.northflow.no`.
 
 ## Stack
 

@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Methodology · CERES Famine Intelligence System",
+  title: "Methodology · CERES Famine Early Warning",
   description:
     "Full technical methodology for CERES: data pipeline, composite stress scoring, logistic regression model, IPC tier classification, calibration process, known limitations, and citation guide.",
   keywords: [
     "famine forecasting methodology", "IPC phase classification", "logistic regression",
-    "bootstrap confidence intervals", "NASA POWER", "MODIS NDVI", "UCDP GED", "food security model",
+    "sensitivity intervals", "NASA POWER", "MODIS NDVI", "UCDP GED", "food security model",
     "HGE inference engine", "CERES", "Northflow",
   ],
   openGraph: {

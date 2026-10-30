@@ -3,24 +3,24 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Impact · CERES Famine Early Warning",
   description:
-    "How CERES is used in humanitarian response: coverage, adoption, and the case for " +
-    "calibrated probabilistic famine forecasting as anticipatory action infrastructure.",
+    "The operational record of CERES in numbers: coverage, weekly runs, current alerts and " +
+    "forward accuracy, read live from the prediction archive and the verification ledger.",
   keywords: [
-    "famine early warning impact", "anticipatory action", "humanitarian response",
-    "food security system", "OCHA", "WFP", "CERES impact", "Northflow Technologies",
+    "famine early warning", "anticipatory action", "food security forecast",
+    "verification ledger", "CERES impact", "Northflow Technologies",
   ],
   openGraph: {
-    title: "CERES Impact · Calibrated Famine Forecasting in Practice",
+    title: "CERES Impact · The Operational Record",
     description:
-      "Coverage, adoption, and the humanitarian case for probabilistic famine early warning.",
+      "Coverage, weekly runs, current alerts and forward accuracy, read live from the verification ledger.",
     url: "https://ceres.northflow.no/impact",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CERES Impact · Calibrated Famine Forecasting in Practice",
-    description: "Coverage, adoption, and the humanitarian case for probabilistic famine early warning.",
+    title: "CERES Impact · The Operational Record",
+    description: "Coverage, weekly runs, current alerts and forward accuracy, read live from the verification ledger.",
     images: ["/og-image.png"],
   },
   alternates: { canonical: "https://ceres.northflow.no/impact" },

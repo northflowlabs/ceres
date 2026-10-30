@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Validation · CERES Famine Intelligence System",
+  title: "Validation · CERES Famine Early Warning",
   description:
     "CERES prediction validation ledger. Live accuracy metrics, calibration charts, and retrospective grading of all timestamped forecasts against IPC Phase 3+ outcomes.",
   keywords: [

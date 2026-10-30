@@ -16,7 +16,7 @@ const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "P(IPC Phase 3+) within 90 days of issue" },
   { num: "87",       label: "Calibration Records",      note: "IPC transition records, 2011-2023, 31 countries" },
   { num: "T+90",     label: "Grading Horizon",         note: "Graded against published IPC outcomes; live figures on the Validation page" },
-  { num: "5",        label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
+  { num: "Open",     label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
 
 const p = { fontSize: 15, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.85 } as const;
@@ -61,9 +61,9 @@ export default function AboutPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {[
-              { title: "Open by design",            body: "The methodology is published. The code is public. Every prediction is timestamped and graded against real-world outcomes. We built CERES to be examined: by scientists, by funders, by the people whose lives depend on getting this right." },
-              { title: "Calibrated, not overconfident", body: "CERES never gives you a single number and calls it certainty. Every forecast carries a 90% sensitivity interval, built from 2,000 input-perturbation replications. Honest uncertainty is more useful to a humanitarian programme officer than false precision." },
-              { title: "Built to be proven wrong",  body: "Every prediction CERES issues is publicly recorded before the outcome is known. If we are wrong, it is visible. That is not a vulnerability: it is the point. A forecast system that cannot be falsified is not a forecast system." },
+              { title: "Open by design",            body: "The methodology is published. The code of this website is public. Every prediction is timestamped and graded against real-world outcomes. We built CERES to be examined: by scientists, by funders, by the people whose lives depend on getting this right." },
+              { title: "Calibrated, not overconfident", body: "CERES never gives you a single number and calls it certainty. Every forecast carries a 90% sensitivity interval, built from 2,000 input-perturbation replications. That is what a humanitarian programme officer can plan with." },
+              { title: "Falsifiable",  body: "Every prediction CERES issues is publicly recorded before the outcome is known, and graded in the open at T+90." },
             ].map(({ title, body }) => (
               <div key={title} style={{ borderLeft: "2px solid #44403C", paddingLeft: 16 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 4 }}>{title}</div>
@@ -117,7 +117,7 @@ export default function AboutPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Institutional Context</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
             <p style={p}>Every design decision in CERES, from the calibrated sensitivity intervals to the publicly timestamped prediction ledger to the published limitations section, is made with institutional reviewers in mind.</p>
-            <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders. It is built to withstand scrutiny, not to impress with outputs.</p>
+            <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders.</p>
             <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. The model was initialised against 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
           </div>
         </div>

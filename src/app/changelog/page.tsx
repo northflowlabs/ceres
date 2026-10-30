@@ -30,6 +30,20 @@ const TYPE_LABELS: Record<string, string> = {
 
 const CHANGELOG: ChangeEntry[] = [
   {
+    date: "2026-10-30",
+    version: "v0.6",
+    type: "platform",
+    title: "Impact page reads the archive and the ledger; live figures in the first page load",
+    body: "Every figure on the Impact page now comes from the prediction archive and the verification ledger. The dashboard, Regions, Track Record, Validation and Impact pages carry live figures in their first page load.",
+  },
+  {
+    date: "2026-10-30",
+    version: "v0.6",
+    type: "data",
+    title: "Current model inputs and alert tiers",
+    body: "The model reads NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé phase classifications through HDX HAPI, and WFP market prices through HDX HAPI. FEWS NET grades the forecasts and is not a model input. Tiers follow P(IPC 3+) alone: TIER-1 at 0.70 and above, TIER-2 from 0.45 to 0.69, TIER-3 below 0.45. This entry supersedes the input list of 27 February 2026 and the tier rule of 10 February 2026.",
+  },
+  {
     date: "2026-03-11",
     version: "v0.5",
     type: "model",
@@ -130,7 +144,7 @@ export default function ChangelogPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Changelog</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          Every model update, methodology change, data source addition, and platform release, documented publicly in chronological order. CERES does not make undisclosed changes to its prediction system.
+          Model updates, methodology changes, data sources and platform releases, newest first.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (
@@ -157,7 +171,7 @@ export default function ChangelogPage() {
             <div style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid var(--border-light)" }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Commitment</div>
               <p style={{ fontSize: 11, color: "var(--ink-light)", lineHeight: 1.6 }}>
-                All model changes are documented before deployment. Retrospective edits to this log are not permitted.
+                Entries are added, not rewritten. A newer entry supersedes an older one and says so.
               </p>
             </div>
           </nav>
@@ -202,7 +216,7 @@ export default function ChangelogPage() {
         <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "28px 32px", margin: "16px 0 0" }}>
           <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Transparency Commitment</div>
           <p style={{ ...p, margin: 0 }}>
-            CERES documents every change to the prediction system, model coefficients, data sources, and methodology in this public log before or at the time of deployment. Changes are never made retroactively to improve the appearance of historical accuracy. If a model change would affect the interpretation of past predictions, this is explicitly noted. This log is the authoritative record of CERES system provenance.
+            CERES records changes to the prediction system, model coefficients, data sources and methodology in this public log. If a change affects how past predictions should be read, the entry says so.
           </p>
         </div>
 
