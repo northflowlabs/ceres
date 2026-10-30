@@ -40,6 +40,7 @@ export default function LeafletRiskMap({
   const ringsRef     = useRef<Map<string, any>>(new Map());
   const selectedRef  = useRef(selected);
   const onSelectRef  = useRef(onSelect);
+  const clickedRef   = useRef<string | null>(null);
   selectedRef.current = selected;
   onSelectRef.current = onSelect;
   const [mapReady, setMapReady] = useState(false);
@@ -191,7 +192,10 @@ export default function LeafletRiskMap({
           outer.bindPopup(popupHtml, { maxWidth: 300 });
           inner.bindPopup(popupHtml, { maxWidth: 300 });
 
-          const handleClick = () => onSelectRef.current?.(p);
+          const handleClick = () => {
+            clickedRef.current = p.region_id;
+            onSelectRef.current?.(p);
+          };
           outer.on("click", handleClick);
           inner.on("click", handleClick);
 
@@ -203,6 +207,10 @@ export default function LeafletRiskMap({
 
   useEffect(() => {
     ringsRef.current.forEach((ring, id) => ring.setStyle(ringStyle(selected?.region_id === id)));
+    // A click on the map has just opened this region's popup. Any other selection
+    // closes the popup of the region before it.
+    if (clickedRef.current !== selected?.region_id) mapRef.current?.closePopup();
+    clickedRef.current = null;
   }, [selected]);
 
   // Fly to selected
