@@ -129,7 +129,7 @@ export default function MethodologyPage({ initial }: { initial: LedgerFigures | 
           <section id="pipeline" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: "1px solid var(--border-light)", scrollMarginTop: 80 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>§ 2 · Pipeline Architecture</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Six-Stage Processing Pipeline</h2>
-            <p style={s}>Each pipeline run proceeds through six sequential stages. Runs are scheduled weekly. The run identifier (e.g. <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>CERES-20260302-060000</span>) is recorded with every prediction, enabling complete reproducibility and audit.</p>
+            <p style={s}>Each pipeline run proceeds through six sequential stages. Runs are scheduled weekly. Each published run carries a run identifier, such as <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>CERES-20260803-074444</span>.</p>
             <div className="table-scroll" style={{ border: "1px solid var(--border)", margin: "32px 0", overflowX: "auto" }}>
               {PIPELINE_STEPS.map(({ n, title, desc }, i) => (
                 <div key={n} style={{ display: "grid", gridTemplateColumns: "56px 1fr", borderBottom: i < 5 ? "1px solid var(--border-light)" : "none" }}>

@@ -289,8 +289,8 @@ export default function DataPage() {
         <div className="data-principles-grid" style={{ margin: "48px 0 0", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           {[
             { title: "Public Data",      body: "Every model input comes from a public source." },
-            { title: "Source Provenance",   body: "Every prediction stores the data retrieval timestamps for all ingested sources. Full audit trail from raw signal to probability estimate." },
-            { title: "Latency Transparency", body: "Data latency for each source is published here. Known latency constraints are explicitly modelled as limitations in forecast uncertainty." },
+            { title: "Named Sources",   body: "Each source is named here with its provider, cadence and resolution." },
+            { title: "Stated Latency", body: "Typical data latency for each source is listed here." },
           ].map(({ title, body }) => (
             <div key={title} style={{ background: "white", padding: 24 }}>
               <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>{title}</div>

@@ -33,6 +33,13 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-10-30",
     version: "v0.6",
     type: "platform",
+    title: "Published runs defined",
+    body: "A published run is a run date in the archive that counts towards the score, with one row per region. Run counts, charts and the published runs CSV all use this definition. This entry replaces the descriptions of the archive in the entries of 20 February and 2 March 2026.",
+  },
+  {
+    date: "2026-10-30",
+    version: "v0.6",
+    type: "platform",
     title: "Impact page reads the archive and the ledger; live figures in the first page load",
     body: "Every figure on the Impact page now comes from the prediction archive and the verification ledger. The dashboard, Regions, Track Record, Validation and Impact pages carry live figures in their first page load.",
   },
@@ -41,7 +48,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.6",
     type: "data",
     title: "Current model inputs and alert tiers",
-    body: "The model reads NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé phase classifications through HDX HAPI, and WFP market prices through HDX HAPI. FEWS NET grades the forecasts and is not a model input. Tiers follow P(IPC 3+) alone: TIER-1 at 0.70 and above, TIER-2 from 0.45 to 0.69, TIER-3 below 0.45. This entry supersedes the input list of 27 February 2026 and the tier rule of 10 February 2026.",
+    body: "The model reads NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé phase classifications through HDX HAPI, and WFP market prices through HDX HAPI. FEWS NET grades the forecasts and is not a model input. Tiers follow P(IPC 3+) alone: TIER-1 at 0.70 and above, TIER-2 from 0.45 up to but not including 0.70, TIER-3 below 0.45. This entry supersedes the input list of 27 February 2026 and the tier rule of 10 February 2026.",
   },
   {
     date: "2026-03-11",
@@ -98,7 +105,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "api",
     title: "API v1: predictions, hypotheses, grading ledger, archive",
-    body: "Public API launched, now served at api.ceres.northflow.no. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
+    body: "Public API launched, now served at api.ceres.northflow.no. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/grades (grading ledger + aggregate metrics), /v1/archive (snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
   },
   {
     date: "2026-02-20",
@@ -164,7 +171,7 @@ export default function ChangelogPage() {
             <div style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid var(--border-light)" }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Commitment</div>
               <p style={{ fontSize: 11, color: "var(--ink-light)", lineHeight: 1.6 }}>
-                A newer entry supersedes an older one and says so.
+                Where a newer entry replaces an older one, it says so.
               </p>
             </div>
           </nav>

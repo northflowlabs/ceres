@@ -14,7 +14,7 @@ export const TIER_DEFS = [
     tier: "TIER-2",
     name: "Warning",
     roman: "Tier II",
-    thresh: "45 to 69%",
+    thresh: "45% up to 70%",
     color: "var(--warning)",
     bg: "#FFFBEB",
     meaning: "IPC Phase 3+ (Crisis or above) possible within 90 days. Enhanced monitoring and contingency planning.",
