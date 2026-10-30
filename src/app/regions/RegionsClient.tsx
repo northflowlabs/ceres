@@ -12,7 +12,7 @@ function tierLabel(t: string) { return t === "TIER-1" ? "Critical" : t === "TIER
 function tierBg(t: string)    { return t === "TIER-1" ? "#FEF2F2" : t === "TIER-2" ? "#FFFBEB" : "#F0FDF4"; }
 
 function fmtDate(s: string) {
-  try { return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+  try { return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); }
   catch { return s; }
 }
 
@@ -29,7 +29,7 @@ export default function RegionsPage({ initial }: { initial: Prediction[] | null 
   useEffect(() => {
     api.predictions()
       .then(setPredictions)
-      .catch(e => { if (!hasInitial) setError(e.message); })
+      .catch(() => { if (!hasInitial) setError("The forecasts are unavailable right now."); })
       .finally(() => setLoading(false));
   }, [hasInitial]);
 
@@ -105,7 +105,7 @@ export default function RegionsPage({ initial }: { initial: Prediction[] | null 
         </div>
 
         {/* Error */}
-        {error && <div style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--crisis)", marginBottom: 24 }}>{error}</div>}
+        {error && <div style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--ink-mid)", marginBottom: 24 }}>{error}</div>}
 
         {/* Loading skeletons */}
         {loading && (
@@ -182,7 +182,7 @@ export default function RegionsPage({ initial }: { initial: Prediction[] | null 
         {/* Last updated */}
         {!loading && predictions.length > 0 && (
           <div style={{ marginTop: 40, fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", borderTop: "1px solid var(--border-light)", paddingTop: 20 }}>
-            Last pipeline run: {fmtDate(predictions[0]?.reference_date ?? "")} · {predictions.length} regions · 90-day forecast horizon · Refreshed weekly
+            Last pipeline run: {fmtDate(predictions[0]?.reference_date ?? "")} · {predictions.length} regions · 90-day forecast horizon · Scheduled weekly
           </div>
         )}
       </div>

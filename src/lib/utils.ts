@@ -65,7 +65,7 @@ export function relativeTime(isoStr: string): string {
 export function formatDate(isoStr: string): string {
   if (!isoStr) return "";
   return new Date(isoStr).toLocaleDateString("en-GB", {
-    day: "2-digit", month: "short", year: "numeric",
+    day: "2-digit", month: "short", year: "numeric", timeZone: "UTC",
   });
 }
 

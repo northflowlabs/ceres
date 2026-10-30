@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { regionName, REGION_NAMES } from "@/lib/regionNames";
 
 type Params = { id: string };
@@ -15,8 +16,8 @@ export async function generateMetadata(
   const title = `${country} Famine Risk: 90-Day IPC Phase 3+ Forecast | CERES`;
 
   const description = known
-    ? `Live 90-day famine risk for ${country}: calibrated IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals, driver breakdown, and sub-national signals. Updated weekly by CERES.`
-    : `Live 90-day famine risk: calibrated IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals and driver breakdown. Updated weekly by CERES.`;
+    ? `Live 90-day famine risk for ${country}: calibrated IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals, driver breakdown, and sub-national signals. Scheduled weekly by CERES.`
+    : `Live 90-day famine risk: calibrated IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals and driver breakdown. Scheduled weekly by CERES.`;
 
   return {
     title,
@@ -38,6 +39,10 @@ export async function generateMetadata(
   };
 }
 
-export default function RegionLayout({ children }: { children: React.ReactNode }) {
+export default async function RegionLayout(
+  { children, params }: { children: React.ReactNode; params: Promise<Params> }
+) {
+  const { id } = await params;
+  if (!(id.toUpperCase() in REGION_NAMES)) notFound();
   return <>{children}</>;
 }

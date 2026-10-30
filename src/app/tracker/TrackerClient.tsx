@@ -33,13 +33,13 @@ function fmtPct(n: number | null | undefined) {
 
 function fmtDate(s: string) {
   try {
-    return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
   } catch { return s; }
 }
 
 function fmtDateShort(s: string) {
   try {
-    return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
   } catch { return s; }
 }
 
@@ -90,6 +90,8 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
   // ── Archive (historical timeline) ─────────────────────────────
   const [latest,        setLatest]        = useState<RegionSnapshot[]>(initial.latest ?? []);
   const [archiveStats,  setArchiveStats]  = useState<ArchiveStats | null>(initial.archive);
+  const [runs,          setRuns]          = useState<string[] | null>(initial.runs);
+  const [nPending,      setNPending]      = useState<number | null>(initial.metrics?.pending ?? null);
   const [selRegion,     setSelRegion]     = useState<string | null>(initial.latest?.[0]?.region_id ?? null);
   const [history,       setHistory]       = useState<RegionSnapshot[]>([]);
   const [histLoading,   setHistLoading]   = useState(false);
@@ -101,6 +103,9 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
       .then(d => setGrades(d.grades))
       .catch(() => {})
       .finally(() => setGradesLoading(false));
+
+    api.archiveRuns().then(setRuns).catch(() => {});
+    api.validationMetrics().then(m => setNPending(m.pending)).catch(() => {});
 
     Promise.all([api.archiveLatest(), api.archiveStats()])
       .then(([lat, stats]) => {
@@ -170,10 +175,10 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
         {archiveStats && (
           <div className="tracker-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 40px" }}>
             {[
-              { val: String(archiveStats.total_runs),      label: "Weekly Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Weekly archive" },
+              { val: runs ? String(runs.length) : "…",      label: "Weekly Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Weekly archive" },
               { val: String(archiveStats.total_regions),   label: "Regions Tracked",   note: "Monitored globally"  },
-              { val: String(pendingPredictions.length),    label: "Pending Grading",   note: "Awaiting T+90 outcome" },
-              { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "Pending", label: "Verified Hit Rate", note: grades.length > 0 ? `${grades.length} graded` : "Awaiting graded IPC outcomes" },
+              { val: nPending != null ? nPending.toLocaleString("en-GB") : "…", label: "Pending Grading", note: "Before their T+90 date" },
+              { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "…", label: "Directional Agreement", note: grades.length > 0 ? `P(IPC 3+) on the side of 50% the outcome took, ${grades.length} graded` : "" },
             ].map(({ val, label, note }) => (
               <div key={label} style={{ background: "white", padding: 24 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>
@@ -186,7 +191,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
 
         {/* Tabs */}
         <div style={{ display: "flex", borderBottom: "2px solid var(--ink)", marginBottom: 32 }}>
-          {([ ["timeline", "Risk Timeline"], ["pending", `Pending (${pendingPredictions.length})`], ["verification", "Verified Outcomes"] ] as const).map(([t, label]) => (
+          {([ ["timeline", "Risk Timeline"], ["pending", `Next to Grade (${pendingPredictions.length})`], ["verification", "Verified Outcomes"] ] as const).map(([t, label]) => (
             <button key={t} onClick={() => setArchiveTab(t)} style={{
               fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
               padding: "10px 24px", background: "none", border: "none", cursor: "pointer",
@@ -330,13 +335,13 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
                 <div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What this section will show</div>
                   <h2 style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, marginBottom: 16, lineHeight: 1.3 }}>The permanent record of what CERES predicted, and whether it was right</h2>
-                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>The first T+90 horizons were reached in June 2026. This section fills as IPC/FEWS NET publish the observed outcome for each window, which lags the target by 2 to 4 months.</p>
+                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>The first T+90 horizons were reached in June 2026. This section fills as FEWS NET publish the observed outcome for each window, which lags the target by 2 to 4 months.</p>
                   <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Outcomes are graded against published observations only, never against forecasts.</p>
                 </div>
                 <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>Next predictions to grade</div>
                   {pendingPredictions.slice(0, 5).map((r, i) => {
-                    const h = r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+                    const h = r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
                     return (
                       <div key={r.region_id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 4 ? "1px solid var(--border-light)" : "none" }}>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{r.region_name}</div>
@@ -443,7 +448,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, color: tierColor(r.alert_tier), background: tierBg(r.alert_tier), padding: "2px 8px" }}>{r.alert_tier}</span>
                         </td>
                         <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-mid)" }}>
-                          {r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                          {r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}
                         </td>
                         <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 11, fontWeight: 700, color: urgency }}>
                           {r.daysUntil}d
@@ -465,7 +470,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
           <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 600, marginBottom: 10 }}>The public record is permanent</div>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", margin: 0, lineHeight: 1.75 }}>
             Every prediction on this page was issued publicly before the outcome was known. None have been removed. None have been edited post-hoc.
-            Grading is automated: the system queries FEWS NET / IPC Phase data at T+90 days and records the result without human intervention.
+            Grading is automated: the system queries FEWS NET data at T+90 days and records the result without human intervention.
             Brier scores and calibration metrics on the <a href="/validation" style={{ color: "var(--earth)" }}>Validation page</a> are derived directly from this ledger.
           </p>
         </div>

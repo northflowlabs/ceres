@@ -30,6 +30,18 @@ function tierBadgeClass(tier: string) {
   return "tier-badge tier-badge-watch";
 }
 
+// The API's own stress values. A signal it does not carry is left out.
+function stressSignals(p: Prediction) {
+  return [
+    { name: "NASA POWER", val: p.drought_stress },
+    { name: "NDVI",       val: p.vegetation_stress },
+    { name: "UCDP GED",   val: p.conflict_stress },
+    { name: "WFP prices", val: p.price_stress },
+  ].flatMap(({ name, val }) =>
+    val == null ? [] : [{ name, val: val.toFixed(2), level: Math.round(val * 5) }]
+  );
+}
+
 export default function Dashboard({ initial }: { initial: DashboardData | null }) {
   const [predictions, setPredictions] = useState<Prediction[]>(initial?.predictions ?? []);
   const [hypotheses,  setHypotheses]  = useState<Hypothesis[]>(initial?.hypotheses ?? []);
@@ -153,7 +165,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
           position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
           overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0,
         }}>
-          CERES, Probabilistic Famine Early Warning: 90-day IPC Phase 3+ forecasts for 43 high-risk countries, updated weekly.
+          CERES, Probabilistic Famine Early Warning: 90-day IPC Phase 3+ forecasts for 43 high-risk countries, scheduled weekly.
         </h1>
         {/* Logo */}
         <div style={{
@@ -170,7 +182,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
             <span style={{
               fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.15em",
               color: "var(--ink-light)", textTransform: "uppercase", marginTop: 3,
-            }}>Famine Intelligence System · HGE Adapter #5</span>
+            }}>Famine Early Warning · HGE Adapter #5</span>
           </div>
         </div>
 
@@ -225,11 +237,8 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
           padding: "0 0 0 24px",
           marginLeft: "auto",
         }}>
-          <span className="animate-pulse-live" style={{
-            width: 7, height: 7, background: "#2E7D32", borderRadius: "50%", display: "inline-block",
-          }} />
-          <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-            {loading ? "LOADING…" : error ? "API OFFLINE" : `PIPELINE LIVE · ${predictions.length} REGIONS`}
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
+            {loading ? "LOADING…" : error ? "UNAVAILABLE" : `LATEST RUN ${formatDate(lastUpdated)} · ${predictions.length} REGIONS`}
           </span>
           <button
             onClick={() => load()}
@@ -300,17 +309,12 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
       {/* ── ERROR ────────────────────────────────────────────────────── */}
       {error && (
         <div style={{
-          background: "var(--crisis-light)", borderBottom: "1px solid rgba(192,57,43,0.3)",
+          background: "var(--parchment-dark)", borderBottom: "1px solid var(--border)",
           padding: "10px 32px",
-          fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)",
+          fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-mid)",
           letterSpacing: "0.04em", display: "flex", alignItems: "center", gap: 12,
         }}>
-          <span style={{ fontWeight: 600 }}>API UNAVAILABLE</span>
-          <span style={{ color: "var(--ink-light)" }}>{error}</span>
-          <code style={{
-            background: "white", border: "1px solid var(--border)",
-            padding: "2px 8px", color: "var(--ink-mid)",
-          }}>ceres serve</code>
+          <span>The forecasts are unavailable right now.</span>
         </div>
       )}
 
@@ -348,7 +352,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
           <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid var(--border-light)" }}>
             <div className="panel-label">Active Monitoring Zones</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600 }}>
-              {loading ? "Loading regions…" : `${predictions.length} Regions · ${n1 + n2} Alerts`}
+              {loading ? "Loading regions…" : error ? "Unavailable" : `${predictions.length} Regions · ${n1 + n2} Alerts`}
             </div>
           </div>
 
@@ -365,7 +369,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
             ].map(({ num, label, color }) => (
               <div key={label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <span style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, lineHeight: 1, color }}>
-                  {loading ? "·" : num}
+                  {loading || error ? "·" : num}
                 </span>
                 <span className="panel-label" style={{ marginBottom: 0 }}>{label}</span>
               </div>
@@ -493,7 +497,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.8 }}>
               IPC Phase 3+ probability · Logistic model + sensitivity intervals<br />
               Data: NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices<br />
-              {lastUpdated ? `Ref: ${formatDate(lastUpdated)}` : "Loading…"} · HGE v1.0
+              {lastUpdated ? `Ref: ${formatDate(lastUpdated)} · ` : ""}HGE v1.0
             </div>
           </div>
 
@@ -726,14 +730,8 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
           {/* Signal matrix */}
           {selPred && (
             <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>
-              <div className="panel-label" style={{ marginBottom: 10 }}>Signal Convergence Matrix</div>
-              {[
-                { name: "NASA POWER", val: `${Math.round((selPred.composite_stress_score - 0.3) * -100)}%`, level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
-                { name: "NDVI",      val: `−${(selPred.composite_stress_score * 0.3).toFixed(2)}`, level: selPred.p_ipc3plus_90d > 0.7 ? 4 : 2 },
-                { name: "UCDP GED",  val: selPred.p_ipc3plus_90d > 0.8 ? "+HIGH" : "MOD",         level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
-                { name: "IPC",       val: `PH ${selPred.ipc_phase_forecast}`,                      level: Math.round(selPred.ipc_phase_forecast) },
-                { name: "WFP prices", val: selPred.p_ipc4plus_90d > 0.5 ? "HIGH" : "MOD",          level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
-              ].map(({ name, val, level }) => {
+              <div className="panel-label" style={{ marginBottom: 10 }}>Stress Signals</div>
+              {stressSignals(selPred).map(({ name, val, level }) => {
                 const color = level >= 4 ? "var(--crisis)" : level === 3 ? "var(--warning)" : "var(--watch)";
                 return (
                   <div key={name} style={{
@@ -868,12 +866,15 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
             fontFamily: "var(--mono)", fontSize: 10,
             color: "var(--ink-light)", lineHeight: 2, letterSpacing: "0.04em",
           }}>
-            <span style={{ color: "var(--ink)", fontWeight: 500 }}>
-              CERES-{(lastUpdated || "").replace(/-/g, "").slice(0, 8) || "20260228"}-HGE
-            </span><br />
-            Mode: {error ? "OFFLINE" : "LIVE"} · HGE v1.0<br />
-            Regions: {predictions.map((p) => p.region_id).join(" · ") || "loading…"}<br />
-            Hypotheses: {hypotheses.length} tracked<br />
+            {lastUpdated && (
+              <>
+                <span style={{ color: "var(--ink)", fontWeight: 500 }}>
+                  CERES-{lastUpdated.replace(/-/g, "").slice(0, 8)}-HGE
+                </span><br />
+                Regions: {predictions.map((p) => p.region_id).join(" · ")}<br />
+                Hypotheses: {hypotheses.length} tracked<br />
+              </>
+            )}
             Horizon: 90 days · input-perturbation sensitivity intervals
           </div>
 
@@ -882,7 +883,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
             color: "var(--ink-light)", fontStyle: "italic", lineHeight: 1.6,
             borderTop: "1px solid var(--border-light)", marginTop: "auto",
           }}>
-            All predictions are timestamped, falsifiable, and graded against IPC outcomes at T+90 days.
+            All predictions are timestamped, falsifiable, and graded against observed FEWS NET outcomes at T+90 days.
             Not for operational use without institutional validation.
             Open methodology, published arXiv:2603.09425 (March 2026).
           </div>
@@ -1009,13 +1010,8 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
 
             {/* Signal matrix compact */}
             <div style={{ padding: "14px 20px 28px" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Signal Convergence</div>
-              {[
-                { name: "NASA POWER", level: selPred.p_ipc3plus_90d > 0.7 ? 5 : 3 },
-                { name: "UCDP GED", level: selPred.p_ipc3plus_90d > 0.6 ? 5 : 3 },
-                { name: "IPC",     level: Math.round(selPred.ipc_phase_forecast) },
-                { name: "WFP prices", level: selPred.p_ipc4plus_90d > 0.5 ? 4 : 3 },
-              ].map(({ name, level }) => {
+              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Stress Signals</div>
+              {stressSignals(selPred).map(({ name, level }) => {
                 const c = level >= 4 ? "var(--crisis)" : level === 3 ? "var(--warning)" : "var(--watch)";
                 return (
                   <div key={name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>

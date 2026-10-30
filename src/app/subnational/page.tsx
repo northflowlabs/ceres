@@ -149,9 +149,9 @@ export default function SubnationalPage() {
     ]).then(([a1, a2]) => {
       setRows(Array.isArray(a1) ? a1 : []);
       setA2rows(Array.isArray(a2) ? a2 : []);
-    }).catch(e => {
-      setError(e.message);
-      setA2error(e.message);
+    }).catch(() => {
+      setError("The forecasts are unavailable right now.");
+      setA2error("The forecasts are unavailable right now.");
     }).finally(() => {
       setLoading(false);
       setA2loading(false);

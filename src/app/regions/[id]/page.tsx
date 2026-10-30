@@ -42,7 +42,7 @@ const DRIVER_LABELS: Record<string, string> = {
 };
 
 function fmtDate(s: string) {
-  try { return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
+  try { return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }); }
   catch { return s; }
 }
 
@@ -213,7 +213,7 @@ export default function RegionPage() {
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <SiteNav />
       <div style={{ flex: 1, maxWidth: 800, margin: "80px auto", padding: "0 40px" }}>
-        <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--crisis)", marginBottom: 16 }}>{error ?? "Region not found"}</div>
+        <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-mid)", marginBottom: 16 }}>This forecast is unavailable right now.</div>
         <Link href="/" style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)", textDecoration: "none" }}>← Back to dashboard</Link>
       </div>
     </div>
