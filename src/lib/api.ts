@@ -175,34 +175,26 @@ export interface GradingLedger {
   metrics: AggregateMetrics;
 }
 
-// ── Validation Ledger (new verification architecture) ──────────────────────
-export interface LedgerPrediction {
-  prediction_id:       string;
-  region_id:           string;
-  reference_date:      string;
-  grading_date:        string;
-  p_ipc3plus:          number;
-  si_low:              number;
-  si_high:             number;
-  alert_tier:          string;
-  hypothesis_id:       string;
-  pipeline_commit_hash: string;
-  // Awaiting fields
-  grade_attempts?:     number;
-  last_grade_attempt?: string;
-  days_overdue?:       number;
-  // Graded fields
-  grade_source?:       string;
-  grade_date?:         string;
-  grade_source_type?:  string;
-  observed_phase?:     number;
-  binary_outcome?:     number;
-  brier_contribution?: number;
-  in_si?:              number;
-  grade_notes?:        string;
-  // Withdrawn fields
-  voided_at?:          string;
-  void_reason?:        string;
+// ── Validation Ledger ──────────────────────────────────────────────────────
+// What a page or a download carries for one prediction. serverData.ts builds
+// these field by field from the API's rows.
+export interface LedgerRow {
+  prediction_id:  string;
+  region_id:      string;
+  reference_date: string;
+  grading_date:   string;
+  p_ipc3plus:     number;
+  si_low:         number;
+  si_high:        number;
+  alert_tier:     string;
+}
+
+export interface ScoredRow extends LedgerRow {
+  grade_source:       string;
+  observed_phase:     number;
+  binary_outcome:     number;
+  brier_contribution: number;
+  in_si:              number;
 }
 
 // One run withdrawn from the score, with the reason stated at the time.
@@ -222,23 +214,10 @@ export interface WithdrawalsResponse {
   withdrawals:     Withdrawal[];
 }
 
-export interface LedgerResponse {
-  status: string;
-  count:  number;
-  predictions: LedgerPrediction[];
-}
-
 export interface ValidationMetrics {
   total_predictions:    number;
-  graded:               number | null;
   pending:              number | null;
   awaiting_data:        number | null;
-  unresolvable:         number | null;
-  // Predictions withdrawn from the score but kept on the record. Reported so a
-  // voided run cannot quietly shrink the denominator.
-  voided:               number | null;
-  // Predictions that cannot say which code produced them.
-  provenance_unknown:   number | null;
   brier_score:          number | null;
   brier_decomposition:  { reliability: number; resolution: number; uncertainty: number } | null;
   skill_score:          number | null;
@@ -257,8 +236,6 @@ export interface CalibrationBin {
 
 export interface CalibrationResponse {
   bins:     CalibrationBin[];
-  n_graded: number;
-  status:   string;
 }
 
 export interface ReportMeta {
@@ -301,6 +278,13 @@ async function apiFetch<T>(path: string): Promise<T> {
   return res.json();
 }
 
+// The site's own ledger routes, which carry only the public fields.
+async function siteFetch<T>(path: string): Promise<T> {
+  const res = await fetch(path, { cache: "no-store" });
+  if (!res.ok) throw new Error(`${path} → ${res.status}`);
+  return res.json();
+}
+
 async function apiPost<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
@@ -334,8 +318,5 @@ export const api = {
   admin2Country:  (countryId: string)       => apiFetch<Admin2Prediction[]>(`/v1/admin2/${countryId}`),
   admin2Countries: ()                       => apiFetch<string[]>("/v1/admin2/countries"),
   // Validation ledger (verification architecture)
-  validationLedger: (status: string)       => apiFetch<LedgerResponse>(`/v1/validation/ledger?status=${status}`),
-  validationMetrics: ()                    => apiFetch<ValidationMetrics>("/v1/validation/metrics"),
-  validationCalibration: ()                => apiFetch<CalibrationResponse>("/v1/validation/calibration"),
-  validationWithdrawals: ()                => apiFetch<WithdrawalsResponse>("/v1/validation/withdrawals"),
+  validationMetrics: ()                    => siteFetch<ValidationMetrics>("/ledger/metrics.json"),
 };

@@ -6,13 +6,13 @@ import { api, AggregateMetrics, ValidationMetrics } from "@/lib/api";
 import type { LedgerFigures } from "@/lib/serverData";
 
 /**
- * Compact accuracy ledger for the dashboard side panel, read live from
- * /v1/validation/metrics and /v1/grades/metrics on every load.
+ * Compact accuracy ledger for the dashboard side panel, read live from the
+ * ledger on every load.
  *
  * Precision is never shown without recall, Brier and skill against
  * climatology next to it, so the panel cannot be read as a selected subset.
- * Nothing here is hard-coded: if the API is unreachable the panel says so and
- * links to the full ledger instead of showing a number.
+ * Nothing here is hard-coded: without the API the panel links to the full ledger
+ * instead of showing a number.
  */
 
 const fmtInt = (n: number) => n.toLocaleString("en-GB");
@@ -28,7 +28,7 @@ function fmtNum(n: number | null | undefined, decimals: number) {
 }
 
 function gradingSourceLabel(breakdown: Record<string, number> | undefined) {
-  const sources = Object.keys(breakdown ?? {}).filter((k) => k !== "unresolvable");
+  const sources = Object.keys(breakdown ?? {});
   if (sources.length > 0 && sources.every((k) => k.startsWith("fews_net"))) {
     return "FEWS NET outcomes (IPC-compatible)";
   }
@@ -72,7 +72,7 @@ export default function LedgerSummary({ initial = null }: { initial?: LedgerFigu
     );
   }
 
-  const graded = v.n_graded_for_metrics ?? v.graded ?? 0;
+  const graded = v.n_graded_for_metrics ?? 0;
   const t1Found = (g?.tier1_n_correct ?? 0) + (g?.tier1_n_missed ?? 0);
 
   const rows: Row[] = [

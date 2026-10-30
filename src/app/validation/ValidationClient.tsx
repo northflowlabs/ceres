@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import { api, PUBLIC_API_URL, LedgerPrediction, ValidationMetrics, CalibrationBin, WithdrawalsResponse } from "@/lib/api";
+import { LedgerRow, ScoredRow } from "@/lib/api";
 import { ASSESSMENT_LABEL, MIN_N, TARGETS, assess } from "@/lib/protocol";
 import type { ValidationData } from "@/lib/serverData";
 
@@ -41,50 +41,50 @@ const REGION_NAMES: Record<string, string> = {
   VEN: "Venezuela", YEM: "Yemen", ZMB: "Zambia", ZWE: "Zimbabwe",
 };
 
+// `min` and `count` give each row's status: how much of its minimum sample exists.
 const PRE_REGISTERED_PROTOCOL = [
-  { metric: "Brier Score",                    definition: "Mean (P\u0302\u2083 \u2212 O\u2083)\u00B2",                        minN: "100 predictions",    target: "Jun 2026" },
-  { metric: "Brier Skill Score",              definition: "1 \u2212 BS / BS_climatology",                  minN: "100 predictions",    target: "Jun 2026" },
-  { metric: "TIER-1 Precision",               definition: "True TIER-1 / all TIER-1 issued",              minN: "30 TIER-1 alerts",   target: "Sep 2026" },
-  { metric: "TIER-1 Recall",                  definition: "True TIER-1 / all Phase 4+ events",            minN: "10 Phase 4+ events", target: "Sep 2026" },
-  { metric: "Sensitivity interval coverage",  definition: "Fraction outcomes in 90% interval",            minN: "200 predictions",    target: "Sep 2026" },
-  { metric: "CRPS (ordered categorical)",     definition: "Full distribution vs IPC phase",               minN: "500 predictions",    target: "Mar 2027" },
-  { metric: "Reliability diagram",            definition: "Forecast prob. vs empirical frequency",        minN: "500 predictions",    target: "Mar 2027" },
-];
+  { metric: "Brier Score",                    definition: "Mean (P\u0302\u2083 \u2212 O\u2083)\u00B2",                        minN: "100 predictions",    min: 100, count: "graded",  target: "Jun 2026" },
+  { metric: "Brier Skill Score",              definition: "1 \u2212 BS / BS_climatology",                  minN: "100 predictions",    min: 100, count: "graded",  target: "Jun 2026" },
+  { metric: "TIER-1 Precision",               definition: "True TIER-1 / all TIER-1 issued",              minN: "30 TIER-1 alerts",   min: 30,  count: "tier1",   target: "Sep 2026" },
+  { metric: "TIER-1 Recall",                  definition: "True TIER-1 / all Phase 4+ events",            minN: "10 Phase 4+ events", min: 10,  count: "phase4",  target: "Sep 2026" },
+  { metric: "Sensitivity interval coverage",  definition: "Fraction outcomes in 90% interval",            minN: "200 predictions",    min: 200, count: "graded",  target: "Sep 2026" },
+  { metric: "CRPS (ordered categorical)",     definition: "Full distribution vs IPC phase",               minN: "500 predictions",    min: 500, count: "graded",  target: "Mar 2027" },
+  { metric: "Reliability diagram",            definition: "Forecast prob. vs empirical frequency",        minN: "500 predictions",    min: 500, count: "graded",  target: "Mar 2027" },
+] as const;
 
-const STATIC_BREAKDOWN = [
-  { label: "IPC transition records",    val: "87 country-seasons"     },
-  { label: "Countries represented",     val: "31"                     },
-  { label: "Time period",               val: "2011-2023"         },
-  { label: "Phase 4-5 events",     val: "18"                     },
-  { label: "Back-validation cases",     val: "4 (data-complete only)" },
-  { label: "Perturbation draws",        val: "n=2,000 per prediction" },
-  { label: "Interval type",             val: "Input-perturbation 90%" },
-];
+const SOURCE_LABELS: Record<string, string> = { fews_net_proxy: "FEWS NET" };
 
-export default function ValidationPage({ initial }: { initial: ValidationData }) {
-  const [pending, setPending]       = useState<LedgerPrediction[]>(initial.pending?.predictions ?? []);
-  const [awaiting, setAwaiting]     = useState<LedgerPrediction[]>(initial.awaiting?.predictions ?? []);
-  const [graded, setGraded]         = useState<LedgerPrediction[]>(initial.graded?.predictions ?? []);
-  const [metrics, setMetrics]       = useState<ValidationMetrics | null>(initial.metrics);
-  const [calBins, setCalBins]       = useState<CalibrationBin[]>(initial.calibration?.bins ?? []);
-  const [calStatus, setCalStatus]   = useState(initial.calibration?.status ?? "loading");
-  const [withdrawals, setWithdrawals] = useState<WithdrawalsResponse | null>(initial.withdrawals);
-  const [loading, setLoading]       = useState(!initial.metrics);
+export default function ValidationPage({ initial }: { initial: ValidationData | null }) {
+  const [data, setData]     = useState<ValidationData | null>(initial);
+  const [failed, setFailed] = useState(false);
 
+  const missing = !initial;
   useEffect(() => {
-    Promise.all([
-      api.validationLedger("pending").then(d => setPending(d.predictions)).catch(() => {}),
-      api.validationLedger("awaiting").then(d => setAwaiting(d.predictions)).catch(() => {}),
-      api.validationLedger("graded").then(d => setGraded(d.predictions)).catch(() => {}),
-      api.validationMetrics().then(d => setMetrics(d)).catch(() => {}),
-      api.validationCalibration().then(d => { setCalBins(d.bins); setCalStatus(d.status); }).catch(() => {}),
-      api.validationWithdrawals().then(d => setWithdrawals(d)).catch(() => {}),
-    ]).finally(() => setLoading(false));
-  }, []);
+    if (!missing) return;
+    fetch("/ledger/validation.json")
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(setData)
+      .catch(() => setFailed(true));
+  }, [missing]);
+
+  const metrics = data?.metrics ?? null;
+  const pending: LedgerRow[] = data?.pending ?? [];
+  const awaiting: LedgerRow[] = data?.awaiting ?? [];
+  const graded: ScoredRow[] = data?.graded ?? [];
+  const calBins = data?.calibration ?? [];
+  const withdrawals = data?.withdrawals ?? null;
+  const grades = data?.grades ?? null;
 
   const totalPredictions = metrics?.total_predictions ?? 0;
   const nGraded = metrics?.n_graded_for_metrics ?? 0;
+  const nPending = metrics?.pending ?? 0;
+  const nAwaiting = metrics?.awaiting_data ?? 0;
   const hasGrades = nGraded > 0;
+  const sampleOf = {
+    graded: nGraded,
+    tier1: grades?.tier1_n_issued ?? 0,
+    phase4: graded.filter(g => g.observed_phase >= 4).length,
+  };
 
   const metricCards = [
     {
@@ -108,7 +108,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
     {
       val: `${totalPredictions}`,
       label: "Total Predictions",
-      target: "Issued since launch",
+      target: "Issued to date",
       status: "",
     },
   ];
@@ -128,11 +128,19 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Validation</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          Every CERES prediction is timestamped, publicly recorded, and graded against published IPC outcomes at T+90 days. This page is the permanent public record of what CERES predicted, when, and whether it was right.
+          Every CERES prediction is timestamped, publicly recorded, and graded against observed FEWS NET outcomes, on the IPC phase scale, at T+90 days. This page is the permanent public record of what CERES predicted, when, and whether it was right.
         </p>
       </div>
 
       <div className="validation-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px", boxSizing: "border-box" }}>
+
+        {!metrics && (
+          <div style={{ border: "1px solid var(--border)", background: "white", padding: "40px 32px", margin: "48px 0 0", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>
+            {failed ? "The ledger is unavailable right now." : "Loading verification ledger…"}
+          </div>
+        )}
+
+        {metrics && <>
 
         {/* Metrics grid */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "48px 0 0" }}>
@@ -148,7 +156,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
           {metricCards.map(({ val, label, target, status }) => (
             <div key={label} style={{ background: "white", padding: 24 }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>{label}</div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 36, fontWeight: 700, color: "var(--earth)", lineHeight: 1, marginBottom: 4 }}>{metrics ? val : "\u2026"}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 36, fontWeight: 700, color: "var(--earth)", lineHeight: 1, marginBottom: 4 }}>{val}</div>
               <div style={{ fontSize: 12, color: "var(--ink-light)" }}>
                 {target}{" "}
                 {metrics && status && <span style={{ color: status === "Met" ? "var(--watch)" : "var(--ink-light)", fontWeight: 500 }}>{status}</span>}
@@ -159,8 +167,8 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
 
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
           {hasGrades
-            ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {nGraded} predictions graded against published IPC outcomes at T+90 days. This record updates automatically.</>
-            : metrics && <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}. Observed IPC/FEWS NET classifications publish on a 2 to 4 month lag. Grading is automated and pre-registered.</>
+            ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {nGraded} predictions graded against observed FEWS NET outcomes at T+90 days. This record updates automatically.</>
+            : metrics && <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}. Observed FEWS NET classifications publish on a 2 to 4 month lag. Grading is automated and pre-registered.</>
           }
         </p>
 
@@ -172,23 +180,21 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
               <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Predictions Awaiting Grading Window</h2>
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
-              {loading ? "Loading\u2026" : `${pending.length} pending`}
+              {`${nPending} pending`}
             </div>
           </div>
 
-          {loading ? (
-            <div style={{ padding: "32px 0", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", textAlign: "center" }}>Loading verification ledger…</div>
-          ) : pending.length > 0 ? (
+          {pending.length > 0 ? (
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
               <thead>
                 <tr>
-                  {["Region", "Issued", "Tier", "P(IPC 3+)", "90% SI", "Grades On", "Commit"].map(h => (
+                  {["Region", "Issued", "Tier", "P(IPC 3+)", "90% SI", "Grades On"].map(h => (
                     <th key={h} style={th}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {pending.slice(0, 50).map((p, i) => (
+                {pending.map((p, i) => (
                   <tr key={p.prediction_id}>
                     <td style={{ ...td(i%2===1), fontWeight: 600 }}>{REGION_NAMES[p.region_id] || p.region_id}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{fmtDate(p.reference_date)}</td>
@@ -198,11 +204,12 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", color: tierColor(p.alert_tier) }}>{fmtPct(p.p_ipc3plus)}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>[{fmtPct(p.si_low)}-{fmtPct(p.si_high)}]</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, fontWeight: 600 }}>{fmtDate(p.grading_date)}</td>
-                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{p.pipeline_commit_hash}</td>
                   </tr>
                 ))}
               </tbody>
-            </table></div>
+            </table>
+            {nPending > pending.length && <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0" }}>Showing the {pending.length} due soonest of {nPending}.</p>}
+            </div>
           ) : (
             <div style={{ border: "1px solid var(--border)", background: "white", padding: "32px", textAlign: "center" }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>No pending predictions.</div>
@@ -211,7 +218,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
         </div>
 
         {/* ── SECTION 2: AWAITING DATA (grading_date passed, not yet graded) ── */}
-        {awaiting.length > 0 && (
+        {nAwaiting > 0 && (
           <div style={{ marginTop: 40 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16 }}>
               <div>
@@ -219,19 +226,19 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
                 <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Grading Window Open: Outcome Data Pending</h2>
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", letterSpacing: "0.06em" }}>
-                {awaiting.length} in grading queue
+                {nAwaiting} in grading queue
               </div>
             </div>
 
             {/* Observation lag */}
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> IPC/FEWS NET classifications, never against forecasts. IPC and FEWS NET publish observed Current-Situation phases on a <strong style={{ color: "var(--ink)" }}>2 to 4 month lag</strong>. The grader runs automatically every Monday and writes a grade when upstream data lands. Nothing is graded against partial or projected data.
+              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> FEWS NET classifications, never against forecasts. Those classifications publish on a <strong style={{ color: "var(--ink)" }}>2 to 4 month lag</strong>, and a grade is written when the data lands.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
               <thead>
                 <tr>
-                  {["Region", "Issued", "P(IPC 3+)", "Horizon Reached", "Window Open", "Checks"].map(h => (
+                  {["Region", "Issued", "P(IPC 3+)", "Horizon Reached"].map(h => (
                     <th key={h} style={th}>{h}</th>
                   ))}
                 </tr>
@@ -243,12 +250,12 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{fmtDate(p.reference_date)}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", color: tierColor(p.alert_tier) }}>{fmtPct(p.p_ipc3plus)}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10 }}>{fmtDate(p.grading_date)}</td>
-                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{p.days_overdue ?? 0}d</td>
-                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{p.grade_attempts ?? 0}</td>
                   </tr>
                 ))}
               </tbody>
-            </table></div>
+            </table>
+            {nAwaiting > awaiting.length && <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0" }}>Showing the {awaiting.length} most recent of {nAwaiting}.</p>}
+            </div>
           </div>
         )}
 
@@ -260,7 +267,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
               <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Graded Predictions: Forward Validation</h2>
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", textAlign: "right" }}>
-              {loading ? "Loading…" : `${graded.length} graded · T+90 days`}
+              {`${nGraded} graded · T+90 days`}
             </div>
           </div>
 
@@ -292,7 +299,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
                           : <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>n/a</span>
                       }
                     </td>
-                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{g.grade_source}</td>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{SOURCE_LABELS[g.grade_source] ?? g.grade_source}</td>
                   </tr>
                 ))}
               </tbody>
@@ -300,7 +307,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
           ) : (
             <div style={{ border: "1px solid var(--border)", background: "white", padding: "40px 32px", textAlign: "center" }}>
               <p style={{ fontSize: 14, color: "var(--ink-mid)", maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>
-                {loading ? "Loading verification ledger…" : <>The graded ledger is open at <a href={`${PUBLIC_API_URL}/v1/validation/ledger?status=graded&limit=1000`} target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>/v1/validation/ledger</a>.</>}
+                The graded ledger is open at <a href="/ledger/graded.json" style={{ color: "var(--earth)" }}>/ledger/graded.json</a>.
               </p>
             </div>
           )}
@@ -321,7 +328,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
             </div>
 
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--crisis)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              During build-out, two satellite adapters fell back to synthetic data when their live sources failed, and expert priors were still in place. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page and <strong style={{ color: "var(--ink)" }}>can never be scored, for us or against us</strong>. A run that could be withdrawn after its outcome were known would make the remaining score meaningless, so a withdrawal is permanent and dated. Reasons are corrected by appending, never by overwriting.
+              During build-out, two satellite adapters fell back to synthetic data when their live sources failed, and expert priors were still in place. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page. A withdrawal is permanent and dated. Reasons are corrected by appending, never by overwriting.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
@@ -342,10 +349,8 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
             </table></div>
 
             <p style={{ fontSize: 12, color: "var(--ink-light)", marginTop: 14, lineHeight: 1.7 }}>
-              Read the withdrawn forecasts themselves at{" "}
-              <a href={`${PUBLIC_API_URL}/v1/validation/ledger?status=voided`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)" }}>/v1/validation/ledger?status=voided</a>
-              {", "}or the register at{" "}
-              <a href={`${PUBLIC_API_URL}/v1/validation/withdrawals`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)" }}>/v1/validation/withdrawals</a>.
+              Read the withdrawn forecasts as issued at{" "}
+              <a href="/ledger/withdrawn.json" style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)" }}>/ledger/withdrawn.json</a>.
             </p>
           </div>
         )}
@@ -355,13 +360,13 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Open ledger</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Check every grade yourself</div>
-            <div style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.6 }}>The full ledger and the metrics above are open JSON, free under CC BY 4.0. Research collaboration: <a href="mailto:hello@northflow.no" style={{ color: "var(--parchment)" }}>hello@northflow.no</a></div>
+            <div style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.6 }}>Every row in the score and the metrics above are open JSON, free under CC BY 4.0. The Brier score and SI coverage recompute from those rows. Research collaboration: <a href="mailto:hello@northflow.no" style={{ color: "var(--parchment)" }}>hello@northflow.no</a></div>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <a href={`${PUBLIC_API_URL}/v1/validation/ledger?status=graded&limit=1000`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", background: "var(--earth)", color: "white", padding: "10px 20px", whiteSpace: "nowrap" }}>
+            <a href="/ledger/graded.json" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", background: "var(--earth)", color: "white", padding: "10px 20px", whiteSpace: "nowrap" }}>
               Graded ledger
             </a>
-            <a href={`${PUBLIC_API_URL}/v1/validation/metrics`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", color: "#A8A29E", border: "1px solid #44403C", padding: "10px 20px", whiteSpace: "nowrap" }}>
+            <a href="/ledger/metrics.json" style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", color: "#A8A29E", border: "1px solid #44403C", padding: "10px 20px", whiteSpace: "nowrap" }}>
               Metrics
             </a>
           </div>
@@ -373,15 +378,10 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
             {hasGrades ? `Live Calibration · ${nGraded} Graded Predictions` : "Calibration"}
           </div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>
-            {hasGrades ? `Reliability Diagram · Brier = ${fmt(metrics?.brier_score, 4)}` : "87 IPC Records · 31 Countries · 4 Back-validation Cases"}
+            {hasGrades ? `Reliability Diagram · Brier = ${fmt(metrics?.brier_score, 4)}` : "Reliability Diagram"}
           </h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 24, lineHeight: 1.75 }}>
-            {hasGrades
-              ? "Calibration computed from live graded predictions. Bins show the fraction of events that actually occurred (amber) vs. ideal calibration (grey). Each bin label is the predicted probability range."
-              : calStatus === "insufficient_data"
-                ? `${totalPredictions} predictions issued; outcomes are graded as IPC/FEWS NET publish observed classifications. The reliability diagram populates automatically as predictions are graded against those outcomes.`
-                : "Model initialised against 87 IPC transition records (2011-2023, 31 countries). 4 data-complete back-validation cases."
-            }
+            Calibration computed from graded predictions. Bins show the fraction of events that occurred (amber) against ideal calibration (grey). Each bin label is the predicted probability range.
           </p>
 
           {/* Reliability Diagram */}
@@ -459,8 +459,8 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
               </p>
             </div>
 
-            {/* Brier decomposition or back-validation breakdown */}
-            {hasGrades && metrics?.brier_decomposition ? (
+            {/* Brier decomposition */}
+            {hasGrades && metrics?.brier_decomposition && (
               <div style={{ border: "1px solid var(--border)", background: "white", padding: 24 }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>Brier Score Decomposition</div>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
@@ -475,20 +475,6 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
                       { label: "Predictions graded", val: `${nGraded}` },
                     ].map(({ label, val }, i) => (
                       <tr key={label} style={{ borderBottom: i < 6 ? "1px solid var(--border-light)" : "none" }}>
-                        <td style={{ padding: "8px 0", color: "var(--ink-light)" }}>{label}</td>
-                        <td style={{ padding: "8px 0", fontFamily: "var(--mono)", textAlign: "right", color: "var(--ink)" }}>{val}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div style={{ border: "1px solid var(--border)", background: "white", padding: 24 }}>
-                <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>Validation Dataset Breakdown</div>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                  <tbody>
-                    {STATIC_BREAKDOWN.map(({ label, val }, i) => (
-                      <tr key={label} style={{ borderBottom: i < STATIC_BREAKDOWN.length - 1 ? "1px solid var(--border-light)" : "none" }}>
                         <td style={{ padding: "8px 0", color: "var(--ink-light)" }}>{label}</td>
                         <td style={{ padding: "8px 0", fontFamily: "var(--mono)", textAlign: "right", color: "var(--ink)" }}>{val}</td>
                       </tr>
@@ -524,11 +510,9 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
                     <td style={{ padding: "10px 14px", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", whiteSpace: "nowrap" }}>{row.minN}</td>
                     <td style={{ padding: "10px 14px", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", whiteSpace: "nowrap" }}>{row.target}</td>
                     <td style={{ padding: "10px 14px", whiteSpace: "nowrap" }}>
-                      {hasGrades
-                        ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--watch)", background: "#F0FDF4", border: "1px solid rgba(46,125,50,0.2)", padding: "2px 8px" }}>{"\u25CF"} Accumulating</span>
-                        : totalPredictions > 0
-                          ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--earth)", background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "2px 8px" }}>{totalPredictions} issued</span>
-                          : <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--warning)", background: "#FFFBEB", border: "1px solid rgba(217,119,6,0.2)", padding: "2px 8px" }}>{"\u23F3"} Pending</span>
+                      {sampleOf[row.count] >= row.min
+                        ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--watch)", background: "#F0FDF4", border: "1px solid rgba(46,125,50,0.2)", padding: "2px 8px" }}>Minimum reached</span>
+                        : <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--earth)", background: "var(--parchment-dark)", border: "1px solid var(--border)", padding: "2px 8px" }}>{sampleOf[row.count]} of {row.min}</span>
                       }
                     </td>
                   </tr>
@@ -549,6 +533,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData })
           </p>
         </div>
 
+        </>}
       </div>
       <SiteFooter />
     </div>
