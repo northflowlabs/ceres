@@ -51,6 +51,7 @@ function stressSignals(p: Prediction) {
 export default function Dashboard({ initial }: { initial: DashboardData | null }) {
   const [predictions, setPredictions] = useState<Prediction[]>(initial?.predictions ?? []);
   const [hypotheses,  setHypotheses]  = useState<Hypothesis[]>(initial?.hypotheses ?? []);
+  const [complete,    setComplete]    = useState(initial?.complete ?? false);
   const [loading,     setLoading]     = useState(!initial);
   const [error,       setError]       = useState<string | null>(null);
   const [selPred,     setSelPred]     = useState<Prediction | null>(null);
@@ -66,6 +67,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const detailPanelRef = useRef<HTMLElement | null>(null);
+  const selectionRef = useRef(0);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
@@ -162,6 +164,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
       const d: DashboardData = await res.json();
       setPredictions(d.predictions);
       setHypotheses(d.hypotheses);
+      setComplete(d.complete);
       setLastUpdated(d.predictions[0]?.reference_date ?? "");
     } catch {
       if (!background) setError("unavailable");
@@ -177,21 +180,24 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
   const n2 = predictions.filter((p) => p.alert_tier === "TIER-2").length;
 
   const selectRegion = useCallback(async (p: Prediction) => {
+    // Only the latest selection may fill the panel, however slowly an earlier one answers.
+    const selection = ++selectionRef.current;
     setSelPred(p);
     const hyp = hypotheses.find((h) => h.hypothesis_id === p.hypothesis_id);
     setSelHyp(hyp ?? null);
     setDeepHyp(null);
+    setDeepLoading(Boolean(p.hypothesis_id));
     if (p.hypothesis_id) {
-      setDeepLoading(true);
       try {
         const full = await api.hypothesis(p.hypothesis_id);
-        setDeepHyp(full);
+        if (selection === selectionRef.current) setDeepHyp(full);
       } catch {
         // fallback to shallow hyp, no-op
       } finally {
-        setDeepLoading(false);
+        if (selection === selectionRef.current) setDeepLoading(false);
       }
     }
+    if (selection !== selectionRef.current) return;
     // Scroll window to top so the fixed-height grid (map) is always visible
     window.scrollTo({ top: 0, behavior: "smooth" });
     // Scroll detail panel to top so content is always visible
@@ -830,7 +836,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                   CERES-{lastUpdated.replace(/-/g, "").slice(0, 8)}-HGE
                 </span><br />
                 Regions: {predictions.map((p) => p.region_id).join(" · ")}<br />
-                Hypotheses: {predictions.filter((p) => p.hypothesis_id).length} in this run<br />
+                Hypotheses: {hypotheses.length}{complete ? "" : ` of ${predictions.filter((p) => p.hypothesis_id).length}`} in this run<br />
               </>
             )}
             Horizon: 90 days · input-perturbation sensitivity intervals
