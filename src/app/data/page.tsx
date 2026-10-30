@@ -230,9 +230,9 @@ export default function DataPage() {
               },
               {
                 label: "Grading Ledger",
-                sub: "Graded predictions with IPC outcomes",
+                sub: "Graded predictions with observed outcomes",
                 desc: "Every prediction graded at T+90, with the observed IPC phase, the grading source and its Brier contribution.",
-                url: "https://api.ceres.northflow.no/v1/validation/ledger?status=graded&limit=1000",
+                url: "https://ceres.northflow.no/ledger/graded.json",
                 tag: "JSON",
               },
             ].map(({ label, sub, desc, url, tag }) => (
@@ -269,7 +269,7 @@ export default function DataPage() {
                 { label: "Current forecasts, all regions", fmt: "JSON", url: "https://api.ceres.northflow.no/v1/predictions" },
                 { label: "Current forecasts, all regions", fmt: "CSV",  url: "https://api.ceres.northflow.no/v1/export/predictions/csv" },
                 { label: "Weekly forecast archive",        fmt: "CSV",  url: "https://api.ceres.northflow.no/v1/export/archive/csv" },
-                { label: "Validation metrics",             fmt: "JSON", url: "https://api.ceres.northflow.no/v1/validation/metrics" },
+                { label: "Validation metrics",             fmt: "JSON", url: "https://ceres.northflow.no/ledger/metrics.json" },
                 { label: "Driver hypotheses",              fmt: "JSON", url: "https://api.ceres.northflow.no/v1/hypotheses" },
               ].map(({ label, fmt, url }) => (
                 <a key={url} href={url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 12, alignItems: "baseline", flexWrap: "wrap", textDecoration: "none", color: "var(--ink)", fontSize: 13 }}>
@@ -288,7 +288,7 @@ export default function DataPage() {
         {/* Data principles */}
         <div className="data-principles-grid" style={{ margin: "48px 0 0", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           {[
-            { title: "100% Open Data",      body: "Every source used by CERES is publicly available and free to access. No proprietary or licensed data is used in the pipeline." },
+            { title: "Public Data",      body: "Every model input comes from a public source." },
             { title: "Source Provenance",   body: "Every prediction stores the data retrieval timestamps for all ingested sources. Full audit trail from raw signal to probability estimate." },
             { title: "Latency Transparency", body: "Data latency for each source is published here. Known latency constraints are explicitly modelled as limitations in forecast uncertainty." },
           ].map(({ title, body }) => (

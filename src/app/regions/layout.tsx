@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "CERES Region Intelligence · 43 Countries · Live Famine Risk",
     description:
       "Dedicated intelligence pages for every monitored country: live IPC probability forecasts, " +
-      "driver bars, 52-week trend, and sub-national breakdown.",
+      "driver bars, trend history, and sub-national breakdown.",
     url: "https://ceres.northflow.no/regions",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CERES Region Intelligence · 43 Countries · Live Famine Risk",
-    description: "Live IPC probability forecasts, driver breakdown, and 52-week trend for every monitored country.",
+    description: "Live IPC probability forecasts, driver breakdown, and trend history for every monitored country.",
     images: ["/og-image.png"],
   },
   alternates: { canonical: "https://ceres.northflow.no/regions" },

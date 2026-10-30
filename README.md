@@ -12,7 +12,7 @@ The public website and dashboard of CERES, Northflow's weekly forecasts of acute
 
 This repository holds the Next.js application behind [ceres.northflow.no](https://ceres.northflow.no). It reads the forecasts from the public CERES API at [api.ceres.northflow.no](https://api.ceres.northflow.no/docs) and shows them as maps, regional pages, sub-national breakdowns and a public validation ledger.
 
-CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probability forecasts of IPC Phase 3+, Phase 4+ and Famine conditions for 43 countries, every Monday. Northflow Technologies AS develops and runs the forecasting engine. This repository contains the website only.
+CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probability forecasts of IPC Phase 3+, Phase 4+ and Famine conditions for 43 countries, on a weekly schedule. Northflow Technologies AS develops and runs the forecasting engine. This repository contains the website only.
 
 ## Pages
 

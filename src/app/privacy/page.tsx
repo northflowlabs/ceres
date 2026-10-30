@@ -85,6 +85,8 @@ export default function PrivacyPage() {
           <li style={li}><strong>Stripe Inc.</strong>: payment processing for earlier API plans. <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Stripe Privacy Policy</a></li>
           <li style={li}><strong>Google LLC (Analytics and Fonts)</strong>: website analytics and typefaces. Analytics data is processed under a Data Processing Addendum. Your browser fetches the typefaces directly from Google, which receives your IP address with the request. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Privacy Policy</a></li>
           <li style={li}><strong>Esri Inc.</strong>: map tiles. Your browser fetches them directly from Esri on pages with a map.</li>
+          <li style={li}><strong>GitHub Inc.</strong>: country outlines on the map page. Your browser fetches them directly from raw.githubusercontent.com.</li>
+          <li style={li}><strong>Samtykkr</strong>: the consent banner, loaded from app.samtykkr.no. Your choice is stored in your own browser.</li>
           <li style={li}><strong>Railway Inc.</strong>: cloud infrastructure hosting the API backend. Data processed within the EU/EEA or under Standard Contractual Clauses.</li>
           <li style={li}><strong>Vercel Inc.</strong>: frontend hosting. Data processed under Vercel&rsquo;s Data Processing Addendum.</li>
         </ul>

@@ -15,7 +15,7 @@ const ADAPTERS = [
 const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "P(IPC Phase 3+) within 90 days of issue" },
   { num: "87",       label: "Calibration Records",      note: "IPC transition records, 2011-2023, 31 countries" },
-  { num: "T+90",     label: "Grading Horizon",         note: "Graded against published IPC outcomes; live figures on the Validation page" },
+  { num: "T+90",     label: "Grading Horizon",         note: "Graded against observed FEWS NET outcomes; live figures on the Validation page" },
   { num: "Open",     label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
 
@@ -118,7 +118,7 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
             <p style={p}>Every design decision in CERES, from the calibrated sensitivity intervals to the publicly timestamped prediction ledger to the published limitations section, is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders.</p>
-            <p style={p}>CERES is live as of 28 February 2026. Predictions are timestamped and graded against IPC outcomes at T+90 days. The model was initialised against 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
+            <p style={p}>The prediction archive starts on 9 March 2026. Predictions are timestamped and graded against observed FEWS NET outcomes at T+90 days. The model was initialised against 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
           </div>
         </div>
 

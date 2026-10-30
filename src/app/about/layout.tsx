@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "About · CERES Famine Intelligence System",
+  title: "About · CERES Famine Early Warning",
   description:
     "About CERES and Northflow Technologies. Open, falsifiable, probabilistic 90-day famine forecasting built on the HGE inference engine.",
   keywords: [
@@ -66,7 +66,7 @@ const faqJsonLd = {
       name: "What is CERES?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "CERES (Calibrated Early-warning and Risk Estimation System) is an automated, open famine early-warning system operated by Northflow Technologies AS. It issues calibrated 90-day probability forecasts of IPC Phase 3+, Phase 4+, and Famine conditions for 43 high-risk countries, refreshed every Monday.",
+        text: "CERES (Calibrated Early-warning and Risk Estimation System) is an automated, open famine early-warning system operated by Northflow Technologies AS. It issues calibrated 90-day probability forecasts of IPC Phase 3+, Phase 4+, and Famine conditions for 43 high-risk countries, scheduled weekly.",
       },
     },
     {
@@ -74,7 +74,7 @@ const faqJsonLd = {
       name: "How accurate is CERES?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "At initialisation, the model reached AUC 0.84 on a held-out split of 87 IPC transition records across 31 countries (2011-2023). Forward accuracy (Brier score, sensitivity-interval coverage, and tier precision) is graded openly as predictions reach their T+90 horizon, and grading is live: current Brier score, sensitivity-interval coverage and skill score are published on the Validation page.",
+        text: "The model was initialised against 87 IPC transition records across 31 countries (2011-2023). Forward accuracy (Brier score, sensitivity-interval coverage, and tier precision) is graded openly as predictions reach their T+90 horizon, and grading is live: current Brier score, sensitivity-interval coverage and skill score are published on the Validation page.",
       },
     },
     {
@@ -98,7 +98,7 @@ const faqJsonLd = {
       name: "How is CERES validated?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Every prediction is timestamped, publicly recorded, and graded against published IPC outcomes at the T+90 horizon. The model was initialised on a held-out split (AUC 0.84) of 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. Predictions have been issued since the 28 Feb 2026 launch, the first T+90 grading windows opened June 2026, and graded outcomes are published as the observed IPC data arrives.",
+        text: "Every prediction is timestamped, publicly recorded, and graded against observed FEWS NET outcomes at the T+90 horizon. The model was initialised against 87 IPC transition records across 31 countries (2011-2023), with n=2,000 input-perturbation sensitivity intervals. The archive starts on 9 March 2026, and graded outcomes are published as the observed data arrives.",
       },
     },
     {

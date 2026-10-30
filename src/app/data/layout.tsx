@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Data Sources · CERES Famine Intelligence System",
+  title: "Data Sources · CERES Famine Early Warning",
   description:
     "CERES ingests NASA POWER rainfall, MODIS NDVI, UCDP GED conflict, IPC and Cadre Harmonisé phases, and WFP market prices. Full provenance and pipeline integration documented.",
   keywords: [
@@ -107,7 +107,7 @@ const datasetJsonLd = {
       "@type": "DataDownload",
       name: "Grading ledger (JSON)",
       encodingFormat: "application/json",
-      contentUrl: `${HDX_BASE}/v1/validation/ledger?status=graded&limit=1000`,
+      contentUrl: "https://ceres.northflow.no/ledger/graded.json",
     },
   ],
 };

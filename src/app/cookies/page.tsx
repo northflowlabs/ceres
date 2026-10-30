@@ -122,6 +122,9 @@ export default function CookiesPage() {
             <strong>Esri</strong> (server.arcgisonline.com): map tiles on pages with a map.
           </li>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
+            <strong>GitHub</strong> (raw.githubusercontent.com): country outlines on the map page.
+          </li>
+          <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
             <strong>CERES API</strong> (api.ceres.northflow.no): the forecasts shown on the site.
           </li>
         </ul>

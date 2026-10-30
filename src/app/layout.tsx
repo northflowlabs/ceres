@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "CERES · Famine Early Warning · 43 Countries · Weekly IPC Forecasts",
   description:
-    "Calibrated 90-day probability forecasts of IPC Phase 3+, 4+, and Famine for 43 high-risk countries. Updated weekly, with sensitivity intervals and a ledger.",
+    "Calibrated 90-day probability forecasts of IPC Phase 3+, 4+, and Famine for 43 high-risk countries. Scheduled weekly, with sensitivity intervals and a ledger.",
   keywords: [
     "famine early warning",
     "food security forecast",
@@ -115,7 +115,7 @@ export default function RootLayout({
         {/* Samtykkr: lawful cookie consent (gates Consent Mode above). English + ceres ink accent. */}
         <script
           async
-          src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fnorthflow.no%2Fprivacy-policy"
+          src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fceres.northflow.no%2Fprivacy"
         />
         <script
           type="application/ld+json"
