@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "Northflow Technologies",
     "open humanitarian data",
   ],
-  authors: [{ name: "Tom Danny Pedersen", url: "https://northflow.no" }],
+  authors: [{ name: "Tom Danny S. Pedersen", url: "https://northflow.no" }],
   creator: "Northflow Technologies AS",
   publisher: "Northflow Technologies AS",
   openGraph: {
