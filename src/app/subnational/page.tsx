@@ -144,9 +144,11 @@ export default function SubnationalPage() {
     setLoading(true);
     setA2loading(true);
     Promise.all([
-      fetch(`${API_BASE}/v1/admin1/predictions?limit=700`).then(r => r.json()).catch(() => []),
-      fetch(`${API_BASE}/v1/admin2/predictions?limit=500`).then(r => r.json()).catch(() => []),
+      fetch(`${API_BASE}/v1/admin1/predictions?limit=700`).then(r => r.json()).catch(() => null),
+      fetch(`${API_BASE}/v1/admin2/predictions?limit=500`).then(r => r.json()).catch(() => null),
     ]).then(([a1, a2]) => {
+      if (!Array.isArray(a1)) setError("The forecasts are unavailable right now.");
+      if (!Array.isArray(a2)) setA2error("The forecasts are unavailable right now.");
       setRows(Array.isArray(a1) ? a1 : []);
       setA2rows(Array.isArray(a2) ? a2 : []);
     }).catch(() => {
@@ -161,6 +163,7 @@ export default function SubnationalPage() {
   const activeRows = resolution === "admin1" ? rows : a2rows;
   const activeLoading = resolution === "admin1" ? loading : a2loading;
   const activeError = resolution === "admin1" ? error : a2error;
+  const noFigures = activeLoading || activeRows.length === 0 || !!activeError;
 
   const countries = useMemo(() =>
     Array.from(new Set(activeRows.map(r => r.country_id))).sort(),
@@ -222,8 +225,8 @@ export default function SubnationalPage() {
         </h1>
         <p style={{ fontSize: 16, color: "var(--ink-mid)", maxWidth: 720, lineHeight: 1.7, fontWeight: 300 }}>
           {resolution === "admin1"
-            ? <>Probabilistic 90-day IPC Phase 3+ forecasts disaggregated to Admin1 (province / state / region) level across {activeLoading ? "…" : activeRows.length} Admin1 regions in {activeLoading ? "…" : nCountries} countries.</>
-            : <>District-level disaggregation for the top 10 crisis countries across {activeLoading ? "…" : activeRows.length} Admin2 units. Signals inherited from parent Admin1 where district-level grid data is sparse.</>
+            ? <>Probabilistic 90-day IPC Phase 3+ forecasts disaggregated to Admin1 (province / state / region) level across {noFigures ? "…" : activeRows.length} Admin1 regions in {noFigures ? "…" : nCountries} countries.</>
+            : <>District-level disaggregation for the top 10 crisis countries across {noFigures ? "…" : activeRows.length} Admin2 units. Signals inherited from parent Admin1 where district-level grid data is sparse.</>
           }
         </p>
         {/* Resolution tabs */}
@@ -236,17 +239,17 @@ export default function SubnationalPage() {
                 borderBottom: resolution === res ? "2px solid var(--earth)" : "2px solid transparent",
                 marginBottom: -2, color: resolution === res ? "var(--earth)" : "var(--ink-light)",
               }}>
-                {i === 0 ? `Admin1 · Province (${loading ? "…" : rows.length})` : `Admin2 · District (${a2loading ? "…" : a2rows.length || "10 countries"})`}
+                {i === 0 ? `Admin1 · Province (${loading || !rows.length ? "…" : rows.length})` : `Admin2 · District (${a2loading ? "…" : a2rows.length || "10 countries"})`}
               </button>
             ))
           )}
         </div>
         <div style={{ display: "flex", gap: 40, marginTop: 32, flexWrap: "wrap" }}>
           {[
-            { num: activeLoading ? "…" : activeRows.length, label: resolution === "admin1" ? "Admin1 Regions" : "Admin2 Units", color: "var(--ink)"     },
-            { num: activeLoading ? "…" : nCountries,        label: "Countries",             color: "var(--earth)"   },
-            { num: activeLoading ? "…" : tier1Count,        label: "TIER-1 · Critical",     color: "var(--crisis)"  },
-            { num: activeLoading ? "…" : tier2Count,        label: "TIER-2 · Warning",      color: "var(--warning)" },
+            { num: noFigures ? "…" : activeRows.length, label: resolution === "admin1" ? "Admin1 Regions" : "Admin2 Units", color: "var(--ink)"     },
+            { num: noFigures ? "…" : nCountries,        label: "Countries",             color: "var(--earth)"   },
+            { num: noFigures ? "…" : tier1Count,        label: "TIER-1 · Critical",     color: "var(--crisis)"  },
+            { num: noFigures ? "…" : tier2Count,        label: "TIER-2 · Warning",      color: "var(--warning)" },
           ].map(({ num, label, color }) => (
             <div key={label}>
               <div style={{ fontFamily: "var(--display)", fontSize: 32, fontWeight: 700, color, lineHeight: 1 }}>{num}</div>

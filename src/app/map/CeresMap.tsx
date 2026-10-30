@@ -326,6 +326,7 @@ export default function CeresMap() {
 
   // ── Legend counts ───────────────────────────────────────────────────────
   const activePreds = layer === "country" ? predictions : layer === "admin1" ? a1preds : a2preds;
+  const noFigures = loadingData || activePreds.length === 0;
   const t1 = activePreds.filter(p => p.alert_tier === "TIER-1").length;
   const t2 = activePreds.filter(p => p.alert_tier === "TIER-2").length;
   const t3 = activePreds.filter(p => p.alert_tier === "TIER-3").length;
@@ -409,19 +410,19 @@ export default function CeresMap() {
           ))}
           <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#C0392B", lineHeight: 1 }}>{loadingData ? "…" : t1}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#C0392B", lineHeight: 1 }}>{noFigures ? "…" : t1}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-1</div>
             </div>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#D97706", lineHeight: 1 }}>{loadingData ? "…" : t2}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#D97706", lineHeight: 1 }}>{noFigures ? "…" : t2}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-2</div>
             </div>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#78716C", lineHeight: 1 }}>{loadingData ? "…" : t3}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#78716C", lineHeight: 1 }}>{noFigures ? "…" : t3}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-3</div>
             </div>
             <div>
-              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink-light)", lineHeight: 1 }}>{loadingData ? "…" : activePreds.length}</div>
+              <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink-light)", lineHeight: 1 }}>{noFigures ? "…" : activePreds.length}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Total</div>
             </div>
           </div>
