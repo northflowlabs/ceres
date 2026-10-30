@@ -4,13 +4,13 @@
 
 The public website and dashboard of CERES, Northflow's forecasts of acute food insecurity in 43 countries.
 
-[Website](https://ceres.northflow.no) · [Research page](https://research.northflow.no/systems/ceres) · [API docs](https://api.ceres.northflow.no/docs) · [Preprint](https://arxiv.org/abs/2603.09425) · [Licence](#licence)
+[Website](https://ceres.northflow.no) · [Research page](https://research.northflow.no/systems/ceres) · [Preprint](https://arxiv.org/abs/2603.09425) · [Licence](#licence)
 
 [![Licence: Apache 2.0](https://img.shields.io/badge/licence-Apache%202.0-0e6b63)](LICENSE)
 
 ## What this repository is
 
-This repository holds the Next.js application behind [ceres.northflow.no](https://ceres.northflow.no). It reads the forecasts from the public CERES API at [api.ceres.northflow.no](https://api.ceres.northflow.no/docs) and shows them as maps, regional pages and a public validation ledger.
+This repository holds the Next.js application behind [ceres.northflow.no](https://ceres.northflow.no). It reads the forecasts from the CERES API at api.ceres.northflow.no and shows them as maps, regional pages and a public validation ledger.
 
 CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probability forecasts of IPC Phase 3+ conditions for 43 countries, on a weekly schedule. Northflow Technologies AS develops and runs the forecasting engine. This repository contains the website only.
 
@@ -44,7 +44,7 @@ Each forecast is graded after 90 days against a FEWS NET proxy: the highest Curr
 
 ## Using the forecasts
 
-The forecasts on the site and from the public API are published under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Attribute them to "CERES / Northflow Technologies AS, ceres.northflow.no". Downloads need no account or key:
+The forecasts on the site are published under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Attribute them to "CERES / Northflow Technologies AS, ceres.northflow.no". Downloads need no account or key:
 
 - Current forecasts (JSON): https://ceres.northflow.no/ledger/regions.json
 - Current forecasts (CSV): https://ceres.northflow.no/ledger/latest.csv
@@ -59,7 +59,7 @@ npm install
 NEXT_PUBLIC_API_URL=https://api.ceres.northflow.no npm run dev
 ```
 
-The site then runs at http://localhost:3100 and reads the public API. Without `NEXT_PUBLIC_API_URL`, a development build expects an API at http://localhost:8100. Production builds default to `api.ceres.northflow.no`.
+The site then runs at http://localhost:3100 and reads the CERES API. Without `NEXT_PUBLIC_API_URL`, a development build expects an API at http://localhost:8100. Production builds default to `api.ceres.northflow.no`.
 
 To check the run history against the raw archive and the ledger, start a production server and run the check in a second terminal:
 
@@ -86,7 +86,7 @@ src/
 │   ├── data/                 # Data sources
 │   └── about/                # System overview
 ├── lib/
-│   └── api.ts                # Client for the CERES public API
+│   └── api.ts                # API address and shared types
 └── components/               # Shared UI components
 ```
 

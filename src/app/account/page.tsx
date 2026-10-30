@@ -460,18 +460,6 @@ export default function AccountPage() {
               </div>
             )}
 
-            {/* Quick reference */}
-            <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 14 }}>Quick Reference</div>
-              <div style={{ background: "#1C1917", padding: "16px 20px", fontFamily: "var(--mono)", fontSize: 12, color: "#D4C5A9", lineHeight: 2 }}>
-                <span style={{ color: "#6E7681" }}># Authenticate all requests{"\n"}</span>
-                <span style={{ color: "#9ECBFF" }}>curl </span>
-                <span style={{ color: "#F4A261" }}>https://api.ceres.northflow.no/v1/predictions</span>
-                {" "}<span style={{ color: "#9ECBFF" }}>-H</span>
-                {" "}<span style={{ color: "#F4A261" }}>"X-API-Key: YOUR_KEY"</span>
-              </div>
-            </div>
-
             {/* Watchlist: available to all subscribers */}
             <div style={{ background: "white", border: "1px solid var(--border)", padding: "24px 28px", marginBottom: 28 }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
@@ -840,7 +828,7 @@ export default function AccountPage() {
                 </button>
               )}
               <a href="/data" style={{ padding: "12px 24px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "transparent", color: "var(--ink)", border: "1px solid var(--border)", textDecoration: "none", display: "inline-block" }}>
-                API Documentation →
+                Open Data →
               </a>
               {(me.tier === "free" || !me.has_api_key) && (
                 <a href="/data" style={{ padding: "12px 24px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--earth)", color: "white", border: "none", textDecoration: "none", display: "inline-block" }}>
