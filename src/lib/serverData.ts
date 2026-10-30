@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import {
   API_BASE,
   AdminRow,
@@ -29,33 +30,47 @@ function isEmpty(body: unknown): boolean {
   return typeof body === "object" && Object.keys(body).length === 0;
 }
 
-async function fetchJson<T>(path: string, allow404: boolean): Promise<T | null> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    next: { revalidate: 3600 },
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (allow404 && res.status === 404) return null;
-  if (!res.ok) throw new Error(`API ${path} answered ${res.status}`);
-  const body = (await res.json()) as T;
-  if (isEmpty(body)) throw new Error(`API ${path} answered empty`);
-  return body;
-}
+// A 404 the caller allows is a real answer with nothing in it.
+const NOT_FOUND = "not-found";
 
-async function read<T>(path: string, { allow404 = false } = {}): Promise<T | null> {
+async function fetchJson<T>(path: string, allow404: boolean): Promise<T | typeof NOT_FOUND> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   // The signal cannot end every hang, a stalled body among them. The race can.
   const deadline = new Promise<never>((_, reject) => {
     timer = setTimeout(() => reject(new Error(`API ${path} timed out`)), TIMEOUT_MS);
   });
+  const work = (async () => {
+    const res = await fetch(`${API_BASE}${path}`, { cache: "no-store", signal: AbortSignal.timeout(TIMEOUT_MS) });
+    if (allow404 && res.status === 404) return NOT_FOUND;
+    if (!res.ok) throw new Error(`API ${path} answered ${res.status}`);
+    const body = (await res.json()) as T;
+    if (isEmpty(body)) throw new Error(`API ${path} answered empty`);
+    return body;
+  })();
+  work.catch(() => {});
   try {
-    const work = fetchJson<T>(path, allow404);
-    work.catch(() => {});
     return await Promise.race([work, deadline]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// unstable_cache stores a result only when the function returns. A failure or an
+// empty answer throws, so it is never cached, and a stale entry stays in use until
+// a good answer replaces it.
+const cachedJson = unstable_cache(
+  (path: string, allow404: boolean) => fetchJson<unknown>(path, allow404),
+  ["ceres-api"],
+  { revalidate: 3600 },
+);
+
+async function read<T>(path: string, { allow404 = false } = {}): Promise<T | null> {
+  try {
+    const body = await cachedJson(path, allow404);
+    return body === NOT_FOUND ? null : (body as T);
   } catch (e) {
     if (BUILDING) return null;
     throw e;
-  } finally {
-    clearTimeout(timer);
   }
 }
 
