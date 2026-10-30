@@ -181,6 +181,7 @@ export default function MethodologyPage({ initial }: { initial: LedgerFigures | 
             <div className="methodology-formula" style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "20px 24px", margin: "24px 0", fontFamily: "var(--mono)", fontSize: 13, color: "var(--ink)", lineHeight: 2, overflowX: "auto" }}>
               <div style={{ fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Core Model</div>
               P(IPC 3+ | X, t+90) = σ(β₀ + β₁·CSS + β₂·IPC + β₃·conflict + β₄·drought + β₅·food_access + β₆·price + β₇·convergence + β₈·n_independent)<br />
+              A CRITICAL convergence multiplies this probability by 1.18, capped at 0.99.<br />
               <br />
               <span style={{ color: "var(--ink-light)" }}>where σ is the logistic function, CSS is the composite stress score,<br />and coefficients β are expert-informed priors. The live forecasts use these priors. Coefficient values are documented in Appendix C of the preprint.</span>
             </div>
