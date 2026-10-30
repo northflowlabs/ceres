@@ -839,11 +839,11 @@ export default function AccountPage() {
                   {portalLoading ? "Opening…" : "Manage Subscription →"}
                 </button>
               )}
-              <a href="/api-access" style={{ padding: "12px 24px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "transparent", color: "var(--ink)", border: "1px solid var(--border)", textDecoration: "none", display: "inline-block" }}>
+              <a href="/data" style={{ padding: "12px 24px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "transparent", color: "var(--ink)", border: "1px solid var(--border)", textDecoration: "none", display: "inline-block" }}>
                 API Documentation →
               </a>
               {(me.tier === "free" || !me.has_api_key) && (
-                <a href="/api-access" style={{ padding: "12px 24px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--earth)", color: "white", border: "none", textDecoration: "none", display: "inline-block" }}>
+                <a href="/data" style={{ padding: "12px 24px", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--earth)", color: "white", border: "none", textDecoration: "none", display: "inline-block" }}>
                   Upgrade to Professional →
                 </a>
               )}

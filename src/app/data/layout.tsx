@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Data Sources · CERES Famine Early Warning",
   description:
-    "CERES ingests NASA POWER rainfall, MODIS NDVI, UCDP GED conflict, IPC and Cadre Harmonisé phases, and WFP market prices. Full provenance and pipeline integration documented.",
+    "CERES ingests NASA POWER rainfall, MODIS NDVI, UCDP GED conflict, IPC and Cadre Harmonisé phases, and WFP market prices. Sources, cadence and latency documented.",
   keywords: [
     "NASA POWER", "MODIS NDVI", "UCDP GED", "FEWS NET", "WFP market prices", "HDX HAPI", "IPC data", "Cadre Harmonisé",
     "famine data sources", "food security data", "open data", "CERES",
@@ -11,14 +11,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CERES Data Sources · Public Data Streams for Famine Forecasting",
     description:
-      "Satellite, conflict, food security, and market data from public sources. Full provenance, cadence, latency, and pipeline integration.",
+      "Satellite, conflict, food security, and market data from public sources. Cadence and latency for each source.",
     url: "https://ceres.northflow.no/data",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "CERES Data Sources",
-    description: "Public data streams powering CERES 90-day famine forecasts. Full provenance published.",
+    description: "Public data streams powering CERES 90-day famine forecasts.",
   },
   alternates: { canonical: "https://ceres.northflow.no/data" },
 };

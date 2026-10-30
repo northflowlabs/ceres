@@ -34,7 +34,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.6",
     type: "platform",
     title: "Published runs defined",
-    body: "A published run is a run date in the archive that counts towards the score, with one row per region. Run counts, charts and the published runs CSV all use this definition. This entry replaces the descriptions of the archive in the entries of 20 February and 2 March 2026.",
+    body: "A published run is a run date in the archive that counts towards the score, with at most one row per region. Run counts, charts and the published runs CSV all use this definition. This entry replaces the descriptions of the archive in the entries of 20 February and 2 March 2026.",
   },
   {
     date: "2026-10-30",

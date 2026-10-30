@@ -115,7 +115,7 @@ export default function LoginPage() {
 
               <p style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginTop: 16, lineHeight: 1.7 }}>
                 Only works if you have a CERES account or alert subscription.{" "}
-                <a href="/api-access" style={{ color: "var(--earth)" }}>Get access →</a>
+                <a href="/data" style={{ color: "var(--earth)" }}>Get access →</a>
               </p>
             </form>
           )}

@@ -127,7 +127,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
       const bottom = `${Math.round(covered)}px`;
       if (sheet.style.bottom === bottom) return;
       sheet.style.bottom = bottom;
-      sheet.style.maxHeight = covered ? `calc(100vh - ${Math.round(covered) + 16}px)` : "";
+      sheet.style.maxHeight = covered ? `calc(100vh - ${Math.round(covered) + 16}px)` : "82vh";
     };
     clearBanner();
     const watcher = new MutationObserver(clearBanner);
