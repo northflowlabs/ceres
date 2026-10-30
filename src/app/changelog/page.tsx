@@ -32,9 +32,23 @@ const CHANGELOG: ChangeEntry[] = [
   {
     date: "2026-10-30",
     version: "v0.6",
+    type: "platform",
+    title: "Admin1 and Admin2 figures are no longer published",
+    body: "Admin1 and Admin2 figures and the /subnational page are no longer published on the site. Forecasts are published at national level across 43 countries.",
+  },
+  {
+    date: "2026-10-30",
+    version: "v0.6",
+    type: "methodology",
+    title: "One description of the model coefficients",
+    body: "The site describes the model coefficients in one way: expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), not yet fit to graded outcomes. The coefficient values are unchanged.",
+  },
+  {
+    date: "2026-10-30",
+    version: "v0.6",
     type: "methodology",
     title: "TIER-1 recall counts Phase 4+ outcomes",
-    body: "TIER-1 recall on the site now counts Phase 4+ outcomes that had a TIER-1 alert. It counted Phase 3+ outcomes before. Precision still counts alerts that reached Phase 3+. Each figure now says what it counts, and the TIER-1 counts recompute from /ledger/graded.json.",
+    body: "TIER-1 recall on the site counts Phase 4+ outcomes that had a TIER-1 alert. TIER-1 precision counts alerts that reached Phase 3+. Each figure says what it counts, and the TIER-1 counts recompute from /ledger/graded.json.",
   },
   {
     date: "2026-10-30",
@@ -68,8 +82,8 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-03-11",
     version: "v0.5",
     type: "model",
-    title: "Coefficient adjustment",
-    body: "The IPC Phase 3+ coefficients from arXiv v1 were adjusted so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The coefficients are documented in Appendix C of the preprint and on the Methodology page.",
+    title: "Coefficient recalibration",
+    body: "The IPC Phase 3+ coefficients from arXiv v1 were recalibrated against the first weeks of live data, so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The recalibrated model gives P = 0.036 to 0.994 across the monitored countries. The same coefficients apply to the Admin1, Admin2 and scenario models, and are documented in Appendix C of the preprint and on the Methodology page.",
     breaking: true,
   },
   {
@@ -84,21 +98,21 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.3",
     type: "platform",
     title: "Full mobile responsive pass across all pages",
-    body: "Comprehensive mobile CSS overrides across every page. Navigation, dashboard, validation, methodology, tracker, about and data pages all optimised for 320 to 768px viewports. Mobile bottom sheet for dashboard detail view. Hamburger menu confirmed functional.",
+    body: "Comprehensive mobile CSS overrides across every page. Navigation, dashboard, subnational, validation, methodology, tracker, about and data pages all optimised for 320 to 768px viewports. Mobile bottom sheet for dashboard detail view. Hamburger menu confirmed functional.",
   },
   {
     date: "2026-02-28",
     version: "v0.2",
     type: "platform",
     title: "CERES public launch: 43 high-risk countries",
-    body: "Initial public release of CERES. Predictions issued at national level across 43 high-risk countries, including Ethiopia, Somalia, Sudan, South Sudan, Kenya, Yemen, Niger, Mali, Burkina Faso, Haiti, Afghanistan, Syria, DRC, Zimbabwe, and Mozambique. All predictions timestamped and graded at T+90 days.",
+    body: "Initial public release of CERES. Predictions issued at national level across 43 high-risk countries, with Admin1 disaggregation where data permits, including Ethiopia, Somalia, Sudan, South Sudan, Kenya, Yemen, Niger, Mali, Burkina Faso, Haiti, Afghanistan, Syria, DRC, Zimbabwe, and Mozambique. All predictions timestamped and graded at T+90 days.",
   },
   {
     date: "2026-02-28",
     version: "v0.2",
     type: "model",
-    title: "Logistic model initialised with expert-informed prior coefficients: 87 IPC transition records",
-    body: "Logistic regression model initialised with expert-informed prior coefficients, with reference to 87 IPC transition records across 31 countries (2011-2023). Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2-4 month lag, the first graded results are expected Aug-Oct 2026. See Validation page for live progress.",
+    title: "Logistic model initialised with author-specified coefficients: 87 IPC transition records",
+    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011-2023). Four back-validation cases (Somalia 2011, South Sudan 2017, Ethiopia 2022, Yemen 2021) used to verify directional plausibility. Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2-4 month lag, the first graded results are expected Aug-Oct 2026. See Validation page for live progress.",
   },
   {
     date: "2026-02-27",
@@ -118,15 +132,22 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-02-24",
     version: "v0.1",
     type: "api",
-    title: "API v1: predictions, hypotheses, grading ledger, archive",
-    body: "Public API launched, now served at api.ceres.northflow.no. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/grades (grading ledger + aggregate metrics), /v1/archive (snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
+    title: "API v1: predictions, hypotheses, Admin1 signals, grading ledger, archive",
+    body: "Public API launched, now served at api.ceres.northflow.no. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/admin1 (Admin1 stress signals), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
   },
   {
     date: "2026-02-20",
     version: "v0.1",
     type: "platform",
-    title: "Track record archive: prediction snapshots",
-    body: "Each pipeline run archives a snapshot of all region predictions. The /tracker page displays the full time series per region with sparklines, trend indicators, and verification outcomes. Archive statistics: total runs, regions tracked, snapshot count, earliest run date.",
+    title: "Track record archive: weekly prediction snapshots",
+    body: "Every weekly pipeline run archives a snapshot of all region predictions. The /tracker page displays the full time series per region with sparklines, trend indicators, and verification outcomes. Archive statistics: total runs, regions tracked, snapshot count, earliest run date.",
+  },
+  {
+    date: "2026-02-15",
+    version: "v0.1",
+    type: "platform",
+    title: "Subnational resolution: Admin1 signal breakdown",
+    body: "CERES disaggregates crisis signals to Admin1 (province/state/region) level across the monitored Admin1 regions. The /subnational page displays composite stress scores and sub-scores (drought, conflict, food access, IPC stress, price stress) for all monitored administrative units. Sortable, filterable, downloadable.",
   },
   {
     date: "2026-02-10",
@@ -158,7 +179,7 @@ export default function ChangelogPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Changelog</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          Model updates, methodology changes, data sources and platform releases, newest first.
+          Every model update, methodology change, data source addition, and platform release, documented publicly in chronological order. CERES does not make undisclosed changes to its prediction system.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (
@@ -185,7 +206,7 @@ export default function ChangelogPage() {
             <div style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid var(--border-light)" }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Commitment</div>
               <p style={{ fontSize: 11, color: "var(--ink-light)", lineHeight: 1.6 }}>
-                Where a newer entry replaces an older one, it says so.
+                All model changes are documented before deployment. Retrospective edits to this log are not permitted.
               </p>
             </div>
           </nav>
@@ -230,7 +251,7 @@ export default function ChangelogPage() {
         <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "28px 32px", margin: "16px 0 0" }}>
           <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Transparency Commitment</div>
           <p style={{ ...p, margin: 0 }}>
-            CERES records changes to the prediction system, model coefficients, data sources and methodology in this public log. If a change affects how past predictions should be read, the entry says so.
+            CERES documents every change to the prediction system, model coefficients, data sources, and methodology in this public log before or at the time of deployment. Changes are never made retroactively to improve the appearance of historical accuracy. If a model change would affect the interpretation of past predictions, this is explicitly noted. This log is the authoritative record of CERES system provenance.
           </p>
         </div>
 
