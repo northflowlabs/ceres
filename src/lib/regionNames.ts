@@ -50,6 +50,10 @@ export const REGION_NAMES: Record<string, string> = {
 // The 43 monitored region ids, in canonical order.
 export const REGION_IDS: string[] = Object.keys(REGION_NAMES);
 
+// The ids above are ISO 3166-1 alpha-3, except Niger. URLs keep the id; downloads
+// carry the ISO code.
+export const iso3 = (id: string) => (id === "NIG" ? "NER" : id);
+
 export function regionName(id: string): string {
   return REGION_NAMES[id] ?? id;
 }

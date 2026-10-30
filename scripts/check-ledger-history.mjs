@@ -23,6 +23,23 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 // The API serves at most this many rows and has no offset.
 const LEDGER_MAX = 1000;
 
+// ISO 3166-1 alpha-3. The CSVs carry these; the site's ids and URLs keep NIG for Niger.
+const ISO3 = new Set(`ABW AFG AGO AIA ALA ALB AND ARE ARG ARM ASM ATA ATF ATG AUS AUT AZE BDI BEL BEN BES BFA BGD BGR BHR
+BHS BIH BLM BLR BLZ BMU BOL BRA BRB BRN BTN BVT BWA CAF CAN CCK CHE CHL CHN CIV CMR COD COG COK COL COM CPV CRI CUB CUW
+CXR CYM CYP CZE DEU DJI DMA DNK DOM DZA ECU EGY ERI ESH ESP EST ETH FIN FJI FLK FRA FRO FSM GAB GBR GEO GGY GHA GIB GIN
+GLP GMB GNB GNQ GRC GRD GRL GTM GUF GUM GUY HKG HMD HND HRV HTI HUN IDN IMN IND IOT IRL IRN IRQ ISL ISR ITA JAM JEY JOR
+JPN KAZ KEN KGZ KHM KIR KNA KOR KWT LAO LBN LBR LBY LCA LIE LKA LSO LTU LUX LVA MAC MAF MAR MCO MDA MDG MDV MEX MHL MKD
+MLI MLT MMR MNE MNG MNP MOZ MRT MSR MTQ MUS MWI MYS MYT NAM NCL NER NFK NGA NIC NIU NLD NOR NPL NRU NZL OMN PAK PAN PCN
+PER PHL PLW PNG POL PRI PRK PRT PRY PSE PYF QAT REU ROU RUS RWA SAU SDN SEN SGP SGS SHN SJM SLB SLE SLV SMR SOM SPM SRB
+SSD STP SUR SVK SVN SWE SWZ SXM SYC SYR TCA TCD TGO THA TJK TKL TKM TLS TON TTO TUN TUR TUV TWN TZA UGA UKR UMI URY USA
+UZB VAT VCT VEN VGB VIR VNM VUT WLF WSM YEM ZAF ZMB ZWE`.split(/\s+/));
+const SITE_ID = { NER: "NIG" };
+const siteId = (code) => SITE_ID[code] ?? code;
+
+// An HXL hashtag: #tag, then +attributes that start with a letter. A parser drops
+// a column whose tag breaks this rule.
+const HXL_TAG = /^#[a-z][a-z0-9_]*(\+[a-z][a-z0-9_]*)*$/;
+
 // Dates held by one record only. A change to either list fails the check, so a new
 // gap has to be looked at before it is listed here.
 const EXPECTED_LEDGER_ONLY = ["2026-08-17", "2026-08-24", "2026-08-31", "2026-09-07"];
@@ -144,7 +161,8 @@ const csvRows = parseCsv(await csvRes.text());
 const expected = new Map(Object.entries(history).flatMap(([id, rows]) => rows.map((s) => [`${id}|${s.run_date}`, s])));
 const csvSeen = new Set();
 for (const row of csvRows) {
-  const key = `${row.region_id}|${row.run_date}`;
+  if (!ISO3.has(row.region_id)) wrong.push(`archive.csv: ${row.region_id} is not an ISO3 code`);
+  const key = `${siteId(row.region_id)}|${row.run_date}`;
   if (csvSeen.has(key)) wrong.push(`archive.csv ${key}: repeated`);
   csvSeen.add(key);
   const s = expected.get(key);
@@ -161,16 +179,32 @@ for (const key of expected.keys()) {
   if (!csvSeen.has(key)) wrong.push(`archive.csv ${key}: missing`);
 }
 
-// The latest run as a download: same rows as the history's latest, HXL row second.
+// The latest run as a download, HXL row second. Each row must be its region's
+// newest published run, and where the ledger holds it the ledger's values stand.
 const latestRes = await fetch(`${SITE}/ledger/latest.csv`);
 if (!latestRes.ok) throw new Error(`/ledger/latest.csv answered ${latestRes.status}`);
 const latestText = await latestRes.text();
 const [hxl, ...latestRows] = parseCsv(latestText);
-if (!hxl?.region_id?.startsWith("#")) wrong.push("latest.csv: second row is not the HXL hashtags");
-if (latestRows.length !== latest.length) wrong.push(`latest.csv: ${latestRows.length} rows, the latest run has ${latest.length}`);
+for (const column of latestText.split("\n")[0].trim().split(",")) {
+  if (!HXL_TAG.test(hxl?.[column] ?? "")) wrong.push(`latest.csv ${column}: ${hxl?.[column]} is not a valid HXL tag`);
+}
+if (latestRows.length !== regions.length) wrong.push(`latest.csv: ${latestRows.length} rows for ${regions.length} regions`);
 for (const row of latestRows) {
-  const s = latest.find((x) => x.region_id === row.region_id);
-  if (Number(row.p_ipc3plus_90d) !== s?.p_ipc3plus_90d) wrong.push(`latest.csv ${row.region_id}: differs from the latest run`);
+  const id = siteId(row.region_id);
+  const key = `${id}|${row.run_date}`;
+  if (!ISO3.has(row.region_id)) wrong.push(`latest.csv: ${row.region_id} is not an ISO3 code`);
+  if (withdrawn.has(key)) wrong.push(`latest.csv ${key}: withdrawn run`);
+  const newest = history[id]?.[0];
+  if (row.run_date !== newest?.run_date) wrong.push(`latest.csv ${key}: newest published run is ${newest?.run_date}`);
+  const issued = ledger.get(key);
+  const want = issued
+    ? { tier: issued.alert_tier, p: issued.p_ipc3plus, low: issued.si_low, high: issued.si_high }
+    : { tier: newest?.alert_tier, p: newest?.p_ipc3plus_90d, low: newest?.sensitivity_interval_low, high: newest?.sensitivity_interval_high };
+  const got = { tier: row.alert_tier, p: Number(row.p_ipc3plus_90d), low: Number(row.sensitivity_interval_low), high: Number(row.sensitivity_interval_high) };
+  if (JSON.stringify(got) !== JSON.stringify(want)) wrong.push(`latest.csv ${key}: ${JSON.stringify(got)}, ${issued ? "the ledger" : "the history"} has ${JSON.stringify(want)}`);
+}
+for (const s of latest) {
+  if (s.run_date !== history[s.region_id]?.[0]?.run_date) wrong.push(`latest ${s.region_id}: ${s.run_date} is not the newest published run`);
 }
 
 // The TIER-1 counts on the site, recounted from the raw ledger and, on its own,

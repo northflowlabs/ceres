@@ -14,6 +14,7 @@ import {
   ValidationMetrics,
   WithdrawalsResponse,
 } from "@/lib/api";
+import { iso3 } from "@/lib/regionNames";
 
 // Reads the public API on the server, so a page's first HTML carries the real
 // figures. A build with the API down still succeeds and gives the page its
@@ -328,9 +329,22 @@ export async function getPredictions(): Promise<Prediction[] | null> {
   return rows && rows.map((p) => pick(p, PREDICTION_FIELDS));
 }
 
-export async function getLatestSnapshots(): Promise<RegionSnapshot[] | null> {
+// The archive says which regions are current. Each region's row is then the newest
+// one in its history, so the latest run answers to the same rules as every other:
+// the first write, the ledger's values and no withdrawn run.
+async function publishedLatest(ledger: LedgerIndex) {
   const rows = await read<RegionSnapshot[]>("/v1/archive/latest");
-  return rows && rows.map((s) => pick(s, SNAPSHOT_FIELDS));
+  if (!rows) return null;
+  const histories = await Promise.all(rows.map((s) => getHistory(s.region_id, ledger)));
+  if (histories.some((h) => !h)) return null;
+  const history = Object.fromEntries(rows.map((s, i) => [s.region_id, histories[i] as RegionSnapshot[]]));
+  return { latest: rows.flatMap((s) => history[s.region_id].slice(0, 1)), history };
+}
+
+export async function getLatestSnapshots(): Promise<RegionSnapshot[] | null> {
+  const ledger = await getLedgerIndex();
+  const published = ledger && (await publishedLatest(ledger));
+  return published ? published.latest : null;
 }
 
 export interface DashboardData {
@@ -463,19 +477,18 @@ export interface TrackerData {
 }
 
 export async function getTrackerData(): Promise<TrackerData | null> {
-  const [grades, latest, archive, runs, metrics, ledger, pending] = await Promise.all([
+  const [grades, archive, runs, metrics, ledger, pending] = await Promise.all([
     read<{ grades: GradeRecord[] }>("/v1/grades"),
-    getLatestSnapshots(),
     read<ArchiveStats>("/v1/archive/stats"),
     read<string[]>("/v1/archive/runs"),
     getPublicMetrics(),
     getLedgerIndex(),
     readRows("pending"),
   ]);
-  if (!grades || !latest || !archive || !runs || !metrics || !ledger || !pending) return null;
-  const histories = await Promise.all(latest.map((s) => getHistory(s.region_id, ledger)));
-  if (histories.some((h) => !h)) return null;
-  const history = Object.fromEntries(latest.map((s, i) => [s.region_id, histories[i] as RegionSnapshot[]]));
+  if (!grades || !archive || !runs || !metrics || !ledger || !pending) return null;
+  const published = await publishedLatest(ledger);
+  if (!published) return null;
+  const { latest, history } = published;
   const next = [...pending]
     .sort((a, b) => a.grading_date.localeCompare(b.grading_date))
     .slice(0, latest.length)
@@ -497,7 +510,8 @@ function csvCell(v: unknown): string {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-const csvRow = (r: RegionSnapshot) => SNAPSHOT_FIELDS.map((k) => csvCell(r[k])).join(",");
+const csvRow = (r: RegionSnapshot) =>
+  SNAPSHOT_FIELDS.map((k) => csvCell(k === "region_id" ? iso3(r.region_id) : r[k])).join(",");
 
 // The rows the site's charts use, one per region and published run.
 export async function getArchiveCsv(): Promise<string | null> {
@@ -513,9 +527,9 @@ const HXL_TAGS: Record<(typeof SNAPSHOT_FIELDS)[number], string> = {
   region_id: "#country+code+iso3",
   region_name: "#country+name",
   alert_tier: "#indicator+tier+alert",
-  p_ipc3plus_90d: "#indicator+value+prob+ipc3plus+90d",
-  sensitivity_interval_low: "#indicator+value+ci+low+90d",
-  sensitivity_interval_high: "#indicator+value+ci+high+90d",
+  p_ipc3plus_90d: "#indicator+value+prob+ipc3plus+days_90",
+  sensitivity_interval_low: "#indicator+value+sensitivity_interval+low+days_90",
+  sensitivity_interval_high: "#indicator+value+sensitivity_interval+high+days_90",
   ipc_phase_forecast: "#indicator+value+ipc+phase+forecast",
   composite_stress_score: "#indicator+value+stress+composite",
   convergence_tier: "#indicator+tier+convergence",
