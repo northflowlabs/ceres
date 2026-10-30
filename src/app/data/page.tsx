@@ -209,7 +209,7 @@ export default function DataPage() {
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 8, lineHeight: 1.2 }}>Download CERES Predictions</h2>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.75, maxWidth: 640 }}>
             The current forecasts, the published runs and the graded ledger are free to download, with no account and no key.
-            The current forecasts are HXL-tagged CSV, the published runs are CSV and the graded ledger is JSON.
+            The current forecasts and the published runs are HXL-tagged CSV and the graded ledger is JSON.
             Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>.
           </p>
           <div className="data-sources-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "var(--border)", border: "1px solid var(--border)", marginBottom: 16 }}>
@@ -226,7 +226,7 @@ export default function DataPage() {
                 sub: "One row per region and published run date",
                 desc: "Best for time-series analysis, trend research, and calibration studies.",
                 url: "https://ceres.northflow.no/ledger/archive.csv",
-                tag: "CSV",
+                tag: "HXL-tagged",
               },
               {
                 label: "Grading Ledger",
@@ -256,7 +256,7 @@ export default function DataPage() {
             ))}
           </div>
           <p style={{ fontSize: 12, color: "var(--ink-light)" }}>
-            HXL format: Row 1 = column headers · Row 2 = HXL hashtags · Row 3+ = data.
+            HXL-tagged CSV files: Row 1 = column headers · Row 2 = HXL hashtags · Row 3+ = data. They give Niger its ISO code, NER; site URLs and the JSON routes use NIG.
           </p>
 
           <div style={{ marginTop: 32, border: "1px solid var(--border)", background: "white", padding: 24 }}>

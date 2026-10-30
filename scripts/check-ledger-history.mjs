@@ -172,7 +172,14 @@ if (!sameDates(archiveOnly, EXPECTED_ARCHIVE_ONLY)) wrong.push(`archive-only dat
 // The download must hold exactly the history's rows.
 const csvRes = await fetch(`${SITE}/ledger/archive.csv`);
 if (!csvRes.ok) throw new Error(`/ledger/archive.csv answered ${csvRes.status}`);
-const csvRows = parseCsv(await csvRes.text());
+const csvText = await csvRes.text();
+const [csvTags, ...csvRows] = parseCsv(csvText);
+const checkTags = (name, text, tags) => {
+  for (const column of text.split("\n")[0].trim().split(",")) {
+    if (!HXL_TAG.test(tags?.[column] ?? "")) wrong.push(`${name} ${column}: ${tags?.[column]} is not a valid HXL tag`);
+  }
+};
+checkTags("archive.csv", csvText, csvTags);
 const expected = new Map(Object.entries(history).flatMap(([id, rows]) => rows.map((s) => [`${id}|${s.run_date}`, s])));
 const csvSeen = new Set();
 for (const row of csvRows) {
@@ -200,9 +207,7 @@ const latestRes = await fetch(`${SITE}/ledger/latest.csv`);
 if (!latestRes.ok) throw new Error(`/ledger/latest.csv answered ${latestRes.status}`);
 const latestText = await latestRes.text();
 const [hxl, ...latestRows] = parseCsv(latestText);
-for (const column of latestText.split("\n")[0].trim().split(",")) {
-  if (!HXL_TAG.test(hxl?.[column] ?? "")) wrong.push(`latest.csv ${column}: ${hxl?.[column]} is not a valid HXL tag`);
-}
+checkTags("latest.csv", latestText, hxl);
 if (latestRows.length !== regions.length) wrong.push(`latest.csv: ${latestRows.length} rows for ${regions.length} regions`);
 for (const row of latestRows) {
   const id = siteId(row.region_id);

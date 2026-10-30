@@ -57,6 +57,17 @@ const nextConfig = {
         permanent: false,
       },
       {
+        // ISO code for Niger, which the site's ids write as NIG.
+        source: "/regions/ner",
+        destination: "/regions/nig",
+        permanent: true,
+      },
+      {
+        source: "/ledger/region/NER.json",
+        destination: "/ledger/region/NIG.json",
+        permanent: true,
+      },
+      {
         source: "/subnational",
         destination: "/regions",
         permanent: true,

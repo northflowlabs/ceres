@@ -548,13 +548,17 @@ function csvCell(v: unknown): string {
 const csvRow = (r: RegionSnapshot) =>
   SNAPSHOT_FIELDS.map((k) => csvCell(k === "region_id" ? iso3(r.region_id) : r[k])).join(",");
 
+// HXL-tagged CSV: column headers, then hashtags, then data.
+const csvFile = (rows: RegionSnapshot[]) =>
+  [SNAPSHOT_FIELDS.join(","), SNAPSHOT_FIELDS.map((k) => HXL_TAGS[k]).join(","), ...rows.map(csvRow)].join("\n") + "\n";
+
 // The rows the site's charts use, one per region and published run.
 export async function getArchiveCsv(): Promise<string | null> {
   const [predictions, ledger] = await Promise.all([getPredictions(), getLedgerIndex()]);
   if (!predictions || !ledger) return null;
   const histories = await Promise.all(predictions.map((p) => getHistory(p.region_id, ledger)));
   if (histories.some((h) => !h)) return null;
-  return [SNAPSHOT_FIELDS.join(","), ...(histories as RegionSnapshot[][]).flat().map(csvRow)].join("\n") + "\n";
+  return csvFile((histories as RegionSnapshot[][]).flat());
 }
 
 const HXL_TAGS: Record<(typeof SNAPSHOT_FIELDS)[number], string> = {
@@ -571,9 +575,7 @@ const HXL_TAGS: Record<(typeof SNAPSHOT_FIELDS)[number], string> = {
   driver_types: "#indicator+label+drivers",
 };
 
-// The current run as HXL-tagged CSV: column headers, then hashtags, then data.
 export async function getLatestCsv(): Promise<string | null> {
   const rows = await getLatestSnapshots();
-  if (!rows) return null;
-  return [SNAPSHOT_FIELDS.join(","), SNAPSHOT_FIELDS.map((k) => HXL_TAGS[k]).join(","), ...rows.map(csvRow)].join("\n") + "\n";
+  return rows && csvFile(rows);
 }

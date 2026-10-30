@@ -141,14 +141,14 @@ export default function LiveAccuracyMetrics({
       >
         {cards.map(({ val, label, target, note, state }) => {
           return (
-            <div key={label} style={{ background: "white", padding: 24 }}>
+            <div key={label} style={{ background: "white", padding: 24, minWidth: 0 }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
                 {label}
               </div>
               <div
                 style={{
                   fontFamily: "var(--display)",
-                  fontSize: 36,
+                  fontSize: "clamp(26px, 2.8vw, 36px)",
                   fontWeight: 700,
                   color: state === "awaiting" ? "var(--ink-light)" : "var(--earth)",
                   lineHeight: 1,
