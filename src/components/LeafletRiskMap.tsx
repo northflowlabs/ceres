@@ -21,6 +21,14 @@ function editorialColor(tier: string) {
   return "#2E7D32";
 }
 
+function ringStyle(isSelected: boolean) {
+  return {
+    fillOpacity: isSelected ? 0.30 : 0.18,
+    weight: isSelected ? 2.5 : 1.8,
+    opacity: isSelected ? 0.9 : 0.65,
+  };
+}
+
 export default function LeafletRiskMap({
   predictions,
   selected,
@@ -29,6 +37,11 @@ export default function LeafletRiskMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<any>(null);
   const markersRef   = useRef<any[]>([]);
+  const ringsRef     = useRef<Map<string, any>>(new Map());
+  const selectedRef  = useRef(selected);
+  const onSelectRef  = useRef(onSelect);
+  selectedRef.current = selected;
+  onSelectRef.current = onSelect;
   const [mapReady, setMapReady] = useState(false);
 
   // Init map once
@@ -88,7 +101,8 @@ export default function LeafletRiskMap({
     };
   }, []);
 
-  // Draw/redraw markers as soon as both the map and the predictions are ready
+  // Draw markers once the map and the predictions are ready. Selecting a region only
+  // restyles them, because a redraw would close the popup it has just opened.
   useEffect(() => {
     if (!mapReady || !mapRef.current) return;
     drawMarkers();
@@ -97,6 +111,7 @@ export default function LeafletRiskMap({
       import("leaflet").then((L) => {
         markersRef.current.forEach((m) => m.remove());
         markersRef.current = [];
+        ringsRef.current.clear();
 
         const crisisGeo = new Map(CRISIS_COUNTRIES.map(c => [c.iso3, c]));
 
@@ -109,17 +124,16 @@ export default function LeafletRiskMap({
           if ((lat === 0 && lon === 0) || lat == null || lon == null) return;
 
           const color      = editorialColor(p.alert_tier);
-          const isSelected = selected?.region_id === p.region_id;
+          const isSelected = selectedRef.current?.region_id === p.region_id;
 
           // Outer ring (280 km) + inner dot (80 km), matches the reference design
           const outer = L.circle([lat, lon], {
             radius: 280000,
             color,
             fillColor: color,
-            fillOpacity: isSelected ? 0.30 : 0.18,
-            weight: isSelected ? 2.5 : 1.8,
-            opacity: isSelected ? 0.9 : 0.65,
+            ...ringStyle(isSelected),
           }).addTo(mapRef.current);
+          ringsRef.current.set(p.region_id, outer);
 
           const inner = L.circle([lat, lon], {
             radius: 80000,
@@ -178,7 +192,7 @@ export default function LeafletRiskMap({
           inner.bindPopup(popupHtml, { maxWidth: 300 });
 
           const handleClick = () => {
-            onSelect?.(p);
+            onSelectRef.current?.(p);
             outer.openPopup();
           };
           outer.on("click", handleClick);
@@ -188,7 +202,11 @@ export default function LeafletRiskMap({
         });
       });
     }
-  }, [mapReady, predictions, selected, onSelect]);
+  }, [mapReady, predictions]);
+
+  useEffect(() => {
+    ringsRef.current.forEach((ring, id) => ring.setStyle(ringStyle(selected?.region_id === id)));
+  }, [selected]);
 
   // Fly to selected
   useEffect(() => {
