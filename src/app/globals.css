@@ -714,3 +714,21 @@
     min-width: 0 !important;
   }
 }
+
+/* Map: the side panel stacks under the map on phones */
+@media (max-width: 768px) {
+  .map-shell {
+    flex-direction: column;
+    height: auto !important;
+  }
+  .map-pane {
+    flex: none !important;
+    height: 60vh;
+    min-height: 320px;
+  }
+  .map-side {
+    width: 100% !important;
+    border-left: 1px solid var(--border);
+    box-sizing: border-box;
+  }
+}

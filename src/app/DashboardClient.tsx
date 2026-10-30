@@ -88,7 +88,9 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     return () => { document.body.style.overflow = ""; };
   }, [sheetOpen, menuOpen]);
 
-  // While a sheet is open it holds the focus and the page behind it is inert.
+  // While a sheet is open the page behind it is inert and Tab stays in the sheet,
+  // or in the consent banner while that is shown. The sheet sits above the banner,
+  // so nothing that takes focus is hidden under it.
   const sheetHasRegion = Boolean(selPred);
   useEffect(() => {
     const sheet = sheetRef.current;
@@ -100,24 +102,41 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     behind.forEach((el) => { el.inert = true; });
     sheet.focus();
 
+    const banner = () => {
+      const el = document.querySelector<HTMLElement>(".nf-banner");
+      return el && el.getClientRects().length > 0 ? el : null;
+    };
+    const tabStops = (root: HTMLElement) =>
+      Array.from(root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input:not([disabled])"))
+        .filter((el) => el.getClientRects().length > 0);
+
     const onTab = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
-      const stops = sheet.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
-      const first = stops[0];
-      const last = stops[stops.length - 1];
-      if (!first) {
-        e.preventDefault();
-      } else if (e.shiftKey && (document.activeElement === first || document.activeElement === sheet)) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
+      const shown = banner();
+      const stops = [...tabStops(sheet), ...(shown ? tabStops(shown) : [])];
+      e.preventDefault();
+      if (stops.length === 0) return;
+      const at = stops.indexOf(document.activeElement as HTMLElement);
+      const step = e.shiftKey ? -1 : 1;
+      stops[at === -1 ? (e.shiftKey ? stops.length - 1 : 0) : (at + step + stops.length) % stops.length].focus();
     };
-    sheet.addEventListener("keydown", onTab);
+
+    const clearBanner = () => {
+      const shown = banner();
+      const covered = shown ? Math.max(0, window.innerHeight - shown.getBoundingClientRect().top) : 0;
+      const bottom = `${Math.round(covered)}px`;
+      if (sheet.style.bottom === bottom) return;
+      sheet.style.bottom = bottom;
+      sheet.style.maxHeight = covered ? `calc(100vh - ${Math.round(covered) + 16}px)` : "";
+    };
+    clearBanner();
+    const watcher = new MutationObserver(clearBanner);
+    watcher.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "hidden"] });
+
+    document.addEventListener("keydown", onTab);
     return () => {
-      sheet.removeEventListener("keydown", onTab);
+      document.removeEventListener("keydown", onTab);
+      watcher.disconnect();
       behind.forEach((el) => { el.inert = false; });
       before?.focus();
     };

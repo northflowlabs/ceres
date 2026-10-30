@@ -1,5 +1,5 @@
-// Checks the run history and /ledger/archive.csv against two independent sources:
-// the raw archive and the verification ledger.
+// Checks the run history and /ledger/archive.csv against two independent sources,
+// the raw archive and the verification ledger, in both directions.
 //
 // First it compares the first archive write of every region and date with the
 // ledger on probability, tier and sensitivity interval, without using the site.
@@ -20,6 +20,14 @@
 const SITE = process.argv[2] ?? "http://localhost:3100";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 
+// The API serves at most this many rows and has no offset.
+const LEDGER_MAX = 1000;
+
+// Dates held by one record only. A change to either list fails the check, so a new
+// gap has to be looked at before it is listed here.
+const EXPECTED_LEDGER_ONLY = ["2026-08-17", "2026-08-24", "2026-08-31", "2026-09-07"];
+const EXPECTED_ARCHIVE_ONLY = ["2026-07-20", "2026-07-27"];
+
 async function json(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${url} answered ${res.status}`);
@@ -28,8 +36,10 @@ async function json(url) {
 
 const ledger = new Map();
 const withdrawn = new Set();
+const limitHit = [];
 for (const status of ["pending", "awaiting", "graded", "voided"]) {
-  const { predictions } = await json(`${API}/v1/validation/ledger?status=${status}&limit=1000`);
+  const { predictions } = await json(`${API}/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`);
+  if (predictions.length >= LEDGER_MAX) limitHit.push(status);
   for (const r of predictions) {
     ledger.set(`${r.region_id}|${r.reference_date}`, r);
     if (r.voided_at) withdrawn.add(`${r.region_id}|${r.reference_date}`);
@@ -37,7 +47,8 @@ for (const status of ["pending", "awaiting", "graded", "voided"]) {
 }
 
 const { history, latest } = await json(`${SITE}/ledger/tracker.json`);
-const wrong = [];
+const wrong = limitHit.map((status) => `ledger ${status}: reached the ${LEDGER_MAX} row limit, rows may be cut`);
+const archiveKeys = new Set();
 
 // Every region the API forecasts must be in the history and the latest run.
 const regions = (await json(`${API}/v1/predictions`)).map((p) => p.region_id);
@@ -76,6 +87,7 @@ const sameAsLedger = (s, l) =>
 
 for (const [region, siteRows] of Object.entries(history)) {
   const raw = await json(`${API}/v1/archive/regions/${region}?limit=104`);
+  for (const r of raw) archiveKeys.add(`${region}|${r.run_date}`);
   const firstWrite = new Map();
   for (const r of [...raw].sort((a, b) => (a.archived_at ?? "").localeCompare(b.archived_at ?? ""))) {
     if (!firstWrite.has(r.run_date)) firstWrite.set(r.run_date, r);
@@ -111,6 +123,17 @@ for (const [region, siteRows] of Object.entries(history)) {
     if (!seen.has(date) && !withdrawn.has(`${region}|${date}`)) wrong.push(`${region} ${date}: missing from the site`);
   }
 }
+
+// Both directions: every ledger row in the archive and every archive row in the
+// ledger, apart from the dates named above.
+const dateOf = (key) => key.split("|")[1];
+const unmatched = (keys, other) => [...new Set([...keys].filter((k) => !other.has(k)).map(dateOf))].sort();
+const sameDates = (a, b) => a.join() === [...b].sort().join();
+
+const ledgerOnly = unmatched(ledger.keys(), archiveKeys);
+const archiveOnly = unmatched(archiveKeys, ledger);
+if (!sameDates(ledgerOnly, EXPECTED_LEDGER_ONLY)) wrong.push(`ledger-only dates are ${ledgerOnly.join(" ")}, expected ${EXPECTED_LEDGER_ONLY.join(" ")}`);
+if (!sameDates(archiveOnly, EXPECTED_ARCHIVE_ONLY)) wrong.push(`archive-only dates are ${archiveOnly.join(" ")}, expected ${EXPECTED_ARCHIVE_ONLY.join(" ")}`);
 
 // The download must hold exactly the history's rows.
 const csvRes = await fetch(`${SITE}/ledger/archive.csv`);

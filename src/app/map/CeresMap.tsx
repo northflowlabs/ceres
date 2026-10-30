@@ -246,10 +246,10 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
   const t3 = activePreds.filter(p => p.alert_tier === "TIER-3").length;
 
   return (
-    <div style={{ display: "flex", gap: 0, marginTop: 24, height: 620 }}>
+    <div className="map-shell" style={{ display: "flex", gap: 0, marginTop: 24, height: 620 }}>
 
       {/* Map container */}
-      <div style={{ flex: 1, position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
+      <div className="map-pane" style={{ flex: 1, position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
 
         {/* Zoom controls: bottom-left inside container (avoids overflow:hidden clipping) */}
         <div style={{
@@ -286,7 +286,7 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
       </div>
 
       {/* Side panel */}
-      <div style={{
+      <div className="map-side" style={{
         width: 280, flexShrink: 0, borderTop: "1px solid var(--border)",
         borderRight: "1px solid var(--border)", borderBottom: "1px solid var(--border)",
         background: "white", display: "flex", flexDirection: "column",
