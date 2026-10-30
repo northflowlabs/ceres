@@ -1,0 +1,49 @@
+{
+  "commit": "97465d5",
+  "entries": [
+    {
+      "title": "Coefficient recalibration",
+      "sha256": "c81ad0dbd05d6a09087770f71f89ab48fba6a65926994ea520da3285e90ee6b8"
+    },
+    {
+      "title": "Impact page, embeddable widget, CSV data exports",
+      "sha256": "26ad345e097dafcd31ded8df2f778e0a7fcecfa3dea2b72ba1cad986a473c8f7"
+    },
+    {
+      "title": "Full mobile responsive pass across all pages",
+      "sha256": "c5e207dec66da8a5310668a7c5809d7a587a0ce537f329a075315eb553e1f4e0"
+    },
+    {
+      "title": "CERES public launch: 43 high-risk countries",
+      "sha256": "3175de7fff217cf47accfb2acfedcc8b7f075a95c03cf97c19abd0e412aa30b4"
+    },
+    {
+      "title": "Logistic model initialised with author-specified coefficients: 87 IPC transition records",
+      "sha256": "5b4e10a3b51d21b49537df5b6095460ddfa161119084ec93c06ec79098d7e5f4"
+    },
+    {
+      "title": "Six core data streams integrated, plus two supplementary sources",
+      "sha256": "f48f4b825fd7dd64c72ec0c675eed6da96077b2d3c44d35b72a506bb90dd89e5"
+    },
+    {
+      "title": "HGE Adapter #5: Hypothesis Generation Engine applied to food security",
+      "sha256": "418c0b8f8e190fb6769a693602090426e8113f6b32289768ac822bdf7bc6db54"
+    },
+    {
+      "title": "API v1: predictions, hypotheses, Admin1 signals, grading ledger, archive",
+      "sha256": "61122bf7b897988066d9fa1fc97c77db961dd9baeb2dd6e4de550b2abf21fbca"
+    },
+    {
+      "title": "Track record archive: weekly prediction snapshots",
+      "sha256": "e06488678f27cf8ef99b8940640f1c239e914811041b14c0ec64811f211b25c7"
+    },
+    {
+      "title": "Subnational resolution: Admin1 signal breakdown",
+      "sha256": "f43e894bb1f754e8a2e5df2532d141f491a8f36c1910a360d63efeb81d667fcc"
+    },
+    {
+      "title": "Three-tier alert classification: TIER-1, TIER-2, TIER-3",
+      "sha256": "ec2addff3d8bdcf2440e55bb3329b546e3ec2073262b9c3c76583b1ba01c9285"
+    }
+  ]
+}
