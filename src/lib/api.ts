@@ -107,13 +107,18 @@ export interface ScoredRow extends LedgerRow {
 }
 
 // TIER-1 counts from the predictions in the published score. Precision is
-// confirmed / alerts. Recall follows the pre-registered protocol: of the outcomes
-// at Phase 4+, how many had a TIER-1 alert.
+// confirmed / alerts, where confirmed means the outcome reached Phase 3+. Recall
+// is phase4Alerted / phase4Events: the Phase 4+ outcomes that had a TIER-1 alert.
+// The last four fields say how much of the record those outcomes cover.
 export interface Tier1Figures {
-  alerts:        number;
-  confirmed:     number;
-  phase4Events:  number;
-  phase4Alerted: number;
+  alerts:          number;
+  confirmed:       number;
+  phase4Events:    number;
+  phase4Alerted:   number;
+  phase4Countries: number;
+  phase4Runs:      number;
+  phase4FirstRun:  string | null;
+  phase4LastRun:   string | null;
 }
 
 // One run withdrawn from the score, with the reason stated at the time.

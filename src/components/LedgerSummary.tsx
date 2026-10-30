@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { tier1Rates } from "@/lib/protocol";
+import { ASSESSMENT_LABEL, assessRecall, phase4Coverage, tier1Rates } from "@/lib/protocol";
 import type { LedgerFigures } from "@/lib/serverData";
 import { useSiteData } from "@/lib/useSiteData";
 
@@ -70,14 +70,16 @@ export default function LedgerSummary({ initial = null }: { initial?: LedgerFigu
       note: "above 0 beats the base rate",
     },
     {
-      label: "Tier-1 precision",
+      label: "Tier-1 precision (Phase 3+)",
       val: fmtPct(precision) ?? "n/a",
-      note: t1 ? `${t1.confirmed} of ${t1.alerts} alerts` : undefined,
+      note: t1 ? `${t1.confirmed} of ${t1.alerts} alerts reached Phase 3+` : undefined,
     },
     {
-      label: "Tier-1 recall",
+      label: "Tier-1 recall (Phase 4+)",
       val: fmtPct(recall) ?? "n/a",
-      note: t1 && t1.phase4Events > 0 ? `${t1.phase4Alerted} of ${t1.phase4Events} Phase 4+ outcomes` : undefined,
+      note: t1 && t1.phase4Events > 0
+        ? `${t1.phase4Alerted} of ${t1.phase4Events} outcomes had an alert, ${phase4Coverage(t1)}. ${ASSESSMENT_LABEL[assessRecall(t1)]}`.trim()
+        : undefined,
     },
     { label: "SI coverage (90%)", val: fmtPct(v.si_coverage) ?? "n/a" },
   ];

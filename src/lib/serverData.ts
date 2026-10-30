@@ -298,11 +298,16 @@ export interface LedgerFigures {
 function tier1Figures(rows: ScoredRow[]): Tier1Figures {
   const alerts = rows.filter((r) => r.alert_tier === "TIER-1");
   const events = rows.filter((r) => r.observed_phase >= 4);
+  const eventRuns = events.map((r) => r.reference_date).sort();
   return {
     alerts: alerts.length,
     confirmed: alerts.filter((r) => r.binary_outcome === 1).length,
     phase4Events: events.length,
     phase4Alerted: events.filter((r) => r.alert_tier === "TIER-1").length,
+    phase4Countries: new Set(events.map((r) => r.region_id)).size,
+    phase4Runs: new Set(eventRuns).size,
+    phase4FirstRun: eventRuns[0] ?? null,
+    phase4LastRun: eventRuns[eventRuns.length - 1] ?? null,
   };
 }
 

@@ -502,7 +502,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
             </table>
           </div>
           <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 12 }}>
-            Pre-registered in Pedersen (2026), Table 1. Protocol locked prior to accumulation of prospective outcome data.
+            Pre-registered in Pedersen (2026), Table 1. Protocol locked prior to accumulation of prospective outcome data. On this site TIER-1 precision counts alerts whose outcome reached Phase 3+, and TIER-1 recall counts Phase 4+ outcomes that had a TIER-1 alert.
           </p>
         </div>
 

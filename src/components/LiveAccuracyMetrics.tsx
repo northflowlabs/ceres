@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ASSESSMENT_LABEL, Assessment, MIN_N, TARGETS, assess, tier1Rates } from "@/lib/protocol";
+import { ASSESSMENT_LABEL, Assessment, MIN_N, TARGETS, assess, assessRecall, phase4Coverage, tier1Rates } from "@/lib/protocol";
 import type { LedgerFigures } from "@/lib/serverData";
 import { useSiteData } from "@/lib/useSiteData";
 import { fmtInt } from "@/lib/utils";
@@ -64,7 +64,6 @@ export default function LiveAccuracyMetrics({
   const total = v.total_predictions ?? 0;
   const hasGrades = nGraded > 0;
   const t1Issued = t1?.alerts ?? 0;
-  const t1Events = t1?.phase4Events ?? 0;
 
   const cards: Card[] = !hasGrades
     ? [
@@ -76,17 +75,17 @@ export default function LiveAccuracyMetrics({
     : [
         {
           val: fmtPct(precision),
-          label: "TIER-I Precision",
+          label: "TIER-I Precision (Phase 3+)",
           target: "> 80%",
-          note: t1 ? `${t1.confirmed} of ${t1.alerts} alerts reached Phase 3+ on the FEWS NET proxy` : "",
+          note: t1 ? `${t1.confirmed} of ${t1.alerts} TIER-I alerts reached Phase 3+ on the FEWS NET proxy` : "",
           state: assess(t1Issued, MIN_N.tier1Precision, (precision ?? 0) > TARGETS.tier1Precision),
         },
         {
           val: fmtPct(recall),
-          label: "TIER-I Recall",
+          label: "TIER-I Recall (Phase 4+)",
           target: "> 85%",
-          note: t1 ? `${t1.phase4Alerted} of ${t1.phase4Events} Phase 4+ outcomes on the FEWS NET proxy` : "",
-          state: assess(t1Events, MIN_N.tier1Recall, (recall ?? 0) > TARGETS.tier1Recall),
+          note: t1 ? `${t1.phase4Alerted} of ${t1.phase4Events} Phase 4+ outcomes had a TIER-I alert, across ${phase4Coverage(t1)}` : "",
+          state: assessRecall(t1),
         },
         {
           val: fmt(v.brier_score, 4),
@@ -175,15 +174,15 @@ export default function LiveAccuracyMetrics({
           <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.75 }}>
             {t1 && (
               <li>
-                <strong>TIER-I precision.</strong> Of {t1.alerts} TIER-I alerts graded, {t1.confirmed} reached
-                Phase 3+ on the FEWS NET proxy at T+90.
+                <strong>TIER-I precision counts Phase 3+.</strong> Of {t1.alerts} TIER-I alerts graded,{" "}
+                {t1.confirmed} reached Phase 3+ on the FEWS NET proxy at T+90.
               </li>
             )}
             {t1 && (
               <li>
-                <strong>TIER-I recall.</strong> Of {t1.phase4Events} graded outcomes at Phase 4+ on the FEWS NET
-                proxy, {t1.phase4Alerted} had a TIER-I alert. This is the pre-registered definition, and Phase 3
-                outcomes are not counted.
+                <strong>TIER-I recall counts Phase 4+.</strong> Of {t1.phase4Events} graded outcomes at Phase 4+
+                on the FEWS NET proxy, {t1.phase4Alerted} had a TIER-I alert. Phase 3 outcomes are not counted.
+                These outcomes cover {phase4Coverage(t1)}.
               </li>
             )}
             {d && (

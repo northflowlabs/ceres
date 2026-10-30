@@ -26,7 +26,7 @@ export function tier1Rates(t: Tier1Figures | null) {
   };
 }
 
-export type Assessment = "met" | "measured" | "awaiting";
+export type Assessment = "met" | "measured" | "awaiting" | "early";
 
 export function assess(n: number, minN: number, met: boolean): Assessment {
   if (n < minN) return "awaiting";
@@ -37,4 +37,24 @@ export const ASSESSMENT_LABEL: Record<Assessment, string> = {
   met: "Met",
   measured: "",
   awaiting: "Not yet assessed",
+  early: "Early sample",
 };
+
+// Phase 4+ outcomes from less than a year of run dates have not seen a full
+// seasonal cycle, so recall stays an early sample whatever its value.
+const EARLY_SAMPLE_DAYS = 365;
+
+export function assessRecall(t: Tier1Figures | null): Assessment {
+  const { recall } = tier1Rates(t);
+  if (!t || recall == null || t.phase4Events < MIN_N.tier1Recall) return "awaiting";
+  const days = (Date.parse(t.phase4LastRun ?? "") - Date.parse(t.phase4FirstRun ?? "")) / 86_400_000;
+  if (!(days >= EARLY_SAMPLE_DAYS)) return "early";
+  return recall > TARGETS.tier1Recall ? "met" : "measured";
+}
+
+// "7 countries and 5 run dates": what the Phase 4+ outcomes cover.
+export function phase4Coverage(t: Tier1Figures): string {
+  const countries = t.phase4Countries === 1 ? "1 country" : `${t.phase4Countries} countries`;
+  const runs = t.phase4Runs === 1 ? "1 run date" : `${t.phase4Runs} run dates`;
+  return `${countries} and ${runs}`;
+}

@@ -180,11 +180,16 @@ const inScore = gradedRows.filter((r) =>
 const counts = (rows, tier, phase) => {
   const alerts = rows.filter((r) => tier(r) === "TIER-1");
   const events = rows.filter((r) => phase(r) >= 4);
+  const eventRuns = events.map((r) => r.reference_date).sort();
   return {
     alerts: alerts.length,
     confirmed: alerts.filter((r) => phase(r) >= 3).length,
     phase4Events: events.length,
     phase4Alerted: events.filter((r) => tier(r) === "TIER-1").length,
+    phase4Countries: new Set(events.map((r) => r.region_id)).size,
+    phase4Runs: new Set(eventRuns).size,
+    phase4FirstRun: eventRuns[0] ?? null,
+    phase4LastRun: eventRuns[eventRuns.length - 1] ?? null,
   };
 };
 const fromLedger = counts(inScore, (r) => r.alert_tier, (r) => r.observed_phase);
