@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api, AggregateMetrics, ValidationMetrics } from "@/lib/api";
+import type { LedgerFigures } from "@/lib/serverData";
 
 /**
  * Compact accuracy ledger for the dashboard side panel, read live from
@@ -36,10 +37,10 @@ function gradingSourceLabel(breakdown: Record<string, number> | undefined) {
 
 type Row = { label: string; val: string; note?: string };
 
-export default function LedgerSummary() {
-  const [v, setV] = useState<ValidationMetrics | null>(null);
-  const [g, setG] = useState<AggregateMetrics | null>(null);
-  const [state, setState] = useState<"loading" | "ready" | "failed">("loading");
+export default function LedgerSummary({ initial = null }: { initial?: LedgerFigures | null }) {
+  const [v, setV] = useState<ValidationMetrics | null>(initial?.metrics ?? null);
+  const [g, setG] = useState<AggregateMetrics | null>(initial?.grades ?? null);
+  const [state, setState] = useState<"loading" | "ready" | "failed">(initial ? "ready" : "loading");
 
   useEffect(() => {
     let alive = true;
@@ -50,7 +51,7 @@ export default function LedgerSummary() {
         setG(gm);
         setState("ready");
       })
-      .catch(() => alive && setState("failed"));
+      .catch(() => alive && setState((s) => (s === "ready" ? s : "failed")));
     return () => {
       alive = false;
     };
@@ -61,10 +62,10 @@ export default function LedgerSummary() {
   if (state !== "ready" || !v) {
     return (
       <p style={{ ...muted, margin: "4px 0 0" }}>
-        {state === "loading" ? "Loading the verification ledger…" : "Live metrics could not be loaded right now. "}
+        {state === "loading" ? "Loading the verification ledger…" : "The live figures are in the "}
         {state === "failed" && (
           <Link href="/validation" style={{ color: "var(--earth)" }}>
-            Open the verification ledger
+            verification ledger
           </Link>
         )}
       </p>

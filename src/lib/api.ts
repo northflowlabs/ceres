@@ -1,5 +1,8 @@
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
 
+// The address printed in links for readers, whichever API a build reads from.
+export const PUBLIC_API_URL = "https://api.ceres.northflow.no";
+
 export interface Prediction {
   region_id: string;
   region_name: string;
@@ -234,8 +237,7 @@ export interface ValidationMetrics {
   // Predictions withdrawn from the score but kept on the record. Reported so a
   // voided run cannot quietly shrink the denominator.
   voided:               number | null;
-  // Predictions that cannot say which code produced them. Published rather
-  // than merely absent: the silent version of this ran unnoticed for months.
+  // Predictions that cannot say which code produced them.
   provenance_unknown:   number | null;
   brier_score:          number | null;
   brier_decomposition:  { reliability: number; resolution: number; uncertainty: number } | null;
