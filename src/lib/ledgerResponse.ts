@@ -7,6 +7,11 @@ function isEmpty(body: unknown): boolean {
   return typeof body === "object" && Object.keys(body as object).length === 0;
 }
 
+// An unknown id stays unknown for a while, so a shared cache may keep this briefly.
+export function ledgerNotFound() {
+  return NextResponse.json({ error: "not found" }, { status: 404, headers: { "Cache-Control": "public, s-maxage=60" } });
+}
+
 // Only a real answer is ever cached. A failure or an empty answer is a 503 that
 // no shared cache may keep.
 export async function ledgerResponse(source: () => Promise<unknown>) {
@@ -19,7 +24,7 @@ export async function ledgerResponse(source: () => Promise<unknown>) {
     }
   } catch (e) {
     if (e instanceof ApiNotFound) {
-      return NextResponse.json({ error: "not found" }, { status: 404, headers: { "Cache-Control": "no-store" } });
+      return ledgerNotFound();
     }
   }
   return NextResponse.json({ error: "unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });

@@ -126,11 +126,11 @@ const SOURCE_LABELS: Record<string, string> = {
 
 const sourceLabel = (id: string) => SOURCE_LABELS[id] ?? id;
 
-// Why the four withdrawn runs left the score, in the API's facts and this site's
-// words: the API's text also speaks of priors in a way that reads as the model's
-// coefficients, which are still expert-informed priors.
+// A summary of the grounds recorded for the four withdrawn runs. The API's text
+// calls the input fallbacks "expert priors", which would read as the model's
+// coefficients. They were hardcoded country values in the input adapters.
 const WITHDRAWAL_REASON =
-  "Issued before NASA POWER and MODIS data replaced synthetic fallbacks on 6 April 2026, and before UCDP conflict data covered Somalia, Palestine, Yemen, Afghanistan and Syria.";
+  "Rainfall and vegetation inputs could fall back to mock data until 6 April 2026. UCDP conflict data was missing for Somalia, Palestine, Yemen, Afghanistan and Syria until 30 March to 1 April 2026. Hardcoded country fallback values for IPC phase, food access and prices stayed in the input adapters until 7 April 2026.";
 
 // This evidence row sums every month of the lookback window under a monthly
 // label, so its figure and its note cannot be read as what they say.
@@ -201,21 +201,45 @@ async function readRows(status: string): Promise<RawRow[] | null> {
   return res?.predictions ?? null;
 }
 
-// One row per run date. The archive holds repeat writes for some dates, and the
-// latest write stands.
+// The ledger holds what was issued for a region on a date.
+type LedgerIndex = Map<string, RawRow>;
+
+const ledgerKey = (region: string, date: string) => `${region}|${date}`;
+
+async function getLedgerIndex(): Promise<LedgerIndex | null> {
+  const parts = await Promise.all(["pending", "awaiting", "graded", "voided"].map(readRows));
+  if (parts.some((p) => !p)) return null;
+  return new Map(parts.flat().map((r) => [ledgerKey((r as RawRow).region_id, (r as RawRow).reference_date), r as RawRow]));
+}
+
+// One row per run date. The archive holds repeat writes for some dates. The ledger
+// matches the first of them, so the first write stands, and where the ledger has
+// the region and date its own values stand. `npm run check:ledger` proves it.
 type RawSnapshot = RegionSnapshot & { archived_at?: string };
 
-async function getHistory(regionId: string): Promise<RegionSnapshot[] | null> {
+async function getHistory(regionId: string, ledger: LedgerIndex): Promise<RegionSnapshot[] | null> {
   const rows = await read<RawSnapshot[]>(`/v1/archive/regions/${regionId}?limit=${HISTORY_MAX}`);
   if (!rows) return null;
   const byDate = new Map<string, RawSnapshot>();
   for (const r of rows) {
     const seen = byDate.get(r.run_date);
-    if (!seen || (r.archived_at ?? "") > (seen.archived_at ?? "")) byDate.set(r.run_date, r);
+    if (!seen || (r.archived_at ?? "") < (seen.archived_at ?? "")) byDate.set(r.run_date, r);
   }
   return [...byDate.values()]
     .sort((a, b) => b.run_date.localeCompare(a.run_date))
-    .map((s) => pick(s, SNAPSHOT_FIELDS));
+    .map((s) => {
+      const issued = ledger.get(ledgerKey(regionId, s.run_date));
+      const row = pick(s, SNAPSHOT_FIELDS);
+      return issued
+        ? {
+            ...row,
+            p_ipc3plus_90d: issued.p_ipc3plus,
+            sensitivity_interval_low: issued.si_low,
+            sensitivity_interval_high: issued.si_high,
+            alert_tier: issued.alert_tier,
+          }
+        : row;
+    });
 }
 
 // ── What the pages and the /ledger routes serve ───────────────────────────
@@ -324,12 +348,14 @@ export interface RegionData {
 }
 
 export async function getRegionData(regionId: string): Promise<RegionData | null> {
-  const [prediction, history, admin1] = await Promise.all([
+  const [prediction, ledger, admin1] = await Promise.all([
     read<Prediction>(`/v1/predictions/${regionId}`),
-    getHistory(regionId),
+    getLedgerIndex(),
     NO_ADMIN1.has(regionId) ? [] : getAdmin1(regionId),
   ]);
-  if (!prediction || !history || !admin1) return null;
+  if (!prediction || !ledger || !admin1) return null;
+  const history = await getHistory(regionId, ledger);
+  if (!history) return null;
   return {
     prediction: pick(prediction, PREDICTION_FIELDS),
     hypothesis: prediction.hypothesis_id ? await getHypothesis(prediction.hypothesis_id) : null,
@@ -338,21 +364,50 @@ export async function getRegionData(regionId: string): Promise<RegionData | null
   };
 }
 
+// The ledger and the archive are two records with different dates, so each figure
+// names the record it counts.
+export interface RecordCounts {
+  ledgerDates: number;
+  sharedDates: number;
+  ledgerOnlyDates: number;
+  archiveOnlyDates: number;
+  regionWeeks: number;
+}
+
 export interface ImpactData {
   ledger: LedgerFigures;
   archive: ArchiveStats;
   runs: string[];
   predictions: Prediction[];
+  records: RecordCounts;
 }
 
 export async function getImpactData(): Promise<ImpactData | null> {
-  const [ledger, archive, runs, predictions] = await Promise.all([
+  const [ledger, archive, runs, predictions, index] = await Promise.all([
     getLedgerFigures(),
     read<ArchiveStats>("/v1/archive/stats"),
     read<string[]>("/v1/archive/runs"),
     getPredictions(),
+    getLedgerIndex(),
   ]);
-  return ledger && archive && runs && predictions ? { ledger, archive, runs, predictions } : null;
+  if (!ledger || !archive || !runs || !predictions || !index) return null;
+  const histories = await Promise.all(predictions.map((p) => getHistory(p.region_id, index)));
+  if (histories.some((h) => !h)) return null;
+  const ledgerDates = new Set([...index.values()].map((r) => r.reference_date));
+  const shared = runs.filter((d) => ledgerDates.has(d)).length;
+  return {
+    ledger,
+    archive,
+    runs,
+    predictions,
+    records: {
+      ledgerDates: ledgerDates.size,
+      sharedDates: shared,
+      ledgerOnlyDates: ledgerDates.size - shared,
+      archiveOnlyDates: runs.length - shared,
+      regionWeeks: histories.reduce((n, h) => n + (h as RegionSnapshot[]).length, 0),
+    },
+  };
 }
 
 export interface ValidationData {
@@ -403,6 +458,7 @@ export interface TrackerData {
   grades: GradeRecord[];
   meanBrier: number | null;
   latest: RegionSnapshot[];
+  next: LedgerRow[];
   history: Record<string, RegionSnapshot[]>;
   archive: ArchiveStats;
   runs: string[];
@@ -410,18 +466,24 @@ export interface TrackerData {
 }
 
 export async function getTrackerData(): Promise<TrackerData | null> {
-  const [grades, latest, archive, runs, metrics] = await Promise.all([
+  const [grades, latest, archive, runs, metrics, ledger, pending] = await Promise.all([
     read<{ grades: GradeRecord[] }>("/v1/grades"),
     getLatestSnapshots(),
     read<ArchiveStats>("/v1/archive/stats"),
     read<string[]>("/v1/archive/runs"),
     getPublicMetrics(),
+    getLedgerIndex(),
+    readRows("pending"),
   ]);
-  if (!grades || !latest || !archive || !runs || !metrics) return null;
-  const histories = await Promise.all(latest.map((s) => getHistory(s.region_id)));
+  if (!grades || !latest || !archive || !runs || !metrics || !ledger || !pending) return null;
+  const histories = await Promise.all(latest.map((s) => getHistory(s.region_id, ledger)));
   if (histories.some((h) => !h)) return null;
   const history = Object.fromEntries(latest.map((s, i) => [s.region_id, histories[i] as RegionSnapshot[]]));
-  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, history, archive, runs, metrics };
+  const next = [...pending]
+    .sort((a, b) => a.grading_date.localeCompare(b.grading_date))
+    .slice(0, latest.length)
+    .map(publicRow);
+  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive, runs, metrics };
 }
 
 export interface SubnationalData {

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Track Record · CERES Famine Early Warning",
   description:
-    "The complete public history of CERES famine predictions: weekly snapshots per region, " +
+    "The public archive of CERES famine predictions: run snapshots per region, " +
     "confidence trends, and graded outcomes. Published runs since 9 March 2026.",
   keywords: [
     "famine forecast track record", "prediction history", "food security accuracy",

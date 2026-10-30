@@ -6,6 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import type { RegionSnapshot } from "@/lib/api";
 import { useSiteData } from "@/lib/useSiteData";
 import { fmtInt } from "@/lib/utils";
+import { regionName } from "@/lib/regionNames";
 import type { TrackerData } from "@/lib/serverData";
 
 const IPC_LABELS: Record<number, string> = {
@@ -105,17 +106,22 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
   const verified = grades.filter(g => g.tier_correct);
   const avgBrier = data?.meanBrier != null ? data.meanBrier.toFixed(4) : null;
 
-  // Pending predictions: latest snapshot per region, horizon = run_date + 90d
+  // The next predictions in the ledger to reach their grading date.
   const today = new Date();
-  const pendingPredictions = latest
-    .map(s => {
-      const runDate = new Date(s.run_date);
-      const horizonDate = new Date(runDate.getTime() + 90 * 24 * 60 * 60 * 1000);
-      const daysUntil = Math.ceil((horizonDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      return { ...s, horizonDate, daysUntil };
-    })
-    .filter(s => s.daysUntil > 0)
-    .sort((a, b) => b.p_ipc3plus_90d - a.p_ipc3plus_90d);
+  const pendingPredictions = (data?.next ?? []).map(r => {
+    const horizonDate = new Date(r.grading_date);
+    const daysUntil = Math.ceil((horizonDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return {
+      prediction_id: r.prediction_id,
+      region_id: r.region_id,
+      region_name: regionName(r.region_id),
+      run_date: r.reference_date,
+      alert_tier: r.alert_tier,
+      p_ipc3plus_90d: r.p_ipc3plus,
+      horizonDate,
+      daysUntil,
+    };
+  });
 
   const selSnap = latest.find(s => s.region_id === selRegion);
   const sortedHistory = [...history].sort((a, b) => a.run_date.localeCompare(b.run_date));
@@ -132,7 +138,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>CERES Track Record</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          The complete public history of CERES predictions: weekly snapshots per region, probability trends with sensitivity intervals, and graded outcomes.
+          The public archive of CERES predictions: run snapshots per region, probability trends with sensitivity intervals, and graded outcomes.
         </p>
       </div>
 
@@ -241,7 +247,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                     {history.length >= 2 ? (
                       <div style={{ marginBottom: 24 }}>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>
-                          P(IPC3+ / 90d), {history.length} weeks · 90% sensitivity interval (SI)
+                          P(IPC3+ / 90d), {history.length} published runs · 90% sensitivity interval (SI)
                         </div>
                         <div style={{ position: "relative" }}>
                           <div style={{ position: "absolute", right: 0, top: 0, fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>100%</div>
@@ -308,7 +314,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                   {pendingPredictions.slice(0, 5).map((r, i) => {
                     const h = r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
                     return (
-                      <div key={r.region_id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 4 ? "1px solid var(--border-light)" : "none" }}>
+                      <div key={r.prediction_id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 4 ? "1px solid var(--border-light)" : "none" }}>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{r.region_name}</div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: tierColor(r.alert_tier), fontWeight: 600 }}>{fmtPct(r.p_ipc3plus_90d)}</div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--warning)", padding: "2px 8px", border: "1px solid rgba(217,119,6,0.3)", background: "#FFFBEB" }}>Grading: {h}</div>
@@ -387,7 +393,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                   ) : pendingPredictions.map(r => {
                     const urgency = r.daysUntil <= 14 ? "var(--crisis)" : r.daysUntil <= 30 ? "var(--warning)" : "var(--ink-light)";
                     return (
-                      <tr key={r.region_id} style={{ borderBottom: "1px solid var(--border-light)", background: r.alert_tier === "TIER-1" ? "rgba(192,57,43,0.02)" : "white" }}>
+                      <tr key={r.prediction_id} style={{ borderBottom: "1px solid var(--border-light)", background: r.alert_tier === "TIER-1" ? "rgba(192,57,43,0.02)" : "white" }}>
                         <td style={{ padding: "10px 14px" }}>
                           <span style={{ fontWeight: 600, color: "var(--ink)" }}>{r.region_name}</span>
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginLeft: 6 }}>{r.region_id}</span>

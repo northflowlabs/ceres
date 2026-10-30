@@ -1,5 +1,4 @@
-import { NextResponse } from "next/server";
-import { ledgerResponse } from "@/lib/ledgerResponse";
+import { ledgerNotFound, ledgerResponse } from "@/lib/ledgerResponse";
 import {
   getDashboardData,
   getGradedLedger,
@@ -32,8 +31,10 @@ const SOURCES: Record<string, () => Promise<unknown>> = {
   "withdrawn.json": getWithdrawnRows,
 };
 
+// Two rounds of parallel reads, each bounded at 10 s.
+export const maxDuration = 30;
+
 export async function GET(_req: Request, { params }: { params: Promise<{ name: string }> }) {
-  const source = SOURCES[(await params).name];
-  if (!source) return NextResponse.json({ error: "not found" }, { status: 404 });
-  return ledgerResponse(source);
+  const { name } = await params;
+  return Object.hasOwn(SOURCES, name) ? ledgerResponse(SOURCES[name]) : ledgerNotFound();
 }

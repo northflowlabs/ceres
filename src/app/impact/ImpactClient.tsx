@@ -33,6 +33,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
   const runs = data?.runs ?? null;
   const predictions = data?.predictions ?? null;
   const issued = data?.ledger.metrics.total_predictions ?? null;
+  const records = data?.records ?? null;
 
   const count = fmtInt;
   const inTier = (tier: string) => predictions?.filter(x => x.alert_tier === tier).length ?? null;
@@ -86,10 +87,16 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
         {/* Operational stats */}
         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "40px 0 10px" }}>System Activity</div>
         <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
-          <StatCard val={count(runs?.length)}             label="Published Runs" sub={archive?.earliest_run ? `Since ${fmtDate(archive.earliest_run)}` : undefined} />
-          <StatCard val={count(archive?.total_snapshots)} label="Archived Snapshots" sub="Region × week records" />
+          <StatCard val={count(runs?.length)}             label="Published Runs" sub={archive?.earliest_run ? `Run dates in the archive since ${fmtDate(archive.earliest_run)}` : undefined} />
+          <StatCard val={count(records?.regionWeeks)}      label="Archived Region-Weeks" sub="One row per region and run date" />
           <StatCard val={count(inTier("TIER-1"))}         label="Active Tier I Regions" sub={asOf ? `As of ${fmtDate(asOf)}` : undefined} />
         </div>
+
+        {records && (
+          <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0", lineHeight: 1.6 }}>
+            {count(issued)} predictions are in the ledger across {records.ledgerDates} issue dates. The archive is a separate record: {records.sharedDates} dates are in both, {records.ledgerOnlyDates} in the ledger only and {records.archiveOnlyDates} in the archive only.
+          </p>
+        )}
 
         {/* What this means: narrative */}
         <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, margin: "56px 0 0", paddingTop: 48, borderTop: "1px solid var(--border-light)" }}>

@@ -5,8 +5,8 @@ import { getRegionData } from "@/lib/serverData";
 
 export const revalidate = 3600;
 
-// Three reads, then one more, each bounded at 10 s.
-export const maxDuration = 30;
+// Three reads, then one more, then one more, each bounded at 10 s.
+export const maxDuration = 40;
 
 export function generateStaticParams() {
   return REGION_IDS.map((id) => ({ id: id.toLowerCase() }));
