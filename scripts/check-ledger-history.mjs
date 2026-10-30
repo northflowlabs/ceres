@@ -265,6 +265,44 @@ for (const p of forecasts) {
   if (h?.reference_date !== p.reference_date) wrong.push(`dashboard ${p.region_id}: no hypothesis of the run ${p.reference_date}`);
 }
 
+// Every evidence row in words, against the API's own values and note. A variable
+// the site cannot word, or a verdict its own values contradict, is a disagreement.
+const signedDeparture = (text) => {
+  if (text === "Normal") return 0;
+  const m = text?.match(/^(\d+)% (above|below) normal$/);
+  return m ? Number(m[1]) * (m[2] === "above" ? 1 : -1) : NaN;
+};
+const EVIDENCE = {
+  rainfall_fraction_of_normal: (v, text) => Math.abs(signedDeparture(text) - v * 100) <= 1,
+  ndvi_anomaly_zscore: (v, text) => text === `z ${v.toFixed(2)}`,
+  ipc_phase: (v, text) => text === `Phase ${v}`,
+};
+const NOT_SHOWN = new Set(["conflict_events_monthly"]);
+let evidenceCompared = 0;
+for (const p of forecasts) {
+  const raw = await json(`${API}/v1/hypotheses/${p.hypothesis_id}`);
+  const site = await json(`${SITE}/ledger/hypothesis/${p.hypothesis_id}.json`);
+  const rows = raw.evidence ?? [];
+  for (const e of rows) {
+    if (!EVIDENCE[e.variable] && !NOT_SHOWN.has(e.variable)) wrong.push(`${p.region_id}: evidence variable ${e.variable} has no wording`);
+  }
+  const expected = rows.filter((e) => EVIDENCE[e.variable] && e.observed_value != null && e.threshold != null);
+  if (expected.length !== (site.evidence ?? []).length) wrong.push(`${p.region_id}: ${site.evidence?.length} evidence rows, the API has ${expected.length} to show`);
+  for (const e of expected) {
+    const s = site.evidence?.find((x) => x.variable === e.variable);
+    const label = `${p.region_id} ${e.variable}`;
+    evidenceCompared += 1;
+    if (!EVIDENCE[e.variable](e.observed_value, s?.observed)) wrong.push(`${label}: site says ${s?.observed}, observed ${e.observed_value}`);
+    if (!EVIDENCE[e.variable](e.threshold, s?.threshold)) wrong.push(`${label}: site says threshold ${s?.threshold}, API has ${e.threshold}`);
+    const noted = e.note?.match(/^Rainfall ([+-]\d+)%/);
+    if (noted && Math.abs(signedDeparture(s?.observed) - Number(noted[1])) > 1) wrong.push(`${label}: site says ${s?.observed}, the API's note says ${noted[1]}%`);
+    const reached = e.direction === "below" ? e.observed_value <= e.threshold : e.observed_value >= e.threshold;
+    const verdict = reached === e.supports_hypothesis ? e.supports_hypothesis : null;
+    if (s?.supports !== verdict) wrong.push(`${label}: verdict is ${s?.supports}, its values give ${verdict}`);
+  }
+}
+if (evidenceCompared === 0) wrong.push("no evidence rows compared");
+
 // The rows behind the score, key by key in both directions.
 const rowKey = (r) => `${r.region_id}|${r.reference_date}`;
 const servedScore = await json(`${SITE}/ledger/graded.json`);
@@ -288,6 +326,6 @@ for (const route of routes) {
   for (const field of REMOVED) if (body.includes(field)) wrong.push(`/ledger/${route} carries ${field}`);
 }
 
-console.log(`${rawCompared} first writes compared with the ledger, ${siteCompared} site rows compared with first writes, ${csvRows.length} CSV rows compared, TIER-1 ${JSON.stringify(tier1)}, ${wrong.length} disagree`);
+console.log(`${rawCompared} first writes compared with the ledger, ${siteCompared} site rows compared with first writes, ${csvRows.length} CSV rows compared, ${evidenceCompared} evidence rows compared, TIER-1 ${JSON.stringify(tier1)}, ${wrong.length} disagree`);
 for (const line of wrong.slice(0, 20)) console.log(line);
 process.exit(wrong.length > 0 || rawCompared === 0 || siteCompared === 0 || csvRows.length === 0 ? 1 : 0);

@@ -326,17 +326,22 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
               Evidence Base
             </div>
             <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 20 }}>
-              Supporting Signals ({hyp.evidence.length})
+              Evidence Signals ({hyp.evidence.length})
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 10 }}>
               {hyp.evidence.slice(0, 12).map((ev, i) => (
-                <div key={i} style={{ padding: "12px 14px", background: "var(--parchment)", border: `1px solid ${ev.supports_hypothesis ? "var(--border)" : "var(--border)"}`, borderLeft: `3px solid ${ev.supports_hypothesis ? "#2E7D32" : "#C0392B"}` }}>
+                <div key={i} style={{ padding: "12px 14px", background: "var(--parchment)", border: "1px solid var(--border)", borderLeft: `3px solid ${ev.supports == null ? "var(--border)" : ev.supports ? "#2E7D32" : "#C0392B"}` }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, fontWeight: 600, color: "var(--ink)", marginBottom: 4 }}>
-                    {ev.variable.replace(/_/g, " ")}
+                    {ev.label}
                   </div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                    {`Observed ${ev.observed_value?.toFixed(2)} · threshold ${ev.threshold?.toFixed(2)}`}
+                    {`${ev.observed} · threshold ${ev.threshold}`}
                   </div>
+                  {ev.supports != null && (
+                    <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", marginTop: 4 }}>
+                      {ev.supports ? "Supports the hypothesis" : "Does not support the hypothesis"}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

@@ -52,12 +52,14 @@ export interface Hypothesis {
     confidence: number;
     key_signals: string[];
   }>;
+  // Worded by serverData.ts. supports is null where the row states no verdict.
   evidence?: Array<{
     source_id: string;
     variable: string;
-    observed_value: number;
-    threshold: number;
-    supports_hypothesis: boolean;
+    label: string;
+    observed: string;
+    threshold: string;
+    supports: boolean | null;
   }>;
 }
 

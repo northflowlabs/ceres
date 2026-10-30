@@ -705,25 +705,28 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                     <table className="evidence-table">
                       <thead>
                         <tr>
-                          <th scope="col">Source</th>
-                          <th scope="col">Variable</th>
+                          <th scope="col">Signal</th>
                           <th scope="col">Observed</th>
-                          <th scope="col">Threshold</th>
                           <th scope="col">Result</th>
                         </tr>
                       </thead>
                       <tbody>
                         {(hyp.evidence ?? []).slice(0, 8).map((ev, ei) => (
                           <tr key={ei}>
-                            <td style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--earth)" }}>{ev.source_id}</td>
-                            <td>{ev.variable}</td>
-                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{(ev.observed_value ?? 0).toFixed(2)}</td>
-                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>{(ev.threshold ?? 0).toFixed(2)}</td>
                             <td>
-                              <span className={ev.supports_hypothesis ? "evidence-supports" : "evidence-contradicts"}
-                                style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.06em" }}>
-                                {ev.supports_hypothesis ? "✓ SUP" : "CON"}
-                              </span>
+                              {ev.label}
+                              <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--earth)" }}>{ev.source_id}</div>
+                            </td>
+                            <td style={{ fontFamily: "var(--mono)", fontSize: 10 }}>
+                              {ev.observed}
+                              <div style={{ fontSize: 9, color: "var(--ink-light)" }}>Threshold {ev.threshold}</div>
+                            </td>
+                            <td>
+                              {ev.supports != null && (
+                                <span className={ev.supports ? "evidence-supports" : "evidence-contradicts"} style={{ fontFamily: "var(--mono)", fontSize: 9 }}>
+                                  {ev.supports ? "Supports" : "Does not support"}
+                                </span>
+                              )}
                             </td>
                           </tr>
                         ))}

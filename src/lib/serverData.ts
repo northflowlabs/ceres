@@ -121,10 +121,54 @@ const sourceLabel = (id: string) => SOURCE_LABELS[id] ?? id;
 const WITHDRAWAL_REASON =
   "Rainfall and vegetation inputs could fall back to mock data until 6 April 2026. UCDP conflict data was missing for Somalia, Palestine, Yemen, Afghanistan and Syria until 30 March to 1 April 2026. Hardcoded country fallback values for IPC phase, food access and prices stayed in the input adapters until 7 April 2026.";
 
-// Evidence rows the site does not show.
-const UNREADABLE_EVIDENCE = new Set(["conflict_events_monthly"]);
+// What each evidence variable holds, in words. A variable not named here is not
+// shown, and check:ledger fails on one it does not know.
+function departure(v: number): string {
+  const percent = Math.round(Math.abs(v) * 100);
+  return percent === 0 ? "Normal" : `${percent}% ${v > 0 ? "above" : "below"} normal`;
+}
 
-function publicHypothesisDetail(h: Hypothesis): Hypothesis {
+const EVIDENCE_TEXT: Record<string, { label: string; format: (v: number) => string }> = {
+  rainfall_fraction_of_normal: { label: "Rainfall against normal", format: departure },
+  ndvi_anomaly_zscore: { label: "NDVI anomaly", format: (v) => `z ${v.toFixed(2)}` },
+  ipc_phase: { label: "IPC phase", format: (v) => `Phase ${v}` },
+};
+
+interface RawEvidence {
+  source_id: string;
+  variable: string;
+  observed_value: number | null;
+  threshold: number | null;
+  direction: string;
+  supports_hypothesis: boolean;
+}
+
+type RawHypothesis = Omit<Hypothesis, "evidence"> & { evidence?: RawEvidence[] };
+
+// The API's verdict, where its own values agree with it. Otherwise the row states none.
+function evidenceVerdict(e: RawEvidence): boolean | null {
+  const { observed_value: observed, threshold, direction } = e;
+  if (observed == null || threshold == null) return null;
+  const reached = direction === "below" ? observed <= threshold : direction === "above" ? observed >= threshold : null;
+  return reached === e.supports_hypothesis ? e.supports_hypothesis : null;
+}
+
+function publicEvidence(rows: RawEvidence[]): Hypothesis["evidence"] {
+  return rows.flatMap((e) => {
+    const text = EVIDENCE_TEXT[e.variable];
+    if (!text || e.observed_value == null || e.threshold == null) return [];
+    return [{
+      source_id: sourceLabel(e.source_id),
+      variable: e.variable,
+      label: text.label,
+      observed: text.format(e.observed_value),
+      threshold: text.format(e.threshold),
+      supports: evidenceVerdict(e),
+    }];
+  });
+}
+
+function publicHypothesisDetail(h: RawHypothesis): Hypothesis {
   return {
     ...pick(h, HYPOTHESIS_FIELDS),
     driver_clusters: h.driver_clusters?.map((c) => ({
@@ -133,15 +177,7 @@ function publicHypothesisDetail(h: Hypothesis): Hypothesis {
       confidence: c.confidence,
       key_signals: Array.from(new Set(c.key_signals.map(sourceLabel))),
     })),
-    evidence: h.evidence
-      ?.filter((e) => !UNREADABLE_EVIDENCE.has(e.variable))
-      .map((e) => ({
-        source_id: sourceLabel(e.source_id),
-        variable: e.variable,
-        observed_value: e.observed_value,
-        threshold: e.threshold,
-        supports_hypothesis: e.supports_hypothesis,
-      })),
+    evidence: h.evidence && publicEvidence(h.evidence),
   };
 }
 
@@ -409,7 +445,7 @@ export async function getDashboardData(): Promise<DashboardData | null> {
 }
 
 export async function getHypothesis(id: string): Promise<Hypothesis | null> {
-  const h = await read<Hypothesis>(`/v1/hypotheses/${encodeURIComponent(id)}`);
+  const h = await read<RawHypothesis>(`/v1/hypotheses/${encodeURIComponent(id)}`);
   return h && publicHypothesisDetail(h);
 }
 
