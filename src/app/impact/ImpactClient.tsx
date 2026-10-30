@@ -3,7 +3,6 @@
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import LiveAccuracyMetrics from "@/components/LiveAccuracyMetrics";
-import { PUBLIC_API_URL } from "@/lib/api";
 import { useSiteData } from "@/lib/useSiteData";
 import { fmtInt } from "@/lib/utils";
 import { TIER_DEFS } from "@/lib/tiers";
@@ -140,7 +139,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
               {
                 label: "Current Predictions",
                 desc:  "Latest forecast for all monitored regions: probabilities, 90% sensitivity intervals, driver types.",
-                href:  `${PUBLIC_API_URL}/v1/export/predictions/csv`,
+                href:  "/ledger/latest.csv",
                 file:  "CSV",
               },
               {

@@ -82,22 +82,21 @@ function pick<T extends object, K extends keyof T>(row: T, keys: readonly K[]): 
 
 const PREDICTION_FIELDS = [
   "region_id", "region_name", "lat", "lon", "reference_date", "forecast_horizon_days", "alert_tier",
-  "ipc_phase_forecast", "p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d", "sensitivity_interval_low",
-  "sensitivity_interval_high", "convergence_score", "convergence_tier", "is_compound", "n_signals_flagged",
+  "ipc_phase_forecast", "p_ipc3plus_90d", "sensitivity_interval_low", "sensitivity_interval_high",
+  "convergence_score", "convergence_tier", "is_compound", "n_signals_flagged",
   "flagged_sources", "composite_stress_score", "drought_stress", "vegetation_stress", "conflict_stress",
   "food_access_stress", "ipc_stress", "price_stress", "driver_types", "hypothesis_id",
 ] as const;
 
 const HYPOTHESIS_FIELDS = [
   "hypothesis_id", "region_id", "region_name", "lat", "lon", "forecast_horizon_days", "reference_date",
-  "alert_tier", "ipc_phase_forecast", "composite_stress_score", "p_ipc3plus_90d",
-  "p_ipc4plus_90d", "p_famine_90d", "driver_types", "n_sources_agreeing",
+  "alert_tier", "ipc_phase_forecast", "composite_stress_score", "p_ipc3plus_90d", "driver_types",
+  "n_sources_agreeing",
 ] as const;
 
 const SNAPSHOT_FIELDS = [
-  "run_date", "region_id", "region_name", "alert_tier", "p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d",
-  "sensitivity_interval_low", "sensitivity_interval_high", "ipc_phase_forecast", "composite_stress_score",
-  "convergence_tier", "driver_types",
+  "run_date", "region_id", "region_name", "alert_tier", "p_ipc3plus_90d", "sensitivity_interval_low", "sensitivity_interval_high", "ipc_phase_forecast", "composite_stress_score", "convergence_tier",
+  "driver_types",
 ] as const;
 
 const GRADE_FIELDS = [
@@ -474,11 +473,12 @@ export async function getMapData(): Promise<MapData | null> {
   return predictions && { predictions };
 }
 
-const CSV_FIELDS = [
-  "run_date", "region_id", "region_name", "alert_tier", "p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d",
-  "sensitivity_interval_low", "sensitivity_interval_high", "ipc_phase_forecast", "composite_stress_score",
-  "convergence_tier", "driver_types",
-] as const;
+function csvCell(v: unknown): string {
+  const s = Array.isArray(v) ? v.join(";") : String(v ?? "");
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+const csvRow = (r: RegionSnapshot) => SNAPSHOT_FIELDS.map((k) => csvCell(r[k])).join(",");
 
 // The rows the site's charts use, one per region and published run.
 export async function getArchiveCsv(): Promise<string | null> {
@@ -486,10 +486,26 @@ export async function getArchiveCsv(): Promise<string | null> {
   if (!predictions || !ledger) return null;
   const histories = await Promise.all(predictions.map((p) => getHistory(p.region_id, ledger)));
   if (histories.some((h) => !h)) return null;
-  const cell = (v: unknown) => {
-    const s = Array.isArray(v) ? v.join(";") : String(v ?? "");
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-  const rows = (histories as RegionSnapshot[][]).flat().map((r) => CSV_FIELDS.map((k) => cell(r[k])).join(","));
-  return [CSV_FIELDS.join(","), ...rows].join("\n") + "\n";
+  return [SNAPSHOT_FIELDS.join(","), ...(histories as RegionSnapshot[][]).flat().map(csvRow)].join("\n") + "\n";
+}
+
+const HXL_TAGS: Record<(typeof SNAPSHOT_FIELDS)[number], string> = {
+  run_date: "#date+run",
+  region_id: "#country+code+iso3",
+  region_name: "#country+name",
+  alert_tier: "#indicator+tier+alert",
+  p_ipc3plus_90d: "#indicator+value+prob+ipc3plus+90d",
+  sensitivity_interval_low: "#indicator+value+ci+low+90d",
+  sensitivity_interval_high: "#indicator+value+ci+high+90d",
+  ipc_phase_forecast: "#indicator+value+ipc+phase+forecast",
+  composite_stress_score: "#indicator+value+stress+composite",
+  convergence_tier: "#indicator+tier+convergence",
+  driver_types: "#indicator+label+drivers",
+};
+
+// The current run as HXL-tagged CSV: column headers, then hashtags, then data.
+export async function getLatestCsv(): Promise<string | null> {
+  const rows = await getLatestSnapshots();
+  if (!rows) return null;
+  return [SNAPSHOT_FIELDS.join(","), SNAPSHOT_FIELDS.map((k) => HXL_TAGS[k]).join(","), ...rows.map(csvRow)].join("\n") + "\n";
 }

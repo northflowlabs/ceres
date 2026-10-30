@@ -32,7 +32,6 @@ interface Prediction {
   region_name?: string;
   alert_tier: string;
   p_ipc3plus_90d: number;
-  p_ipc4plus_90d: number;
   composite_stress_score: number;
   conflict_stress: number;
   drought_stress: number;
@@ -49,7 +48,6 @@ interface SelectedFeature {
   countryId: string;
   tier: string;
   p3: number;
-  p4: number;
   ciLow: number | null;
   ciHigh: number | null;
   css: number;
@@ -216,7 +214,6 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
               countryId: iso,
               tier: pred.alert_tier,
               p3: pred.p_ipc3plus_90d,
-              p4: pred.p_ipc4plus_90d,
               ciLow: pred.sensitivity_interval_low ?? null,
               ciHigh: pred.sensitivity_interval_high ?? null,
               css: pred.composite_stress_score,
@@ -345,16 +342,9 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
                   padding: "3px 9px", display: "inline-block", marginBottom: 18,
                 }}>{selected.tier} · {TIER_LABEL[selected.tier]}</span>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-                  {[
-                    { label: "P(IPC 3+)", val: fmtPct(selected.p3), color: TIER_FILL[selected.tier] },
-                    { label: "P(IPC 4+)", val: fmtPct(selected.p4), color: "#78716C" },
-                  ].map(({ label, val, color }) => (
-                    <div key={label} style={{ background: "var(--parchment)", padding: "10px 12px" }}>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 3 }}>{label}</div>
-                      <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color, lineHeight: 1 }}>{val}</div>
-                    </div>
-                  ))}
+                <div style={{ background: "var(--parchment)", padding: "10px 12px", marginBottom: 12 }}>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 3 }}>P(IPC 3+)</div>
+                  <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: TIER_FILL[selected.tier], lineHeight: 1 }}>{fmtPct(selected.p3)}</div>
                 </div>
 
                 {/* Sensitivity interval row */}

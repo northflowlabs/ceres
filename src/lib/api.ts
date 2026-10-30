@@ -1,8 +1,5 @@
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ceres.northflow.no";
 
-// The address printed in links for readers, whichever API a build reads from.
-export const PUBLIC_API_URL = "https://api.ceres.northflow.no";
-
 export interface Prediction {
   region_id: string;
   region_name: string;
@@ -13,8 +10,6 @@ export interface Prediction {
   alert_tier: "TIER-1" | "TIER-2" | "TIER-3";
   ipc_phase_forecast: number;
   p_ipc3plus_90d: number;
-  p_ipc4plus_90d: number;
-  p_famine_90d: number;
   sensitivity_interval_low: number | null;
   sensitivity_interval_high: number | null;
   convergence_score: number;
@@ -45,10 +40,7 @@ export interface Hypothesis {
   alert_tier: string;
   ipc_phase_forecast: number;
   composite_stress_score: number;
-  // Flat probability fields (API does not nest these)
   p_ipc3plus_90d: number;
-  p_ipc4plus_90d: number;
-  p_famine_90d: number;
   sensitivity_interval_low?: number | null;
   sensitivity_interval_high?: number | null;
   driver_types?: string[];
@@ -179,8 +171,6 @@ export interface RegionSnapshot {
   region_name:            string;
   alert_tier:             string;
   p_ipc3plus_90d:         number;
-  p_ipc4plus_90d:         number;
-  p_famine_90d:           number;
   sensitivity_interval_low:  number | null;
   sensitivity_interval_high: number | null;
   ipc_phase_forecast:     number;

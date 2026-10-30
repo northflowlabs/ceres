@@ -23,7 +23,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/data" },
 };
 
-const HDX_BASE = "https://api.ceres.northflow.no";
 
 const datasetJsonLd = {
   "@context": "https://schema.org",
@@ -80,8 +79,6 @@ const datasetJsonLd = {
   spatialCoverage: "43 high-risk countries (global)",
   variableMeasured: [
     "P(IPC Phase 3+ 90d)",
-    "P(IPC Phase 4+ 90d)",
-    "P(Famine 90d)",
     "composite stress score",
     "alert tier",
     "90% sensitivity interval",
@@ -94,7 +91,7 @@ const datasetJsonLd = {
       "@type": "DataDownload",
       name: "Latest snapshot (CSV)",
       encodingFormat: "text/csv",
-      contentUrl: `${HDX_BASE}/v1/export/hdx?latest=true`,
+      contentUrl: "https://ceres.northflow.no/ledger/latest.csv",
     },
     {
       "@type": "DataDownload",

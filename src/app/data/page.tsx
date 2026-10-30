@@ -218,7 +218,7 @@ export default function DataPage() {
                 label: "Latest Snapshot",
                 sub: "One row per region, current run",
                 desc: "Best for dashboards, situational awareness, and map data integrations.",
-                url: "https://api.ceres.northflow.no/v1/export/hdx?latest=true",
+                url: "https://ceres.northflow.no/ledger/latest.csv",
                 tag: "HXL-tagged",
               },
               {
@@ -266,11 +266,11 @@ export default function DataPage() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
-                { label: "Current forecasts, all regions", fmt: "JSON", url: "https://api.ceres.northflow.no/v1/predictions" },
-                { label: "Current forecasts, all regions", fmt: "CSV",  url: "https://api.ceres.northflow.no/v1/export/predictions/csv" },
+                { label: "Current forecasts, all regions", fmt: "JSON", url: "https://ceres.northflow.no/ledger/regions.json" },
+                { label: "Current forecasts, all regions", fmt: "CSV",  url: "https://ceres.northflow.no/ledger/latest.csv" },
                 { label: "Published runs",                 fmt: "CSV",  url: "https://ceres.northflow.no/ledger/archive.csv" },
                 { label: "Validation metrics",             fmt: "JSON", url: "https://ceres.northflow.no/ledger/metrics.json" },
-                { label: "Driver hypotheses",              fmt: "JSON", url: "https://api.ceres.northflow.no/v1/hypotheses" },
+                { label: "Driver hypotheses",              fmt: "JSON", url: "https://ceres.northflow.no/ledger/dashboard.json" },
               ].map(({ label, fmt, url }) => (
                 <a key={url} href={url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 12, alignItems: "baseline", flexWrap: "wrap", textDecoration: "none", color: "var(--ink)", fontSize: 13 }}>
                   <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--watch)", border: "1px solid rgba(46,125,50,0.3)", padding: "1px 6px", flexShrink: 0 }}>{fmt}</span>

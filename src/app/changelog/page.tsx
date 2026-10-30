@@ -119,7 +119,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.1",
     type: "model",
     title: "Three-tier alert classification: TIER-1, TIER-2, TIER-3",
-    body: "TIER-1: P(IPC 3+) ≥ 0.70 or P(IPC 4+) ≥ 0.50, high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC 3+) 0.45 to 0.69 or CRITICAL convergence, elevated risk, enhanced monitoring. TIER-3: P(IPC 3+) < 0.45, watch status. Thresholds author-specified at initialisation; prospective calibration ongoing as graded outcomes accumulate from August to October 2026.",
+    body: "TIER-1: P(IPC 3+) ≥ 0.70, high-probability escalation within 90 days, immediate alert. TIER-2: P(IPC 3+) 0.45 to 0.69 or CRITICAL convergence, elevated risk, enhanced monitoring. TIER-3: P(IPC 3+) < 0.45, watch status. Thresholds author-specified at initialisation; prospective calibration ongoing as graded outcomes accumulate from August to October 2026.",
   },
 ];
 

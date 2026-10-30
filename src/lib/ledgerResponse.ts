@@ -28,3 +28,22 @@ export async function ledgerResponse(source: () => Promise<unknown>, { primary =
   }
   return NextResponse.json({ error: "unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
 }
+
+// The same rule for a CSV download.
+export async function csvResponse(source: () => Promise<string | null>, filename: string) {
+  try {
+    const csv = await source();
+    if (csv) {
+      return new NextResponse(csv, {
+        headers: {
+          "Content-Type": "text/csv; charset=utf-8",
+          "Content-Disposition": `attachment; filename="${filename}"`,
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      });
+    }
+  } catch {
+    // falls through to the 503
+  }
+  return NextResponse.json({ error: "unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
+}

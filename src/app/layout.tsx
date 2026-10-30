@@ -12,12 +12,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "CERES · Famine Early Warning · 43 Countries · 90-Day IPC Forecasts",
   description:
-    "90-day probability forecasts of IPC Phase 3+, 4+, and Famine for 43 high-risk countries. Scheduled weekly, with sensitivity intervals and a ledger.",
+    "90-day probability forecasts of IPC Phase 3+ for 43 high-risk countries. Scheduled weekly, with sensitivity intervals and a ledger.",
   keywords: [
     "famine early warning",
     "food security forecast",
     "IPC Phase 3",
-    "IPC Phase 4",
     "famine prediction",
     "FEWS NET",
     "WFP",
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CERES · Famine Early Warning · 43 Countries",
     description:
-      "90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 countries. " +
+      "90-day IPC Phase 3+ probability forecasts for 43 countries. " +
       "Sensitivity intervals on every forecast, and a public verification ledger.",
     type: "website",
     locale: "en_US",
@@ -61,7 +60,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CERES · Famine Early Warning · 43 Countries",
     description:
-      "90-day IPC Phase 3+, 4+, and Famine probability forecasts. " +
+      "90-day IPC Phase 3+ probability forecasts. " +
       "Sensitivity intervals and a public verification ledger. Open data under CC BY 4.0.",
     images: ["/og-image.png"],
     creator: "@northflowno",
@@ -158,7 +157,7 @@ export default function RootLayout({
               alternateName:
                 "Calibrated Early-warning and Risk Estimation System",
               description:
-                "Automated probabilistic forecasting system for acute food insecurity. Generates 90-day IPC Phase 3+, 4+, and Famine probability forecasts for 43 high-risk countries.",
+                "Automated probabilistic forecasting system for acute food insecurity. Generates 90-day IPC Phase 3+ probability forecasts for 43 high-risk countries.",
               disambiguatingDescription:
                 "Famine early-warning system by Northflow Technologies; not the NASA CERES radiation instrument or the dwarf planet Ceres.",
               url: "https://ceres.northflow.no",

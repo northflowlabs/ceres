@@ -1,6 +1,6 @@
 # CERES
 
-> CERES (Calibrated Early-warning and Risk Estimation System) is an automated famine early-warning system operated by Northflow Technologies AS. It issues 90-day probability forecasts of acute food insecurity (IPC Phase 3+, Phase 4+, and Famine) for 43 high-risk countries, scheduled weekly.
+> CERES (Calibrated Early-warning and Risk Estimation System) is an automated famine early-warning system operated by Northflow Technologies AS. It issues 90-day probability forecasts of acute food insecurity (IPC Phase 3+) for 43 high-risk countries, scheduled weekly.
 
 ## What CERES is
 
@@ -9,7 +9,7 @@
 - Coverage: 43 high-risk countries.
 - Horizon: 90-day probability forecasts.
 - Cadence: scheduled weekly.
-- Outputs: P(IPC Phase 3+ 90d), P(IPC Phase 4+ 90d), P(Famine 90d), a composite stress score, an alert tier, and a 90% sensitivity interval per region.
+- Outputs: P(IPC Phase 3+ 90d), a composite stress score, an alert tier, and a 90% sensitivity interval per region.
 
 ## Data inputs
 
@@ -49,8 +49,8 @@ Predictions are published under Creative Commons Attribution 4.0 (CC BY 4.0): an
 ## External references
 
 - Preprint: https://arxiv.org/abs/2603.09425
-- Current forecasts (JSON): https://api.ceres.northflow.no/v1/predictions
-- Current forecasts (CSV): https://api.ceres.northflow.no/v1/export/predictions/csv
+- Current forecasts (JSON): https://ceres.northflow.no/ledger/regions.json
+- Current forecasts (CSV): https://ceres.northflow.no/ledger/latest.csv
 - Published runs (CSV): https://ceres.northflow.no/ledger/archive.csv
 - Validation metrics (JSON): https://ceres.northflow.no/ledger/metrics.json
 - Graded predictions in the score (JSON): https://ceres.northflow.no/ledger/graded.json

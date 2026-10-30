@@ -160,10 +160,6 @@ export default function LeafletRiskMap({
                 </span>
               </div>
               <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
-                <span style="color:#78716C;">P(IPC Phase 4+)</span>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${color};">${pct(p.p_ipc4plus_90d)}</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
                 <span style="color:#78716C;">Alert tier</span>
                 <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${color};">${tierLabel(p.alert_tier)}</span>
               </div>

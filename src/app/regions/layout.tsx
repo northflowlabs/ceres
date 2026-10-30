@@ -4,12 +4,12 @@ export const metadata: Metadata = {
   title: "Regions · CERES Famine Early Warning · 43 Countries",
   description:
     "Live 90-day famine risk intelligence for every country monitored by CERES. " +
-    "IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals, driver breakdowns, " +
+    "IPC Phase 3+ probabilities with sensitivity intervals, driver breakdowns, " +
     "and trend history.",
   keywords: [
     "famine risk by country", "food security regions", "IPC forecast", "Somalia famine risk",
     "Ethiopia food security", "Sudan food crisis", "Yemen famine", "Niger food insecurity",
-    "country famine probability", "humanitarian early warning", "CERES regions",
+    "humanitarian early warning", "CERES regions",
   ],
   openGraph: {
     title: "CERES Region Intelligence · 43 Countries · Live Famine Risk",

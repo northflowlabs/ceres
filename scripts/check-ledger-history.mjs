@@ -113,8 +113,8 @@ for (const [region, siteRows] of Object.entries(history)) {
     }
     siteCompared += 1;
     for (const field of [
-      "p_ipc3plus_90d", "alert_tier", "p_ipc4plus_90d", "p_famine_90d", "composite_stress_score",
-      "ipc_phase_forecast", "sensitivity_interval_low", "sensitivity_interval_high",
+      "p_ipc3plus_90d", "alert_tier", "composite_stress_score", "ipc_phase_forecast",
+      "sensitivity_interval_low", "sensitivity_interval_high",
     ]) {
       if (s[field] !== first[field]) wrong.push(`${region} ${s.run_date}: ${field} is ${s[field]}, first write has ${first[field]}`);
     }
@@ -150,13 +150,38 @@ for (const row of csvRows) {
     wrong.push(`archive.csv ${key}: not in the history`);
     continue;
   }
-  for (const field of ["p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d", "sensitivity_interval_low", "sensitivity_interval_high", "composite_stress_score"]) {
+  for (const field of ["p_ipc3plus_90d", "sensitivity_interval_low", "sensitivity_interval_high", "composite_stress_score"]) {
     if (Number(row[field]) !== s[field]) wrong.push(`archive.csv ${key}: ${field} is ${row[field]}, history has ${s[field]}`);
   }
   if (row.alert_tier !== s.alert_tier) wrong.push(`archive.csv ${key}: tier is ${row.alert_tier}, history has ${s.alert_tier}`);
 }
 for (const key of expected.keys()) {
   if (!csvSeen.has(key)) wrong.push(`archive.csv ${key}: missing`);
+}
+
+// The latest run as a download: same rows as the history's latest, HXL row second.
+const latestRes = await fetch(`${SITE}/ledger/latest.csv`);
+if (!latestRes.ok) throw new Error(`/ledger/latest.csv answered ${latestRes.status}`);
+const latestText = await latestRes.text();
+const [hxl, ...latestRows] = parseCsv(latestText);
+if (!hxl?.region_id?.startsWith("#")) wrong.push("latest.csv: second row is not the HXL hashtags");
+if (latestRows.length !== latest.length) wrong.push(`latest.csv: ${latestRows.length} rows, the latest run has ${latest.length}`);
+for (const row of latestRows) {
+  const s = latest.find((x) => x.region_id === row.region_id);
+  if (Number(row.p_ipc3plus_90d) !== s?.p_ipc3plus_90d) wrong.push(`latest.csv ${row.region_id}: differs from the latest run`);
+}
+
+// Fields the site must never serve, in any route or download.
+const REMOVED = ["p_ipc4plus", "p_famine"];
+const routes = [
+  "dashboard.json", "figures.json", "graded.json", "impact.json", "latest.json", "map.json", "metrics.json",
+  "regions.json", "tracker.json", "validation.json", "withdrawn.json", "archive.csv", "latest.csv", `region/${regions[0]}.json`,
+];
+for (const route of routes) {
+  const res = await fetch(`${SITE}/ledger/${route}`);
+  if (!res.ok) { wrong.push(`/ledger/${route} answered ${res.status}`); continue; }
+  const body = await res.text();
+  for (const field of REMOVED) if (body.includes(field)) wrong.push(`/ledger/${route} carries ${field}`);
 }
 
 console.log(`${rawCompared} first writes compared with the ledger, ${siteCompared} site rows compared with first writes, ${csvRows.length} CSV rows compared, ${wrong.length} disagree`);
