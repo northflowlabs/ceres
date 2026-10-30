@@ -33,7 +33,7 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-10-30",
     version: "v0.6",
     type: "platform",
-    title: "Admin1 and Admin2 figures are no longer published",
+    title: "Admin1 and Admin2 figures are no longer published on the site",
     body: "Admin1 and Admin2 figures and the /subnational page are no longer published on the site. Forecasts are published at national level across 43 countries.",
   },
   {
@@ -41,7 +41,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.6",
     type: "methodology",
     title: "Current description of the model coefficients",
-    body: "The model coefficients are expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), and not yet fit to graded outcomes. The change of 11 March 2026 was a hand adjustment in the model code, and the values stated in that entry stand. This entry supersedes the description of the coefficients in the entries of 28 February and 11 March 2026.",
+    body: "The model coefficients are expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), and not yet fit to graded outcomes. The change of 11 March 2026 was a hand adjustment in the model code, and the coefficient values stated in that entry stand. This entry supersedes the description of the coefficients in the entries of 28 February and 11 March 2026.",
   },
   {
     date: "2026-10-30",
@@ -61,8 +61,8 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-10-30",
     version: "v0.6",
     type: "platform",
-    title: "P(IPC 4+) and P(Famine) are no longer published",
-    body: "P(IPC 4+) and P(Famine) are no longer published. The site and its data downloads carry P(IPC 3+) only. The current forecasts download from /ledger/latest.csv, HXL-tagged, and /ledger/regions.json.",
+    title: "P(IPC 4+) and P(Famine) are no longer published on this site",
+    body: "P(IPC 4+) and P(Famine) are no longer published on this site or in its data downloads, which carry P(IPC 3+) only. The current forecasts download from /ledger/latest.csv, HXL-tagged, and /ledger/regions.json.",
   },
   {
     date: "2026-10-30",
