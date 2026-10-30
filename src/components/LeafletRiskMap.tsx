@@ -191,10 +191,7 @@ export default function LeafletRiskMap({
           outer.bindPopup(popupHtml, { maxWidth: 300 });
           inner.bindPopup(popupHtml, { maxWidth: 300 });
 
-          const handleClick = () => {
-            onSelectRef.current?.(p);
-            outer.openPopup();
-          };
+          const handleClick = () => onSelectRef.current?.(p);
           outer.on("click", handleClick);
           inner.on("click", handleClick);
 
