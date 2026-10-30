@@ -70,85 +70,12 @@ export interface Hypothesis {
   }>;
 }
 
-// One row of the Admin1 and Admin2 tables.
-export interface AdminRow {
-  admin1_id:   string;
-  admin2_id?:  string;
-  admin1_name: string;
-  admin2_name?: string;
-  country_id:  string;
-  centroid_lat: number;
-  centroid_lon: number;
-  ipc_weight:  number;
-  alert_tier:  string;
-  p_ipc3plus_90d: number;
-  p_ipc4plus_90d: number;
-  composite_stress_score: number;
-  drought_stress: number;
-  vegetation_stress: number;
-  conflict_stress: number;
-  food_access_stress: number;
-  ipc_stress:  number;
-  price_stress: number;
-  current_ipc_phase: number | null;
-  n_signals_available: number;
-  from_admin1_fallback?: boolean;
-  from_country_fallback: boolean;
-  reference_date: string;
-}
-
 export interface HealthStatus {
   status: string;
   service: string;
   version: string;
   adapter: string;
   timestamp_utc: string;
-}
-
-export interface Admin1Signal {
-  admin1_id: string;
-  country_id: string;
-  admin1_name: string;
-  centroid_lat: number;
-  centroid_lon: number;
-  ipc_weight: number;
-  composite_stress_score: number;
-  drought_stress: number;
-  vegetation_stress: number;
-  conflict_stress: number;
-  food_access_stress: number;
-  ipc_stress: number;
-  price_stress: number;
-  current_ipc_phase: number | null;
-  n_signals_available: number;
-  n_signals_elevated: number;
-  n_grid_cells: number;
-  from_country_fallback: boolean;
-  reference_date: string;
-}
-
-export interface Admin2Prediction {
-  admin2_id: string;
-  admin1_id: string;
-  country_id: string;
-  admin2_name: string;
-  centroid_lat: number;
-  centroid_lon: number;
-  ipc_weight: number;
-  alert_tier: string;
-  p_ipc3plus_90d: number;
-  p_ipc4plus_90d: number;
-  composite_stress_score: number;
-  drought_stress: number;
-  vegetation_stress: number;
-  conflict_stress: number;
-  food_access_stress: number;
-  ipc_stress: number;
-  price_stress: number;
-  n_signals_available: number;
-  from_admin1_fallback: boolean;
-  from_country_fallback: boolean;
-  reference_date: string;
 }
 
 export interface GradeRecord {
@@ -279,5 +206,4 @@ async function siteFetch<T>(path: string): Promise<T> {
 
 export const api = {
   hypothesis:   (id: string)                => siteFetch<Hypothesis>(`/ledger/hypothesis/${id}.json`),
-  admin1:       (countryId: string)         => siteFetch<Admin1Signal[]>(`/ledger/admin1/${countryId}.json`),
 };

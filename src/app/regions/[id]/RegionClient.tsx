@@ -168,7 +168,6 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
   const pred = data?.prediction ?? null;
   const hyp = data?.hypothesis ?? null;
   const history = data?.history ?? [];
-  const admin1 = data?.admin1 ?? [];
   const loading = !data && !failed;
 
   if (loading) return (
@@ -194,7 +193,6 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
   const bg     = tierBg(pred.alert_tier);
   const label  = tierLabel(pred.alert_tier);
   const drivers = hyp?.driver_clusters ?? [];
-  const sortedAdmin1 = [...admin1].sort((a, b) => b.composite_stress_score - a.composite_stress_score);
 
   // Build driver intensity map from clusters, or fall back to actual stress scores from pred
   const driverIntensity: Record<string, number> = {};
@@ -320,33 +318,6 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
             <p style={{ fontSize: 14, lineHeight: 1.8, color: "var(--ink-mid)", margin: 0, fontStyle: "italic", borderLeft: `3px solid ${color}`, paddingLeft: 20 }}>
               {hyp.description}
             </p>
-          </div>
-        )}
-
-        {/* ── Sub-national breakdown ────────────────────────────── */}
-        {sortedAdmin1.length > 0 && (
-          <div style={{ background: "white", border: "1px solid var(--border)", padding: "28px 32px" }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>
-              Sub-national
-            </div>
-            <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 20 }}>
-              Admin Level 1 · Stress by Region
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {sortedAdmin1.map(a => {
-                const css = a.composite_stress_score;
-                const aColor = css >= 0.5 ? "#C0392B" : css >= 0.35 ? "#D97706" : "#78716C";
-                return (
-                  <div key={a.admin1_id} className="admin1-row" style={{ display: "grid", gridTemplateColumns: "180px 1fr 60px", gap: 12, alignItems: "center" }}>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{a.admin1_name}</div>
-                    <div style={{ height: 8, background: "var(--border-light)", borderRadius: 4 }}>
-                      <div style={{ height: "100%", width: `${Math.min(100, css * 100)}%`, background: aColor, borderRadius: 4 }} />
-                    </div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: 11, fontWeight: 600, color: aColor, textAlign: "right" }}>{pctInt(css)}</div>
-                  </div>
-                );
-              })}
-            </div>
           </div>
         )}
 

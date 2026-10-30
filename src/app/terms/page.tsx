@@ -44,7 +44,7 @@ export default function TermsPage() {
 
         <h2 style={h2}>1. The Service</h2>
         <p style={p}>
-          CERES provides probabilistic forecasts of acute food insecurity (IPC Phase 3+). Headline forecasts are issued at national level across 43 high-risk countries, with a separate sub-national screening score, on a weekly schedule. The Service includes the public dashboard, the open data downloads, the public REST API, and supporting documentation.
+          CERES provides probabilistic forecasts of acute food insecurity (IPC Phase 3+). Headline forecasts are issued at national level across 43 high-risk countries, on a weekly schedule. The Service includes the public dashboard, the open data downloads, the public REST API, and supporting documentation.
         </p>
         <p style={p}>
           The Service is provided by Northflow Technologies AS, a Norwegian technology company. Norwegian law applies to these Terms.
@@ -77,7 +77,7 @@ export default function TermsPage() {
           <strong>Open data</strong>: Prediction outputs published by CERES are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>CC BY 4.0</a>. You may use, share, and adapt them freely provided you give attribution: <em>&ldquo;CERES / Northflow Technologies AS, ceres.northflow.no&rdquo;</em>.
         </p>
         <p style={p}>
-          <strong>API outputs</strong>: Data returned by the public API, including sensitivity intervals, driver hypotheses, and Admin1 signals, is covered by the same CC BY 4.0 licence.
+          <strong>API outputs</strong>: Data returned by the public API, including sensitivity intervals and driver hypotheses, is covered by the same CC BY 4.0 licence.
         </p>
 
         <h2 style={h2}>6. Acceptable Use</h2>

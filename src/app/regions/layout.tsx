@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Live 90-day famine risk intelligence for every country monitored by CERES. " +
     "IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals, driver breakdowns, " +
-    "trend history, and sub-national analysis.",
+    "and trend history.",
   keywords: [
     "famine risk by country", "food security regions", "IPC forecast", "Somalia famine risk",
     "Ethiopia food security", "Sudan food crisis", "Yemen famine", "Niger food insecurity",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "CERES Region Intelligence · 43 Countries · Live Famine Risk",
     description:
       "Dedicated intelligence pages for every monitored country: live IPC probability forecasts, " +
-      "driver bars, trend history, and sub-national breakdown.",
+      "driver bars and trend history.",
     url: "https://ceres.northflow.no/regions",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],

@@ -16,7 +16,7 @@ export async function generateMetadata(
   const title = `${country} Famine Risk: 90-Day IPC Phase 3+ Forecast | CERES`;
 
   const description = known
-    ? `Live 90-day famine risk for ${country}: IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals, driver breakdown, and sub-national signals. Scheduled weekly by CERES.`
+    ? `Live 90-day famine risk for ${country}: IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals and driver breakdown. Scheduled weekly by CERES.`
     : `Live 90-day famine risk: IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals and driver breakdown. Scheduled weekly by CERES.`;
 
   return {

@@ -454,24 +454,6 @@
       width: 100% !important;
     }
 
-    /* ── Subnational: hide lower-priority table columns ─────────── */
-    .subnational-col-hide {
-      display: none !important;
-    }
-    .subnational-wrap {
-      padding: 20px 12px 60px !important;
-    }
-    .subnational-header {
-      padding: 32px 16px 28px !important;
-    }
-    .subnational-filter-row {
-      flex-direction: column !important;
-      align-items: stretch !important;
-    }
-    .subnational-filter-row input,
-    .subnational-filter-row select {
-      width: 100% !important;
-    }
 
     /* ── Tracker / validation page ───────────────────────────────── */
     .tracker-stats-grid {
@@ -585,10 +567,6 @@
     }
     .region-stat-strip {
       grid-template-columns: 1fr 1fr !important;
-    }
-    .admin1-row {
-      grid-template-columns: 120px 1fr 48px !important;
-      gap: 8px !important;
     }
 
     /* ── Region intelligence page ───────────────────────────── */

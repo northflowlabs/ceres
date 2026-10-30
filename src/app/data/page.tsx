@@ -32,7 +32,7 @@ const SOURCES = [
     provider: "Uppsala University",
     cadence: "Weekly",
     latency: "~3 days",
-    resolution: "Point / Admin1 aggregate",
+    resolution: "Point",
     vars: ["Conflict events", "Fatality count"],
     url: "https://ucdp.uu.se",
     type: "conflict",

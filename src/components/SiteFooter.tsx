@@ -5,7 +5,6 @@ const PAGES = [
   { href: "/impact",      label: "Impact"       },
   { href: "/tracker",     label: "Track Record" },
   { href: "/validation",  label: "Validation"   },
-  { href: "/subnational", label: "Sub-national" },
   { href: "/methodology", label: "Methodology"  },
   { href: "/data",        label: "Data Sources" },
   { href: "/embed",       label: "Embed Widget" },

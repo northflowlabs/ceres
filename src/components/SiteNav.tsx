@@ -8,7 +8,6 @@ const PRIMARY_LINKS = [
   { href: "/",            label: "Dashboard"   },
   { href: "/regions",     label: "Regions"     },
   { href: "/map",         label: "Map"         },
-  { href: "/subnational", label: "Sub-national" },
   { href: "/methodology", label: "Methodology" },
   { href: "/about",       label: "About"       },
 ];

@@ -26,16 +26,10 @@ const TIER_LABEL: Record<string, string> = {
   "TIER-3": "Watch",
 };
 
-type Layer = "country" | "admin1" | "admin2";
-
 interface Prediction {
   region_id?: string;
-  admin1_id?: string;
-  admin2_id?: string;
   country_id: string;
   region_name?: string;
-  admin1_name?: string;
-  admin2_name?: string;
   alert_tier: string;
   p_ipc3plus_90d: number;
   p_ipc4plus_90d: number;
@@ -48,8 +42,6 @@ interface Prediction {
   sensitivity_interval_low?: number | null;
   sensitivity_interval_high?: number | null;
   reference_date?: string;
-  centroid_lat?: number;
-  centroid_lon?: number;
 }
 
 interface SelectedFeature {
@@ -67,7 +59,6 @@ interface SelectedFeature {
   ipc: number;
   price: number;
   refDate: string;
-  layer: Layer;
 }
 
 const COUNTRY_NAMES: Record<string, string> = {
@@ -110,11 +101,8 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
   const mapInstance = useRef<import("leaflet").Map | null>(null);
   const layerGroupRef = useRef<import("leaflet").LayerGroup | null>(null);
 
-  const [layer, setLayer] = useState<Layer>("country");
   const [selected, setSelected] = useState<SelectedFeature | null>(null);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
-  const [a1preds, setA1preds] = useState<Prediction[]>([]);
-  const [a2preds, setA2preds] = useState<Prediction[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [mapReady, setMapReady] = useState(false);
 
@@ -125,8 +113,6 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
       return;
     }
     setPredictions(data.predictions as unknown as Prediction[]);
-    setA1preds(data.admin1 as unknown as Prediction[]);
-    setA2preds(data.admin2 as unknown as Prediction[]);
     setLoadingData(false);
   }, [data, failed]);
 
@@ -171,159 +157,89 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
     };
   }, []);
 
-  // ── Re-render choropleth when layer or data changes ─────────────────────
+  // ── Re-render choropleth when data changes ─────────────────────
   const renderLayer = useCallback(async () => {
     if (!mapInstance.current || !layerGroupRef.current || loadingData) return;
 
     const L = await import("leaflet");
     layerGroupRef.current.clearLayers();
 
-    if (layer === "country") {
-      // Build lookup synchronously from current predictions state, avoids ref timing issues
-      const cMap = new Map(predictions.map(p => [p.region_id ?? p.country_id, p]));
+    // Build lookup synchronously from current predictions state, avoids ref timing issues
+    const cMap = new Map(predictions.map(p => [p.region_id ?? p.country_id, p]));
 
-      // Fetch country GeoJSON
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let geoData: any = null;
-      try {
-        const r = await fetch(COUNTRY_GEOJSON_URL);
-        geoData = await r.json();
-      } catch { return; }
+    // Fetch country GeoJSON
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let geoData: any = null;
+    try {
+      const r = await fetch(COUNTRY_GEOJSON_URL);
+      geoData = await r.json();
+    } catch { return; }
 
-      L.geoJSON(geoData, {
-        style: (feature) => {
-          const p = feature?.properties ?? {};
-          const iso = isoFromProps(p);
-          const pred = cMap.get(iso);
-          const tier = pred?.alert_tier ?? "TIER-3";
-          return {
-            fillColor: TIER_FILL[tier] ?? "#78716C",
-            fillOpacity: pred ? (TIER_FILL_OPACITY[tier] ?? 0.10) : 0.04,
-            color: pred ? (TIER_FILL[tier] ?? "#78716C") : "#D6D3D1",
-            weight: pred ? 1.2 : 0.5,
-            opacity: 0.7,
-          };
-        },
-        onEachFeature: (feature, leafletLayer) => {
-          const p = feature?.properties ?? {};
-          const iso = isoFromProps(p);
-          const pred = cMap.get(iso);
-          if (!pred) return;
-          // Set pointer cursor on monitored countries
-          const el = (leafletLayer as any).getElement?.();
-          if (el) el.style.cursor = "pointer";
-          leafletLayer.on({
-            add: () => {
-              const el2 = (leafletLayer as any).getElement?.();
-              if (el2) el2.style.cursor = "pointer";
-            },
-            mouseover: (e) => {
-              e.target.setStyle({ weight: 2.5, fillOpacity: Math.min(1, (TIER_FILL_OPACITY[pred.alert_tier] ?? 0.12) + 0.2) });
-              const el3 = e.target.getElement?.();
-              if (el3) el3.style.cursor = "pointer";
-            },
-            mouseout: (e) => {
-              e.target.setStyle({ weight: 1.2, fillOpacity: TIER_FILL_OPACITY[pred.alert_tier] ?? 0.12 });
-            },
-            click: () => {
-              setSelected({
-                name: pred.region_name ?? COUNTRY_NAMES[iso] ?? iso,
-                countryId: iso,
-                tier: pred.alert_tier,
-                p3: pred.p_ipc3plus_90d,
-                p4: pred.p_ipc4plus_90d,
-                ciLow: pred.sensitivity_interval_low ?? null,
-                ciHigh: pred.sensitivity_interval_high ?? null,
-                css: pred.composite_stress_score,
-                conflict: pred.conflict_stress,
-                drought: pred.drought_stress,
-                food: pred.food_access_stress,
-                ipc: pred.ipc_stress,
-                price: pred.price_stress,
-                refDate: pred.reference_date ?? "",
-                layer: "country",
-              });
-            },
-          });
-        },
-      }).addTo(layerGroupRef.current!);
-
-    } else if (layer === "admin1") {
-      // Plot Admin1 as circles at centroids
-      a1preds.forEach(p => {
-        if (p.centroid_lat == null || p.centroid_lon == null) return;
-        const tier = p.alert_tier;
-        const radius = 18000 + p.p_ipc3plus_90d * 60000;
-        L.circle([p.centroid_lat, p.centroid_lon], {
-          radius,
+    L.geoJSON(geoData, {
+      style: (feature) => {
+        const p = feature?.properties ?? {};
+        const iso = isoFromProps(p);
+        const pred = cMap.get(iso);
+        const tier = pred?.alert_tier ?? "TIER-3";
+        return {
           fillColor: TIER_FILL[tier] ?? "#78716C",
-          fillOpacity: TIER_FILL_OPACITY[tier] ?? 0.12,
-          color: TIER_FILL[tier] ?? "#78716C",
-          weight: 1,
+          fillOpacity: pred ? (TIER_FILL_OPACITY[tier] ?? 0.10) : 0.04,
+          color: pred ? (TIER_FILL[tier] ?? "#78716C") : "#D6D3D1",
+          weight: pred ? 1.2 : 0.5,
           opacity: 0.7,
-        }).on("click", () => {
-          setSelected({
-            name: p.admin1_name ?? p.admin1_id ?? "",
-            countryId: p.country_id,
-            tier,
-            p3: p.p_ipc3plus_90d,
-            p4: p.p_ipc4plus_90d,
-            ciLow: p.sensitivity_interval_low ?? null,
-            ciHigh: p.sensitivity_interval_high ?? null,
-            css: p.composite_stress_score,
-            conflict: p.conflict_stress,
-            drought: p.drought_stress,
-            food: p.food_access_stress,
-            ipc: p.ipc_stress,
-            price: p.price_stress,
-            refDate: p.reference_date ?? "",
-            layer: "admin1",
-          });
-        }).addTo(layerGroupRef.current!);
-      });
+        };
+      },
+      onEachFeature: (feature, leafletLayer) => {
+        const p = feature?.properties ?? {};
+        const iso = isoFromProps(p);
+        const pred = cMap.get(iso);
+        if (!pred) return;
+        // Set pointer cursor on monitored countries
+        const el = (leafletLayer as any).getElement?.();
+        if (el) el.style.cursor = "pointer";
+        leafletLayer.on({
+          add: () => {
+            const el2 = (leafletLayer as any).getElement?.();
+            if (el2) el2.style.cursor = "pointer";
+          },
+          mouseover: (e) => {
+            e.target.setStyle({ weight: 2.5, fillOpacity: Math.min(1, (TIER_FILL_OPACITY[pred.alert_tier] ?? 0.12) + 0.2) });
+            const el3 = e.target.getElement?.();
+            if (el3) el3.style.cursor = "pointer";
+          },
+          mouseout: (e) => {
+            e.target.setStyle({ weight: 1.2, fillOpacity: TIER_FILL_OPACITY[pred.alert_tier] ?? 0.12 });
+          },
+          click: () => {
+            setSelected({
+              name: pred.region_name ?? COUNTRY_NAMES[iso] ?? iso,
+              countryId: iso,
+              tier: pred.alert_tier,
+              p3: pred.p_ipc3plus_90d,
+              p4: pred.p_ipc4plus_90d,
+              ciLow: pred.sensitivity_interval_low ?? null,
+              ciHigh: pred.sensitivity_interval_high ?? null,
+              css: pred.composite_stress_score,
+              conflict: pred.conflict_stress,
+              drought: pred.drought_stress,
+              food: pred.food_access_stress,
+              ipc: pred.ipc_stress,
+              price: pred.price_stress,
+              refDate: pred.reference_date ?? "",
+            });
+          },
+        });
+      },
+    }).addTo(layerGroupRef.current!);
 
-    } else {
-      // Admin2: smaller circles
-      a2preds.forEach(p => {
-        if (p.centroid_lat == null || p.centroid_lon == null) return;
-        const tier = p.alert_tier;
-        const radius = 10000 + p.p_ipc3plus_90d * 30000;
-        L.circle([p.centroid_lat, p.centroid_lon], {
-          radius,
-          fillColor: TIER_FILL[tier] ?? "#78716C",
-          fillOpacity: (TIER_FILL_OPACITY[tier] ?? 0.12) + 0.1,
-          color: TIER_FILL[tier] ?? "#78716C",
-          weight: 0.8,
-          opacity: 0.8,
-        }).on("click", () => {
-          setSelected({
-            name: `${p.admin2_name ?? ""} (${p.admin1_id ?? ""})`,
-            countryId: p.country_id,
-            tier,
-            p3: p.p_ipc3plus_90d,
-            p4: p.p_ipc4plus_90d,
-            ciLow: p.sensitivity_interval_low ?? null,
-            ciHigh: p.sensitivity_interval_high ?? null,
-            css: p.composite_stress_score,
-            conflict: p.conflict_stress,
-            drought: p.drought_stress,
-            food: p.food_access_stress,
-            ipc: p.ipc_stress,
-            price: p.price_stress,
-            refDate: p.reference_date ?? "",
-            layer: "admin2",
-          });
-        }).addTo(layerGroupRef.current!);
-      });
-    }
-  }, [layer, loadingData, predictions, a1preds, a2preds]);
+  }, [loadingData, predictions]);
 
   useEffect(() => {
     if (mapReady) renderLayer();
   }, [mapReady, renderLayer]);
 
   // ── Legend counts ───────────────────────────────────────────────────────
-  const activePreds = layer === "country" ? predictions : layer === "admin1" ? a1preds : a2preds;
+  const activePreds = predictions;
   const noFigures = loadingData || activePreds.length === 0;
   const t1 = activePreds.filter(p => p.alert_tier === "TIER-1").length;
   const t2 = activePreds.filter(p => p.alert_tier === "TIER-2").length;
@@ -354,25 +270,6 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
           ))}
         </div>
 
-        {/* Layer switcher: top-right */}
-        <div style={{
-          position: "absolute", top: 12, right: 12, zIndex: 1000,
-          background: "white", border: "1px solid var(--border)", display: "flex", gap: 0,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-        }}>
-          {(["country", "admin1", "admin2"] as Layer[]).map((l, i) => (
-            <button key={l} onClick={() => { setLayer(l); setSelected(null); }} style={{
-              fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase",
-              padding: "7px 14px", background: layer === l ? "var(--ink)" : "white",
-              color: layer === l ? "var(--parchment)" : "var(--ink-light)",
-              border: "none", borderRight: i < 2 ? "1px solid var(--border)" : "none",
-              cursor: "pointer",
-            }}>
-              {l === "country" ? "Country" : l === "admin1" ? "Admin1" : "Admin2"}
-            </button>
-          ))}
-        </div>
-
         {/* Loading overlay */}
         {loadingData && (
           <div style={{
@@ -397,14 +294,9 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
         {/* Legend */}
         <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>
-            {layer === "country" ? "Country" : layer === "admin1" ? "Admin1 · Province" : "Admin2 · District"} layer
+            Countries
           </div>
-          {layer !== "country" && (
-            <p style={{ fontSize: 11, color: "var(--ink-light)", lineHeight: 1.5, margin: 0 }}>
-              Sub-national screening score. Not an IPC Phase 3+ forecast and not comparable with country figures.
-            </p>
-          )}
-          {layer === "country" && (["TIER-1", "TIER-2", "TIER-3"] as const).map(t => (
+          {(["TIER-1", "TIER-2", "TIER-3"] as const).map(t => (
             <div key={t} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
               <span style={{ width: 12, height: 12, borderRadius: 2, background: TIER_FILL[t], opacity: 0.8, flexShrink: 0, display: "inline-block" }} />
               <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: TIER_FILL[t], fontWeight: 700, width: 54 }}>{t}</span>
@@ -412,7 +304,6 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
             </div>
           ))}
           <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            {layer === "country" && <>
             <div>
               <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#C0392B", lineHeight: 1 }}>{noFigures ? "…" : t1}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-1</div>
@@ -425,7 +316,6 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
               <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#78716C", lineHeight: 1 }}>{noFigures ? "…" : t3}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-3</div>
             </div>
-            </>}
             <div>
               <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink-light)", lineHeight: 1 }}>{noFigures ? "…" : activePreds.length}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Total</div>
@@ -449,8 +339,6 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
               {selected.name}
             </div>
 
-            {layer === "country" ? (
-              <>
                 <span style={{
                   fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em",
                   color: TIER_FILL[selected.tier], background: `${TIER_FILL[selected.tier]}18`,
@@ -475,13 +363,6 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
                     ? `SI [${fmtPct(selected.ciLow)} to ${fmtPct(selected.ciHigh)}] · Input-perturbation`
                     : "Sensitivity interval not available"}
                 </div>
-              </>
-            ) : (
-              <div style={{ background: "var(--parchment)", padding: "10px 12px", marginBottom: 20 }}>
-                <div style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 3 }}>Screening Score</div>
-                <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink)", lineHeight: 1 }}>{selected.p3.toFixed(3)}</div>
-              </div>
-            )}
 
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Stress Drivers</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
@@ -519,7 +400,7 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
 
         {/* Instructions footer */}
         <div style={{ padding: "10px 20px", borderTop: "1px solid var(--border-light)", fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", lineHeight: 1.6 }}>
-          Country layer: choropleth by P(IPC 3+) · Admin1/2: circles sized by screening score
+          Choropleth by P(IPC 3+)
         </div>
       </div>
     </div>

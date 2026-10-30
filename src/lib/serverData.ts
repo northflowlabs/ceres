@@ -1,7 +1,6 @@
 import { unstable_cache } from "next/cache";
 import {
   API_BASE,
-  AdminRow,
   AggregateMetrics,
   ArchiveStats,
   CalibrationBin,
@@ -15,7 +14,6 @@ import {
   ValidationMetrics,
   WithdrawalsResponse,
 } from "@/lib/api";
-import { NO_ADMIN1 } from "@/lib/regionNames";
 
 // Reads the public API on the server, so a page's first HTML carries the real
 // figures. A build with the API down still succeeds and gives the page its
@@ -105,13 +103,6 @@ const SNAPSHOT_FIELDS = [
 const GRADE_FIELDS = [
   "region_id", "region_name", "reference_date", "horizon_date", "graded_at", "predicted_tier", "p_ipc3plus_90d",
   "actual_ipc_phase", "brier_score", "ci_covered", "tier_correct",
-] as const;
-
-const ADMIN_FIELDS = [
-  "admin1_id", "admin2_id", "admin1_name", "admin2_name", "country_id", "centroid_lat", "centroid_lon",
-  "ipc_weight", "alert_tier", "p_ipc3plus_90d", "p_ipc4plus_90d", "composite_stress_score", "drought_stress",
-  "vegetation_stress", "conflict_stress", "food_access_stress", "ipc_stress", "price_stress",
-  "current_ipc_phase", "n_signals_available", "from_admin1_fallback", "from_country_fallback", "reference_date",
 ] as const;
 
 // The API still carries the names of adapters that have since been replaced.
@@ -349,44 +340,24 @@ export async function getHypothesis(id: string): Promise<Hypothesis | null> {
   return h && publicHypothesisDetail(h);
 }
 
-// A sub-national row with no date or with every input at zero is a placeholder.
-const ADMIN_INPUTS = [
-  "composite_stress_score", "drought_stress", "vegetation_stress", "conflict_stress",
-  "food_access_stress", "ipc_stress", "price_stress",
-] as const;
-
-function publicAdminRows(rows: AdminRow[]): AdminRow[] {
-  return rows
-    .filter((a) => a.reference_date && ADMIN_INPUTS.some((k) => a[k]))
-    .map((a) => pick(a, ADMIN_FIELDS));
-}
-
-export async function getAdmin1(regionId: string): Promise<AdminRow[] | null> {
-  const rows = await read<AdminRow[]>(`/v1/admin1/${regionId}`);
-  return rows && publicAdminRows(rows);
-}
-
 export interface RegionData {
   prediction: Prediction;
   hypothesis: Hypothesis | null;
   history: RegionSnapshot[];
-  admin1: AdminRow[];
 }
 
 export async function getRegionData(regionId: string): Promise<RegionData | null> {
-  const [prediction, ledger, admin1] = await Promise.all([
+  const [prediction, ledger] = await Promise.all([
     read<Prediction>(`/v1/predictions/${regionId}`),
     getLedgerIndex(),
-    NO_ADMIN1.has(regionId) ? [] : getAdmin1(regionId),
   ]);
-  if (!prediction || !ledger || !admin1) return null;
+  if (!prediction || !ledger) return null;
   const history = await getHistory(regionId, ledger);
   if (!history) return null;
   return {
     prediction: pick(prediction, PREDICTION_FIELDS),
     hypothesis: prediction.hypothesis_id ? await getHypothesis(prediction.hypothesis_id) : null,
     history,
-    admin1,
   };
 }
 
@@ -494,27 +465,13 @@ export async function getTrackerData(): Promise<TrackerData | null> {
   return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive, runs: publishedRuns(runs, ledger), metrics };
 }
 
-export interface SubnationalData {
-  admin1: AdminRow[];
-  admin2: AdminRow[];
-}
-
-export async function getSubnationalData(): Promise<SubnationalData | null> {
-  const [admin1, admin2] = await Promise.all([
-    read<AdminRow[]>("/v1/admin1/predictions?limit=700"),
-    read<AdminRow[]>("/v1/admin2/predictions?limit=500"),
-  ]);
-  if (!admin1 || !admin2) return null;
-  return { admin1: publicAdminRows(admin1), admin2: publicAdminRows(admin2) };
-}
-
-export interface MapData extends SubnationalData {
+export interface MapData {
   predictions: Prediction[];
 }
 
 export async function getMapData(): Promise<MapData | null> {
-  const [predictions, sub] = await Promise.all([getPredictions(), getSubnationalData()]);
-  return predictions && sub ? { predictions, ...sub } : null;
+  const predictions = await getPredictions();
+  return predictions && { predictions };
 }
 
 const CSV_FIELDS = [

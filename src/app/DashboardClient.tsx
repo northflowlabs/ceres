@@ -4,9 +4,9 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
-import { api, Prediction, Hypothesis, Admin1Signal } from "@/lib/api";
+import { api, Prediction, Hypothesis } from "@/lib/api";
 import { tierLabel, formatDate, pct } from "@/lib/utils";
-import { NO_ADMIN1, worldRegion } from "@/lib/regionNames";
+import { worldRegion } from "@/lib/regionNames";
 import LedgerSummary from "@/components/LedgerSummary";
 import { TIER_DEFS } from "@/lib/tiers";
 import type { DashboardData } from "@/lib/serverData";
@@ -65,9 +65,6 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
   const [menuOpen, setMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const [admin1Data, setAdmin1Data] = useState<Admin1Signal[]>([]);
-  const [admin1Loading, setAdmin1Loading] = useState(false);
-  const [admin1Open, setAdmin1Open] = useState(false);
   const detailPanelRef = useRef<HTMLElement | null>(null);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -165,8 +162,6 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     const hyp = hypotheses.find((h) => h.hypothesis_id === p.hypothesis_id);
     setSelHyp(hyp ?? null);
     setDeepHyp(null);
-    setAdmin1Data([]);
-    setAdmin1Open(false);
     if (p.hypothesis_id) {
       setDeepLoading(true);
       try {
@@ -178,13 +173,6 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
         setDeepLoading(false);
       }
     }
-    // Pre-fetch admin1 in background
-    if (NO_ADMIN1.has(p.region_id)) return;
-    setAdmin1Loading(true);
-    api.admin1(p.region_id)
-      .then(setAdmin1Data)
-      .catch(() => {})
-      .finally(() => setAdmin1Loading(false));
     // Scroll window to top so the fixed-height grid (map) is always visible
     window.scrollTo({ top: 0, behavior: "smooth" });
     // Scroll detail panel to top so content is always visible
@@ -800,96 +788,6 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
             </div>
           )}
 
-          {/* Admin1 Sub-national Drill-down */}
-          {selPred && (
-            <div style={{ borderBottom: "1px solid var(--border-light)" }}>
-              <button
-                onClick={() => setAdmin1Open(o => !o)}
-                style={{
-                  width: "100%", padding: "12px 20px",
-                  display: "flex", alignItems: "center", justifyContent: "space-between",
-                  background: "none", border: "none", cursor: "pointer",
-                  borderBottom: admin1Open ? "1px solid var(--border-light)" : "none",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span className="panel-label" style={{ marginBottom: 0 }}>Sub-national Breakdown</span>
-                  {admin1Loading && (
-                    <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>LOADING…</span>
-                  )}
-                  {!admin1Loading && admin1Data.length > 0 && (
-                    <span style={{
-                      fontFamily: "var(--mono)", fontSize: 9,
-                      background: "var(--earth)", color: "white",
-                      padding: "1px 6px", borderRadius: 2,
-                    }}>{admin1Data.length} units</span>
-                  )}
-                </div>
-                <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>
-                  {admin1Open ? "▲" : "▼"}
-                </span>
-              </button>
-              {admin1Open && (
-                <div style={{ padding: "0 12px 16px" }}>
-                  {admin1Data.length === 0 && !admin1Loading ? (
-                    <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", padding: "16px 8px", textAlign: "center" }}>
-                      No sub-national data available
-                    </div>
-                  ) : (
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, marginTop: 8 }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--border-light)" }}>
-                          {["Region", "Stress", "IPC", "Conflict", "Drought"].map(h => (
-                            <th scope="col" key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em",
-                              textTransform: "uppercase", color: "var(--ink-light)", textAlign: h === "Region" ? "left" : "right",
-                              padding: "4px 6px", fontWeight: 500 }}>{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {admin1Data.slice(0, 8).map((a, i) => {
-                          const stressColor = a.composite_stress_score >= 0.70 ? "var(--crisis)" :
-                            a.composite_stress_score >= 0.50 ? "var(--warning)" :
-                            a.composite_stress_score >= 0.30 ? "var(--watch)" : "var(--ink-light)";
-                          return (
-                            <tr key={a.admin1_id} style={{ borderBottom: "1px solid var(--border-light)",
-                              background: i % 2 === 1 ? "var(--parchment-dark)" : "transparent" }}>
-                              <td style={{ padding: "5px 6px", fontWeight: 600, fontSize: 11 }}>
-                                {a.admin1_name}
-                                {a.from_country_fallback && (
-                                  <span style={{ fontSize: 9, color: "var(--ink-light)", marginLeft: 4 }}>est.</span>
-                                )}
-                              </td>
-                              <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: "var(--mono)",
-                                fontSize: 10, color: stressColor, fontWeight: 600 }}>
-                                {Math.round(a.composite_stress_score * 100)}%
-                              </td>
-                              <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                                {a.current_ipc_phase != null ? `Ph ${a.current_ipc_phase.toFixed(1)}` : "n/a"}
-                              </td>
-                              <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: "var(--mono)",
-                                fontSize: 10, color: a.conflict_stress >= 0.5 ? "var(--crisis)" : "var(--ink-light)" }}>
-                                {Math.round(a.conflict_stress * 100)}%
-                              </td>
-                              <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: "var(--mono)",
-                                fontSize: 10, color: a.drought_stress >= 0.5 ? "var(--warning)" : "var(--ink-light)" }}>
-                                {Math.round(a.drought_stress * 100)}%
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  )}
-                  {admin1Data.length > 8 && (
-                    <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 6, textAlign: "right" }}>
-                      +{admin1Data.length - 8} more units
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Forecast Accuracy Ledger */}
           <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-light)" }}>

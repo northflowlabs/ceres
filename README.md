@@ -10,7 +10,7 @@ The public website and dashboard of CERES, Northflow's forecasts of acute food i
 
 ## What this repository is
 
-This repository holds the Next.js application behind [ceres.northflow.no](https://ceres.northflow.no). It reads the forecasts from the public CERES API at [api.ceres.northflow.no](https://api.ceres.northflow.no/docs) and shows them as maps, regional pages, sub-national breakdowns and a public validation ledger.
+This repository holds the Next.js application behind [ceres.northflow.no](https://ceres.northflow.no). It reads the forecasts from the public CERES API at [api.ceres.northflow.no](https://api.ceres.northflow.no/docs) and shows them as maps, regional pages and a public validation ledger.
 
 CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probability forecasts of IPC Phase 3+, Phase 4+ and Famine conditions for 43 countries, on a weekly schedule. Northflow Technologies AS develops and runs the forecasting engine. This repository contains the website only.
 
@@ -20,9 +20,8 @@ CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probab
 |------|------|-------|
 | Dashboard | `/` | Tier distribution, global map, driver hypotheses |
 | Regions | `/regions` | All 43 countries with their probability scores |
-| Region detail | `/regions/{iso3}` | Hypothesis chain, drivers, Admin1 and Admin2 detail |
-| Map | `/map` | Global risk map with Admin1 and Admin2 layers |
-| Sub-national | `/subnational` | A separate screening score from sub-national signals |
+| Region detail | `/regions/{iso3}` | Hypothesis chain and drivers |
+| Map | `/map` | Global risk map by country |
 | Validation | `/validation` | The public prediction ledger: pending, awaiting data, graded |
 | Track record | `/tracker` | Run snapshots per region and graded outcomes |
 | Impact | `/impact` | The operational record, read live from the archive and the ledger |
@@ -82,7 +81,6 @@ src/
 │   ├── page.tsx              # Dashboard
 │   ├── regions/              # All regions and region detail
 │   ├── map/                  # Global risk map
-│   ├── subnational/          # Sub-national breakdown
 │   ├── validation/           # Public validation ledger
 │   ├── methodology/          # Method documentation
 │   ├── data/                 # Data sources

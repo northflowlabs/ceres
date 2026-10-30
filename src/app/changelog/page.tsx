@@ -63,7 +63,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.3",
     type: "platform",
     title: "Full mobile responsive pass across all pages",
-    body: "Comprehensive mobile CSS overrides across every page. Navigation, dashboard, subnational, validation, methodology, tracker, about and data pages all optimised for 320 to 768px viewports. Mobile bottom sheet for dashboard detail view. Hamburger menu confirmed functional.",
+    body: "Comprehensive mobile CSS overrides across every page. Navigation, dashboard, validation, methodology, tracker, about and data pages all optimised for 320 to 768px viewports. Mobile bottom sheet for dashboard detail view. Hamburger menu confirmed functional.",
   },
   {
     date: "2026-02-28",
@@ -97,8 +97,8 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-02-24",
     version: "v0.1",
     type: "api",
-    title: "API v1: predictions, hypotheses, Admin1 signals, grading ledger, archive",
-    body: "Public API launched, now served at api.ceres.northflow.no. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/admin1 (Admin1 stress signals), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
+    title: "API v1: predictions, hypotheses, grading ledger, archive",
+    body: "Public API launched, now served at api.ceres.northflow.no. Endpoints: /v1/predictions (all regions + per-region), /v1/hypotheses (ranked driver hypotheses), /v1/grades (grading ledger + aggregate metrics), /v1/archive (weekly snapshot history), /v1/export/hdx (HXL-tagged CSV for HDX).",
   },
   {
     date: "2026-02-20",
@@ -106,13 +106,6 @@ const CHANGELOG: ChangeEntry[] = [
     type: "platform",
     title: "Track record archive: prediction snapshots",
     body: "Each pipeline run archives a snapshot of all region predictions. The /tracker page displays the full time series per region with sparklines, trend indicators, and verification outcomes. Archive statistics: total runs, regions tracked, snapshot count, earliest run date.",
-  },
-  {
-    date: "2026-02-15",
-    version: "v0.1",
-    type: "platform",
-    title: "Subnational resolution: Admin1 signal breakdown",
-    body: "CERES disaggregates crisis signals to Admin1 (province/state/region) level across the monitored Admin1 regions. The /subnational page displays composite stress scores and sub-scores (drought, conflict, food access, IPC stress, price stress) for all monitored administrative units. Sortable, filterable, downloadable.",
   },
   {
     date: "2026-02-10",

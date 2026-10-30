@@ -47,9 +47,6 @@ export const REGION_NAMES: Record<string, string> = {
   ZWE: "Zimbabwe",
 };
 
-// Regions the API has no Admin1 breakdown for.
-export const NO_ADMIN1 = new Set(["DJI", "ERI", "GMB", "GNB", "GTM", "HND", "LSO", "SLV", "SWZ"]);
-
 // The 43 monitored region ids, in canonical order.
 export const REGION_IDS: string[] = Object.keys(REGION_NAMES);
 
