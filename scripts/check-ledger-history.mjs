@@ -196,6 +196,12 @@ for (const [name, source] of [["ledger", fromLedger], ["grades", fromGrades]]) {
   }
 }
 
+// The line on /impact: one forecast per country for every run date in the ledger.
+const ledgerDates = new Set([...ledger.values()].map((r) => r.reference_date)).size;
+if (ledger.size !== ledgerDates * regions.length) {
+  wrong.push(`ledger holds ${ledger.size} forecasts, not one per country for ${ledgerDates} dates across ${regions.length} countries`);
+}
+
 // Fields the site must never serve, in any route or download.
 const REMOVED = ["p_ipc4plus", "p_famine"];
 const routes = [

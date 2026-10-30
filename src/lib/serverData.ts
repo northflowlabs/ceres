@@ -381,6 +381,7 @@ export interface ImpactData {
   runs: string[];
   predictions: Prediction[];
   regionRuns: number;
+  ledgerRuns: number;
 }
 
 export async function getImpactData(): Promise<ImpactData | null> {
@@ -400,6 +401,7 @@ export async function getImpactData(): Promise<ImpactData | null> {
     runs: publishedRuns(runs, index),
     predictions,
     regionRuns: histories.reduce((n, h) => n + (h as RegionSnapshot[]).length, 0),
+    ledgerRuns: new Set([...index.values()].map((r) => r.reference_date)).size,
   };
 }
 
