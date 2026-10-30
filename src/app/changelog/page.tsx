@@ -40,8 +40,15 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-10-30",
     version: "v0.6",
     type: "methodology",
-    title: "One description of the model coefficients",
-    body: "The site describes the model coefficients in one way: expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), not yet fit to graded outcomes. The coefficient values are unchanged.",
+    title: "Current description of the model coefficients",
+    body: "The model coefficients are expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), and not yet fit to graded outcomes. The change of 11 March 2026 was a hand adjustment in the model code, and the values stated in that entry stand. This entry supersedes the description of the coefficients in the entries of 28 February and 11 March 2026.",
+  },
+  {
+    date: "2026-10-30",
+    version: "v0.6",
+    type: "methodology",
+    title: "Current model equation on the Methodology page",
+    body: "The Methodology page writes the core model with the terms the forecasts use: composite stress, IPC phase, conflict, drought, food access, price, convergence and the number of independent sources. This entry supersedes the equation shown there before.",
   },
   {
     date: "2026-10-30",
@@ -54,8 +61,8 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-10-30",
     version: "v0.6",
     type: "platform",
-    title: "Phase 4+ and Famine probabilities leave the site and downloads",
-    body: "The site and its downloads now carry the 90-day probability of IPC Phase 3+. P(IPC Phase 4+) and P(Famine) are no longer published here. The current forecasts download from /ledger/latest.csv, HXL-tagged, and /ledger/regions.json.",
+    title: "P(IPC 4+) and P(Famine) are no longer published",
+    body: "P(IPC 4+) and P(Famine) are no longer published. The API and data exports now carry P(IPC 3+) only. The current forecasts download from /ledger/latest.csv, HXL-tagged, and /ledger/regions.json.",
   },
   {
     date: "2026-10-30",
