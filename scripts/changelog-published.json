@@ -1,49 +1,81 @@
 {
-  "commit": "97465d5",
+  "commit": "published",
   "entries": [
     {
+      "title": "Admin1 and Admin2 figures are no longer published on the site",
+      "sha256": "37560e6f2cfec93f54bdf5ce6548bcf5ef6eaa0fb0dfaa2a3f00a4a6b91e7f40"
+    },
+    {
+      "title": "Current description of the model coefficients",
+      "sha256": "da58e2c6c6716b142533444334b02d9abfa7cd4e78d67bb8e189b1340f770f3e"
+    },
+    {
+      "title": "Current model equation on the Methodology page",
+      "sha256": "d4481052a3ce2836383d18646946dec9747c0475e0ba421adc88f89bb8d0fb61"
+    },
+    {
+      "title": "TIER-1 recall counts Phase 4+ outcomes",
+      "sha256": "cc36ab98996b11eed105fbcc67980bab1ad39496651751fd4125c7321348c358"
+    },
+    {
+      "title": "P(IPC 4+) and P(Famine) are no longer published on this site",
+      "sha256": "bc44868ed8ce2b4969dfad58828d7c770a7c8a2c5afaec1c2905323d19c9001c"
+    },
+    {
+      "title": "Published runs defined",
+      "sha256": "a238067d5feef573df94e02e05e2738f568b45bb018d4ebc05a46febf2c6d2e7"
+    },
+    {
+      "title": "Impact page reads the archive and the ledger; live figures in the first page load",
+      "sha256": "b5342003d6d35b41843840c671a5312f37f220bc61d203be8b714697db39cab0"
+    },
+    {
+      "title": "Current model inputs and alert tiers",
+      "sha256": "c8d65a5e71637fad9a4dabcfcd8d90ee89ee09ec295830cd1569aeeeb638444d"
+    },
+    {
       "title": "Coefficient recalibration",
-      "sha256": "c81ad0dbd05d6a09087770f71f89ab48fba6a65926994ea520da3285e90ee6b8"
+      "sha256": "989e5cb855024eefb9aa24dd971d7162ab35df24d9b27b0154922f27e7990e16"
     },
     {
       "title": "Impact page, embeddable widget, CSV data exports",
-      "sha256": "26ad345e097dafcd31ded8df2f778e0a7fcecfa3dea2b72ba1cad986a473c8f7"
+      "sha256": "35efc514a1b2699491e833b9677281285fb53bc8d0eb98c095e04ef4bcf8d857"
     },
     {
       "title": "Full mobile responsive pass across all pages",
-      "sha256": "c5e207dec66da8a5310668a7c5809d7a587a0ce537f329a075315eb553e1f4e0"
+      "sha256": "5160f3254e94390ce7045028102b606d791f60b09852d921082b7db68d3e95b2"
     },
     {
       "title": "CERES public launch: 43 high-risk countries",
-      "sha256": "3175de7fff217cf47accfb2acfedcc8b7f075a95c03cf97c19abd0e412aa30b4"
+      "sha256": "ed84da9d3982e162207dd8df50da792212551b8e04486793acee4764a7ca5a31"
     },
     {
       "title": "Logistic model initialised with author-specified coefficients: 87 IPC transition records",
-      "sha256": "5b4e10a3b51d21b49537df5b6095460ddfa161119084ec93c06ec79098d7e5f4"
+      "sha256": "a723d64fdbf657f2684398dadb942aeadee7a330440d72c5f12980a3e491cdc2"
     },
     {
       "title": "Six core data streams integrated, plus two supplementary sources",
-      "sha256": "f48f4b825fd7dd64c72ec0c675eed6da96077b2d3c44d35b72a506bb90dd89e5"
+      "sha256": "a68d0639809bd88e24f4c4242cc25449d1047a577382c2bc7d05cba614fbe7b8"
     },
     {
       "title": "HGE Adapter #5: Hypothesis Generation Engine applied to food security",
-      "sha256": "418c0b8f8e190fb6769a693602090426e8113f6b32289768ac822bdf7bc6db54"
+      "sha256": "37d166e049412e49311e08e8f73411c84c6df78d388319318dae05f9e7e3b7c3"
     },
     {
       "title": "API v1: predictions, hypotheses, Admin1 signals, grading ledger, archive",
-      "sha256": "61122bf7b897988066d9fa1fc97c77db961dd9baeb2dd6e4de550b2abf21fbca"
+      "sha256": "c50dc5d2e3dfdd182806439ce006add614a9ed4ad9556b6b2301c1904a4416c4"
     },
     {
       "title": "Track record archive: weekly prediction snapshots",
-      "sha256": "e06488678f27cf8ef99b8940640f1c239e914811041b14c0ec64811f211b25c7"
+      "sha256": "99a9e7b42e9887a02f18c9894c7b2d6a039f8c74530e988d2973691870a32a51"
     },
     {
       "title": "Subnational resolution: Admin1 signal breakdown",
-      "sha256": "f43e894bb1f754e8a2e5df2532d141f491a8f36c1910a360d63efeb81d667fcc"
+      "sha256": "bca149da7701a505efc5163a01b92857b0839055d414c78e1416acd824557c94"
     },
     {
       "title": "Three-tier alert classification: TIER-1, TIER-2, TIER-3",
-      "sha256": "ec2addff3d8bdcf2440e55bb3329b546e3ec2073262b9c3c76583b1ba01c9285"
+      "sha256": "66b2b327c2d1492ccaa7cdcedfe40a7f50a664ad19d8733f2db781dce0fe7026"
     }
   ]
 }

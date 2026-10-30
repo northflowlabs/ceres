@@ -1,14 +1,15 @@
-// The changelog is append-only. scripts/changelog-published.json holds a hash of
-// every entry at a fixed published commit, oldest entry last, so a force push cannot
-// move the baseline. The published entries must stay at the end of the log, word for
-// word and in order, with new entries above them, and the page must keep its
-// statements about the log. Comments in the source count for nothing.
+// The changelog is append-only. scripts/changelog-published.json pins a hash of every
+// published entry, oldest entry last. The entry hashes are what is pinned: nothing is
+// resolved from git, so a force push cannot move the baseline. Each hash covers the
+// whole entry block. Pinned entries must stay at the end of the log, word for word and
+// in order, with new entries above them, and the page must keep its statements about
+// the log. Comments in the source count for nothing.
 //
 //   npm run check:changelog              compares with the baseline file
 //   npm run check:changelog -- <ref>     also compares with a git ref
-//   node scripts/check-changelog.mjs --hashes <ref>   prints a baseline for a ref
+//   node scripts/check-changelog.mjs --hashes   prints a baseline for the current log
 //
-// Runs on its own and as the first step of check:ledger. Exits 1 on any change.
+// Runs on its own, in CI, and as the first step of check:ledger. Exits 1 on any change.
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -35,21 +36,18 @@ const withoutComments = (source) =>
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/^\s*\/\/.*$/gm, "");
 
-// The entries in order. A trailing comma on a line is not part of an entry.
+// The entries in order, each as its whole block from { to }.
 function entries(source) {
   const text = withoutComments(source);
   const start = text.indexOf("const CHANGELOG");
   const end = text.indexOf("\n];", start);
   if (start < 0 || end < 0) fail(`${FILE}: no CHANGELOG list found`);
-  return text
-    .slice(start, end)
-    .split(/\n  \},?\n?/)
-    .map((block) => block.slice(block.indexOf("date:")).replace(/,$/gm, "").replace(/^\s+/gm, "").trim())
-    .filter((block) => block.startsWith("date:"));
+  const list = `${text.slice(start, end)}\n`;
+  return (list.match(/^  \{\n[\s\S]*?\n  \}/gm) ?? []);
 }
 
 const hash = (entry) => createHash("sha256").update(entry).digest("hex");
-const title = (entry) => entry.match(/^title: "(.*)"$/m)?.[1] ?? entry.slice(0, 60);
+const title = (entry) => entry.match(/^\s*title: "(.*)",?$/m)?.[1] ?? entry.slice(0, 60);
 
 function atRef(ref) {
   try {
@@ -60,9 +58,8 @@ function atRef(ref) {
 }
 
 if (process.argv[2] === "--hashes") {
-  const ref = process.argv[3] ?? fail("Name the published commit.");
-  const list = entries(atRef(ref)).map((e) => ({ title: title(e), sha256: hash(e) }));
-  console.log(JSON.stringify({ commit: ref, entries: list }, null, 2));
+  const list = entries(readFileSync(FILE, "utf8")).map((e) => ({ title: title(e), sha256: hash(e) }));
+  console.log(JSON.stringify({ commit: "published", entries: list }, null, 2));
   process.exit(0);
 }
 
@@ -99,6 +96,6 @@ if (ref) {
   }
 }
 
-console.log(`${published.length} entries from ${baseline.commit} compared, ${current.length} in the log, ${wrong.length} changed`);
+console.log(`${published.length} pinned entries compared, ${current.length} in the log, ${wrong.length} changed`);
 for (const line of wrong) console.log(line);
 process.exit(wrong.length > 0 || published.length === 0 ? 1 : 0);
