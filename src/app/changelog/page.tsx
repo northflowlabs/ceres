@@ -62,7 +62,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.6",
     type: "platform",
     title: "P(IPC 4+) and P(Famine) are no longer published",
-    body: "P(IPC 4+) and P(Famine) are no longer published. The API and data exports now carry P(IPC 3+) only. The current forecasts download from /ledger/latest.csv, HXL-tagged, and /ledger/regions.json.",
+    body: "P(IPC 4+) and P(Famine) are no longer published. The site and its data downloads carry P(IPC 3+) only. The current forecasts download from /ledger/latest.csv, HXL-tagged, and /ledger/regions.json.",
   },
   {
     date: "2026-10-30",
