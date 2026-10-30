@@ -139,7 +139,7 @@ function ProbGauge({ value, color }: { value: number; color: string }) {
     : "";
 
   return (
-    <svg role="img" aria-label="Driver intensity" viewBox="0 0 180 110" style={{ width: 180, height: 110, display: "block" }}>
+    <svg role="img" aria-label={`Probability of IPC Phase 3+ within 90 days: ${(value * 100).toFixed(1)}%`} viewBox="0 0 180 110" style={{ width: 180, height: 110, display: "block" }}>
       <path d={bgPath} fill="none" stroke="var(--border-light)" strokeWidth={10} strokeLinecap="round" />
       {fgPath && <path d={fgPath} fill="none" stroke={color} strokeWidth={10} strokeLinecap="round" />}
       <text x={cx} y={cy - 4} textAnchor="middle" style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, fill: color }}>{pct(value)}</text>
@@ -265,7 +265,7 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
               Historical Trend
             </div>
             <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 20 }}>
-              P(IPC 3+) · {history.length} weekly runs
+              P(IPC 3+) · {history.length} published runs
             </div>
             <Sparkline data={history} />
             {history.length === 0 && (
@@ -366,7 +366,7 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
                     {ev.variable.replace(/_/g, " ")}
                   </div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                    {ev.note || `${ev.direction} threshold (obs: ${ev.observed_value?.toFixed(2)})`}
+                    {`${ev.observed_value?.toFixed(2)} · ${ev.direction} threshold ${ev.threshold?.toFixed(2)}`}
                   </div>
                 </div>
               ))}
@@ -381,9 +381,9 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 6 }}>Methodology</div>
             <p style={{ fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7, margin: 0 }}>
               Forecasts are generated weekly by the CERES pipeline using a composite weighted logistic model. Current scores reflect
-              live data ingested from NASA POWER, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé, and WFP market prices. Model coefficients were
-              initialised with author-specified values informed by IPC transition records across Somalia (2011), South Sudan (2017), Ethiopia (2022), and Yemen (2021).
-              See the <Link href="/methodology#model" style={{ color: "var(--earth)", textDecoration: "none" }}>Methodology page</Link> for the recalibration history and current production coefficients.
+              live data ingested from NASA POWER, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé, and WFP market prices. Model coefficients are
+              expert-informed priors, not yet fit to graded outcomes.
+              See the <Link href="/methodology#model" style={{ color: "var(--earth)", textDecoration: "none" }}>Methodology page</Link> for the coefficients.
               Probabilities represent the likelihood of escalation to IPC Phase 3 or above within 90 days from the reference date.
               &nbsp;<Link href="/methodology" style={{ color: "var(--earth)", textDecoration: "none" }}>Full methodology →</Link>
             </p>

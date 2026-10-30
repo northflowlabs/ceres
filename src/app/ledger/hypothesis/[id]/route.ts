@@ -4,6 +4,6 @@ import { getHypothesis } from "@/lib/serverData";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id.replace(/\.json$/, "");
-  if (!/^[A-Za-z0-9-]+$/.test(id)) return NextResponse.json({ error: "not found" }, { status: 404 });
+  if (!/^CERES-HYP-[A-Z]{3}-\d{8}-[0-9A-F]+$/.test(id)) return NextResponse.json({ error: "not found" }, { status: 404 });
   return ledgerResponse(() => getHypothesis(id));
 }

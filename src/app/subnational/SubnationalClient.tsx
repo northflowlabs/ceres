@@ -176,6 +176,13 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
   const tier2Count = activeRows.filter(r => r.alert_tier === "TIER-2").length;
   const nCountries = new Set(activeRows.map(r => r.country_id)).size;
 
+  const sortAria = (key: SortKey) => (sortBy !== key ? "none" : sortDesc ? "descending" : "ascending");
+  const sortKey = (key: SortKey) => (e: React.KeyboardEvent) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    toggleSort(key);
+  };
+
   function toggleSort(key: SortKey) {
     if (sortBy === key) setSortDesc(d => !d);
     else { setSortBy(key); setSortDesc(true); }
@@ -278,19 +285,19 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
                 <th scope="col" style={thStyle(null, "left")}>Country</th>
                 <th scope="col" style={thStyle(null, "left")}>Region</th>
                 <th scope="col" style={thStyle(null, "right")}>Tier</th>
-                <th scope="col" onClick={() => toggleSort("p_ipc3plus_90d")} style={thStyle("p_ipc3plus_90d")}>
+                <th scope="col" tabIndex={0} aria-sort={sortAria("p_ipc3plus_90d")} onKeyDown={sortKey("p_ipc3plus_90d")} onClick={() => toggleSort("p_ipc3plus_90d")} style={thStyle("p_ipc3plus_90d")}>
                   P(IPC3+) 90d{sortBy === "p_ipc3plus_90d" ? (sortDesc ? " ▼" : " ▲") : ""}
                 </th>
-                <th scope="col" onClick={() => toggleSort("composite_stress_score")} style={thStyle("composite_stress_score")}>
+                <th scope="col" tabIndex={0} aria-sort={sortAria("composite_stress_score")} onKeyDown={sortKey("composite_stress_score")} onClick={() => toggleSort("composite_stress_score")} style={thStyle("composite_stress_score")}>
                   Composite{sortBy === "composite_stress_score" ? (sortDesc ? " ▼" : " ▲") : ""}
                 </th>
-                <th scope="col" onClick={() => toggleSort("conflict_stress")} style={thStyle("conflict_stress")}>
+                <th scope="col" tabIndex={0} aria-sort={sortAria("conflict_stress")} onKeyDown={sortKey("conflict_stress")} onClick={() => toggleSort("conflict_stress")} style={thStyle("conflict_stress")}>
                   Conflict{sortBy === "conflict_stress" ? (sortDesc ? " ▼" : " ▲") : ""}
                 </th>
-                <th scope="col" onClick={() => toggleSort("drought_stress")} style={thStyle("drought_stress")}>
+                <th scope="col" tabIndex={0} aria-sort={sortAria("drought_stress")} onKeyDown={sortKey("drought_stress")} onClick={() => toggleSort("drought_stress")} style={thStyle("drought_stress")}>
                   Drought{sortBy === "drought_stress" ? (sortDesc ? " ▼" : " ▲") : ""}
                 </th>
-                <th scope="col" onClick={() => toggleSort("food_access_stress")} style={thStyle("food_access_stress")}>
+                <th scope="col" tabIndex={0} aria-sort={sortAria("food_access_stress")} onKeyDown={sortKey("food_access_stress")} onClick={() => toggleSort("food_access_stress")} style={thStyle("food_access_stress")}>
                   Food Access{sortBy === "food_access_stress" ? (sortDesc ? " ▼" : " ▲") : ""}
                 </th>
                 <th scope="col" style={thStyle(null, "right")}>IPC Phase</th>

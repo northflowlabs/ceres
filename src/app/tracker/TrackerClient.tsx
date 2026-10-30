@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import { api, RegionSnapshot } from "@/lib/api";
+import type { RegionSnapshot } from "@/lib/api";
 import { useSiteData } from "@/lib/useSiteData";
 import { fmtInt } from "@/lib/utils";
 import type { TrackerData } from "@/lib/serverData";
@@ -93,30 +93,14 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
   const gradesLoading = !data && !failed;
 
   const [selRegion,     setSelRegion]     = useState<string | null>(initial?.latest[0]?.region_id ?? null);
-  const [history,       setHistory]       = useState<RegionSnapshot[]>([]);
-  const [histLoading,   setHistLoading]   = useState(false);
   const [archiveTab,    setArchiveTab]    = useState<"timeline" | "verification" | "pending">("timeline");
-  const [miniHistory,   setMiniHistory]   = useState<Record<string, RegionSnapshot[]>>({});
+
+  const histories = data?.history;
+  const history = useMemo(() => (selRegion && histories?.[selRegion]) || [], [selRegion, histories]);
 
   useEffect(() => {
-    if (latest.length === 0) return;
-    setSelRegion(r => r ?? latest[0].region_id);
-    // Mini history for all regions (last 8 runs each)
-    latest.forEach(s => {
-      api.archiveRegion(s.region_id, 8)
-        .then(snaps => setMiniHistory(prev => ({ ...prev, [s.region_id]: snaps })))
-        .catch(() => {});
-    });
+    if (latest.length > 0) setSelRegion(r => r ?? latest[0].region_id);
   }, [latest]);
-
-  useEffect(() => {
-    if (!selRegion) return;
-    setHistLoading(true);
-    api.archiveRegion(selRegion, 52)
-      .then(d => setHistory(d))
-      .catch(() => setHistory([]))
-      .finally(() => setHistLoading(false));
-  }, [selRegion]);
 
   const verified = grades.filter(g => g.tier_correct);
   const avgBrier = data?.meanBrier != null ? data.meanBrier.toFixed(4) : null;
@@ -195,7 +179,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
               {/* Region list */}
               <div className="tracker-region-list" style={{ borderRight: "1px solid var(--border)", maxHeight: 640, overflowY: "auto" }}>
                 {latest.map(s => {
-                  const mini = (miniHistory[s.region_id] ?? []).sort((a, b) => a.run_date.localeCompare(b.run_date));
+                  const mini = ((histories?.[s.region_id] ?? []).slice(0, 8) ?? []).sort((a, b) => a.run_date.localeCompare(b.run_date));
                   const trend = mini.length >= 2 ? mini[mini.length - 1].p_ipc3plus_90d - mini[0].p_ipc3plus_90d : 0;
                   const trendArrow = trend > 0.03 ? "↑" : trend < -0.03 ? "↓" : "→";
                   const trendColor = trend > 0.03 ? "var(--crisis)" : trend < -0.03 ? "var(--watch)" : "var(--ink-light)";
@@ -254,9 +238,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                     </div>
 
                     {/* Sparkline */}
-                    {histLoading ? (
-                      <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", padding: "20px 0" }}>Loading history…</div>
-                    ) : history.length >= 2 ? (
+                    {history.length >= 2 ? (
                       <div style={{ marginBottom: 24 }}>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>
                           P(IPC3+ / 90d), {history.length} weeks · 90% sensitivity interval (SI)
@@ -275,7 +257,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                       </div>
                     ) : (
                       <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", padding: "12px 0 24px" }}>
-                        Only {history.length} run recorded: chart requires ≥ 2 weekly runs.
+                        A trend chart needs at least two published runs.
                       </div>
                     )}
 
@@ -388,7 +370,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
         {archiveTab === "pending" && (
           <div>
             <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 28, lineHeight: 1.7, maxWidth: 680 }}>
-              Every prediction below was issued publicly before the outcome is known. Each carries a hard 90-day horizon date: the date on which the grading module queries IPC Phase data and records the outcome automatically.
+              Every prediction below was issued publicly before the outcome is known. Each carries a hard 90-day horizon date: the date after which the grading module queries FEWS NET data for the proxy and records the outcome automatically.
             </p>
             <div style={{ border: "1px solid var(--border)", overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
@@ -428,7 +410,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
               </table>
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 16 }}>
-              Grading is fully automated, with no human intervention. Once a prediction passes T+90, the system queries the IPC Global Platform and FEWS NET each week for the published observed Current-Situation phase, then records the Brier score and tier outcome the moment that data is released (typically 2-4 months after the target window). Results appear in the Verified Outcomes tab.
+              Grading is automated. Once a prediction passes T+90, the system queries FEWS NET each week for the proxy phase of its grading window, then records the Brier score.
             </p>
           </div>
         )}

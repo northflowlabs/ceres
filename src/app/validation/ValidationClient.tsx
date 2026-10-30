@@ -258,7 +258,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
               <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Graded Predictions: Forward Validation</h2>
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", textAlign: "right" }}>
-              {`${fmtInt(nGraded)} graded · T+90 days`}
+              {graded.length < nGraded ? `Showing ${fmtInt(graded.length)} of ${fmtInt(nGraded)} graded` : `${fmtInt(nGraded)} graded · T+90 days`}
             </div>
           </div>
 

@@ -195,7 +195,7 @@ export default function LiveAccuracyMetrics({
             </li>
           </ul>
           <p style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", margin: "12px 0 0" }}>
-            Every figure above is recomputed from the ledger on load.{" "}
+            Published ledger figures, refreshed hourly.{" "}
             <Link href="/validation" style={{ color: "var(--earth)" }}>
               Full verification ledger and pre-registered protocol
             </Link>

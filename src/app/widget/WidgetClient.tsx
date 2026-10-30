@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useSiteData } from "@/lib/useSiteData";
 import type { RegionSnapshot } from "@/lib/api";
+import { REGION_NAMES } from "@/lib/regionNames";
 
 function tierColor(tier: string) {
   if (tier === "TIER-1") return "#C0392B";
@@ -18,16 +18,17 @@ function tierBg(tier: string) {
 
 function fmtPct(n: number | null | undefined) { if (n == null) return "n/a"; return `${(n * 100).toFixed(1)}%`; }
 
-export default function WidgetPage({ initial }: { initial: RegionSnapshot[] | null }) {
-  // Read after mount, so the first HTML is the default widget and stays cacheable.
-  const [params, setParams] = useState(() => new URLSearchParams());
-  useEffect(() => setParams(new URLSearchParams(window.location.search)), []);
+interface WidgetProps {
+  initial: RegionSnapshot[] | null;
+  theme: string;
+  limit: string;
+  tier: string;      // filter: TIER-1, TIER-2, etc.
+  region: string;    // filter: single region_id
+  compact: boolean;
+}
 
-  const theme    = params.get("theme") ?? "light";
-  const limit    = Math.min(20, Math.max(1, parseInt(params.get("limit") ?? "5", 10) || 5));
-  const tier     = params.get("tier") ?? "";      // filter: TIER-1, TIER-2, etc.
-  const region   = params.get("region") ?? "";    // filter: single region_id
-  const compact  = params.get("compact") === "true";
+export default function WidgetPage({ initial, theme, limit: rawLimit, tier, region, compact }: WidgetProps) {
+  const limit = Math.min(20, Math.max(1, parseInt(rawLimit, 10) || 5));
 
   const { data, failed } = useSiteData<RegionSnapshot[]>("latest", initial);
   const loading = !data && !failed;
@@ -70,7 +71,9 @@ export default function WidgetPage({ initial }: { initial: RegionSnapshot[] | nu
         {loading ? (
           <div style={{ padding: 20, fontSize: 10, color: inkMid, textAlign: "center" }}>Loading…</div>
         ) : rows.length === 0 ? (
-          <div style={{ padding: 20, fontSize: 10, color: inkMid, textAlign: "center" }}>Unavailable right now</div>
+          <div style={{ padding: 20, fontSize: 10, color: inkMid, textAlign: "center" }}>
+            {!data ? "Unavailable right now" : region && !(region.toUpperCase() in REGION_NAMES) ? "Unknown region" : "No regions match this filter"}
+          </div>
         ) : rows.map((r, i) => (
           <a
             key={r.region_id}

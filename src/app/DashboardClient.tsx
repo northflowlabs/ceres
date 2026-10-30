@@ -6,7 +6,7 @@ import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import { api, Prediction, Hypothesis, Admin1Signal } from "@/lib/api";
 import { tierLabel, formatDate, pct } from "@/lib/utils";
-import { worldRegion } from "@/lib/regionNames";
+import { NO_ADMIN1, worldRegion } from "@/lib/regionNames";
 import LedgerSummary from "@/components/LedgerSummary";
 import { TIER_DEFS } from "@/lib/tiers";
 import type { DashboardData } from "@/lib/serverData";
@@ -28,6 +28,12 @@ function tierBadgeClass(tier: string) {
   if (tier === "TIER-1") return "tier-badge tier-badge-crisis";
   if (tier === "TIER-2") return "tier-badge tier-badge-warning";
   return "tier-badge tier-badge-watch";
+}
+
+// One line from the forecast's own fields.
+function hypothesisLine(p: Prediction) {
+  const drivers = (p.driver_types ?? []).join(" + ");
+  return `${p.region_name}: composite stress ${p.composite_stress_score.toFixed(2)}${drivers ? `, driven by ${drivers}` : ""}.`;
 }
 
 // The API's own stress values. A signal it does not carry is left out.
@@ -126,6 +132,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
       }
     }
     // Pre-fetch admin1 in background
+    if (NO_ADMIN1.has(p.region_id)) return;
     setAdmin1Loading(true);
     api.admin1(p.region_id)
       .then(setAdmin1Data)
@@ -284,7 +291,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
             <span style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, letterSpacing: "0.06em" }}>CERES</span>
-            <button onClick={() => setMenuOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 28, lineHeight: 1, color: "var(--ink)", padding: 4 }}>✕</button>
+            <button aria-label="Close menu" onClick={() => setMenuOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 28, lineHeight: 1, color: "var(--ink)", padding: 4 }}>✕</button>
           </div>
           {([
             { href: "/",            label: "Dashboard"    },
@@ -395,6 +402,14 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                   ref={(el) => { cardRefs.current[p.region_id] = el; }}
                   className={`region-card ${tierCssClass(p.alert_tier)} animate-card-in ${isSel ? "selected" : ""}`}
                   style={{ animationDelay: `${i * 0.05}s` }}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSel}
+                  onKeyDown={(e) => {
+                    if (e.target !== e.currentTarget || (e.key !== "Enter" && e.key !== " ")) return;
+                    e.preventDefault();
+                    e.currentTarget.click();
+                  }}
                   onClick={() => {
                     selectRegion(p);
                     cardRefs.current[p.region_id]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -596,7 +611,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                   H-01 · Primary Driver
                 </div>
                 <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--ink-mid)", fontStyle: "italic", borderLeft: "2px solid var(--earth)", paddingLeft: 10, marginBottom: 6 }}>
-                  {hyp.description}
+                  {hypothesisLine(selPred)}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div style={{ flex: 1, height: 3, background: "var(--border-light)", borderRadius: 2 }}>
@@ -623,26 +638,6 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                     </div>
                     <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", width: 32, textAlign: "right" }}>
                       {Math.round(dc.intensity * 100)}%
-                    </span>
-                  </div>
-                </div>
-              ))}
-
-              {/* Fallback when no driver_clusters */}
-              {(hyp.driver_clusters ?? []).length === 0 && (selPred.driver_types ?? []).slice(1, 3).map((d, i) => (
-                <div key={d} style={{ marginBottom: 14 }}>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.1em", marginBottom: 4, textTransform: "uppercase" }}>
-                    H-0{i + 2} · Contributing Factor
-                  </div>
-                  <div style={{ fontSize: 11, lineHeight: 1.5, color: "var(--ink-mid)", fontStyle: "italic", borderLeft: "2px solid var(--earth)", paddingLeft: 10, marginBottom: 6 }}>
-                    {d} is a significant elevated driver contributing to crisis risk.
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ flex: 1, height: 3, background: "var(--border-light)", borderRadius: 2 }}>
-                      <div style={{ height: "100%", borderRadius: 2, background: "var(--earth)", width: `${70 - i * 12}%` }} />
-                    </div>
-                    <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", width: 32, textAlign: "right" }}>
-                      {70 - i * 12}%
                     </span>
                   </div>
                 </div>
@@ -937,7 +932,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                   <div style={{ fontFamily: "var(--display)", fontSize: 17, fontWeight: 700 }}>{selPred.region_name}</div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>{selPred.region_id} · {selPred.alert_tier}</div>
                 </div>
-                <button onClick={() => setSheetOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 22, color: "var(--ink-light)", padding: 4 }}>✕</button>
+                <button aria-label="Close region detail" onClick={() => setSheetOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 22, color: "var(--ink-light)", padding: 4 }}>✕</button>
               </div>
             </div>
 
@@ -985,7 +980,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
               <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--border-light)" }}>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 8 }}>Active Hypothesis</div>
                 <div style={{ fontSize: 13, lineHeight: 1.65, color: "var(--ink-mid)", fontStyle: "italic", borderLeft: "2px solid var(--earth)", paddingLeft: 10 }}>
-                  {hyp.description}
+                  {hypothesisLine(selPred)}
                 </div>
               </div>
             )}

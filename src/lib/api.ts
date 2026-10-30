@@ -41,7 +41,7 @@ export interface Hypothesis {
   lon: number;
   forecast_horizon_days: number;
   reference_date: string;
-  description: string;
+  description?: string;
   alert_tier: string;
   ipc_phase_forecast: number;
   composite_stress_score: number;
@@ -67,7 +67,6 @@ export interface Hypothesis {
     threshold: number;
     direction: string;
     supports_hypothesis: boolean;
-    note: string;
   }>;
 }
 
@@ -271,12 +270,6 @@ export interface ArchiveStats {
   latest_run:      string | null;
 }
 
-async function apiFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`API ${path} → ${res.status}`);
-  return res.json();
-}
-
 // The site's own ledger routes, which carry only the public fields.
 async function siteFetch<T>(path: string): Promise<T> {
   const res = await fetch(path, { cache: "no-store" });
@@ -284,20 +277,7 @@ async function siteFetch<T>(path: string): Promise<T> {
   return res.json();
 }
 
-async function apiPost<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: body ? JSON.stringify(body) : undefined,
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`API POST ${path} → ${res.status}`);
-  return res.json();
-}
-
 export const api = {
   hypothesis:   (id: string)                => siteFetch<Hypothesis>(`/ledger/hypothesis/${id}.json`),
-  admin1:       (countryId: string)         => apiFetch<Admin1Signal[]>(`/v1/admin1/${countryId}`),
-  subscribeEmail: (email: string)           => apiPost<{ success: boolean; message: string }>("/v1/alerts/subscribe/email", { email }),
-  archiveRegion:  (regionId: string, limit?: number) => apiFetch<RegionSnapshot[]>(`/v1/archive/regions/${regionId}${limit ? `?limit=${limit}` : ""}`),
+  admin1:       (countryId: string)         => siteFetch<Admin1Signal[]>(`/ledger/admin1/${countryId}.json`),
 };

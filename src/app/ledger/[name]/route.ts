@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { ledgerResponse } from "@/lib/ledgerResponse";
 import {
   getDashboardData,
+  getGradedLedger,
   getImpactData,
   getLatestSnapshots,
   getLedgerFigures,
   getMapData,
   getPredictions,
   getPublicMetrics,
-  getScoredRows,
   getSubnationalData,
   getTrackerData,
   getValidationData,
@@ -20,7 +20,7 @@ import {
 const SOURCES: Record<string, () => Promise<unknown>> = {
   "dashboard.json": getDashboardData,
   "figures.json": getLedgerFigures,
-  "graded.json": getScoredRows,
+  "graded.json": getGradedLedger,
   "impact.json": getImpactData,
   "latest.json": getLatestSnapshots,
   "map.json": getMapData,

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ApiNotFound } from "@/lib/serverData";
 
 function isEmpty(body: unknown): boolean {
   if (body == null) return true;
@@ -16,8 +17,10 @@ export async function ledgerResponse(source: () => Promise<unknown>) {
         headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },
       });
     }
-  } catch {
-    // falls through to the 503
+  } catch (e) {
+    if (e instanceof ApiNotFound) {
+      return NextResponse.json({ error: "not found" }, { status: 404, headers: { "Cache-Control": "no-store" } });
+    }
   }
   return NextResponse.json({ error: "unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
 }

@@ -30,10 +30,10 @@ function isEmpty(body: unknown): boolean {
   return typeof body === "object" && Object.keys(body).length === 0;
 }
 
-// A 404 the caller allows is a real answer with nothing in it.
-const NOT_FOUND = "not-found";
+// The API does not know this id. Not a failure of the API, so a route can say so.
+export class ApiNotFound extends Error {}
 
-async function fetchJson<T>(path: string, allow404: boolean): Promise<T | typeof NOT_FOUND> {
+async function fetchJson<T>(path: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   // The signal cannot end every hang, a stalled body among them. The race can.
   const deadline = new Promise<never>((_, reject) => {
@@ -41,7 +41,7 @@ async function fetchJson<T>(path: string, allow404: boolean): Promise<T | typeof
   });
   const work = (async () => {
     const res = await fetch(`${API_BASE}${path}`, { cache: "no-store", signal: AbortSignal.timeout(TIMEOUT_MS) });
-    if (allow404 && res.status === 404) return NOT_FOUND;
+    if (res.status === 404) throw new ApiNotFound(`API ${path} answered 404`);
     if (!res.ok) throw new Error(`API ${path} answered ${res.status}`);
     const body = (await res.json()) as T;
     if (isEmpty(body)) throw new Error(`API ${path} answered empty`);
@@ -59,15 +59,14 @@ async function fetchJson<T>(path: string, allow404: boolean): Promise<T | typeof
 // empty answer throws, so it is never cached, and a stale entry stays in use until
 // a good answer replaces it.
 const cachedJson = unstable_cache(
-  (path: string, allow404: boolean) => fetchJson<unknown>(path, allow404),
+  (path: string) => fetchJson<unknown>(path),
   ["ceres-api"],
   { revalidate: 3600 },
 );
 
-async function read<T>(path: string, { allow404 = false } = {}): Promise<T | null> {
+async function read<T>(path: string): Promise<T | null> {
   try {
-    const body = await cachedJson(path, allow404);
-    return body === NOT_FOUND ? null : (body as T);
+    return (await cachedJson(path)) as T;
   } catch (e) {
     if (BUILDING) return null;
     throw e;
@@ -75,8 +74,8 @@ async function read<T>(path: string, { allow404 = false } = {}): Promise<T | nul
 }
 
 // ── Field whitelists ──────────────────────────────────────────────────────
-// Only the fields named here leave this file. Notes, evidence strings, method
-// names and commit hashes never reach a page or a download.
+// Only the fields named here leave this file, and none of them is free text from
+// the API. Notes, descriptions, method names and commit hashes stay behind.
 function pick<T extends object, K extends keyof T>(row: T, keys: readonly K[]): Pick<T, K> {
   const out = {} as Pick<T, K>;
   for (const k of keys) out[k] = row[k];
@@ -93,7 +92,7 @@ const PREDICTION_FIELDS = [
 
 const HYPOTHESIS_FIELDS = [
   "hypothesis_id", "region_id", "region_name", "lat", "lon", "forecast_horizon_days", "reference_date",
-  "description", "alert_tier", "ipc_phase_forecast", "composite_stress_score", "p_ipc3plus_90d",
+  "alert_tier", "ipc_phase_forecast", "composite_stress_score", "p_ipc3plus_90d",
   "p_ipc4plus_90d", "p_famine_90d", "driver_types", "n_sources_agreeing",
 ] as const;
 
@@ -127,6 +126,12 @@ const SOURCE_LABELS: Record<string, string> = {
 
 const sourceLabel = (id: string) => SOURCE_LABELS[id] ?? id;
 
+// Why the four withdrawn runs left the score, in the API's facts and this site's
+// words: the API's text also speaks of priors in a way that reads as the model's
+// coefficients, which are still expert-informed priors.
+const WITHDRAWAL_REASON =
+  "Issued before NASA POWER and MODIS data replaced synthetic fallbacks on 6 April 2026, and before UCDP conflict data covered Somalia, Palestine, Yemen, Afghanistan and Syria.";
+
 // This evidence row sums every month of the lookback window under a monthly
 // label, so its figure and its note cannot be read as what they say.
 const UNREADABLE_EVIDENCE = new Set(["conflict_events_monthly"]);
@@ -149,7 +154,6 @@ function publicHypothesisDetail(h: Hypothesis): Hypothesis {
         threshold: e.threshold,
         direction: e.direction,
         supports_hypothesis: e.supports_hypothesis,
-        note: e.note,
       })),
   };
 }
@@ -161,6 +165,7 @@ type RawRow = LedgerRow & Omit<Partial<ScoredRow>, keyof LedgerRow> & {
 
 const LEDGER_MAX = 1000;
 const TABLE_ROWS = 50;
+const HISTORY_MAX = 104;
 
 function publicRow(r: RawRow): LedgerRow {
   return pick(r, ["prediction_id", "region_id", "reference_date", "grading_date", "alert_tier", "p_ipc3plus", "si_low", "si_high"]);
@@ -187,9 +192,30 @@ function publicScoredRow(r: RawRow): ScoredRow {
   };
 }
 
+// The API takes a limit and no offset, and applies its region filter after the
+// limit, so nothing past LEDGER_MAX rows can be read. getGradedLedger states it
+// when that starts to cost rows.
 async function readRows(status: string): Promise<RawRow[] | null> {
   const res = await read<{ predictions: RawRow[] }>(`/v1/validation/ledger?status=${status}&limit=${LEDGER_MAX}`);
+  if (res?.predictions.length === LEDGER_MAX) console.error(`Ledger ${status} reached the ${LEDGER_MAX} row limit`);
   return res?.predictions ?? null;
+}
+
+// One row per run date. The archive holds repeat writes for some dates, and the
+// latest write stands.
+type RawSnapshot = RegionSnapshot & { archived_at?: string };
+
+async function getHistory(regionId: string): Promise<RegionSnapshot[] | null> {
+  const rows = await read<RawSnapshot[]>(`/v1/archive/regions/${regionId}?limit=${HISTORY_MAX}`);
+  if (!rows) return null;
+  const byDate = new Map<string, RawSnapshot>();
+  for (const r of rows) {
+    const seen = byDate.get(r.run_date);
+    if (!seen || (r.archived_at ?? "") > (seen.archived_at ?? "")) byDate.set(r.run_date, r);
+  }
+  return [...byDate.values()]
+    .sort((a, b) => b.run_date.localeCompare(a.run_date))
+    .map((s) => pick(s, SNAPSHOT_FIELDS));
 }
 
 // ── What the pages and the /ledger routes serve ───────────────────────────
@@ -197,6 +223,20 @@ async function readRows(status: string): Promise<RawRow[] | null> {
 export async function getScoredRows(): Promise<ScoredRow[] | null> {
   const rows = await readRows("graded");
   return rows ? rows.filter(isScored).map(publicScoredRow) : null;
+}
+
+export interface GradedLedger {
+  total_in_score: number;
+  count: number;
+  complete: boolean;
+  predictions: ScoredRow[];
+}
+
+export async function getGradedLedger(): Promise<GradedLedger | null> {
+  const [metrics, rows] = await Promise.all([getPublicMetrics(), getScoredRows()]);
+  if (!metrics || !rows) return null;
+  const total = metrics.n_graded_for_metrics;
+  return { total_in_score: total, count: rows.length, complete: rows.length === total, predictions: rows };
 }
 
 export async function getWithdrawnRows(): Promise<LedgerRow[] | null> {
@@ -271,6 +311,11 @@ export async function getHypothesis(id: string): Promise<Hypothesis | null> {
   return h && publicHypothesisDetail(h);
 }
 
+export async function getAdmin1(regionId: string): Promise<AdminRow[] | null> {
+  const rows = await read<AdminRow[]>(`/v1/admin1/${regionId}`);
+  return rows && rows.map((a) => pick(a, ADMIN_FIELDS));
+}
+
 export interface RegionData {
   prediction: Prediction;
   hypothesis: Hypothesis | null;
@@ -281,15 +326,15 @@ export interface RegionData {
 export async function getRegionData(regionId: string): Promise<RegionData | null> {
   const [prediction, history, admin1] = await Promise.all([
     read<Prediction>(`/v1/predictions/${regionId}`),
-    read<RegionSnapshot[]>(`/v1/archive/regions/${regionId}?limit=52`, { allow404: true }),
-    NO_ADMIN1.has(regionId) ? null : read<AdminRow[]>(`/v1/admin1/${regionId}`, { allow404: true }),
+    getHistory(regionId),
+    NO_ADMIN1.has(regionId) ? [] : getAdmin1(regionId),
   ]);
-  if (!prediction) return null;
+  if (!prediction || !history || !admin1) return null;
   return {
     prediction: pick(prediction, PREDICTION_FIELDS),
     hypothesis: prediction.hypothesis_id ? await getHypothesis(prediction.hypothesis_id) : null,
-    history: (history ?? []).map((s) => pick(s, SNAPSHOT_FIELDS)),
-    admin1: (admin1 ?? []).map((a) => pick(a, ADMIN_FIELDS)),
+    history,
+    admin1,
   };
 }
 
@@ -348,7 +393,7 @@ export async function getValidationData(): Promise<ValidationData | null> {
         n_predictions: w.n_predictions,
         n_regions: w.n_regions,
         withdrawn_at: w.withdrawn_at,
-        void_reason: w.void_reason,
+        void_reason: w.void_reason.startsWith("Inputs predate") ? WITHDRAWAL_REASON : "Withdrawn from the score.",
       })),
     },
   };
@@ -358,6 +403,7 @@ export interface TrackerData {
   grades: GradeRecord[];
   meanBrier: number | null;
   latest: RegionSnapshot[];
+  history: Record<string, RegionSnapshot[]>;
   archive: ArchiveStats;
   runs: string[];
   metrics: ValidationMetrics;
@@ -372,7 +418,10 @@ export async function getTrackerData(): Promise<TrackerData | null> {
     getPublicMetrics(),
   ]);
   if (!grades || !latest || !archive || !runs || !metrics) return null;
-  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, archive, runs, metrics };
+  const histories = await Promise.all(latest.map((s) => getHistory(s.region_id)));
+  if (histories.some((h) => !h)) return null;
+  const history = Object.fromEntries(latest.map((s, i) => [s.region_id, histories[i] as RegionSnapshot[]]));
+  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, history, archive, runs, metrics };
 }
 
 export interface SubnationalData {
