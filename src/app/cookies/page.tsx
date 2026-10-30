@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/cookies" },
 };
 
-const LAST_UPDATED = "19 October 2026";
+const LAST_UPDATED = "30 October 2026";
 
 export default function CookiesPage() {
   const h2 = { fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, marginBottom: 12, marginTop: 40, lineHeight: 1.2 } as const;
@@ -55,25 +55,18 @@ export default function CookiesPage() {
             <tbody>
               {[
                 {
-                  name: "CSRF token",
-                  type: "Essential",
-                  purpose: "Protects against cross-site request forgery attacks.",
-                  duration: "Session",
-                  consent: "No: essential",
+                  name: "Consent preference (nf_consent)",
+                  type: "Functional",
+                  purpose: "Stores your cookie choice so we do not ask repeatedly. Kept as a first-party cookie with a copy in your browser's local storage.",
+                  duration: "180 days",
+                  consent: "No: stores your choice",
                 },
                 {
                   name: "Google Analytics 4 (_ga, _ga_*)",
                   type: "Analytics",
-                  purpose: "Measures page views, session duration, and anonymous user behaviour to help us understand how CERES is used and improve the service. IP anonymisation is enabled. No personal data is shared with Google.",
+                  purpose: "Measures page views, session duration and device type to help us understand how CERES is used. Set only after you accept analytics.",
                   duration: "Up to 14 months",
                   consent: "Yes: analytics consent required",
-                },
-                {
-                  name: "Cookie consent preference",
-                  type: "Functional",
-                  purpose: "Stores your cookie consent decision so we do not ask repeatedly.",
-                  duration: "12 months",
-                  consent: "No: stores your choice",
                 },
               ].map(({ name, type, purpose, duration, consent }, i) => (
                 <tr key={name} style={{ background: i % 2 === 1 ? "white" : "transparent" }}>
@@ -95,27 +88,52 @@ export default function CookiesPage() {
           </table>
         </div>
 
-        <h2 style={h2}>3. Essential Cookies</h2>
+        <h2 style={h2}>3. Your Consent Choice</h2>
         <p style={p}>
-          Essential cookies are strictly necessary for the website to function. They provide core features such as security. These cookies cannot be disabled, as doing so would break the site. No consent is required to place them under GDPR (Recital 25, ePrivacy Directive).
+          CERES sets no login or session cookies. The only cookie set without consent records the choice you made in the consent banner.
         </p>
 
-        <h2 style={h2}>4. Analytics Cookies (Google Analytics 4)</h2>
+        <h2 style={h2}>4. Google Analytics 4</h2>
         <p style={p}>
-          We use Google Analytics 4 to understand how visitors use CERES: which pages are visited, how long sessions last, and what device types are used. This helps us improve the platform.
+          We use Google Analytics 4 to understand how visitors use CERES: which pages are visited, how long sessions last, and what device types are used. We do not use it for advertising or remarketing.
         </p>
         <p style={p}>
-          GA4 analytics are only loaded if you have given consent. IP addresses are anonymised before being sent to Google. We do not use GA4 for advertising or remarketing. Google processes data under a Data Processing Addendum in compliance with GDPR.
+          The Google tag loads on every page in Consent Mode, with analytics and advertising storage denied by default. Until you accept, it sets no analytics cookies, and Google may receive cookieless measurements such as the page and browser type. If you accept, the cookies above are set. Google processes this data under a Data Processing Addendum, and Google Analytics 4 does not store IP addresses.
         </p>
         <p style={p}>
-          You can opt out at any time using the controls below, or by installing the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Analytics Opt-out Browser Add-on</a>.
+          You can change your choice at any time using the controls below, or install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Analytics Opt-out Browser Add-on</a>.
         </p>
 
-        <h2 style={h2}>5. How to Control Cookies</h2>
+        <h2 style={h2}>5. Other Services Your Browser Contacts</h2>
+        <p style={p}>
+          These services set no cookies through CERES, but your browser connects to them directly, so they receive your IP address as part of the request:
+        </p>
+        <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
+          <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
+            <strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com): the typefaces on every page.
+          </li>
+          <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
+            <strong>Google Tag</strong> (googletagmanager.com): the analytics script described above.
+          </li>
+          <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
+            <strong>Samtykkr</strong> (app.samtykkr.no): the consent banner.
+          </li>
+          <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
+            <strong>Esri</strong> (server.arcgisonline.com): map tiles on pages with a map.
+          </li>
+          <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
+            <strong>CERES API</strong> (api.ceres.northflow.no): the forecasts shown on the site.
+          </li>
+        </ul>
+
+        <h2 style={h2}>6. How to Control Cookies</h2>
         <p style={p}>You can manage cookies in several ways:</p>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
-            <strong>Browser settings</strong>: most browsers allow you to block or delete cookies via their settings menu. Note that disabling essential cookies will prevent you from logging in.
+            <strong>Consent control</strong>: use the consent button at the bottom of the page to change your choice.
+          </li>
+          <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
+            <strong>Browser settings</strong>: most browsers allow you to block or delete cookies via their settings menu.
           </li>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
             <strong>Google Analytics opt-out</strong>: install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>GA opt-out add-on</a>.
@@ -125,17 +143,17 @@ export default function CookiesPage() {
           </li>
         </ul>
 
-        <h2 style={h2}>6. Third-Party Links</h2>
+        <h2 style={h2}>7. Third-Party Links</h2>
         <p style={p}>
           CERES links to external sites (FEWS NET, IPC, WFP, OCHA, etc.). These sites have their own cookie policies which we do not control. We recommend reviewing their policies separately.
         </p>
 
-        <h2 style={h2}>7. Changes to This Policy</h2>
+        <h2 style={h2}>8. Changes to This Policy</h2>
         <p style={p}>
           We may update this Cookie Policy when we add or remove cookies. The date at the top of this page reflects the most recent revision.
         </p>
 
-        <h2 style={h2}>8. Contact</h2>
+        <h2 style={h2}>9. Contact</h2>
         <p style={p}>
           Questions about cookies or this policy: <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a><br /><br />
           <strong>Northflow Technologies AS</strong><br />
