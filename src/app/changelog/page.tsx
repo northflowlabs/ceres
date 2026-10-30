@@ -47,8 +47,8 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-03-11",
     version: "v0.5",
     type: "model",
-    title: "Coefficient recalibration",
-    body: "The IPC Phase 3+ coefficients from arXiv v1 were recalibrated against the first weeks of live data, so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The same coefficients apply to the Admin1, Admin2 and scenario models, and are documented in Appendix C of the preprint and on the Methodology page.",
+    title: "Coefficient adjustment",
+    body: "The IPC Phase 3+ coefficients from arXiv v1 were adjusted so that the probabilities spread across the full range of country stress. New coefficients: intercept −4.50, composite_stress β 3.20, convergence_score β 1.40, n_independent β 0.20. The same coefficients apply to the Admin1, Admin2 and scenario models, and are documented in Appendix C of the preprint and on the Methodology page.",
     breaking: true,
   },
   {
@@ -76,8 +76,8 @@ const CHANGELOG: ChangeEntry[] = [
     date: "2026-02-28",
     version: "v0.2",
     type: "model",
-    title: "Logistic model initialised with author-specified coefficients: 87 IPC transition records",
-    body: "Logistic regression model initialised with author-specified coefficients informed by 87 IPC transition records across 31 countries (2011-2023). Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2-4 month lag, the first graded results are expected Aug-Oct 2026. See Validation page for live progress.",
+    title: "Logistic model initialised with expert-informed prior coefficients: 87 IPC transition records",
+    body: "Logistic regression model initialised with expert-informed prior coefficients, with reference to 87 IPC transition records across 31 countries (2011-2023). Input-perturbation resampling (n=2,000 replications) for 90% sensitivity intervals. All performance metrics (Brier score, SI coverage, Tier I precision/recall) are prospective targets. T+90 grading windows open June 2026 as the first predictions reach their horizon; because observed IPC outcomes publish on a 2-4 month lag, the first graded results are expected Aug-Oct 2026. See Validation page for live progress.",
   },
   {
     date: "2026-02-27",

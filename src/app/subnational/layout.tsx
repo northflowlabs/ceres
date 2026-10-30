@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Sub-national Intelligence · CERES Famine Risk",
   description:
-    "Admin1 and Admin2 sub-national famine risk intelligence for all 43 monitored countries. Provincial-level stress signals, IPC probabilities, and driver breakdowns.",
+    "Admin1 and Admin2 sub-national famine risk for the monitored countries that have sub-national data. Provincial-level stress signals, IPC probabilities, and driver breakdowns.",
   openGraph: {
     title: "Sub-national Intelligence · CERES Famine Risk",
     url: "https://ceres.northflow.no/subnational",

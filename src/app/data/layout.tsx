@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Data Sources · CERES Famine Early Warning",
@@ -115,8 +114,7 @@ const datasetJsonLd = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Script
-        id="dataset-jsonld"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetJsonLd) }}
       />

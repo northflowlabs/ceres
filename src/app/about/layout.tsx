@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "About · CERES Famine Early Warning",
@@ -82,7 +81,7 @@ const faqJsonLd = {
       name: "What data does CERES use?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "CERES draws on public data streams: NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé classifications, and WFP market prices. FEWS NET is not a model input: its observed classifications are used to grade forecasts.",
+        text: "CERES draws on public data streams: NASA POWER rainfall, MODIS NDVI vegetation, UCDP GED conflict events, IPC and Cadre Harmonisé classifications, and WFP market prices. FEWS NET is not a model input: it supplies the proxy used to grade forecasts.",
       },
     },
     {
@@ -123,13 +122,11 @@ const faqJsonLd = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Script
-        id="org-jsonld"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
       />
-      <Script
-        id="faq-jsonld"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />

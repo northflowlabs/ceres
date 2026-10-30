@@ -104,6 +104,10 @@ export default function CookiesPage() {
           You can change your choice at any time using the controls below, or install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Analytics Opt-out Browser Add-on</a>.
         </p>
 
+        <p style={p}>
+          When the CERES widget is embedded on another site, it loads neither Google Analytics nor the consent banner, and it sets no cookies.
+        </p>
+
         <h2 style={h2}>5. Other Services Your Browser Contacts</h2>
         <p style={p}>
           These services set no cookies through CERES, but your browser connects to them directly, so they receive your IP address as part of the request:

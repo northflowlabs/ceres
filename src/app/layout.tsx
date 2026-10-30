@@ -90,32 +90,35 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85"
-        />
+        {/* Consent Mode v2: everything denied until the visitor consents through
+            Samtykkr, whose engine pushes the update. Inside another site's iframe
+            neither loads: the widget then sets no cookies and has nothing to ask. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              // Consent Mode v2: deny everything until the visitor consents via
-              // Samtykkr. Samtykkr's engine pushes the 'update' on consent.
-              gtag('consent', 'default', {
-                ad_storage: 'denied', analytics_storage: 'denied',
-                ad_user_data: 'denied', ad_personalization: 'denied',
-                functionality_storage: 'denied', personalization_storage: 'denied',
-                security_storage: 'granted'
-              });
-              gtag('js', new Date());
-              gtag('config', 'G-GQX8JPPF85', { page_path: window.location.pathname });
+              if (window.self === window.top) {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('consent', 'default', {
+                  ad_storage: 'denied', analytics_storage: 'denied',
+                  ad_user_data: 'denied', ad_personalization: 'denied',
+                  functionality_storage: 'denied', personalization_storage: 'denied',
+                  security_storage: 'granted'
+                });
+                gtag('js', new Date());
+                gtag('config', 'G-GQX8JPPF85', { page_path: window.location.pathname });
+                [
+                  'https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85',
+                  'https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fceres.northflow.no%2Fprivacy'
+                ].forEach(function (src) {
+                  var s = document.createElement('script');
+                  s.async = true;
+                  s.src = src;
+                  document.head.appendChild(s);
+                });
+              }
             `,
           }}
-        />
-        {/* Samtykkr: lawful cookie consent (gates Consent Mode above). English + ceres ink accent. */}
-        <script
-          async
-          src="https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fceres.northflow.no%2Fprivacy"
         />
         <script
           type="application/ld+json"

@@ -108,7 +108,7 @@ export default function DataPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Data Sources</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          CERES draws on public model inputs for rainfall (NASA POWER), vegetation (MODIS NDVI), conflict (UCDP GED), food security phase (IPC and Cadre Harmonisé) and market prices (WFP), plus FEWS NET, whose observed classifications grade the forecasts and are not a model input. The cards below cover all of them. All sources are publicly available. No proprietary data is used.
+          CERES draws on public model inputs for rainfall (NASA POWER), vegetation (MODIS NDVI), conflict (UCDP GED), food security phase (IPC and Cadre Harmonisé) and market prices (WFP), plus FEWS NET, which supplies the grading proxy and is not a model input. The cards below cover all of them. All sources are publicly available. No proprietary data is used.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
           {Object.entries(TYPE_LABELS).map(([type, label]) => (
@@ -230,7 +230,7 @@ export default function DataPage() {
               },
               {
                 label: "Grading Ledger",
-                sub: "Graded predictions with observed outcomes",
+                sub: "Graded predictions with proxy outcomes",
                 desc: "Every prediction graded at T+90, with the proxy phase, the grading source and its Brier contribution.",
                 url: "https://ceres.northflow.no/ledger/graded.json",
                 tag: "JSON",
