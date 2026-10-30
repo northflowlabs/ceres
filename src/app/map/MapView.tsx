@@ -31,7 +31,7 @@ export default function MapPage({ initial }: { initial: MapData | null }) {
           Global Famine Risk Map
         </h1>
         <p style={{ fontSize: 15, color: "var(--ink-mid)", maxWidth: 680, lineHeight: 1.7, fontWeight: 300, margin: 0 }}>
-          90-day IPC Phase 3+ probability across country, Admin1, and Admin2 layers. Click any region for full signal breakdown.
+          The country layer shows the 90-day probability of IPC Phase 3+. The Admin1 and Admin2 layers show a separate sub-national screening score, which is not an IPC Phase 3+ forecast and cannot be compared with country figures. Click any region for its signals.
         </p>
         {countries.length > 0 && (
           <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", margin: "14px 0 0" }}>

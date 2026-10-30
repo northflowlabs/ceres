@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sub-national Intelligence · CERES Famine Risk",
+  title: "Sub-national Screening · CERES",
   description:
-    "Admin1 and Admin2 sub-national famine risk for the monitored countries that have sub-national data. Provincial-level stress signals, IPC probabilities, and driver breakdowns.",
+    "A separate sub-national screening score, computed from sub-national conflict and vegetation signals. It is not an IPC Phase 3+ forecast and cannot be compared with country figures.",
   openGraph: {
-    title: "Sub-national Intelligence · CERES Famine Risk",
+    title: "Sub-national Screening · CERES",
     url: "https://ceres.northflow.no/subnational",
   },
   twitter: {
-    title: "Sub-national Intelligence · CERES Famine Risk",
+    title: "Sub-national Screening · CERES",
   },
   alternates: { canonical: "https://ceres.northflow.no/subnational" },
 };

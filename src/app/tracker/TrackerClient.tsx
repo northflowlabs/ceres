@@ -148,7 +148,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
         {archiveStats && (
           <div className="tracker-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 40px" }}>
             {[
-              { val: runs ? String(runs.length) : "…",      label: "Published Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Weekly archive" },
+              { val: runs ? String(runs.length) : "…",      label: "Published Runs",      note: runs?.length ? `Since ${fmtDate([...runs].sort()[0])}` : "" },
               { val: String(archiveStats.total_regions),   label: "Regions Tracked",   note: "Monitored globally"  },
               { val: fmtInt(nPending), label: "Pending Grading", note: "Before their T+90 date" },
               { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "…", label: "Directional Agreement", note: grades.length > 0 ? `P(IPC 3+) on the side of 50% the outcome took, ${grades.length} graded` : "" },
@@ -416,7 +416,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
               </table>
             </div>
             <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 16 }}>
-              Grading is automated. Once a prediction passes T+90, the system queries FEWS NET each week for the proxy phase of its grading window, then records the Brier score.
+              Grading is automated. Once a prediction passes T+90, the system queries FEWS NET for the proxy phase of its grading window, then records the Brier score.
             </p>
           </div>
         )}

@@ -29,11 +29,11 @@ function fmtDate(s: string | null | undefined) {
 
 export default function ImpactPage({ initial }: { initial: ImpactData | null }) {
   const { data } = useSiteData<ImpactData>("impact", initial);
-  const archive = data?.archive ?? null;
   const runs = data?.runs ?? null;
   const predictions = data?.predictions ?? null;
   const issued = data?.ledger.metrics.total_predictions ?? null;
-  const records = data?.records ?? null;
+  const regionRuns = data?.regionRuns ?? null;
+  const firstRun = runs?.length ? [...runs].sort()[0] : null;
 
   const count = fmtInt;
   const inTier = (tier: string) => predictions?.filter(x => x.alert_tier === tier).length ?? null;
@@ -87,16 +87,10 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
         {/* Operational stats */}
         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "40px 0 10px" }}>System Activity</div>
         <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
-          <StatCard val={count(runs?.length)}             label="Published Runs" sub={archive?.earliest_run ? `Run dates in the archive since ${fmtDate(archive.earliest_run)}` : undefined} />
-          <StatCard val={count(records?.regionWeeks)}      label="Archived Region-Weeks" sub="One row per region and run date" />
+          <StatCard val={count(runs?.length)}             label="Published Runs" sub={firstRun ? `Since ${fmtDate(firstRun)}` : undefined} />
+          <StatCard val={count(regionRuns)}                label="Region Run Records" sub="One row per region and published run" />
           <StatCard val={count(inTier("TIER-1"))}         label="Active Tier I Regions" sub={asOf ? `As of ${fmtDate(asOf)}` : undefined} />
         </div>
-
-        {records && (
-          <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0", lineHeight: 1.6 }}>
-            {count(issued)} predictions are in the ledger across {records.ledgerDates} issue dates. The archive is a separate record: {records.sharedDates} dates are in both, {records.ledgerOnlyDates} in the ledger only and {records.archiveOnlyDates} in the archive only.
-          </p>
-        )}
 
         {/* What this means: narrative */}
         <div className="content-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, margin: "56px 0 0", paddingTop: 48, borderTop: "1px solid var(--border-light)" }}>
@@ -139,8 +133,8 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
         {/* Download section */}
         <div style={{ margin: "48px 0 0", paddingTop: 48, borderTop: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Open Data</div>
-          <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 12, lineHeight: 1.2 }}>Download the Full Dataset</h2>
-          <p style={{ ...p, maxWidth: 600 }}>All CERES predictions are available as open data under CC BY 4.0. Download the full archive for independent validation, academic research, or integration into existing EWS workflows.</p>
+          <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 12, lineHeight: 1.2 }}>Download the Data</h2>
+          <p style={{ ...p, maxWidth: 600 }}>CERES forecasts are available as open data under CC BY 4.0, for independent validation, academic research, or integration into existing EWS workflows.</p>
           <div className="impact-downloads-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "24px 0" }}>
             {[
               {
@@ -150,9 +144,9 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
                 file:  "CSV",
               },
               {
-                label: "Full Archive",
-                desc:  "All weekly prediction runs since launch: complete time series per region.",
-                href:  `${PUBLIC_API_URL}/v1/export/archive/csv`,
+                label: "Published Runs",
+                desc:  "One row per region and published run date.",
+                href:  "/ledger/archive.csv",
                 file:  "CSV",
               },
               {

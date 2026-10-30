@@ -13,8 +13,9 @@ export function ledgerNotFound() {
 }
 
 // Only a real answer is ever cached. A failure or an empty answer is a 503 that
-// no shared cache may keep.
-export async function ledgerResponse(source: () => Promise<unknown>) {
+// no shared cache may keep. A 404 from the API counts as a 404 only when the route
+// asked for that one resource; inside an aggregate it is a failure upstream.
+export async function ledgerResponse(source: () => Promise<unknown>, { primary = false } = {}) {
   try {
     const body = await source();
     if (!isEmpty(body)) {
@@ -23,9 +24,7 @@ export async function ledgerResponse(source: () => Promise<unknown>) {
       });
     }
   } catch (e) {
-    if (e instanceof ApiNotFound) {
-      return ledgerNotFound();
-    }
+    if (primary && e instanceof ApiNotFound) return ledgerNotFound();
   }
   return NextResponse.json({ error: "unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
 }

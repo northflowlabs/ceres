@@ -75,18 +75,6 @@ interface Admin1Prediction {
 
 type SortKey = "p_ipc3plus_90d" | "composite_stress_score" | "conflict_stress" | "drought_stress" | "food_access_stress" | "ipc_stress";
 
-const TIER_COLORS: Record<string, string> = {
-  "TIER-1": "#C0392B",
-  "TIER-2": "#D97706",
-  "TIER-3": "#78716C",
-};
-
-function tierBg(tier: string) {
-  if (tier === "TIER-1") return "rgba(192,57,43,0.08)";
-  if (tier === "TIER-2") return "rgba(217,119,6,0.07)";
-  return "transparent";
-}
-
 function stressColor(v: number) {
   if (v >= 0.70) return "#C0392B";
   if (v >= 0.50) return "#D97706";
@@ -102,7 +90,7 @@ function ProbBar({ value }: { value: number }) {
         <div style={{ height: "100%", borderRadius: 3, background: col, width: `${Math.min(100, value * 100)}%` }} />
       </div>
       <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: col, width: 38, textAlign: "right", fontWeight: 700 }}>
-        {Math.round(value * 100)}%
+        {value.toFixed(3)}
       </span>
     </div>
   );
@@ -136,13 +124,14 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
   const [sortBy, setSortBy] = useState<SortKey>("p_ipc3plus_90d");
   const [sortDesc, setSortDesc] = useState(true);
   const [filterCountry, setFilterCountry] = useState("ALL");
-  const [filterTier, setFilterTier] = useState("ALL");
   const [search, setSearch] = useState("");
 
   const activeRows = resolution === "admin1" ? rows : a2rows;
   const activeLoading = resolution === "admin1" ? loading : a2loading;
   const activeError = resolution === "admin1" ? error : a2error;
   const noFigures = activeLoading || activeRows.length === 0 || !!activeError;
+  const a2FromAdmin1 = a2rows.filter(a => a.from_admin1_fallback).length;
+  const a2FromCountry = a2rows.filter(a => a.from_country_fallback).length;
 
   const countries = useMemo(() =>
     Array.from(new Set(activeRows.map(r => r.country_id))).sort(),
@@ -152,7 +141,6 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
   const filtered = useMemo(() => {
     let r = activeRows as (Admin1Prediction | Admin2Prediction)[];
     if (filterCountry !== "ALL") r = r.filter(x => x.country_id === filterCountry);
-    if (filterTier !== "ALL") r = r.filter(x => x.alert_tier === filterTier);
     if (search.trim()) {
       const q = search.toLowerCase();
       r = r.filter(x => {
@@ -170,10 +158,8 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
       return 0;
     };
     return [...r].sort((a, b) => sortDesc ? getVal(b) - getVal(a) : getVal(a) - getVal(b));
-  }, [activeRows, filterCountry, filterTier, search, sortBy, sortDesc, resolution]);
+  }, [activeRows, filterCountry, search, sortBy, sortDesc, resolution]);
 
-  const tier1Count = activeRows.filter(r => r.alert_tier === "TIER-1").length;
-  const tier2Count = activeRows.filter(r => r.alert_tier === "TIER-2").length;
   const nCountries = new Set(activeRows.map(r => r.country_id)).size;
 
   const sortAria = (key: SortKey) => (sortBy !== key ? "none" : sortDesc ? "descending" : "ascending");
@@ -207,18 +193,18 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
           Sub-national Resolution · {resolution === "admin1" ? "Admin1 · Province / State" : "Admin2 · District / County"}
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>
-          Sub-national Risk Intelligence
+          Sub-national Screening
         </h1>
         <p style={{ fontSize: 16, color: "var(--ink-mid)", maxWidth: 720, lineHeight: 1.7, fontWeight: 300 }}>
+          A separate sub-national screening score, computed from sub-national conflict and vegetation signals. It is not an IPC Phase 3+ forecast and cannot be compared with country figures.{" "}
           {resolution === "admin1"
-            ? <>Probabilistic 90-day IPC Phase 3+ forecasts disaggregated to Admin1 (province / state / region) level across {noFigures ? "…" : activeRows.length} Admin1 regions in {noFigures ? "…" : nCountries} countries.</>
-            : <>District-level disaggregation for the top 10 crisis countries across {noFigures ? "…" : activeRows.length} Admin2 units. Signals inherited from parent Admin1 where district-level grid data is sparse.</>
+            ? <>This view covers {noFigures ? "…" : activeRows.length} Admin1 regions in {noFigures ? "…" : nCountries} countries.</>
+            : <>This view covers {noFigures ? "…" : activeRows.length} Admin2 units in {noFigures ? "…" : nCountries} countries. All of them draw on a parent-level signal: {noFigures ? "…" : a2FromAdmin1} from Admin1 and {noFigures ? "…" : a2FromCountry} from country level.</>
           }
         </p>
         {/* Resolution tabs */}
         <div style={{ display: "flex", gap: 0, marginTop: 28, borderBottom: "2px solid var(--ink)" }}>
-          {(["admin1", "Admin1 · Province / State (43 countries)"] as const).concat().length > 0 && (
-            ["admin1", "Admin2"].map((res, i) => (
+          {["admin1", "Admin2"].map((res, i) => (
               <button key={res} aria-pressed={resolution === res} onClick={() => { setResolution(res as "admin1" | "admin2"); setFilterCountry("ALL"); setSearch(""); }} style={{
                 fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
                 padding: "10px 24px", background: "none", border: "none", cursor: "pointer",
@@ -227,15 +213,12 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
               }}>
                 {i === 0 ? `Admin1 · Province (${loading || !rows.length ? "…" : rows.length})` : `Admin2 · District (${a2loading ? "…" : a2rows.length || "10 countries"})`}
               </button>
-            ))
-          )}
+            ))}
         </div>
         <div style={{ display: "flex", gap: 40, marginTop: 32, flexWrap: "wrap" }}>
           {[
             { num: noFigures ? "…" : activeRows.length, label: resolution === "admin1" ? "Admin1 Regions" : "Admin2 Units", color: "var(--ink)"     },
             { num: noFigures ? "…" : nCountries,        label: "Countries",             color: "var(--earth)"   },
-            { num: noFigures ? "…" : tier1Count,        label: "TIER-1 · Critical",     color: "var(--crisis)"  },
-            { num: noFigures ? "…" : tier2Count,        label: "TIER-2 · Warning",      color: "var(--warning)" },
           ].map(({ num, label, color }) => (
             <div key={label}>
               <div style={{ fontFamily: "var(--display)", fontSize: 32, fontWeight: 700, color, lineHeight: 1 }}>{num}</div>
@@ -259,13 +242,6 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
             <option value="ALL">All Countries</option>
             {countries.map(c => <option key={c} value={c}>{COUNTRY_NAMES[c] ?? c} ({c})</option>)}
           </select>
-          <select value={filterTier} onChange={e => setFilterTier(e.target.value)}
-            style={{ fontFamily: "var(--mono)", fontSize: 11, padding: "8px 14px", border: "1px solid var(--border)", background: "white", color: "var(--ink)" }}>
-            <option value="ALL">All Tiers</option>
-            <option value="TIER-1">TIER-1 · Critical</option>
-            <option value="TIER-2">TIER-2 · Warning</option>
-            <option value="TIER-3">TIER-3 · Watch</option>
-          </select>
           <div style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
             {noFigures ? "…" : `${filtered.length} units`}
           </div>
@@ -284,9 +260,8 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
               <tr>
                 <th scope="col" style={thStyle(null, "left")}>Country</th>
                 <th scope="col" style={thStyle(null, "left")}>Region</th>
-                <th scope="col" style={thStyle(null, "right")}>Tier</th>
                 <th scope="col" tabIndex={0} aria-sort={sortAria("p_ipc3plus_90d")} onKeyDown={sortKey("p_ipc3plus_90d")} onClick={() => toggleSort("p_ipc3plus_90d")} style={thStyle("p_ipc3plus_90d")}>
-                  P(IPC3+) 90d{sortBy === "p_ipc3plus_90d" ? (sortDesc ? " ▼" : " ▲") : ""}
+                  Screening Score{sortBy === "p_ipc3plus_90d" ? (sortDesc ? " ▼" : " ▲") : ""}
                 </th>
                 <th scope="col" tabIndex={0} aria-sort={sortAria("composite_stress_score")} onKeyDown={sortKey("composite_stress_score")} onClick={() => toggleSort("composite_stress_score")} style={thStyle("composite_stress_score")}>
                   Composite{sortBy === "composite_stress_score" ? (sortDesc ? " ▼" : " ▲") : ""}
@@ -315,15 +290,13 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
                   </tr>
                 ))
               ) : filtered.map((a) => {
-                const tier = a.alert_tier;
-                const borderLeft = tier === "TIER-1" ? "3px solid var(--crisis)" : tier === "TIER-2" ? "3px solid var(--warning)" : "3px solid transparent";
                 const a1 = a as Admin1Prediction;
                 const a2 = a as Admin2Prediction;
                 const unitName = resolution === "admin1" ? a1.admin1_name : a2.admin2_name;
                 const unitKey  = resolution === "admin1" ? a1.admin1_id  : a2.admin2_id;
                 const isFallback = resolution === "admin1" ? a1.from_country_fallback : (a2.from_admin1_fallback || a2.from_country_fallback);
                 return (
-                  <tr key={unitKey} style={{ background: tierBg(tier), borderBottom: "1px solid var(--border-light)", borderLeft }}>
+                  <tr key={unitKey} style={{ borderBottom: "1px solid var(--border-light)" }}>
                     <td style={{ padding: "10px 14px" }}>
                       <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", letterSpacing: "0.06em" }}>{a.country_id}</span>
                       <div style={{ fontSize: 11, color: "var(--ink-light)" }}>{COUNTRY_NAMES[a.country_id] ?? a.country_id}</div>
@@ -334,18 +307,8 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 1 }}>{a2.admin1_id}</div>
                       )}
                       {isFallback && (
-                        <span title="Estimated from parent-level fallback" style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", marginLeft: 6, border: "1px solid var(--border-light)", padding: "1px 4px" }}>est.</span>
+                        <span title="Uses a parent-level signal" style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", marginLeft: 6, border: "1px solid var(--border-light)", padding: "1px 4px" }}>est.</span>
                       )}
-                    </td>
-                    <td style={{ padding: "10px 14px", textAlign: "right" }}>
-                      <span style={{
-                        fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em",
-                        color: TIER_COLORS[tier] ?? "var(--ink-light)",
-                        background: `${TIER_COLORS[tier] ?? "#78716C"}15`,
-                        padding: "3px 8px",
-                      }}>
-                        {tier}
-                      </span>
                     </td>
                     <td style={{ padding: "10px 14px", minWidth: 150 }}>
                       <ProbBar value={a.p_ipc3plus_90d} />
@@ -382,7 +345,7 @@ export default function SubnationalPage({ initial }: { initial: SubnationalData 
         </div>
 
         <p style={{ fontSize: 12, color: "var(--ink-light)", fontStyle: "italic", marginTop: 16 }}>
-          Probability forecasts computed using the same logistic scoring model as country-level predictions, disaggregated via grid-cell intersection (~50-200 km accuracy). Rows marked "est." use country-level signals scaled by population weight where sub-national grid data is sparse. Updated weekly.
+          A separate sub-national screening score, computed from sub-national conflict and vegetation signals. It is not an IPC Phase 3+ forecast and cannot be compared with country figures. Located by grid-cell intersection (~50-200 km accuracy). Rows marked "est." use a parent-level signal.
         </p>
 
       </div>

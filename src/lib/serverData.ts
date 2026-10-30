@@ -206,15 +206,28 @@ type LedgerIndex = Map<string, RawRow>;
 
 const ledgerKey = (region: string, date: string) => `${region}|${date}`;
 
+// Run dates in the archive, without the runs withdrawn from the score.
+function publishedRuns(runs: string[], ledger: LedgerIndex): string[] {
+  const withdrawn = new Set([...ledger.values()].filter((r) => r.voided_at).map((r) => r.reference_date));
+  return runs.filter((d) => !withdrawn.has(d));
+}
+
 async function getLedgerIndex(): Promise<LedgerIndex | null> {
   const parts = await Promise.all(["pending", "awaiting", "graded", "voided"].map(readRows));
   if (parts.some((p) => !p)) return null;
-  return new Map(parts.flat().map((r) => [ledgerKey((r as RawRow).region_id, (r as RawRow).reference_date), r as RawRow]));
+  const index: LedgerIndex = new Map();
+  for (const r of parts.flat() as RawRow[]) {
+    const key = ledgerKey(r.region_id, r.reference_date);
+    index.set(key, { ...index.get(key), ...r });
+  }
+  return index;
 }
 
-// One row per run date. The archive holds repeat writes for some dates. The ledger
-// matches the first of them, so the first write stands, and where the ledger has
-// the region and date its own values stand. `npm run check:ledger` proves it.
+// One row per run date. The archive holds repeat writes for some dates, and the
+// first write stands, because that is the one the ledger holds. Where the ledger
+// has the region and date its own values stand. Runs withdrawn from the score stay
+// on /validation only. `npm run check:ledger` compares the result with the raw
+// archive and the ledger.
 type RawSnapshot = RegionSnapshot & { archived_at?: string };
 
 async function getHistory(regionId: string, ledger: LedgerIndex): Promise<RegionSnapshot[] | null> {
@@ -226,6 +239,7 @@ async function getHistory(regionId: string, ledger: LedgerIndex): Promise<Region
     if (!seen || (r.archived_at ?? "") < (seen.archived_at ?? "")) byDate.set(r.run_date, r);
   }
   return [...byDate.values()]
+    .filter((s) => !ledger.get(ledgerKey(regionId, s.run_date))?.voided_at)
     .sort((a, b) => b.run_date.localeCompare(a.run_date))
     .map((s) => {
       const issued = ledger.get(ledgerKey(regionId, s.run_date));
@@ -335,9 +349,21 @@ export async function getHypothesis(id: string): Promise<Hypothesis | null> {
   return h && publicHypothesisDetail(h);
 }
 
+// A sub-national row with no date or with every input at zero is a placeholder.
+const ADMIN_INPUTS = [
+  "composite_stress_score", "drought_stress", "vegetation_stress", "conflict_stress",
+  "food_access_stress", "ipc_stress", "price_stress",
+] as const;
+
+function publicAdminRows(rows: AdminRow[]): AdminRow[] {
+  return rows
+    .filter((a) => a.reference_date && ADMIN_INPUTS.some((k) => a[k]))
+    .map((a) => pick(a, ADMIN_FIELDS));
+}
+
 export async function getAdmin1(regionId: string): Promise<AdminRow[] | null> {
   const rows = await read<AdminRow[]>(`/v1/admin1/${regionId}`);
-  return rows && rows.map((a) => pick(a, ADMIN_FIELDS));
+  return rows && publicAdminRows(rows);
 }
 
 export interface RegionData {
@@ -364,22 +390,12 @@ export async function getRegionData(regionId: string): Promise<RegionData | null
   };
 }
 
-// The ledger and the archive are two records with different dates, so each figure
-// names the record it counts.
-export interface RecordCounts {
-  ledgerDates: number;
-  sharedDates: number;
-  ledgerOnlyDates: number;
-  archiveOnlyDates: number;
-  regionWeeks: number;
-}
-
 export interface ImpactData {
   ledger: LedgerFigures;
   archive: ArchiveStats;
   runs: string[];
   predictions: Prediction[];
-  records: RecordCounts;
+  regionRuns: number;
 }
 
 export async function getImpactData(): Promise<ImpactData | null> {
@@ -393,20 +409,12 @@ export async function getImpactData(): Promise<ImpactData | null> {
   if (!ledger || !archive || !runs || !predictions || !index) return null;
   const histories = await Promise.all(predictions.map((p) => getHistory(p.region_id, index)));
   if (histories.some((h) => !h)) return null;
-  const ledgerDates = new Set([...index.values()].map((r) => r.reference_date));
-  const shared = runs.filter((d) => ledgerDates.has(d)).length;
   return {
     ledger,
     archive,
-    runs,
+    runs: publishedRuns(runs, index),
     predictions,
-    records: {
-      ledgerDates: ledgerDates.size,
-      sharedDates: shared,
-      ledgerOnlyDates: ledgerDates.size - shared,
-      archiveOnlyDates: runs.length - shared,
-      regionWeeks: histories.reduce((n, h) => n + (h as RegionSnapshot[]).length, 0),
-    },
+    regionRuns: histories.reduce((n, h) => n + (h as RegionSnapshot[]).length, 0),
   };
 }
 
@@ -483,7 +491,7 @@ export async function getTrackerData(): Promise<TrackerData | null> {
     .sort((a, b) => a.grading_date.localeCompare(b.grading_date))
     .slice(0, latest.length)
     .map(publicRow);
-  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive, runs, metrics };
+  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, next, history, archive, runs: publishedRuns(runs, ledger), metrics };
 }
 
 export interface SubnationalData {
@@ -497,7 +505,7 @@ export async function getSubnationalData(): Promise<SubnationalData | null> {
     read<AdminRow[]>("/v1/admin2/predictions?limit=500"),
   ]);
   if (!admin1 || !admin2) return null;
-  return { admin1: admin1.map((a) => pick(a, ADMIN_FIELDS)), admin2: admin2.map((a) => pick(a, ADMIN_FIELDS)) };
+  return { admin1: publicAdminRows(admin1), admin2: publicAdminRows(admin2) };
 }
 
 export interface MapData extends SubnationalData {
@@ -507,4 +515,24 @@ export interface MapData extends SubnationalData {
 export async function getMapData(): Promise<MapData | null> {
   const [predictions, sub] = await Promise.all([getPredictions(), getSubnationalData()]);
   return predictions && sub ? { predictions, ...sub } : null;
+}
+
+const CSV_FIELDS = [
+  "run_date", "region_id", "region_name", "alert_tier", "p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d",
+  "sensitivity_interval_low", "sensitivity_interval_high", "ipc_phase_forecast", "composite_stress_score",
+  "convergence_tier", "driver_types",
+] as const;
+
+// The rows the site's charts use, one per region and published run.
+export async function getArchiveCsv(): Promise<string | null> {
+  const [predictions, ledger] = await Promise.all([getPredictions(), getLedgerIndex()]);
+  if (!predictions || !ledger) return null;
+  const histories = await Promise.all(predictions.map((p) => getHistory(p.region_id, ledger)));
+  if (histories.some((h) => !h)) return null;
+  const cell = (v: unknown) => {
+    const s = Array.isArray(v) ? v.join(";") : String(v ?? "");
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const rows = (histories as RegionSnapshot[][]).flat().map((r) => CSV_FIELDS.map((k) => cell(r[k])).join(","));
+  return [CSV_FIELDS.join(","), ...rows].join("\n") + "\n";
 }

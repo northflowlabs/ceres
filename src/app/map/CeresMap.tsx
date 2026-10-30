@@ -399,7 +399,12 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>
             {layer === "country" ? "Country" : layer === "admin1" ? "Admin1 · Province" : "Admin2 · District"} layer
           </div>
-          {(["TIER-1", "TIER-2", "TIER-3"] as const).map(t => (
+          {layer !== "country" && (
+            <p style={{ fontSize: 11, color: "var(--ink-light)", lineHeight: 1.5, margin: 0 }}>
+              Sub-national screening score. Not an IPC Phase 3+ forecast and not comparable with country figures.
+            </p>
+          )}
+          {layer === "country" && (["TIER-1", "TIER-2", "TIER-3"] as const).map(t => (
             <div key={t} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
               <span style={{ width: 12, height: 12, borderRadius: 2, background: TIER_FILL[t], opacity: 0.8, flexShrink: 0, display: "inline-block" }} />
               <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: TIER_FILL[t], fontWeight: 700, width: 54 }}>{t}</span>
@@ -407,6 +412,7 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
             </div>
           ))}
           <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
+            {layer === "country" && <>
             <div>
               <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#C0392B", lineHeight: 1 }}>{noFigures ? "…" : t1}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-1</div>
@@ -419,6 +425,7 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
               <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "#78716C", lineHeight: 1 }}>{noFigures ? "…" : t3}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>TIER-3</div>
             </div>
+            </>}
             <div>
               <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink-light)", lineHeight: 1 }}>{noFigures ? "…" : activePreds.length}</div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 8, color: "var(--ink-light)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 2 }}>Total</div>
@@ -442,30 +449,39 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
               {selected.name}
             </div>
 
-            <span style={{
-              fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em",
-              color: TIER_FILL[selected.tier], background: `${TIER_FILL[selected.tier]}18`,
-              padding: "3px 9px", display: "inline-block", marginBottom: 18,
-            }}>{selected.tier} · {TIER_LABEL[selected.tier]}</span>
+            {layer === "country" ? (
+              <>
+                <span style={{
+                  fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em",
+                  color: TIER_FILL[selected.tier], background: `${TIER_FILL[selected.tier]}18`,
+                  padding: "3px 9px", display: "inline-block", marginBottom: 18,
+                }}>{selected.tier} · {TIER_LABEL[selected.tier]}</span>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-              {[
-                { label: "P(IPC 3+)", val: fmtPct(selected.p3), color: TIER_FILL[selected.tier] },
-                { label: "P(IPC 4+)", val: fmtPct(selected.p4), color: "#78716C" },
-              ].map(({ label, val, color }) => (
-                <div key={label} style={{ background: "var(--parchment)", padding: "10px 12px" }}>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 3 }}>{label}</div>
-                  <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color, lineHeight: 1 }}>{val}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                  {[
+                    { label: "P(IPC 3+)", val: fmtPct(selected.p3), color: TIER_FILL[selected.tier] },
+                    { label: "P(IPC 4+)", val: fmtPct(selected.p4), color: "#78716C" },
+                  ].map(({ label, val, color }) => (
+                    <div key={label} style={{ background: "var(--parchment)", padding: "10px 12px" }}>
+                      <div style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 3 }}>{label}</div>
+                      <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color, lineHeight: 1 }}>{val}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            {/* Sensitivity interval row */}
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginBottom: 20 }}>
-              {selected.ciLow != null && selected.ciHigh != null
-                ? `SI [${fmtPct(selected.ciLow)} to ${fmtPct(selected.ciHigh)}] · Input-perturbation`
-                : "Sensitivity interval not available"}
-            </div>
+                {/* Sensitivity interval row */}
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginBottom: 20 }}>
+                  {selected.ciLow != null && selected.ciHigh != null
+                    ? `SI [${fmtPct(selected.ciLow)} to ${fmtPct(selected.ciHigh)}] · Input-perturbation`
+                    : "Sensitivity interval not available"}
+                </div>
+              </>
+            ) : (
+              <div style={{ background: "var(--parchment)", padding: "10px 12px", marginBottom: 20 }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 3 }}>Screening Score</div>
+                <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink)", lineHeight: 1 }}>{selected.p3.toFixed(3)}</div>
+              </div>
+            )}
 
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>Stress Drivers</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
@@ -503,7 +519,7 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
 
         {/* Instructions footer */}
         <div style={{ padding: "10px 20px", borderTop: "1px solid var(--border-light)", fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", lineHeight: 1.6 }}>
-          Country layer: choropleth fill · Admin1/2: proportional circles · Circle size ∝ P(IPC 3+)
+          Country layer: choropleth by P(IPC 3+) · Admin1/2: circles sized by screening score
         </div>
       </div>
     </div>
