@@ -1,10 +1,11 @@
-// Checks the run history against two independent sources: the raw archive and the
-// verification ledger.
+// Checks the run history and /ledger/archive.csv against two independent sources:
+// the raw archive and the verification ledger.
 //
 // First it compares the first archive write of every region and date with the
 // ledger on probability, tier and sensitivity interval, without using the site.
 // Then it compares the site's rows with those raw first writes, so a build that
-// keeps the wrong write fails.
+// keeps the wrong write, or loses a region, fails. Last it reads the CSV and
+// requires the same rows as the history.
 //
 // Run it against a production server, because the site must be serving its own
 // /ledger routes:
@@ -14,7 +15,8 @@
 //   npm run check:ledger                 checks http://localhost:3100
 //   npm run check:ledger -- <site url>   checks another server
 //
-// Needs network access to the public API. Exits 1 on any disagreement.
+// Needs network access to the public API and a running server, so it stays out of
+// CI. Exits 1 on any disagreement.
 const SITE = process.argv[2] ?? "http://localhost:3100";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
 
@@ -34,8 +36,35 @@ for (const status of ["pending", "awaiting", "graded", "voided"]) {
   }
 }
 
-const { history } = await json(`${SITE}/ledger/tracker.json`);
+const { history, latest } = await json(`${SITE}/ledger/tracker.json`);
 const wrong = [];
+
+// Every region the API forecasts must be in the history and the latest run.
+const regions = (await json(`${API}/v1/predictions`)).map((p) => p.region_id);
+for (const id of regions) {
+  if (!history[id]) wrong.push(`${id}: missing from the history`);
+  if (!latest.some((s) => s.region_id === id)) wrong.push(`${id}: missing from the latest run`);
+}
+
+// Quoted CSV fields, one row per line.
+function parseCsv(text) {
+  const rows = text.trim().split("\n").map((line) => {
+    const cells = [];
+    let cell = "";
+    let quoted = false;
+    for (let i = 0; i < line.length; i += 1) {
+      const c = line[i];
+      if (c === '"' && quoted && line[i + 1] === '"') { cell += '"'; i += 1; }
+      else if (c === '"') quoted = !quoted;
+      else if (c === "," && !quoted) { cells.push(cell); cell = ""; }
+      else cell += c;
+    }
+    cells.push(cell);
+    return cells;
+  });
+  const [head, ...body] = rows;
+  return body.map((cells) => Object.fromEntries(head.map((h, i) => [h, cells[i]])));
+}
 let rawCompared = 0;
 let siteCompared = 0;
 
@@ -71,7 +100,10 @@ for (const [region, siteRows] of Object.entries(history)) {
       continue;
     }
     siteCompared += 1;
-    for (const field of ["p_ipc3plus_90d", "alert_tier", "p_ipc4plus_90d", "composite_stress_score", "ipc_phase_forecast"]) {
+    for (const field of [
+      "p_ipc3plus_90d", "alert_tier", "p_ipc4plus_90d", "p_famine_90d", "composite_stress_score",
+      "ipc_phase_forecast", "sensitivity_interval_low", "sensitivity_interval_high",
+    ]) {
       if (s[field] !== first[field]) wrong.push(`${region} ${s.run_date}: ${field} is ${s[field]}, first write has ${first[field]}`);
     }
   }
@@ -80,6 +112,30 @@ for (const [region, siteRows] of Object.entries(history)) {
   }
 }
 
-console.log(`${rawCompared} first writes compared with the ledger, ${siteCompared} site rows compared with first writes, ${wrong.length} disagree`);
+// The download must hold exactly the history's rows.
+const csvRes = await fetch(`${SITE}/ledger/archive.csv`);
+if (!csvRes.ok) throw new Error(`/ledger/archive.csv answered ${csvRes.status}`);
+const csvRows = parseCsv(await csvRes.text());
+const expected = new Map(Object.entries(history).flatMap(([id, rows]) => rows.map((s) => [`${id}|${s.run_date}`, s])));
+const csvSeen = new Set();
+for (const row of csvRows) {
+  const key = `${row.region_id}|${row.run_date}`;
+  if (csvSeen.has(key)) wrong.push(`archive.csv ${key}: repeated`);
+  csvSeen.add(key);
+  const s = expected.get(key);
+  if (!s) {
+    wrong.push(`archive.csv ${key}: not in the history`);
+    continue;
+  }
+  for (const field of ["p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d", "sensitivity_interval_low", "sensitivity_interval_high", "composite_stress_score"]) {
+    if (Number(row[field]) !== s[field]) wrong.push(`archive.csv ${key}: ${field} is ${row[field]}, history has ${s[field]}`);
+  }
+  if (row.alert_tier !== s.alert_tier) wrong.push(`archive.csv ${key}: tier is ${row.alert_tier}, history has ${s.alert_tier}`);
+}
+for (const key of expected.keys()) {
+  if (!csvSeen.has(key)) wrong.push(`archive.csv ${key}: missing`);
+}
+
+console.log(`${rawCompared} first writes compared with the ledger, ${siteCompared} site rows compared with first writes, ${csvRows.length} CSV rows compared, ${wrong.length} disagree`);
 for (const line of wrong.slice(0, 20)) console.log(line);
-process.exit(wrong.length > 0 || rawCompared === 0 || siteCompared === 0 ? 1 : 0);
+process.exit(wrong.length > 0 || rawCompared === 0 || siteCompared === 0 || csvRows.length === 0 ? 1 : 0);

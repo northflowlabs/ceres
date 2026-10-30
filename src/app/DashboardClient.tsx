@@ -91,13 +91,40 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     return () => { document.body.style.overflow = ""; };
   }, [sheetOpen, menuOpen]);
 
-  // Focus moves into the sheet when it opens and back when it closes.
+  // While a sheet is open it holds the focus and the page behind it is inert.
+  const sheetHasRegion = Boolean(selPred);
   useEffect(() => {
-    if (!sheetOpen) return;
+    const sheet = sheetRef.current;
+    const overlay = sheet?.parentElement;
+    if (!sheetOpen || !sheet || !overlay?.parentElement) return;
+
     const before = document.activeElement as HTMLElement | null;
-    sheetRef.current?.focus();
-    return () => before?.focus();
-  }, [sheetOpen]);
+    const behind = Array.from(overlay.parentElement.children).filter((el) => el !== overlay) as HTMLElement[];
+    behind.forEach((el) => { el.inert = true; });
+    sheet.focus();
+
+    const onTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const stops = sheet.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      if (!first) {
+        e.preventDefault();
+      } else if (e.shiftKey && (document.activeElement === first || document.activeElement === sheet)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    sheet.addEventListener("keydown", onTab);
+    return () => {
+      sheet.removeEventListener("keydown", onTab);
+      behind.forEach((el) => { el.inert = false; });
+      before?.focus();
+    };
+  }, [sheetOpen, sheetHasRegion]);
 
   useEffect(() => {
     if (!sheetOpen && !menuOpen) return;
@@ -908,7 +935,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
       {/* ── MOBILE BOTTOM SHEET ──────────────────────────────────────── */}
       {sheetOpen && !selPred && (
         <div onClick={() => setSheetOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(28,25,23,0.5)" }}>
-          <div onClick={e => e.stopPropagation()} style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "var(--parchment)", borderTop: "2px solid var(--ink)", borderRadius: "12px 12px 0 0", padding: "20px 20px 40px" }}>
+          <div ref={sheetRef} role="dialog" aria-modal="true" aria-label="No region selected" tabIndex={-1} onClick={e => e.stopPropagation()} style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "var(--parchment)", borderTop: "2px solid var(--ink)", borderRadius: "12px 12px 0 0", padding: "20px 20px 40px" }}>
             <div style={{ width: 36, height: 4, background: "var(--border)", borderRadius: 2, margin: "0 auto 20px" }} />
             <div style={{ textAlign: "center", padding: "20px 0" }}>
               <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>No Region Selected</div>
