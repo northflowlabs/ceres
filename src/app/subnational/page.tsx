@@ -281,7 +281,7 @@ export default function SubnationalPage() {
             <option value="TIER-3">TIER-3 · Watch</option>
           </select>
           <div style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-            {activeLoading ? "Loading…" : `${filtered.length} units`}
+            {noFigures ? "…" : `${filtered.length} units`}
           </div>
         </div>
 
