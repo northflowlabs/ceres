@@ -60,7 +60,7 @@ export default function RegionsPage({ initial }: { initial: Prediction[] | null 
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>All Monitored Regions</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          90-day famine risk intelligence for every region tracked by CERES.
+          Live 90-day famine risk intelligence for every region tracked by CERES.
           Each region has a dedicated intelligence page with trend history and driver breakdown.
         </p>
       </div>

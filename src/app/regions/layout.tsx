@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Regions · CERES Famine Early Warning · 43 Countries",
   description:
-    "90-day famine risk intelligence for every country monitored by CERES. " +
+    "Live 90-day famine risk intelligence for every country monitored by CERES. " +
     "IPC Phase 3+, 4+, and Famine probabilities with sensitivity intervals, driver breakdowns, " +
     "and trend history.",
   keywords: [
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CERES Region Intelligence · 43 Countries · Live Famine Risk",
     description:
-      "Dedicated intelligence pages for every monitored country: IPC probability forecasts, " +
+      "Dedicated intelligence pages for every monitored country: live IPC probability forecasts, " +
       "driver bars and trend history.",
     url: "https://ceres.northflow.no/regions",
     type: "website",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CERES Region Intelligence · 43 Countries · Live Famine Risk",
-    description: "IPC probability forecasts, driver breakdown, and trend history for every monitored country.",
+    description: "Live IPC probability forecasts, driver breakdown, and trend history for every monitored country.",
     images: ["/og-image.png"],
   },
   alternates: { canonical: "https://ceres.northflow.no/regions" },
