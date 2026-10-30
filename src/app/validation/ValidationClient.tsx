@@ -314,12 +314,12 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
             </div>
 
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--crisis)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              During build-out, two satellite adapters fell back to synthetic data when their live sources failed. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page. A withdrawal is permanent and dated. Reasons are corrected by appending, never by overwriting.
+              During build-out, two satellite adapters fell back to synthetic data when their live sources failed. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page. A withdrawal is permanent and dated. The grounds below summarise what was recorded with each one.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
               <thead>
-                <tr>{["Run Issued", "Forecasts", "Regions", "Withdrawn On", "Stated Reason"].map(h => <th scope="col" key={h} style={th}>{h}</th>)}</tr>
+                <tr>{["Run Issued", "Forecasts", "Regions", "Withdrawn On", "Grounds (Summary)"].map(h => <th scope="col" key={h} style={th}>{h}</th>)}</tr>
               </thead>
               <tbody>
                 {withdrawals.withdrawals.map((w, i) => (

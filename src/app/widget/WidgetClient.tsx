@@ -77,7 +77,7 @@ export default function WidgetPage({ initial, theme, limit: rawLimit, tier, regi
         ) : rows.map((r, i) => (
           <a
             key={r.region_id}
-            href={`https://ceres.northflow.no/?region=${r.region_id}`}
+            href={`https://ceres.northflow.no/regions/${r.region_id.toLowerCase()}`}
             target="_blank" rel="noopener noreferrer"
             style={{
               display: "block", textDecoration: "none",

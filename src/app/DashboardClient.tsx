@@ -90,6 +90,17 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     return () => { document.body.style.overflow = ""; };
   }, [sheetOpen, menuOpen]);
 
+  useEffect(() => {
+    if (!sheetOpen && !menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setSheetOpen(false);
+      setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sheetOpen, menuOpen]);
+
   const load = useCallback(async (background = false) => {
     if (!background) setLoading(true);
     setError(null);

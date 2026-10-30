@@ -26,7 +26,7 @@ FEWS NET is not a model input: it supplies the proxy used to grade forecasts. UN
 ## Model and validation
 
 - Method: logistic regression with expert-informed prior coefficients over these public data streams, with input-perturbation sensitivity intervals (n=2,000 draws per prediction).
-- Initialisation: 87 IPC transition records across 31 countries (2011-2023).
+- Coefficients: expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023), not yet fit to graded outcomes.
 - Forward validation: every prediction is timestamped and publicly recorded before its outcome is known, and graded at the T+90 horizon against a FEWS NET proxy: the highest Current Situation phase FEWS NET reports for any area of the country within 30 days of the grading date. Grades currently use this proxy. The archive starts on 9 March 2026, and graded outcomes are published on the validation ledger as they settle.
 
 ## Important distinction

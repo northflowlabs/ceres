@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { MapData } from "@/lib/serverData";
@@ -41,6 +42,18 @@ export default function MapPage({ initial }: { initial: MapData | null }) {
       </div>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", maxWidth: 1300, margin: "0 auto", width: "100%", padding: "0 40px 60px", boxSizing: "border-box" }}>
         <CeresMap data={data} failed={failed} />
+        {countries.length > 0 && (
+          <nav aria-label="Regions on the map" style={{ marginTop: 24 }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>All regions</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
+              {[...countries].sort((a, b) => b.p_ipc3plus_90d - a.p_ipc3plus_90d).map((c) => (
+                <Link key={c.region_id} href={`/regions/${c.region_id.toLowerCase()}`} style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--earth)", textDecoration: "none" }}>
+                  {c.region_name} {(c.p_ipc3plus_90d * 100).toFixed(1)}%
+                </Link>
+              ))}
+            </div>
+          </nav>
+        )}
       </div>
       <SiteFooter />
     </div>

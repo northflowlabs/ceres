@@ -14,7 +14,7 @@ const ADAPTERS = [
 
 const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "P(IPC Phase 3+) within 90 days of issue" },
-  { num: "87",       label: "Calibration Records",      note: "IPC transition records, 2011-2023, 31 countries" },
+  { num: "87",       label: "Reference Records",      note: "IPC transition records the priors were set against, 2011-2023, 31 countries" },
   { num: "T+90",     label: "Grading Horizon",         note: "Graded against the FEWS NET proxy; live figures on the Validation page" },
   { num: "Open",     label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
@@ -83,7 +83,7 @@ export default function AboutPage() {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Northflow Technologies</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>The HGE Platform</h2>
             <p style={p}>CERES is built on the <strong style={{ color: "var(--ink)" }}>Hypothesis Generation Engine (HGE)</strong>, developed by Northflow Technologies AS.</p>
-            <p style={p}>HGE is designed to do one thing: synthesise multi-source signals into ranked, evidenced, falsifiable hypotheses. It is not a dashboard. It is not a threshold alert system. It is a system that reads the evidence and tells you, with calibrated confidence, what it thinks is happening and why.</p>
+            <p style={p}>HGE is designed to do one thing: synthesise multi-source signals into ranked, evidenced, falsifiable hypotheses. It is not a dashboard. It is not a threshold alert system. It is a system that reads the evidence and tells you, with stated uncertainty, what it thinks is happening and why.</p>
             <p style={p}>CERES is HGE Adapter #5. Each adapter applies the same hypothesis engine to a different domain. The same rigour. The same calibration standards. The same commitment to auditable reasoning.</p>
           </div>
           <div>
@@ -118,7 +118,7 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Designed for Institutional Review</h2>
             <p style={p}>Every design decision in CERES, from the sensitivity intervals to the publicly timestamped prediction ledger to the published limitations section, is made with institutional reviewers in mind.</p>
             <p style={p}>The system is designed to be reviewed by WFP technical staff, FAO analysts, EU ECHO programme officers, academic food security researchers, and independent funders.</p>
-            <p style={p}>The prediction archive starts on 9 March 2026. Predictions are timestamped and graded against the FEWS NET proxy at T+90 days. The model was initialised against 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
+            <p style={p}>The prediction archive starts on 9 March 2026. Predictions are timestamped and graded against the FEWS NET proxy at T+90 days. The model's expert-informed priors were specified with reference to 87 IPC transition records (2011-2023, 31 countries). Prospective forward validation is ongoing and publicly visible in the <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>Validation Ledger</a>. The full methodology is published at <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)", textDecoration: "none" }}>arXiv:2603.09425</a>.</p>
           </div>
         </div>
 

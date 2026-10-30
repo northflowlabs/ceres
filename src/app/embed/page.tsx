@@ -73,7 +73,7 @@ export default function EmbedPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Embeddable Widget</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          Add a live CERES risk monitor to your organisation&rsquo;s website, dashboard, or intranet with a single line of HTML. No API key required. Updates automatically every week.
+          Add a live CERES risk monitor to your organisation&rsquo;s website, dashboard, or intranet with a single line of HTML. No API key required. It shows the latest published forecasts.
         </p>
       </div>
 
@@ -213,9 +213,9 @@ export default function EmbedPage() {
               <tbody>
                 {[
                   ["theme",   "light | dark",              "light"],
-                  ["limit",   "1-15",                      "5"],
+                  ["limit",   "1-20",                      "5"],
                   ["tier",    "TIER-1 | TIER-2 | TIER-3",  "all"],
-                  ["region",  "region_id e.g. ETH-TIGRAY", "all"],
+                  ["region",  "region_id e.g. ETH",        "all"],
                   ["compact", "true | false",               "false"],
                 ].map(([param, vals, def], i) => (
                   <tr key={param} style={{ borderBottom: "1px solid var(--border-light)" }}>
@@ -231,7 +231,7 @@ export default function EmbedPage() {
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Licence &amp; Attribution</div>
             <p style={p}>
-              The CERES widget is free to embed on any website. No API key required. Data is licensed under <strong style={{ color: "var(--ink)" }}>CC BY 4.0</strong>. The widget footer includes automatic attribution to ceres.northflow.no.
+              The CERES widget is free to embed on any website. No API key required. Data is licensed under <strong style={{ color: "var(--ink)" }}>CC BY 4.0</strong>. The widget header links to ceres.northflow.no as attribution.
             </p>
             <p style={p}>
               For custom integrations, white-label embedding, or removal of the CERES branding, contact <a href="mailto:hello@northflow.no" style={{ color: "var(--earth)" }}>hello@northflow.no</a>.

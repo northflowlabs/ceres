@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Validation · CERES Famine Early Warning",
   description:
-    "CERES prediction validation ledger. Live accuracy metrics, calibration charts, and retrospective grading of all timestamped forecasts against the FEWS NET proxy.",
+    "CERES prediction validation ledger. Live accuracy metrics, calibration charts, and grading of timestamped forecasts against the FEWS NET proxy.",
   keywords: [
     "famine forecast validation", "Brier score", "calibration", "FEWS NET outcomes",
     "prediction accuracy", "food security forecasting", "CERES validation", "Northflow",
