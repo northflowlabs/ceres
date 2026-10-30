@@ -17,22 +17,20 @@ export interface Prediction {
   p_famine_90d: number;
   sensitivity_interval_low: number | null;
   sensitivity_interval_high: number | null;
-  ci_method: string;
   convergence_score: number;
   convergence_tier: string;
   is_compound: boolean;
   n_signals_flagged: number;
   flagged_sources: string;
   composite_stress_score: number;
-  drought_stress: number;
-  vegetation_stress: number;
-  conflict_stress: number;
-  food_access_stress: number;
-  ipc_stress: number;
-  price_stress: number;
+  drought_stress: number | null;
+  vegetation_stress: number | null;
+  conflict_stress: number | null;
+  food_access_stress: number | null;
+  ipc_stress: number | null;
+  price_stress: number | null;
   driver_types: string[];
   hypothesis_id: string;
-  generated_at: string;
 }
 
 export interface Hypothesis {
@@ -41,7 +39,6 @@ export interface Hypothesis {
   region_name: string;
   lat: number;
   lon: number;
-  created_at: string;
   forecast_horizon_days: number;
   reference_date: string;
   description: string;
@@ -54,21 +51,9 @@ export interface Hypothesis {
   p_famine_90d: number;
   sensitivity_interval_low?: number | null;
   sensitivity_interval_high?: number | null;
-  ci_method?: string;
   driver_types?: string[];
   n_sources_agreeing: number;
-  evidence_count?: number;
-  test_plan_count?: number;
-  notes?: string;
-  // Optional richer fields returned by /v1/hypotheses/{id}
-  famine_probability?: {
-    p_ipc3plus_90d: number;
-    p_ipc4plus_90d: number;
-    p_famine_90d: number;
-    confidence_interval_low: number;
-    confidence_interval_high: number;
-    method: string;
-  };
+  // Richer fields of a single hypothesis
   driver_clusters?: Array<{
     driver_type: string;
     intensity: number;
@@ -84,6 +69,33 @@ export interface Hypothesis {
     supports_hypothesis: boolean;
     note: string;
   }>;
+}
+
+// One row of the Admin1 and Admin2 tables.
+export interface AdminRow {
+  admin1_id:   string;
+  admin2_id?:  string;
+  admin1_name: string;
+  admin2_name?: string;
+  country_id:  string;
+  centroid_lat: number;
+  centroid_lon: number;
+  ipc_weight:  number;
+  alert_tier:  string;
+  p_ipc3plus_90d: number;
+  p_ipc4plus_90d: number;
+  composite_stress_score: number;
+  drought_stress: number;
+  vegetation_stress: number;
+  conflict_stress: number;
+  food_access_stress: number;
+  ipc_stress:  number;
+  price_stress: number;
+  current_ipc_phase: number | null;
+  n_signals_available: number;
+  from_admin1_fallback?: boolean;
+  from_country_fallback: boolean;
+  reference_date: string;
 }
 
 export interface HealthStatus {
@@ -141,8 +153,6 @@ export interface Admin2Prediction {
 }
 
 export interface GradeRecord {
-  hypothesis_id:    string;
-  run_id:           string;
   region_id:        string;
   region_name:      string;
   reference_date:   string;
@@ -150,13 +160,10 @@ export interface GradeRecord {
   graded_at:        string;
   predicted_tier:   string;
   p_ipc3plus_90d:   number;
-  sensitivity_interval_low:  number | null;
-  sensitivity_interval_high: number | null;
   actual_ipc_phase: number;
-  outcome_ipc3plus: boolean;
   brier_score:      number;
-  tier_correct:     boolean;
   ci_covered:       boolean;
+  tier_correct:     boolean;
 }
 
 export interface AggregateMetrics {
@@ -168,11 +175,6 @@ export interface AggregateMetrics {
   tier1_n_issued:   number;
   tier1_n_correct:  number;
   tier1_n_missed:   number;
-}
-
-export interface GradingLedger {
-  grades:  GradeRecord[];
-  metrics: AggregateMetrics;
 }
 
 // ── Validation Ledger ──────────────────────────────────────────────────────
@@ -246,7 +248,6 @@ export interface ReportMeta {
 }
 
 export interface RegionSnapshot {
-  run_id:                 string;
   run_date:               string;
   region_id:              string;
   region_name:            string;
@@ -260,8 +261,6 @@ export interface RegionSnapshot {
   composite_stress_score: number;
   convergence_tier:       string;
   driver_types:           string[];
-  hypothesis_id:          string;
-  archived_at:            string;
 }
 
 export interface ArchiveStats {
@@ -297,26 +296,8 @@ async function apiPost<T>(path: string, body?: unknown): Promise<T> {
 }
 
 export const api = {
-  health:       ()                          => apiFetch<HealthStatus>("/health"),
-  predictions:  (tier?: string)             => apiFetch<Prediction[]>(`/v1/predictions${tier ? `?tier=${tier}` : ""}`),
-  prediction:   (regionId: string)          => apiFetch<Prediction>(`/v1/predictions/${regionId}`),
-  hypotheses:   ()                          => apiFetch<Hypothesis[]>("/v1/hypotheses"),
-  hypothesis:   (id: string)                => apiFetch<Hypothesis>(`/v1/hypotheses/${id}`),
+  hypothesis:   (id: string)                => siteFetch<Hypothesis>(`/ledger/hypothesis/${id}.json`),
   admin1:       (countryId: string)         => apiFetch<Admin1Signal[]>(`/v1/admin1/${countryId}`),
-  admin1Summary: ()                         => apiFetch<Admin1Signal[]>("/v1/admin1/summary"),
-  grades:       ()                          => apiFetch<GradingLedger>("/v1/grades"),
-  gradeMetrics: ()                          => apiFetch<AggregateMetrics>("/v1/grades/metrics"),
-  runGrading:   ()                          => apiPost<{ total_graded: number }>("/v1/grades/run"),
-  reports:      ()                          => apiFetch<ReportMeta[]>("/v1/reports"),
-  generateReport: ()                        => apiPost<{ run_id: string; pdf_path: string }>("/v1/reports/generate"),
   subscribeEmail: (email: string)           => apiPost<{ success: boolean; message: string }>("/v1/alerts/subscribe/email", { email }),
   archiveRegion:  (regionId: string, limit?: number) => apiFetch<RegionSnapshot[]>(`/v1/archive/regions/${regionId}${limit ? `?limit=${limit}` : ""}`),
-  archiveLatest:  ()                        => apiFetch<RegionSnapshot[]>("/v1/archive/latest"),
-  archiveRuns:    ()                        => apiFetch<string[]>("/v1/archive/runs"),
-  archiveStats:   ()                        => apiFetch<ArchiveStats>("/v1/archive/stats"),
-  admin2Predictions: (countryId?: string, tier?: string) => apiFetch<Admin2Prediction[]>(`/v1/admin2/predictions${countryId ? `?country_id=${countryId}` : ""}${tier ? `${countryId ? "&" : "?"}tier=${tier}` : ""}`),
-  admin2Country:  (countryId: string)       => apiFetch<Admin2Prediction[]>(`/v1/admin2/${countryId}`),
-  admin2Countries: ()                       => apiFetch<string[]>("/v1/admin2/countries"),
-  // Validation ledger (verification architecture)
-  validationMetrics: ()                    => siteFetch<ValidationMetrics>("/ledger/metrics.json"),
 };

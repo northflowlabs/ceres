@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { api, AggregateMetrics, ValidationMetrics } from "@/lib/api";
 import type { LedgerFigures } from "@/lib/serverData";
+import { useSiteData } from "@/lib/useSiteData";
 
 /**
  * Compact accuracy ledger for the dashboard side panel, read live from the
@@ -29,33 +28,18 @@ function fmtNum(n: number | null | undefined, decimals: number) {
 
 function gradingSourceLabel(breakdown: Record<string, number> | undefined) {
   const sources = Object.keys(breakdown ?? {});
-  if (sources.length > 0 && sources.every((k) => k.startsWith("fews_net"))) {
-    return "FEWS NET outcomes (IPC-compatible)";
-  }
-  return "Published IPC and FEWS NET outcomes";
+  return sources.length === 1 && sources[0] === "fews_net_proxy"
+    ? "FEWS NET proxy"
+    : "IPC and FEWS NET proxy";
 }
 
 type Row = { label: string; val: string; note?: string };
 
 export default function LedgerSummary({ initial = null }: { initial?: LedgerFigures | null }) {
-  const [v, setV] = useState<ValidationMetrics | null>(initial?.metrics ?? null);
-  const [g, setG] = useState<AggregateMetrics | null>(initial?.grades ?? null);
-  const [state, setState] = useState<"loading" | "ready" | "failed">(initial ? "ready" : "loading");
-
-  useEffect(() => {
-    let alive = true;
-    Promise.all([api.validationMetrics(), api.gradeMetrics()])
-      .then(([vm, gm]) => {
-        if (!alive) return;
-        setV(vm);
-        setG(gm);
-        setState("ready");
-      })
-      .catch(() => alive && setState((s) => (s === "ready" ? s : "failed")));
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const { data, failed } = useSiteData<LedgerFigures>("figures", initial);
+  const v = data?.metrics ?? null;
+  const g = data?.grades ?? null;
+  const state = v ? "ready" : failed ? "failed" : "loading";
 
   const muted = { fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", lineHeight: 1.6 } as const;
 

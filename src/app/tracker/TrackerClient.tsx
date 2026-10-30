@@ -3,7 +3,9 @@
 import { useEffect, useState, useMemo } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import { api, GradeRecord, RegionSnapshot, ArchiveStats } from "@/lib/api";
+import { api, RegionSnapshot } from "@/lib/api";
+import { useSiteData } from "@/lib/useSiteData";
+import { fmtInt } from "@/lib/utils";
 import type { TrackerData } from "@/lib/serverData";
 
 const IPC_LABELS: Record<number, string> = {
@@ -67,7 +69,7 @@ function Sparkline({ data, width = 320, height = 80 }: { data: RegionSnapshot[];
   if (!pts) return null;
 
   return (
-    <svg width={width} height={height} style={{ overflow: "visible" }}>
+    <svg role="img" aria-label="Probability of IPC Phase 3+ by run" width={width} height={height} style={{ overflow: "visible" }}>
       {/* 50% line */}
       <line x1={0} y1={height - 0.5 * (height - 8) - 4} x2={width} y2={height - 0.5 * (height - 8) - 4}
         stroke="var(--border)" strokeWidth={1} strokeDasharray="3 3" />
@@ -81,46 +83,31 @@ function Sparkline({ data, width = 320, height = 80 }: { data: RegionSnapshot[];
   );
 }
 
-export default function TrackerPage({ initial }: { initial: TrackerData }) {
-  // ── Grades (verification record) ──────────────────────────────
-  const [grades, setGrades]   = useState<GradeRecord[]>(initial.grades?.grades ?? []);
-  const [gradesLoading, setGradesLoading] = useState(!initial.grades);
-  const [filter, setFilter]   = useState<"all" | "correct" | "incorrect">("all");
+export default function TrackerPage({ initial }: { initial: TrackerData | null }) {
+  const { data, failed } = useSiteData<TrackerData>("tracker", initial);
+  const grades = useMemo(() => data?.grades ?? [], [data]);
+  const latest = useMemo(() => data?.latest ?? [], [data]);
+  const archiveStats = data?.archive ?? null;
+  const runs = data?.runs ?? null;
+  const nPending = data?.metrics.pending ?? null;
+  const gradesLoading = !data && !failed;
 
-  // ── Archive (historical timeline) ─────────────────────────────
-  const [latest,        setLatest]        = useState<RegionSnapshot[]>(initial.latest ?? []);
-  const [archiveStats,  setArchiveStats]  = useState<ArchiveStats | null>(initial.archive);
-  const [runs,          setRuns]          = useState<string[] | null>(initial.runs);
-  const [nPending,      setNPending]      = useState<number | null>(initial.metrics?.pending ?? null);
-  const [selRegion,     setSelRegion]     = useState<string | null>(initial.latest?.[0]?.region_id ?? null);
+  const [selRegion,     setSelRegion]     = useState<string | null>(initial?.latest[0]?.region_id ?? null);
   const [history,       setHistory]       = useState<RegionSnapshot[]>([]);
   const [histLoading,   setHistLoading]   = useState(false);
   const [archiveTab,    setArchiveTab]    = useState<"timeline" | "verification" | "pending">("timeline");
   const [miniHistory,   setMiniHistory]   = useState<Record<string, RegionSnapshot[]>>({});
 
   useEffect(() => {
-    api.grades()
-      .then(d => setGrades(d.grades))
-      .catch(() => {})
-      .finally(() => setGradesLoading(false));
-
-    api.archiveRuns().then(setRuns).catch(() => {});
-    api.validationMetrics().then(m => setNPending(m.pending)).catch(() => {});
-
-    Promise.all([api.archiveLatest(), api.archiveStats()])
-      .then(([lat, stats]) => {
-        setLatest(lat);
-        setArchiveStats(stats);
-        if (lat.length > 0 && !selRegion) setSelRegion(lat[0].region_id);
-        // Pre-fetch mini history for all regions (last 8 runs each)
-        lat.forEach(s => {
-          api.archiveRegion(s.region_id, 8)
-            .then(snaps => setMiniHistory(prev => ({ ...prev, [s.region_id]: snaps })))
-            .catch(() => {});
-        });
-      })
-      .catch(() => {});
-  }, []);
+    if (latest.length === 0) return;
+    setSelRegion(r => r ?? latest[0].region_id);
+    // Mini history for all regions (last 8 runs each)
+    latest.forEach(s => {
+      api.archiveRegion(s.region_id, 8)
+        .then(snaps => setMiniHistory(prev => ({ ...prev, [s.region_id]: snaps })))
+        .catch(() => {});
+    });
+  }, [latest]);
 
   useEffect(() => {
     if (!selRegion) return;
@@ -132,11 +119,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
   }, [selRegion]);
 
   const verified = grades.filter(g => g.tier_correct);
-  const unconfirmed = grades.filter(g => !g.tier_correct);
-  const filtered = filter === "correct" ? verified : filter === "incorrect" ? unconfirmed : grades;
-  const avgBrier = grades.length > 0
-    ? (grades.reduce((s, g) => s + g.brier_score, 0) / grades.length).toFixed(4)
-    : null;
+  const avgBrier = data?.meanBrier != null ? data.meanBrier.toFixed(4) : null;
 
   // Pending predictions: latest snapshot per region, horizon = run_date + 90d
   const today = new Date();
@@ -165,7 +148,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>CERES Track Record</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          The complete public history of CERES predictions: weekly snapshots per region, probability trends with sensitivity intervals, and verified outcomes. Every run archived since launch.
+          The complete public history of CERES predictions: weekly snapshots per region, probability trends with sensitivity intervals, and graded outcomes.
         </p>
       </div>
 
@@ -175,9 +158,9 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
         {archiveStats && (
           <div className="tracker-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 40px" }}>
             {[
-              { val: runs ? String(runs.length) : "…",      label: "Weekly Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Weekly archive" },
+              { val: runs ? String(runs.length) : "…",      label: "Published Runs",      note: archiveStats.earliest_run ? `Since ${fmtDate(archiveStats.earliest_run)}` : "Weekly archive" },
               { val: String(archiveStats.total_regions),   label: "Regions Tracked",   note: "Monitored globally"  },
-              { val: nPending != null ? nPending.toLocaleString("en-GB") : "…", label: "Pending Grading", note: "Before their T+90 date" },
+              { val: fmtInt(nPending), label: "Pending Grading", note: "Before their T+90 date" },
               { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "…", label: "Directional Agreement", note: grades.length > 0 ? `P(IPC 3+) on the side of 50% the outcome took, ${grades.length} graded` : "" },
             ].map(({ val, label, note }) => (
               <div key={label} style={{ background: "white", padding: 24 }}>
@@ -192,7 +175,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
         {/* Tabs */}
         <div style={{ display: "flex", borderBottom: "2px solid var(--ink)", marginBottom: 32 }}>
           {([ ["timeline", "Risk Timeline"], ["pending", `Next to Grade (${pendingPredictions.length})`], ["verification", "Verified Outcomes"] ] as const).map(([t, label]) => (
-            <button key={t} onClick={() => setArchiveTab(t)} style={{
+            <button key={t} aria-pressed={archiveTab === t} onClick={() => setArchiveTab(t)} style={{
               fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
               padding: "10px 24px", background: "none", border: "none", cursor: "pointer",
               borderBottom: archiveTab === t ? "2px solid var(--earth)" : "2px solid transparent",
@@ -232,7 +215,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
                       <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: tierColor(s.alert_tier) }}>{s.alert_tier}</span>
                       <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: trendColor, fontWeight: 700 }} title={`${trend >= 0 ? "+" : ""}${(trend * 100).toFixed(1)}% over ${mini.length} runs`}>{trendArrow}</span>
                       {mini.length >= 3 && (
-                        <svg width={60} height={18} style={{ display: "block", overflow: "visible" }}>
+                        <svg role="img" aria-label="Recent probability trend" width={60} height={18} style={{ display: "block", overflow: "visible" }}>
                           {(() => {
                             const pts = mini.map((m, i) => [i / (mini.length - 1) * 60, 18 - m.p_ipc3plus_90d * 14 - 2] as [number, number]);
                             const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
@@ -305,7 +288,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
                           ))}
                         </div>
                         {[...sortedHistory].reverse().slice(0, 20).map(s => (
-                          <div key={s.run_id} style={{ display: "grid", gridTemplateColumns: "100px 80px 80px 80px 80px 1fr", gap: 0, padding: "8px 0", borderBottom: "1px solid var(--border-light)" }}>
+                          <div key={s.run_date} style={{ display: "grid", gridTemplateColumns: "100px 80px 80px 80px 80px 1fr", gap: 0, padding: "8px 0", borderBottom: "1px solid var(--border-light)" }}>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink)" }}>{fmtDateShort(s.run_date)}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: tierColor(s.alert_tier), fontWeight: 600 }}>{fmtPct(s.p_ipc3plus_90d)}</div>
                             <div style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "0 6px", color: "var(--ink-mid)" }}>{s.sensitivity_interval_low != null ? fmtPct(s.sensitivity_interval_low) : "n/a"}</div>
@@ -335,8 +318,8 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
                 <div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What this section will show</div>
                   <h2 style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 700, marginBottom: 16, lineHeight: 1.3 }}>The permanent record of what CERES predicted, and whether it was right</h2>
-                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>The first T+90 horizons were reached in June 2026. This section fills as FEWS NET publish the observed outcome for each window, which lags the target by 2 to 4 months.</p>
-                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Outcomes are graded against published observations only, never against forecasts.</p>
+                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>The first T+90 horizons were reached in June 2026. This section fills as the FEWS NET data for each grading window is published.</p>
+                  <p style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 14, lineHeight: 1.8 }}>Outcomes are graded against the FEWS NET proxy, never against forecasts.</p>
                 </div>
                 <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>Next predictions to grade</div>
@@ -355,28 +338,18 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
             </div>
           ) : (
             <>
-              <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--border-light)", marginBottom: 24 }}>
-                {(["all", "correct", "incorrect"] as const).map(f => (
-                  <button key={f} onClick={() => setFilter(f)} style={{
-                    fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
-                    padding: "8px 20px", background: "none", border: "none", cursor: "pointer",
-                    borderBottom: filter === f ? "2px solid var(--earth)" : "2px solid transparent",
-                    color: filter === f ? "var(--earth)" : "var(--ink-light)",
-                  }}>
-                    {f === "all" ? `All (${grades.length})` : f === "correct" ? `✓ Correct (${verified.length})` : `Not confirmed (${unconfirmed.length})`}
-                  </button>
-                ))}
+              <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--border-light)", marginBottom: 24, paddingBottom: 8, fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
+                {grades.length} graded against the FEWS NET proxy
                 {avgBrier && (
-                  <div style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", display: "flex", alignItems: "center" }}>
+                  <div style={{ marginLeft: "auto" }}>
                     Mean Brier: <strong style={{ color: "var(--earth)", marginLeft: 6 }}>{avgBrier}</strong>
                   </div>
                 )}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                {filtered.map(g => (
-                  <div key={g.hypothesis_id} style={{
+                {grades.map(g => (
+                  <div key={`${g.region_id}-${g.reference_date}`} style={{
                     border: "1px solid var(--border)",
-                    borderLeft: `4px solid ${g.tier_correct ? "var(--watch)" : "var(--crisis)"}`,
                     background: "white", padding: 24,
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
@@ -386,10 +359,6 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
                           Issued {fmtDate(g.reference_date)} · Horizon {fmtDate(g.horizon_date)}
                         </div>
                       </div>
-                      {g.tier_correct
-                        ? <span style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "4px 10px", background: "#F0FDF4", color: "var(--watch)", border: "1px solid rgba(46,125,50,0.3)" }}>✓ Verified</span>
-                        : <span style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "4px 10px", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)" }}>Not confirmed</span>
-                      }
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                       <div style={{ border: "1px solid var(--border-light)", padding: "10px 12px" }}>
@@ -398,14 +367,14 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: tierColor(g.predicted_tier) }}>{g.predicted_tier}</div>
                       </div>
                       <div style={{ border: "1px solid var(--border-light)", padding: "10px 12px" }}>
-                        <div style={{ fontFamily: "var(--mono)", fontSize: 8, textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>IPC Outcome</div>
-                        <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: g.actual_ipc_phase >= 3 ? "var(--crisis)" : "var(--watch)" }}>Phase {g.actual_ipc_phase}</div>
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 8, textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>FEWS NET Proxy</div>
+                        <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--ink)" }}>Phase {g.actual_ipc_phase}</div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{IPC_LABELS[Math.round(g.actual_ipc_phase)] ?? "n/a"}</div>
                       </div>
                     </div>
                     <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>
                       Brier <strong style={{ color: "var(--ink)" }}>{g.brier_score.toFixed(4)}</strong>
-                      {" · "}SI covered <strong style={{ color: g.ci_covered ? "var(--watch)" : "var(--crisis)" }}>{g.ci_covered ? "Yes" : "No"}</strong>
+                      {" · "}SI covered <strong style={{ color: "var(--ink)" }}>{g.ci_covered ? "Yes" : "No"}</strong>
                       {" · "}Graded {fmtDate(g.graded_at)}
                     </div>
                   </div>
@@ -425,24 +394,23 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
                   <tr>
-                    {["Region", "Issued", "Hypothesis ID", "P(IPC3+)", "Tier", "Horizon date", "Days remaining"].map(h => (
-                      <th key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "10px 14px", textAlign: h === "Region" ? "left" : "right", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
+                    {["Region", "Issued", "P(IPC3+)", "Tier", "Horizon date", "Days remaining"].map(h => (
+                      <th scope="col" key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "10px 14px", textAlign: h === "Region" ? "left" : "right", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {pendingPredictions.length === 0 ? (
-                    <tr><td colSpan={7} style={{ padding: "32px 14px", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>No pending predictions to show.</td></tr>
+                    <tr><td colSpan={6} style={{ padding: "32px 14px", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>No pending predictions to show.</td></tr>
                   ) : pendingPredictions.map(r => {
                     const urgency = r.daysUntil <= 14 ? "var(--crisis)" : r.daysUntil <= 30 ? "var(--warning)" : "var(--ink-light)";
                     return (
-                      <tr key={r.hypothesis_id} style={{ borderBottom: "1px solid var(--border-light)", background: r.alert_tier === "TIER-1" ? "rgba(192,57,43,0.02)" : "white" }}>
+                      <tr key={r.region_id} style={{ borderBottom: "1px solid var(--border-light)", background: r.alert_tier === "TIER-1" ? "rgba(192,57,43,0.02)" : "white" }}>
                         <td style={{ padding: "10px 14px" }}>
                           <span style={{ fontWeight: 600, color: "var(--ink)" }}>{r.region_name}</span>
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginLeft: 6 }}>{r.region_id}</span>
                         </td>
                         <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-mid)" }}>{fmtDate(r.run_date)}</td>
-                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{r.hypothesis_id.slice(-13)}</td>
                         <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 11, fontWeight: 700, color: tierColor(r.alert_tier) }}>{fmtPct(r.p_ipc3plus_90d)}</td>
                         <td style={{ padding: "10px 14px", textAlign: "right" }}>
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, color: tierColor(r.alert_tier), background: tierBg(r.alert_tier), padding: "2px 8px" }}>{r.alert_tier}</span>
@@ -469,8 +437,8 @@ export default function TrackerPage({ initial }: { initial: TrackerData }) {
         <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "28px 32px", margin: "48px 0 0" }}>
           <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 600, marginBottom: 10 }}>The public record is permanent</div>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", margin: 0, lineHeight: 1.75 }}>
-            Every prediction on this page was issued publicly before the outcome was known. None have been removed. None have been edited post-hoc.
-            Grading is automated: the system queries FEWS NET data at T+90 days and records the result without human intervention.
+            Every prediction on this page was issued before its outcome was known.
+            Grading is automated: the system queries FEWS NET data after T+90 days and records the result.
             Brier scores and calibration metrics on the <a href="/validation" style={{ color: "var(--earth)" }}>Validation page</a> are derived directly from this ledger.
           </p>
         </div>

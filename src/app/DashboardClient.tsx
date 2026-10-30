@@ -88,19 +88,21 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     if (!background) setLoading(true);
     setError(null);
     try {
-      const [preds, hyps] = await Promise.all([api.predictions(), api.hypotheses()]);
-      setPredictions(preds);
-      setHypotheses(hyps);
-      setLastUpdated(preds[0]?.reference_date ?? "");
-    } catch (e: unknown) {
-      if (!background) setError(e instanceof Error ? e.message : String(e));
+      const res = await fetch("/ledger/dashboard.json");
+      if (!res.ok) throw new Error();
+      const d: DashboardData = await res.json();
+      setPredictions(d.predictions);
+      setHypotheses(d.hypotheses);
+      setLastUpdated(d.predictions[0]?.reference_date ?? "");
+    } catch {
+      if (!background) setError("unavailable");
     } finally {
       setLoading(false);
     }
   }, []);
 
   const hasInitial = Boolean(initial);
-  useEffect(() => { load(hasInitial); }, [load, hasInitial]);
+  useEffect(() => { if (!hasInitial) load(); }, [load, hasInitial]);
 
   const n1 = predictions.filter((p) => p.alert_tier === "TIER-1").length;
   const n2 = predictions.filter((p) => p.alert_tier === "TIER-2").length;
@@ -552,7 +554,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
 
           {!selPred && !loading && (
             <div style={{ padding: "40px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-              <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style={{ opacity: 0.25 }}>
+              <svg aria-hidden="true" width="52" height="52" viewBox="0 0 52 52" fill="none" style={{ opacity: 0.25 }}>
                 <circle cx="26" cy="26" r="24" stroke="var(--ink)" strokeWidth="1.5" />
                 <circle cx="26" cy="26" r="8" stroke="var(--earth)" strokeWidth="1.5" />
                 <line x1="26" y1="2" x2="26" y2="14" stroke="var(--ink)" strokeWidth="1" />
@@ -654,12 +656,12 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                     <table className="evidence-table">
                       <thead>
                         <tr>
-                          <th>Source</th>
-                          <th>Variable</th>
-                          <th>Observed</th>
-                          <th>Threshold</th>
-                          <th>Dir</th>
-                          <th>Result</th>
+                          <th scope="col">Source</th>
+                          <th scope="col">Variable</th>
+                          <th scope="col">Observed</th>
+                          <th scope="col">Threshold</th>
+                          <th scope="col">Dir</th>
+                          <th scope="col">Result</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -673,7 +675,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                             <td>
                               <span className={ev.supports_hypothesis ? "evidence-supports" : "evidence-contradicts"}
                                 style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.06em" }}>
-                                {ev.supports_hypothesis ? "✓ SUP" : "✗ CON"}
+                                {ev.supports_hypothesis ? "✓ SUP" : "CON"}
                               </span>
                             </td>
                           </tr>
@@ -698,19 +700,15 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
               <p style={{ fontSize: 12, lineHeight: 1.7, color: "var(--ink-mid)", margin: "0 0 10px" }}>
                 {selPred.region_name} is currently assessed at a{" "}
                 <strong style={{ color: selPred.alert_tier === "TIER-1" ? "var(--crisis)" : selPred.alert_tier === "TIER-2" ? "var(--warning)" : "var(--watch)" }}>
-                  {Math.round(selPred.p_ipc3plus_90d * 100)}% probability
+                  {(selPred.p_ipc3plus_90d * 100).toFixed(1)}% probability
                 </strong>{" "}
                 of reaching IPC Phase 3+ (Crisis) within 90 days, classified as{" "}
                 <strong style={{ color: "var(--ink)" }}>{selPred.alert_tier}</strong>.{" "}
-                {(selPred.driver_types ?? []).length > 0
-                  ? `The primary drivers are ${(selPred.driver_types ?? []).slice(0, 3).join(", ").toLowerCase()}, with ${selPred.n_signals_flagged ?? 0} elevated signals detected across ${selPred.flagged_sources ?? "multiple data sources"}.`
-                  : `${selPred.n_signals_flagged ?? 0} elevated signals have been detected, indicating compound stress.`
-                }{" "}
-                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? (
+                {(selPred.driver_types ?? []).length > 0 && `The primary drivers are ${(selPred.driver_types ?? []).slice(0, 3).join(", ").toLowerCase()}.`}{" "}
+                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null && (
                   <>The 90% sensitivity interval spans{" "}
-                  <strong style={{ color: "var(--ink)" }}>{Math.round(selPred.sensitivity_interval_low * 100)}% to {Math.round(selPred.sensitivity_interval_high * 100)}%</strong>,{" "}
-                  reflecting {(selPred.sensitivity_interval_high - selPred.sensitivity_interval_low) < 0.2 ? "a narrow, well-constrained forecast" : "moderate forecast uncertainty"}."</>
-                ) : "Sensitivity interval data is pending for this region."}
+                  <strong style={{ color: "var(--ink)" }}>{(selPred.sensitivity_interval_low * 100).toFixed(1)}% to {(selPred.sensitivity_interval_high * 100).toFixed(1)}%</strong>.</>
+                )}
               </p>
               <p style={{ fontSize: 12, lineHeight: 1.7, color: "var(--ink-mid)", margin: 0 }}>
                 {hyp.description
@@ -718,7 +716,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                   : `The composite stress score of ${Math.round(selPred.composite_stress_score * 100)}% indicates ${selPred.composite_stress_score > 0.7 ? "critical" : selPred.composite_stress_score > 0.5 ? "elevated" : "moderate"} overall risk.`
                 }{" "}
                 {selPred.is_compound
-                  ? "This is a compound crisis: multiple independent stressors are reinforcing each other, which significantly elevates forecast confidence."
+                  ? "This is a compound crisis: several independent stressors are elevated together."
                   : selPred.convergence_score > 0.7
                   ? "Strong signal convergence across independent data sources increases confidence in this assessment."
                   : "Monitor closely: signal convergence is moderate and conditions may change with incoming data."
@@ -800,7 +798,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                       <thead>
                         <tr style={{ borderBottom: "1px solid var(--border-light)" }}>
                           {["Region", "Stress", "IPC", "Conflict", "Drought"].map(h => (
-                            <th key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em",
+                            <th scope="col" key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em",
                               textTransform: "uppercase", color: "var(--ink-light)", textAlign: h === "Region" ? "left" : "right",
                               padding: "4px 6px", fontWeight: 500 }}>{h}</th>
                           ))}
@@ -872,7 +870,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                   CERES-{lastUpdated.replace(/-/g, "").slice(0, 8)}-HGE
                 </span><br />
                 Regions: {predictions.map((p) => p.region_id).join(" · ")}<br />
-                Hypotheses: {hypotheses.length} tracked<br />
+                Hypotheses: {predictions.filter((p) => p.hypothesis_id).length} in this run<br />
               </>
             )}
             Horizon: 90 days · input-perturbation sensitivity intervals
@@ -883,7 +881,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
             color: "var(--ink-light)", fontStyle: "italic", lineHeight: 1.6,
             borderTop: "1px solid var(--border-light)", marginTop: "auto",
           }}>
-            All predictions are timestamped, falsifiable, and graded against observed FEWS NET outcomes at T+90 days.
+            All predictions are timestamped, falsifiable, and graded against the FEWS NET proxy at T+90 days.
             Not for operational use without institutional validation.
             Open methodology, published arXiv:2603.09425 (March 2026).
           </div>
@@ -952,7 +950,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
                 <span style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic" }}>P(IPC 3+ · 90d)</span>
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", marginBottom: 10 }}>
-                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? `90% SI [${pct(selPred.sensitivity_interval_low)} to ${pct(selPred.sensitivity_interval_high)}] · ${selPred.ci_method ?? "Input-perturbation"}` : "Sensitivity interval: Pending"}
+                {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null ? `90% SI [${pct(selPred.sensitivity_interval_low)} to ${pct(selPred.sensitivity_interval_high)}] · Input-perturbation` : "Sensitivity interval: Pending"}
               </div>
               <div style={{ height: 6, background: "var(--border-light)", borderRadius: 3, position: "relative" }}>
                 {selPred.sensitivity_interval_low != null && selPred.sensitivity_interval_high != null && (

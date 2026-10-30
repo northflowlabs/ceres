@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import LiveAccuracyMetrics from "@/components/LiveAccuracyMetrics";
-import { api, ArchiveStats, PUBLIC_API_URL, Prediction } from "@/lib/api";
+import { PUBLIC_API_URL } from "@/lib/api";
+import { useSiteData } from "@/lib/useSiteData";
+import { fmtInt } from "@/lib/utils";
 import { TIER_DEFS } from "@/lib/tiers";
 import type { ImpactData } from "@/lib/serverData";
 
@@ -13,7 +14,7 @@ function StatCard({ val, label, sub, accent = false }: { val: string; label: str
     <div style={{ background: accent ? "var(--ink)" : "white", padding: "28px 24px" }}>
       <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: accent ? "#A8A29E" : "var(--ink-light)", marginBottom: 6 }}>{label}</div>
       <div style={{ fontFamily: "var(--display)", fontSize: 40, fontWeight: 700, color: accent ? "#F4A261" : "var(--earth)", lineHeight: 1, marginBottom: 6 }}>{val}</div>
-      {sub && <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: accent ? "#78716C" : "var(--ink-light)" }}>{sub}</div>}
+      {sub && <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: accent ? "#A8A29E" : "var(--ink-light)" }}>{sub}</div>}
     </div>
   );
 }
@@ -26,20 +27,14 @@ function fmtDate(s: string | null | undefined) {
     : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }
 
-export default function ImpactPage({ initial }: { initial: ImpactData }) {
-  const [archive,     setArchive]     = useState<ArchiveStats | null>(initial.archive);
-  const [runs,        setRuns]        = useState<string[] | null>(initial.runs);
-  const [predictions, setPredictions] = useState<Prediction[] | null>(initial.predictions);
-  const [issued,      setIssued]      = useState<number | null>(initial.ledger?.metrics.total_predictions ?? null);
+export default function ImpactPage({ initial }: { initial: ImpactData | null }) {
+  const { data } = useSiteData<ImpactData>("impact", initial);
+  const archive = data?.archive ?? null;
+  const runs = data?.runs ?? null;
+  const predictions = data?.predictions ?? null;
+  const issued = data?.ledger.metrics.total_predictions ?? null;
 
-  useEffect(() => {
-    api.archiveStats().then(setArchive).catch(() => {});
-    api.archiveRuns().then(setRuns).catch(() => {});
-    api.predictions().then(setPredictions).catch(() => {});
-    api.validationMetrics().then(m => setIssued(m.total_predictions)).catch(() => {});
-  }, []);
-
-  const count = (n: number | null | undefined) => (n == null ? "…" : n.toLocaleString("en-GB"));
+  const count = fmtInt;
   const inTier = (tier: string) => predictions?.filter(x => x.alert_tier === tier).length ?? null;
   const asOf = predictions?.[0]?.reference_date;
 
@@ -61,7 +56,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData }) {
               CERES<br />Impact Record
             </h1>
             <p style={{ ...p, fontSize: 17, fontWeight: 300 }}>
-              The public operational record of CERES, in numbers, read live from the prediction archive and the verification ledger. Forward accuracy is graded as observed FEWS NET outcomes are published.
+              The public operational record of CERES, in numbers, read live from the prediction archive and the verification ledger. Forward accuracy is graded against the FEWS NET proxy.
             </p>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
@@ -70,7 +65,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData }) {
               <div style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, color: "var(--earth)", lineHeight: 1 }}>{count(predictions?.length)}</div>
             </div>
             <div style={{ background: "white", padding: "20px 24px" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 4 }}>Weekly runs</div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 4 }}>Published runs</div>
               <div style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, color: "var(--ink)", lineHeight: 1 }}>{count(runs?.length)}</div>
             </div>
             <div style={{ background: "white", padding: "20px 24px" }}>
@@ -85,13 +80,13 @@ export default function ImpactPage({ initial }: { initial: ImpactData }) {
 
         {/* The ledger */}
         <div style={{ margin: "48px 0 0" }}>
-          <LiveAccuracyMetrics initial={initial.ledger} />
+          <LiveAccuracyMetrics initial={data?.ledger ?? null} />
         </div>
 
         {/* Operational stats */}
         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "40px 0 10px" }}>System Activity</div>
         <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
-          <StatCard val={count(runs?.length)}             label="Weekly Runs" sub={archive?.earliest_run ? `Since ${fmtDate(archive.earliest_run)}` : undefined} />
+          <StatCard val={count(runs?.length)}             label="Published Runs" sub={archive?.earliest_run ? `Since ${fmtDate(archive.earliest_run)}` : undefined} />
           <StatCard val={count(archive?.total_snapshots)} label="Archived Snapshots" sub="Region × week records" />
           <StatCard val={count(inTier("TIER-1"))}         label="Active Tier I Regions" sub={asOf ? `As of ${fmtDate(asOf)}` : undefined} />
         </div>
@@ -102,14 +97,14 @@ export default function ImpactPage({ initial }: { initial: ImpactData }) {
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>What These Numbers Mean</div>
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>90 days. That is the target.</h2>
             <p style={p}>Pre-positioning food aid and mobilising emergency logistics takes 60 to 90 days. CERES forecasts 90 days ahead, so that a warning arrives while there is still time to act on it.</p>
-            <p style={p}>CERES issues 90-day horizon predictions, each carrying a calibrated probability, a 90% sensitivity interval, and named driver causes. Every prediction is timestamped on issue and graded against observed FEWS NET outcomes when the T+90 date arrives.</p>
-            <p style={p}>Observed FEWS NET outcomes publish on a 2 to 4 month lag, so grading trails the horizon. The figures above are read live from the verification ledger, against the pre-registered targets.</p>
+            <p style={p}>CERES issues 90-day horizon predictions, each carrying a probability, a 90% sensitivity interval, and named driver causes. Every prediction is timestamped on issue and graded against the FEWS NET proxy after the T+90 date.</p>
+            <p style={p}>Grading trails the horizon, because the data for each window has to be published first. The figures above are read live from the verification ledger, against the pre-registered targets.</p>
           </div>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>How We Verify</div>
-            <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Graded against observed outcomes.</h2>
-            <p style={p}>Every CERES prediction carries a T+90 grading date. When that date arrives and the observation is published, we compare our probabilistic forecast against the FEWS NET classification for that region, on the IPC phase scale.</p>
-            <p style={p}>Predictions are graded on: (1) whether our predicted tier matches the observed IPC phase, (2) whether the actual outcome fell within our 90% sensitivity interval, and (3) our Brier score, the standard probabilistic calibration metric used in meteorological forecasting.</p>
+            <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Graded against the FEWS NET proxy.</h2>
+            <p style={p}>Every CERES prediction carries a T+90 grading date. When the data for that window is published, we compare our probabilistic forecast against the FEWS NET proxy for that country: the highest Current Situation phase FEWS NET reports for any of its areas within 30 days of the grading date.</p>
+            <p style={p}>Predictions are graded on: (1) whether our predicted tier matches the proxy phase, (2) whether the actual outcome fell within our 90% sensitivity interval, and (3) our Brier score, the standard probabilistic calibration metric used in meteorological forecasting.</p>
             <p style={p}>This ledger is public, permanent, and updated automatically. <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>View the full ledger →</a></p>
           </div>
         </div>
@@ -187,9 +182,9 @@ export default function ImpactPage({ initial }: { initial: ImpactData }) {
         {/* CTA */}
         <div style={{ background: "var(--ink)", padding: "40px 48px", margin: "56px 0 0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 32 }}>
           <div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Research collaboration</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 8 }}>Research collaboration</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--parchment)", marginBottom: 8 }}>Work with the CERES team</div>
-            <div style={{ fontSize: 14, color: "#78716C", maxWidth: 500, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 14, color: "#A8A29E", maxWidth: 500, lineHeight: 1.6 }}>
               For humanitarian agencies, academic groups and funders: co-validation against field assessments, joint studies and new country coverage.
             </div>
           </div>

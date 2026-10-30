@@ -72,3 +72,7 @@ export function formatDate(isoStr: string): string {
 export function clsx(...classes: (string | undefined | false | null)[]): string {
   return classes.filter(Boolean).join(" ");
 }
+
+export function fmtInt(n: number | null | undefined): string {
+  return n == null ? "…" : n.toLocaleString("en-GB");
+}

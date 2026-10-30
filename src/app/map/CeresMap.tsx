@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
 import { basemapTileUrl, BASEMAP_ATTRIBUTION } from "@/lib/basemap";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.ceres.northflow.no";
+import type { MapData } from "@/lib/serverData";
 
 // ── Natural Earth country GeoJSON (via CDN) ────────────────────────────────
 const COUNTRY_GEOJSON_URL = "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson";
@@ -105,7 +105,7 @@ function stressBar(v: number) {
   );
 }
 
-export default function CeresMap() {
+export default function CeresMap({ data, failed }: { data: MapData | null; failed: boolean }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<import("leaflet").Map | null>(null);
   const layerGroupRef = useRef<import("leaflet").LayerGroup | null>(null);
@@ -120,17 +120,15 @@ export default function CeresMap() {
 
   // ── Fetch all prediction layers ─────────────────────────────────────────
   useEffect(() => {
-    Promise.all([
-      fetch(`${API_BASE}/v1/predictions`).then(r => r.json()).catch(() => []),
-      fetch(`${API_BASE}/v1/admin1/predictions?limit=700`).then(r => r.json()).catch(() => []),
-      fetch(`${API_BASE}/v1/admin2/predictions?limit=500`).then(r => r.json()).catch(() => []),
-    ]).then(([c, a1, a2]) => {
-      setPredictions(Array.isArray(c) ? c : []);
-      setA1preds(Array.isArray(a1) ? a1 : []);
-      setA2preds(Array.isArray(a2) ? a2 : []);
-      setLoadingData(false);
-    });
-  }, []);
+    if (!data) {
+      if (failed) setLoadingData(false);
+      return;
+    }
+    setPredictions(data.predictions as unknown as Prediction[]);
+    setA1preds(data.admin1 as unknown as Prediction[]);
+    setA2preds(data.admin2 as unknown as Prediction[]);
+    setLoadingData(false);
+  }, [data, failed]);
 
   // ── Init Leaflet map ────────────────────────────────────────────────────
   useEffect(() => {

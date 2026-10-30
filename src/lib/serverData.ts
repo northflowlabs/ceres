@@ -1,10 +1,11 @@
 import {
   API_BASE,
+  AdminRow,
   AggregateMetrics,
   ArchiveStats,
   CalibrationBin,
   CalibrationResponse,
-  GradingLedger,
+  GradeRecord,
   Hypothesis,
   LedgerRow,
   Prediction,
@@ -13,30 +14,132 @@ import {
   ValidationMetrics,
   WithdrawalsResponse,
 } from "@/lib/api";
+import { NO_ADMIN1 } from "@/lib/regionNames";
 
 // Reads the public API on the server, so a page's first HTML carries the real
 // figures. A build with the API down still succeeds and gives the page its
 // unavailable state. After the build a failed read throws, so a revalidation
 // keeps the last good page and never caches an empty one.
 const BUILDING = process.env.NEXT_PHASE === "phase-production-build";
+const TIMEOUT_MS = 10_000;
 
-async function read<T>(path: string): Promise<T | null> {
+function isEmpty(body: unknown): boolean {
+  if (body == null) return true;
+  if (Array.isArray(body)) return body.length === 0;
+  return typeof body === "object" && Object.keys(body).length === 0;
+}
+
+async function fetchJson<T>(path: string, allow404: boolean): Promise<T | null> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (allow404 && res.status === 404) return null;
+  if (!res.ok) throw new Error(`API ${path} answered ${res.status}`);
+  const body = (await res.json()) as T;
+  if (isEmpty(body)) throw new Error(`API ${path} answered empty`);
+  return body;
+}
+
+async function read<T>(path: string, { allow404 = false } = {}): Promise<T | null> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  // The signal cannot end every hang, a stalled body among them. The race can.
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`API ${path} timed out`)), TIMEOUT_MS);
+  });
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!res.ok) throw new Error(`API ${path} answered ${res.status}`);
-    return (await res.json()) as T;
+    const work = fetchJson<T>(path, allow404);
+    work.catch(() => {});
+    return await Promise.race([work, deadline]);
   } catch (e) {
     if (BUILDING) return null;
     throw e;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-// The ledger rows as the API serves them. Only the fields named in publicRow and
-// publicScoredRow leave this file: notes, evidence strings and commit hashes
-// never reach a page or a download.
+// ── Field whitelists ──────────────────────────────────────────────────────
+// Only the fields named here leave this file. Notes, evidence strings, method
+// names and commit hashes never reach a page or a download.
+function pick<T extends object, K extends keyof T>(row: T, keys: readonly K[]): Pick<T, K> {
+  const out = {} as Pick<T, K>;
+  for (const k of keys) out[k] = row[k];
+  return out;
+}
+
+const PREDICTION_FIELDS = [
+  "region_id", "region_name", "lat", "lon", "reference_date", "forecast_horizon_days", "alert_tier",
+  "ipc_phase_forecast", "p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d", "sensitivity_interval_low",
+  "sensitivity_interval_high", "convergence_score", "convergence_tier", "is_compound", "n_signals_flagged",
+  "flagged_sources", "composite_stress_score", "drought_stress", "vegetation_stress", "conflict_stress",
+  "food_access_stress", "ipc_stress", "price_stress", "driver_types", "hypothesis_id",
+] as const;
+
+const HYPOTHESIS_FIELDS = [
+  "hypothesis_id", "region_id", "region_name", "lat", "lon", "forecast_horizon_days", "reference_date",
+  "description", "alert_tier", "ipc_phase_forecast", "composite_stress_score", "p_ipc3plus_90d",
+  "p_ipc4plus_90d", "p_famine_90d", "driver_types", "n_sources_agreeing",
+] as const;
+
+const SNAPSHOT_FIELDS = [
+  "run_date", "region_id", "region_name", "alert_tier", "p_ipc3plus_90d", "p_ipc4plus_90d", "p_famine_90d",
+  "sensitivity_interval_low", "sensitivity_interval_high", "ipc_phase_forecast", "composite_stress_score",
+  "convergence_tier", "driver_types",
+] as const;
+
+const GRADE_FIELDS = [
+  "region_id", "region_name", "reference_date", "horizon_date", "graded_at", "predicted_tier", "p_ipc3plus_90d",
+  "actual_ipc_phase", "brier_score", "ci_covered", "tier_correct",
+] as const;
+
+const ADMIN_FIELDS = [
+  "admin1_id", "admin2_id", "admin1_name", "admin2_name", "country_id", "centroid_lat", "centroid_lon",
+  "ipc_weight", "alert_tier", "p_ipc3plus_90d", "p_ipc4plus_90d", "composite_stress_score", "drought_stress",
+  "vegetation_stress", "conflict_stress", "food_access_stress", "ipc_stress", "price_stress",
+  "current_ipc_phase", "n_signals_available", "from_admin1_fallback", "from_country_fallback", "reference_date",
+] as const;
+
+// The API still carries the names of adapters that have since been replaced.
+const SOURCE_LABELS: Record<string, string> = {
+  chirps: "NASA POWER",
+  modis_ndvi: "MODIS NDVI",
+  ucdp_ged: "UCDP GED",
+  ipc: "IPC / CH",
+  fao_giews: "WFP prices",
+  wfp_vam: "WFP prices",
+};
+
+const sourceLabel = (id: string) => SOURCE_LABELS[id] ?? id;
+
+// This evidence row sums every month of the lookback window under a monthly
+// label, so its figure and its note cannot be read as what they say.
+const UNREADABLE_EVIDENCE = new Set(["conflict_events_monthly"]);
+
+function publicHypothesisDetail(h: Hypothesis): Hypothesis {
+  return {
+    ...pick(h, HYPOTHESIS_FIELDS),
+    driver_clusters: h.driver_clusters?.map((c) => ({
+      driver_type: c.driver_type,
+      intensity: c.intensity,
+      confidence: c.confidence,
+      key_signals: Array.from(new Set(c.key_signals.map(sourceLabel))),
+    })),
+    evidence: h.evidence
+      ?.filter((e) => !UNREADABLE_EVIDENCE.has(e.variable))
+      .map((e) => ({
+        source_id: sourceLabel(e.source_id),
+        variable: e.variable,
+        observed_value: e.observed_value,
+        threshold: e.threshold,
+        direction: e.direction,
+        supports_hypothesis: e.supports_hypothesis,
+        note: e.note,
+      })),
+  };
+}
+
+// The ledger rows as the API serves them.
 type RawRow = LedgerRow & Omit<Partial<ScoredRow>, keyof LedgerRow> & {
   voided_at?: string | null;
 };
@@ -45,16 +148,7 @@ const LEDGER_MAX = 1000;
 const TABLE_ROWS = 50;
 
 function publicRow(r: RawRow): LedgerRow {
-  return {
-    prediction_id: r.prediction_id,
-    region_id: r.region_id,
-    reference_date: r.reference_date,
-    grading_date: r.grading_date,
-    alert_tier: r.alert_tier,
-    p_ipc3plus: r.p_ipc3plus,
-    si_low: r.si_low,
-    si_high: r.si_high,
-  };
+  return pick(r, ["prediction_id", "region_id", "reference_date", "grading_date", "alert_tier", "p_ipc3plus", "si_low", "si_high"]);
 }
 
 function isScored(r: RawRow): boolean {
@@ -83,6 +177,7 @@ async function readRows(status: string): Promise<RawRow[] | null> {
   return res?.predictions ?? null;
 }
 
+// ── What the pages and the /ledger routes serve ───────────────────────────
 // The predictions that count towards the published score, and nothing else.
 export async function getScoredRows(): Promise<ScoredRow[] | null> {
   const rows = await readRows("graded");
@@ -117,12 +212,22 @@ export interface LedgerFigures {
   grades: AggregateMetrics;
 }
 
-async function getLedgerFigures(): Promise<LedgerFigures | null> {
+export async function getLedgerFigures(): Promise<LedgerFigures | null> {
   const [metrics, grades] = await Promise.all([
     getPublicMetrics(),
     read<AggregateMetrics>("/v1/grades/metrics"),
   ]);
   return metrics && grades ? { metrics, grades } : null;
+}
+
+export async function getPredictions(): Promise<Prediction[] | null> {
+  const rows = await read<Prediction[]>("/v1/predictions");
+  return rows && rows.map((p) => pick(p, PREDICTION_FIELDS));
+}
+
+export async function getLatestSnapshots(): Promise<RegionSnapshot[] | null> {
+  const rows = await read<RegionSnapshot[]>("/v1/archive/latest");
+  return rows && rows.map((s) => pick(s, SNAPSHOT_FIELDS));
 }
 
 export interface DashboardData {
@@ -133,32 +238,61 @@ export interface DashboardData {
 
 export async function getDashboardData(): Promise<DashboardData | null> {
   const [predictions, hypotheses, ledger] = await Promise.all([
-    read<Prediction[]>("/v1/predictions"),
+    getPredictions(),
     read<Hypothesis[]>("/v1/hypotheses"),
     getLedgerFigures(),
   ]);
-  return predictions?.length ? { predictions, hypotheses: hypotheses ?? [], ledger } : null;
+  if (!predictions) return null;
+  const run = predictions[0]?.reference_date;
+  return {
+    predictions,
+    hypotheses: (hypotheses ?? []).filter((h) => h.reference_date === run).map((h) => pick(h, HYPOTHESIS_FIELDS)),
+    ledger,
+  };
 }
 
-export function getPredictions(): Promise<Prediction[] | null> {
-  return read<Prediction[]>("/v1/predictions");
+export async function getHypothesis(id: string): Promise<Hypothesis | null> {
+  const h = await read<Hypothesis>(`/v1/hypotheses/${encodeURIComponent(id)}`);
+  return h && publicHypothesisDetail(h);
+}
+
+export interface RegionData {
+  prediction: Prediction;
+  hypothesis: Hypothesis | null;
+  history: RegionSnapshot[];
+  admin1: AdminRow[];
+}
+
+export async function getRegionData(regionId: string): Promise<RegionData | null> {
+  const [prediction, history, admin1] = await Promise.all([
+    read<Prediction>(`/v1/predictions/${regionId}`),
+    read<RegionSnapshot[]>(`/v1/archive/regions/${regionId}?limit=52`, { allow404: true }),
+    NO_ADMIN1.has(regionId) ? null : read<AdminRow[]>(`/v1/admin1/${regionId}`, { allow404: true }),
+  ]);
+  if (!prediction) return null;
+  return {
+    prediction: pick(prediction, PREDICTION_FIELDS),
+    hypothesis: prediction.hypothesis_id ? await getHypothesis(prediction.hypothesis_id) : null,
+    history: (history ?? []).map((s) => pick(s, SNAPSHOT_FIELDS)),
+    admin1: (admin1 ?? []).map((a) => pick(a, ADMIN_FIELDS)),
+  };
 }
 
 export interface ImpactData {
-  ledger: LedgerFigures | null;
-  archive: ArchiveStats | null;
-  runs: string[] | null;
-  predictions: Prediction[] | null;
+  ledger: LedgerFigures;
+  archive: ArchiveStats;
+  runs: string[];
+  predictions: Prediction[];
 }
 
-export async function getImpactData(): Promise<ImpactData> {
+export async function getImpactData(): Promise<ImpactData | null> {
   const [ledger, archive, runs, predictions] = await Promise.all([
     getLedgerFigures(),
     read<ArchiveStats>("/v1/archive/stats"),
     read<string[]>("/v1/archive/runs"),
     getPredictions(),
   ]);
-  return { ledger, archive, runs, predictions };
+  return ledger && archive && runs && predictions ? { ledger, archive, runs, predictions } : null;
 }
 
 export interface ValidationData {
@@ -206,20 +340,45 @@ export async function getValidationData(): Promise<ValidationData | null> {
 }
 
 export interface TrackerData {
-  grades: GradingLedger | null;
-  latest: RegionSnapshot[] | null;
-  archive: ArchiveStats | null;
-  runs: string[] | null;
-  metrics: ValidationMetrics | null;
+  grades: GradeRecord[];
+  meanBrier: number | null;
+  latest: RegionSnapshot[];
+  archive: ArchiveStats;
+  runs: string[];
+  metrics: ValidationMetrics;
 }
 
-export async function getTrackerData(): Promise<TrackerData> {
+export async function getTrackerData(): Promise<TrackerData | null> {
   const [grades, latest, archive, runs, metrics] = await Promise.all([
-    read<GradingLedger>("/v1/grades"),
-    read<RegionSnapshot[]>("/v1/archive/latest"),
+    read<{ grades: GradeRecord[] }>("/v1/grades"),
+    getLatestSnapshots(),
     read<ArchiveStats>("/v1/archive/stats"),
     read<string[]>("/v1/archive/runs"),
     getPublicMetrics(),
   ]);
-  return { grades, latest, archive, runs, metrics };
+  if (!grades || !latest || !archive || !runs || !metrics) return null;
+  return { grades: grades.grades.map((g) => pick(g, GRADE_FIELDS)), meanBrier: metrics.brier_score, latest, archive, runs, metrics };
+}
+
+export interface SubnationalData {
+  admin1: AdminRow[];
+  admin2: AdminRow[];
+}
+
+export async function getSubnationalData(): Promise<SubnationalData | null> {
+  const [admin1, admin2] = await Promise.all([
+    read<AdminRow[]>("/v1/admin1/predictions?limit=700"),
+    read<AdminRow[]>("/v1/admin2/predictions?limit=500"),
+  ]);
+  if (!admin1 || !admin2) return null;
+  return { admin1: admin1.map((a) => pick(a, ADMIN_FIELDS)), admin2: admin2.map((a) => pick(a, ADMIN_FIELDS)) };
+}
+
+export interface MapData extends SubnationalData {
+  predictions: Prediction[];
+}
+
+export async function getMapData(): Promise<MapData | null> {
+  const [predictions, sub] = await Promise.all([getPredictions(), getSubnationalData()]);
+  return predictions && sub ? { predictions, ...sub } : null;
 }

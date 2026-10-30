@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { api, AggregateMetrics, ValidationMetrics } from "@/lib/api";
 import { ASSESSMENT_LABEL, Assessment, MIN_N, TARGETS, assess } from "@/lib/protocol";
 import type { LedgerFigures } from "@/lib/serverData";
+import { useSiteData } from "@/lib/useSiteData";
+import { fmtInt } from "@/lib/utils";
 
 /**
  * The accuracy panel, read live from the verification ledger. Precision is never
@@ -37,18 +37,9 @@ export default function LiveAccuracyMetrics({
   compact?: boolean;
   initial?: LedgerFigures | null;
 }) {
-  const [v, setV] = useState<ValidationMetrics | null>(initial?.metrics ?? null);
-  const [g, setG] = useState<AggregateMetrics | null>(initial?.grades ?? null);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    Promise.all([api.validationMetrics(), api.gradeMetrics()])
-      .then(([vm, gm]) => {
-        setV(vm);
-        setG(gm);
-      })
-      .catch(() => setFailed(true));
-  }, []);
+  const { data, failed } = useSiteData<LedgerFigures>("figures", initial);
+  const v = data?.metrics ?? null;
+  const g = data?.grades ?? null;
 
   if (!v) {
     return (
@@ -87,14 +78,14 @@ export default function LiveAccuracyMetrics({
           val: fmtPct(g?.tier1_precision),
           label: "TIER-I Precision",
           target: "> 80%",
-          note: `${t1Correct} of ${t1Issued} alerts reached IPC Phase 3+`,
+          note: `${t1Correct} of ${t1Issued} alerts reached Phase 3+ on the FEWS NET proxy`,
           state: assess(t1Issued, MIN_N.tier1Precision, (g?.tier1_precision ?? 0) > TARGETS.tier1Precision),
         },
         {
           val: fmtPct(g?.tier1_recall),
           label: "TIER-I Recall",
           target: "> 85%",
-          note: `${t1Correct} of ${t1Events} IPC Phase 3+ outcomes`,
+          note: `${t1Correct} of ${t1Events} Phase 3+ outcomes on the FEWS NET proxy`,
           state: assess(t1Events, MIN_N.tier1Recall, (g?.tier1_recall ?? 0) > TARGETS.tier1Recall),
         },
         {
@@ -135,7 +126,7 @@ export default function LiveAccuracyMetrics({
             padding: "2px 10px",
           }}
         >
-          {hasGrades ? `● Live · ${nGraded} of ${total} graded` : `${total} predictions issued`}
+          {hasGrades ? `● Live · ${fmtInt(nGraded)} of ${fmtInt(total)} graded` : `${fmtInt(total)} predictions issued`}
         </span>
       </div>
 
@@ -183,11 +174,11 @@ export default function LiveAccuracyMetrics({
           </div>
           <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.75 }}>
             <li>
-              <strong>TIER-I precision.</strong> Of {t1Issued} TIER-I alerts graded, {t1Correct} reached IPC
-              Phase 3+ at T+90.
+              <strong>TIER-I precision.</strong> Of {t1Issued} TIER-I alerts graded, {t1Correct} reached
+              Phase 3+ on the FEWS NET proxy at T+90.
             </li>
             <li>
-              <strong>TIER-I recall.</strong> Of {t1Events} graded outcomes at IPC Phase 3+, {t1Correct} had
+              <strong>TIER-I recall.</strong> Of {t1Events} graded Phase 3+ outcomes on the proxy, {t1Correct} had
               a TIER-I alert. The others appear in the published TIER-II and TIER-III tiers.
             </li>
             {d && (
@@ -198,8 +189,8 @@ export default function LiveAccuracyMetrics({
               </li>
             )}
             <li>
-              <strong>{nGraded} of {total} predictions are graded.</strong> IPC publishes observed
-              classifications on a 2 to 4 month lag. Metrics below their pre-registered minimum sample are
+              <strong>{fmtInt(nGraded)} of {fmtInt(total)} predictions are graded</strong>, all against the FEWS NET
+              proxy described in the <Link href="/methodology#calibration" style={{ color: "var(--earth)" }}>Methodology</Link>. Its source data publishes on a lag. Metrics below their pre-registered minimum sample are
               marked not yet assessed.
             </li>
           </ul>

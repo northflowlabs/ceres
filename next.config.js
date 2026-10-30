@@ -25,6 +25,11 @@ const nextConfig = {
     ];
     return [
       {
+        // Open data for people and programs, not search results.
+        source: "/ledger/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+      {
         // Every page except the embeddable widget must never be framed.
         source: "/((?!widget$).*)",
         headers: [

@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { api } from "@/lib/api";
 import { REGION_IDS } from "@/lib/regionNames";
 
 const BASE = "https://ceres.northflow.no";
@@ -21,22 +20,9 @@ const STATIC_ROUTES: Array<{ path: string; changeFrequency: MetadataRoute.Sitema
   { path: "/embed",      changeFrequency: "monthly", priority: 0.4 },
 ];
 
-async function getRegionIds(): Promise<string[]> {
-  try {
-    const snapshots = await api.archiveLatest();
-    const ids = Array.from(
-      new Set(snapshots.map((s) => s.region_id).filter(Boolean))
-    );
-    if (ids.length > 0) return ids;
-  } catch {
-    // fall through to hardcoded list
-  }
-  return REGION_IDS;
-}
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  const regionIds = await getRegionIds();
+  const regionIds = REGION_IDS;
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((r) => ({
     url: `${BASE}${r.path}`,

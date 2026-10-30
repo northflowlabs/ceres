@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import { api, Prediction } from "@/lib/api";
+import { Prediction } from "@/lib/api";
+import { useSiteData } from "@/lib/useSiteData";
 
 function pct(n: number | null | undefined) { if (n == null) return "n/a"; return `${(n * 100).toFixed(1)}%`; }
 function tierColor(t: string) { return t === "TIER-1" ? "#C0392B" : t === "TIER-2" ? "#D97706" : "#2E7D32"; }
@@ -19,19 +20,12 @@ function fmtDate(s: string) {
 const IPC_LABELS: Record<number, string> = { 1: "Minimal", 2: "Stressed", 3: "Crisis", 4: "Emergency", 5: "Famine" };
 
 export default function RegionsPage({ initial }: { initial: Prediction[] | null }) {
-  const [predictions, setPredictions] = useState<Prediction[]>(initial ?? []);
-  const [loading,     setLoading]     = useState(!initial);
-  const [error,       setError]       = useState<string | null>(null);
+  const { data, failed } = useSiteData<Prediction[]>("regions", initial);
+  const predictions = data ?? [];
+  const loading = !data && !failed;
+  const error = failed ? "The forecasts are unavailable right now." : null;
   const [filter,      setFilter]      = useState<"all" | "TIER-1" | "TIER-2" | "TIER-3">("all");
   const [sort,        setSort]        = useState<"risk" | "name">("risk");
-
-  const hasInitial = Boolean(initial);
-  useEffect(() => {
-    api.predictions()
-      .then(setPredictions)
-      .catch(() => { if (!hasInitial) setError("The forecasts are unavailable right now."); })
-      .finally(() => setLoading(false));
-  }, [hasInitial]);
 
   const filtered = predictions
     .filter(p => filter === "all" || p.alert_tier === filter)

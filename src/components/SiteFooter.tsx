@@ -18,13 +18,13 @@ export default function SiteFooter() {
     <footer style={{ borderTop: "2px solid var(--ink)", background: "var(--ink)", color: "var(--parchment)", padding: 40, position: "relative", zIndex: 1, marginTop: "auto" }}>
       <div className="footer-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 40 }}>
         <div>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>CERES</div>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 12 }}>CERES</div>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Calibrated Early-warning and Risk Estimation System</p>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Automated probabilistic forecasting system for acute food insecurity. Generates 90-day ahead probability estimates of IPC Phase 3+, 4+, and 5 conditions for 43 high-risk countries, scheduled weekly. Fuses NASA POWER rainfall, MODIS NDVI, UCDP GED, IPC and Cadre Harmonisé phases, and WFP market prices through a logistic scoring model with input-perturbation intervals (n=2,000 draws). Open data under CC BY 4.0.</p>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Open Humanitarian Intelligence<br />Northflow Technologies · 2026</p>
         </div>
         <div>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>Pages</div>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 12 }}>Pages</div>
           {PAGES.map(({ href, label }) => (
             <Link key={href} href={href} style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>
               {label}
@@ -32,7 +32,7 @@ export default function SiteFooter() {
           ))}
         </div>
         <div>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#78716C", marginBottom: 12 }}>Northflow Technologies</div>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 12 }}>Northflow Technologies</div>
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, margin: 0 }}>Northflow Technologies AS<br />Org. no. 936 979 815<br />Jåttåveien 92, 4020 Stavanger, Norway</p>
           <a href="tel:+4795085045" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>+47 95 08 50 45</a>
           <a href="mailto:hello@northflow.no" style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, textDecoration: "none", display: "block" }}>hello@northflow.no</a>
@@ -40,13 +40,13 @@ export default function SiteFooter() {
           <p style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.8, marginTop: 8 }}>Research-grade forecasts. Not a substitute for field-based IPC assessment or operational humanitarian decision-making.</p>
         </div>
       </div>
-      <div className="footer-bottom" style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, fontFamily: "var(--mono)", fontSize: 10, color: "#57534E", letterSpacing: "0.06em" }}>
-        <span>CERES v0.6.0 · HGE Adapter #5 · Archive since 9 Mar 2026 · <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "#57534E", textDecoration: "underline" }}>arXiv:2603.09425</a></span>
+      <div className="footer-bottom" style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid #292524", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, fontFamily: "var(--mono)", fontSize: 10, color: "#A8A29E", letterSpacing: "0.06em" }}>
+        <span>CERES v0.6.0 · HGE Adapter #5 · Archive since 9 Mar 2026 · <a href="https://arxiv.org/abs/2603.09425" target="_blank" rel="noopener noreferrer" style={{ color: "#A8A29E", textDecoration: "underline" }}>arXiv:2603.09425</a></span>
         <span style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
-          <Link href="/privacy" style={{ color: "#57534E", textDecoration: "none" }}>Privacy Policy</Link>
-          <Link href="/cookies" style={{ color: "#57534E", textDecoration: "none" }}>Cookies</Link>
-          <Link href="/terms" style={{ color: "#57534E", textDecoration: "none" }}>Terms of Use</Link>
-          <span>© 2026 Northflow Technologies AS · Org. no. 936 979 815 · Stavanger · <a href="mailto:hello@northflow.no" style={{ color: "#57534E", textDecoration: "none" }}>hello@northflow.no</a></span>
+          <Link href="/privacy" style={{ color: "#A8A29E", textDecoration: "none" }}>Privacy Policy</Link>
+          <Link href="/cookies" style={{ color: "#A8A29E", textDecoration: "none" }}>Cookies</Link>
+          <Link href="/terms" style={{ color: "#A8A29E", textDecoration: "none" }}>Terms of Use</Link>
+          <span>© 2026 Northflow Technologies AS · Org. no. 936 979 815 · Stavanger · <a href="mailto:hello@northflow.no" style={{ color: "#A8A29E", textDecoration: "none" }}>hello@northflow.no</a></span>
         </span>
       </div>
     </footer>

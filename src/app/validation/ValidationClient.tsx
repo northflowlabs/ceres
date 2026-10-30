@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { LedgerRow, ScoredRow } from "@/lib/api";
 import { ASSESSMENT_LABEL, MIN_N, TARGETS, assess } from "@/lib/protocol";
 import type { ValidationData } from "@/lib/serverData";
+import { useSiteData } from "@/lib/useSiteData";
+import { fmtInt } from "@/lib/utils";
 
 function tierColor(tier: string) {
   if (tier === "TIER-1") return "var(--crisis)";
@@ -52,20 +53,10 @@ const PRE_REGISTERED_PROTOCOL = [
   { metric: "Reliability diagram",            definition: "Forecast prob. vs empirical frequency",        minN: "500 predictions",    min: 500, count: "graded",  target: "Mar 2027" },
 ] as const;
 
-const SOURCE_LABELS: Record<string, string> = { fews_net_proxy: "FEWS NET" };
+const SOURCE_LABELS: Record<string, string> = { fews_net_proxy: "FEWS NET proxy" };
 
 export default function ValidationPage({ initial }: { initial: ValidationData | null }) {
-  const [data, setData]     = useState<ValidationData | null>(initial);
-  const [failed, setFailed] = useState(false);
-
-  const missing = !initial;
-  useEffect(() => {
-    if (!missing) return;
-    fetch("/ledger/validation.json")
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(setData)
-      .catch(() => setFailed(true));
-  }, [missing]);
+  const { data, failed } = useSiteData<ValidationData>("validation", initial);
 
   const metrics = data?.metrics ?? null;
   const pending: LedgerRow[] = data?.pending ?? [];
@@ -106,7 +97,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
       status: ASSESSMENT_LABEL[assess(nGraded, MIN_N.skill, (metrics?.skill_score ?? -1) > TARGETS.skill)],
     },
     {
-      val: `${totalPredictions}`,
+      val: fmtInt(totalPredictions),
       label: "Total Predictions",
       target: "Issued to date",
       status: "",
@@ -128,7 +119,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Validation</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          Every CERES prediction is timestamped, publicly recorded, and graded against observed FEWS NET outcomes, on the IPC phase scale, at T+90 days. This page is the permanent public record of what CERES predicted, when, and whether it was right.
+          Every CERES prediction is timestamped, publicly recorded, and graded at T+90 days against the FEWS NET proxy described in the Methodology. This page is the permanent public record of what CERES predicted, when, and whether it was right.
         </p>
       </div>
 
@@ -148,8 +139,8 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
             Accuracy Metrics
           </div>
           {hasGrades
-            ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>{"\u25CF"} Live · {nGraded} graded</span>
-            : metrics && <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>{totalPredictions} predictions issued</span>
+            ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>{"\u25CF"} Live · {fmtInt(nGraded)} graded</span>
+            : metrics && <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>{fmtInt(totalPredictions)} predictions issued</span>
           }
         </div>
         <div className="validation-metrics-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "10px 0 0" }}>
@@ -167,8 +158,8 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
 
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
           {hasGrades
-            ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {nGraded} predictions graded against observed FEWS NET outcomes at T+90 days. This record updates automatically.</>
-            : metrics && <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {totalPredictions} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}. Observed FEWS NET classifications publish on a 2 to 4 month lag. Grading is automated and pre-registered.</>
+            ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {fmtInt(nGraded)} predictions graded against the FEWS NET proxy at T+90 days. This record updates automatically.</>
+            : metrics && <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {fmtInt(totalPredictions)} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}. Grading is automated and pre-registered.</>
           }
         </p>
 
@@ -180,7 +171,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
               <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Predictions Awaiting Grading Window</h2>
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
-              {`${nPending} pending`}
+              {`${fmtInt(nPending)} pending`}
             </div>
           </div>
 
@@ -189,7 +180,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
               <thead>
                 <tr>
                   {["Region", "Issued", "Tier", "P(IPC 3+)", "90% SI", "Grades On"].map(h => (
-                    <th key={h} style={th}>{h}</th>
+                    <th scope="col" key={h} style={th}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -208,7 +199,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
                 ))}
               </tbody>
             </table>
-            {nPending > pending.length && <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0" }}>Showing the {pending.length} due soonest of {nPending}.</p>}
+            {nPending > pending.length && <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0" }}>Showing the {pending.length} due soonest of {fmtInt(nPending)}.</p>}
             </div>
           ) : (
             <div style={{ border: "1px solid var(--border)", background: "white", padding: "32px", textAlign: "center" }}>
@@ -222,24 +213,24 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
           <div style={{ marginTop: 40 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16 }}>
               <div>
-                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--warning)", marginBottom: 10 }}>Awaiting IPC Data</div>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--warning)", marginBottom: 10 }}>Awaiting Outcome Data</div>
                 <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Grading Window Open: Outcome Data Pending</h2>
               </div>
               <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", letterSpacing: "0.06em" }}>
-                {nAwaiting} in grading queue
+                {fmtInt(nAwaiting)} in grading queue
               </div>
             </div>
 
             {/* Observation lag */}
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against <strong style={{ color: "var(--ink)" }}>observed</strong> FEWS NET classifications, never against forecasts. Those classifications publish on a <strong style={{ color: "var(--ink)" }}>2 to 4 month lag</strong>, and a grade is written when the data lands.
+              These predictions have passed their T+90 horizon and entered the grading queue. They are graded against the <strong style={{ color: "var(--ink)" }}>FEWS NET proxy</strong>, never against forecasts, and a grade is written when the data for the grading window lands.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
               <thead>
                 <tr>
                   {["Region", "Issued", "P(IPC 3+)", "Horizon Reached"].map(h => (
-                    <th key={h} style={th}>{h}</th>
+                    <th scope="col" key={h} style={th}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -254,7 +245,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
                 ))}
               </tbody>
             </table>
-            {nAwaiting > awaiting.length && <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0" }}>Showing the {awaiting.length} most recent of {nAwaiting}.</p>}
+            {nAwaiting > awaiting.length && <p style={{ fontSize: 12, color: "var(--ink-light)", margin: "10px 0 0" }}>Showing the {awaiting.length} most recent of {fmtInt(nAwaiting)}.</p>}
             </div>
           </div>
         )}
@@ -267,7 +258,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
               <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>Graded Predictions: Forward Validation</h2>
             </div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", textAlign: "right" }}>
-              {`${nGraded} graded · T+90 days`}
+              {`${fmtInt(nGraded)} graded · T+90 days`}
             </div>
           </div>
 
@@ -276,7 +267,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
               <thead>
                 <tr>
                   {["Region", "Issued", "Tier", "P(IPC 3+)", "Observed", "Brier", "SI", "Source"].map(h => (
-                    <th key={h} style={th}>{h}</th>
+                    <th scope="col" key={h} style={th}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -289,15 +280,10 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
                       <span style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "2px 7px", color: tierColor(g.alert_tier), border: "1px solid currentColor", opacity: 0.85 }}>{g.alert_tier}</span>
                     </td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", color: tierColor(g.alert_tier) }}>{fmtPct(g.p_ipc3plus)}</td>
-                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontWeight: 600, color: (g.observed_phase ?? 0) >= 3 ? "var(--crisis)" : "var(--watch)" }}>IPC {g.observed_phase}</td>
+                    <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontWeight: 600, color: "var(--ink)" }}>Phase {g.observed_phase}</td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 10 }}>{fmt(g.brier_contribution, 4)}</td>
                     <td style={td(i%2===1)}>
-                      {g.in_si === 1
-                        ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "2px 6px", background: "#F0FDF4", color: "var(--watch)", border: "1px solid rgba(46,125,50,0.2)" }}>{"\u2713"}</span>
-                        : g.in_si === 0
-                          ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "2px 6px", background: "#FEF2F2", color: "var(--crisis)", border: "1px solid rgba(192,57,43,0.2)" }}>{"\u2717"}</span>
-                          : <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>n/a</span>
-                      }
+                      <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{g.in_si === 1 ? "In" : "Out"}</span>
                     </td>
                     <td style={{ ...td(i%2===1), fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{SOURCE_LABELS[g.grade_source] ?? g.grade_source}</td>
                   </tr>
@@ -328,12 +314,12 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
             </div>
 
             <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--crisis)", padding: "18px 22px", marginBottom: 20, fontSize: 13, color: "var(--ink-mid)", lineHeight: 1.7 }}>
-              During build-out, two satellite adapters fell back to synthetic data when their live sources failed, and expert priors were still in place. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page. A withdrawal is permanent and dated. Reasons are corrected by appending, never by overwriting.
+              During build-out, two satellite adapters fell back to synthetic data when their live sources failed. We found it, dated it, and struck out every forecast issued before the fix. The forecasts are still here with their original probabilities. They are excluded from every metric on this page. A withdrawal is permanent and dated. Reasons are corrected by appending, never by overwriting.
             </div>
 
             <div className="table-scroll"><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 700 }}>
               <thead>
-                <tr>{["Run Issued", "Forecasts", "Regions", "Withdrawn On", "Stated Reason"].map(h => <th key={h} style={th}>{h}</th>)}</tr>
+                <tr>{["Run Issued", "Forecasts", "Regions", "Withdrawn On", "Stated Reason"].map(h => <th scope="col" key={h} style={th}>{h}</th>)}</tr>
               </thead>
               <tbody>
                 {withdrawals.withdrawals.map((w, i) => (
@@ -358,7 +344,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
         {/* Ledger downloads */}
         <div className="newsletter-cta" style={{ background: "var(--ink)", padding: "32px 40px", margin: "40px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#78716C", marginBottom: 8 }}>Open ledger</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A8A29E", marginBottom: 8 }}>Open ledger</div>
             <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 600, color: "var(--parchment)", marginBottom: 6 }}>Check every grade yourself</div>
             <div style={{ fontSize: 13, color: "#A8A29E", lineHeight: 1.6 }}>Every row in the score and the metrics above are open JSON, free under CC BY 4.0. The Brier score and SI coverage recompute from those rows. Research collaboration: <a href="mailto:hello@northflow.no" style={{ color: "var(--parchment)" }}>hello@northflow.no</a></div>
           </div>
@@ -388,7 +374,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
           <div style={{ border: "1px solid var(--border)", background: "white", padding: 24, marginBottom: 32 }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 4 }}>Reliability Diagram · Predicted vs. Observed Probability</div>
             <div style={{ fontSize: 12, color: "var(--ink-light)", marginBottom: 16 }}>Perfect calibration lies on the diagonal. Points above = underconfident; below = overconfident.</div>
-            <svg viewBox="0 0 320 260" style={{ width: "100%", maxWidth: 480, display: "block" }} aria-label="Reliability diagram">
+            <svg viewBox="0 0 320 260" style={{ width: "100%", maxWidth: 480, display: "block" }} role="img" aria-label="Reliability diagram">
               {[0,20,40,60,80,100].map(v => (
                 <g key={v}>
                   <line x1={40 + v*2.4} y1={20} x2={40 + v*2.4} y2={220} stroke="var(--border-light)" strokeWidth="1" />
@@ -407,10 +393,9 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
                 const observed = bin.observed_frequency * 100;
                 const cx = 40 + predicted * 2.4;
                 const cy = 220 - observed * 2;
-                const isWell = Math.abs(observed - predicted) <= 10;
                 return (
                   <g key={bin.bin_low}>
-                    <circle cx={cx} cy={cy} r={Math.max(4, Math.min(8, bin.count / 2))} fill={isWell ? "var(--earth)" : "var(--crisis)"} fillOpacity="0.85" stroke="white" strokeWidth="1.5" />
+                    <circle cx={cx} cy={cy} r={Math.max(4, Math.min(8, bin.count / 2))} fill="var(--earth)" fillOpacity="0.85" stroke="white" strokeWidth="1.5" />
                     <text x={cx + 10} y={cy + 4} style={{ fontFamily: "var(--mono)", fontSize: 9, fill: "var(--ink)" }}>{observed.toFixed(0)}% (n={bin.count})</text>
                   </g>
                 );
@@ -420,10 +405,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
             </svg>
             <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ink-light)" }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--earth)", display: "inline-block" }} /> Well-calibrated ({"\u00B1"}10%)
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ink-light)" }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--crisis)", display: "inline-block" }} /> Outside tolerance
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--earth)", display: "inline-block" }} /> Observed rate
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ink-light)" }}>
                 <span style={{ width: 24, height: 1, background: "var(--border)", display: "inline-block", borderTop: "1px dashed var(--border)" }} /> Perfect calibration
@@ -472,7 +454,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
                       { label: "Uncertainty",      val: fmt(metrics.brier_decomposition.uncertainty, 4) },
                       { label: "Skill Score (BSS)", val: fmt(metrics.skill_score, 4) },
                       { label: "SI Coverage",     val: metrics.si_coverage !== null ? fmtPct(metrics.si_coverage) : "n/a" },
-                      { label: "Predictions graded", val: `${nGraded}` },
+                      { label: "Predictions graded", val: fmtInt(nGraded) },
                     ].map(({ label, val }, i) => (
                       <tr key={label} style={{ borderBottom: i < 6 ? "1px solid var(--border-light)" : "none" }}>
                         <td style={{ padding: "8px 0", color: "var(--ink-light)" }}>{label}</td>
@@ -498,7 +480,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
               <thead>
                 <tr>
                   {["Metric", "Definition", "Min. N", "Target date", "Status"].map(h => (
-                    <th key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "10px 14px", textAlign: "left", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
+                    <th scope="col" key={h} style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--ink)", color: "var(--parchment)", padding: "10px 14px", textAlign: "left", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -529,7 +511,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
         <div style={{ background: "var(--parchment-dark)", border: "1px solid var(--border)", borderLeft: "3px solid var(--earth)", padding: "28px 32px", margin: "40px 0" }}>
           <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 600, marginBottom: 10 }}>The CERES Transparency Commitment</div>
           <p style={{ fontSize: 14, color: "var(--ink-mid)", margin: 0, lineHeight: 1.75 }}>
-            Every prediction CERES issues is permanently recorded in this ledger with a timestamp, probability estimate, 90% sensitivity interval, and T+90 day grading date. The accuracy record here is the complete record.
+            Every prediction CERES issues is permanently recorded in this ledger with a timestamp, probability estimate, 90% sensitivity interval, and T+90 day grading date. The published score is computed from the rows at /ledger/graded.json.
           </p>
         </div>
 
