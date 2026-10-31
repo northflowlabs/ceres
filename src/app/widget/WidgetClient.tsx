@@ -33,7 +33,7 @@ export default function WidgetPage({ initial, theme, limit: rawLimit, tier, regi
 
   const { data, failed } = useSiteData<RegionSnapshot[]>("latest", initial);
   const loading = !data && !failed;
-  const dataDate = latestDate((data ?? []).map((r) => r.run_date));
+  const latestRun = formatDate(latestDate((data ?? []).map((r) => r.run_date)));
   const rows = [...(data ?? [])]
     .sort((a, b) => b.p_ipc3plus_90d - a.p_ipc3plus_90d)
     .filter((r) => !tier || r.alert_tier === tier.toUpperCase())
@@ -111,7 +111,7 @@ export default function WidgetPage({ initial, theme, limit: rawLimit, tier, regi
       {/* Footer */}
       <div style={{ padding: compact ? "6px 14px" : "8px 18px", borderTop: `1px solid ${border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 9, color: inkMid }}>P(IPC Phase 3+) · 90-day forecast</span>
-        {dataDate && <span style={{ fontSize: 9, color: inkMid }}>Data from {formatDate(dataDate)}</span>}
+        {latestRun && <span style={{ fontSize: 9, color: inkMid }}>Latest run {latestRun}</span>}
       </div>
     </div>
   );

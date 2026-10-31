@@ -24,8 +24,8 @@ function fmtPct(n: number | null | undefined) {
   return `${(n * 100).toFixed(1)}%`;
 }
 
-function fmtDate(d: string) {
-  return d.slice(0, 10);
+function fmtDate(d: string | null | undefined) {
+  return typeof d === "string" && d ? d.slice(0, 10) : "n/a";
 }
 
 const REGION_NAMES: Record<string, string> = {

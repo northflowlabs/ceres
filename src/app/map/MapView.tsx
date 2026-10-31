@@ -18,6 +18,7 @@ const CeresMap = dynamic(() => import("./CeresMap"), { ssr: false, loading: () =
 export default function MapPage({ initial }: { initial: MapData | null }) {
   const { data, failed } = useSiteData<MapData>("map", initial);
   const countries = data?.predictions ?? [];
+  const latestRun = formatDate(latestDate(countries.map((c) => c.reference_date)));
 
   return (
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -35,7 +36,7 @@ export default function MapPage({ initial }: { initial: MapData | null }) {
         </p>
         {countries.length > 0 && (
           <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", margin: "14px 0 0" }}>
-            Data from {formatDate(latestDate(countries.map((c) => c.reference_date)))} · {countries.length} countries ·{" "}
+            {latestRun && `Latest run ${latestRun} · `}{countries.length} countries ·{" "}
             {TIER_DEFS.map(({ tier, name }) => `${countries.filter((c) => c.alert_tier === tier).length} ${name}`).join(" · ")}
           </p>
         )}

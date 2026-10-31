@@ -62,16 +62,19 @@ export function relativeTime(isoStr: string): string {
   return `${days}d ago`;
 }
 
-export function formatDate(isoStr: string): string {
-  if (!isoStr) return "";
+export function formatDate(isoStr: string | null | undefined): string {
+  if (!isoStr || Number.isNaN(Date.parse(isoStr))) return "";
   return new Date(isoStr).toLocaleDateString("en-GB", {
     day: "2-digit", month: "short", year: "numeric", timeZone: "UTC",
   });
 }
 
-// The latest of a list of ISO dates, or "" when the list holds none.
+// The latest valid date in a list, or "" when the list holds none.
 export function latestDate(dates: (string | null | undefined)[]): string {
-  return dates.reduce<string>((latest, d) => (d && d > latest ? d : latest), "");
+  return dates.reduce<string>((latest, d) => {
+    if (!d || Number.isNaN(Date.parse(d))) return latest;
+    return !latest || Date.parse(d) > Date.parse(latest) ? d : latest;
+  }, "");
 }
 
 export function clsx(...classes: (string | undefined | false | null)[]): string {
