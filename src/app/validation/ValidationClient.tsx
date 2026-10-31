@@ -6,7 +6,7 @@ import { LedgerRow, ScoredRow } from "@/lib/api";
 import { ASSESSMENT_LABEL, MIN_N, TARGETS, assess } from "@/lib/protocol";
 import type { ValidationData } from "@/lib/serverData";
 import { useSiteData } from "@/lib/useSiteData";
-import { fmtInt, formatDate, latestDate } from "@/lib/utils";
+import { fmtInt, formatDate, isIsoDate, latestDate } from "@/lib/utils";
 
 function tierColor(tier: string) {
   if (tier === "TIER-1") return "var(--crisis)";
@@ -25,7 +25,7 @@ function fmtPct(n: number | null | undefined) {
 }
 
 function fmtDate(d: string | null | undefined) {
-  return typeof d === "string" && !Number.isNaN(Date.parse(d)) ? d.slice(0, 10) : "n/a";
+  return isIsoDate(d) ? d.slice(0, 10) : "n/a";
 }
 
 const REGION_NAMES: Record<string, string> = {

@@ -4,7 +4,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import LiveAccuracyMetrics from "@/components/LiveAccuracyMetrics";
 import { useSiteData } from "@/lib/useSiteData";
-import { fmtInt, formatDate, latestDate } from "@/lib/utils";
+import { earliestDate, fmtInt, formatDate, latestDate } from "@/lib/utils";
 import { TIER_DEFS } from "@/lib/tiers";
 import type { ImpactData } from "@/lib/serverData";
 
@@ -24,7 +24,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
   const predictions = data?.predictions ?? null;
   const issued = data?.ledger.metrics.total_predictions ?? null;
   const regionRuns = data?.regionRuns ?? null;
-  const firstRun = formatDate(runs?.length ? [...runs].sort()[0] : null);
+  const firstRun = formatDate(earliestDate(runs ?? []));
 
   const count = fmtInt;
   const inTier = (tier: string) => predictions?.filter(x => x.alert_tier === tier).length ?? null;
@@ -66,7 +66,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
             </div>
             {firstRun && (
               <p style={{ background: "white", padding: "14px 24px", margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--ink-light)" }}>
-                Predictions issued counts single forecasts in the verification ledger, which also holds dates outside the published archive; published runs counts run dates in the prediction archive{firstRun && ` since ${firstRun}`}.
+                Predictions issued counts single forecasts in the verification ledger, which also holds dates outside the published archive; published runs counts run dates in the prediction archive since {firstRun}.
               </p>
             )}
           </div>

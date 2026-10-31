@@ -62,8 +62,18 @@ export function relativeTime(isoStr: string): string {
   return `${days}d ago`;
 }
 
+// True for a real calendar date in ISO form, with or without a time.
+export function isIsoDate(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  const m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}(?::?\d{2})?)?)?$/.exec(value);
+  if (!m || Number.isNaN(Date.parse(value))) return false;
+  const [year, month, day] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+
 export function formatDate(isoStr: string | null | undefined): string {
-  if (!isoStr || Number.isNaN(Date.parse(isoStr))) return "";
+  if (!isIsoDate(isoStr)) return "";
   return new Date(isoStr).toLocaleDateString("en-GB", {
     day: "2-digit", month: "short", year: "numeric", timeZone: "UTC",
   });
@@ -72,8 +82,16 @@ export function formatDate(isoStr: string | null | undefined): string {
 // The latest valid date in a list, or "" when the list holds none.
 export function latestDate(dates: (string | null | undefined)[]): string {
   return dates.reduce<string>((latest, d) => {
-    if (!d || Number.isNaN(Date.parse(d))) return latest;
+    if (!isIsoDate(d)) return latest;
     return !latest || Date.parse(d) > Date.parse(latest) ? d : latest;
+  }, "");
+}
+
+// The earliest valid date in a list, or "" when the list holds none.
+export function earliestDate(dates: (string | null | undefined)[]): string {
+  return dates.reduce<string>((earliest, d) => {
+    if (!isIsoDate(d)) return earliest;
+    return !earliest || Date.parse(d) < Date.parse(earliest) ? d : earliest;
   }, "");
 }
 

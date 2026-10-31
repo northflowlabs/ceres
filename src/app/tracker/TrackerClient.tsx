@@ -5,7 +5,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { RegionSnapshot } from "@/lib/api";
 import { useSiteData } from "@/lib/useSiteData";
-import { fmtInt } from "@/lib/utils";
+import { earliestDate, fmtInt, formatDate, isIsoDate } from "@/lib/utils";
 import { regionName } from "@/lib/regionNames";
 import type { TrackerData } from "@/lib/serverData";
 
@@ -34,16 +34,8 @@ function fmtPct(n: number | null | undefined) {
   return `${(n * 100).toFixed(1)}%`;
 }
 
-function fmtDate(s: string) {
-  try {
-    return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
-  } catch { return s; }
-}
-
-function fmtDateShort(s: string) {
-  try {
-    return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
-  } catch { return s; }
+function fmtDateShort(s: string | null | undefined) {
+  return formatDate(s).replace(/ \d{4}$/, "");
 }
 
 // ── Mini sparkline SVG chart ───────────────────────────────────────────────
@@ -109,8 +101,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
   // The next predictions in the ledger to reach their grading date.
   const today = new Date();
   const pendingPredictions = (data?.next ?? []).map(r => {
-    const horizonDate = new Date(r.grading_date);
-    const daysUntil = Math.ceil((horizonDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const daysUntil = isIsoDate(r.grading_date) ? Math.ceil((Date.parse(r.grading_date) - today.getTime()) / (1000 * 60 * 60 * 24)) : null;
     return {
       prediction_id: r.prediction_id,
       region_id: r.region_id,
@@ -118,7 +109,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
       run_date: r.reference_date,
       alert_tier: r.alert_tier,
       p_ipc3plus_90d: r.p_ipc3plus,
-      horizonDate,
+      horizon_date: r.grading_date,
       daysUntil,
     };
   });
@@ -148,7 +139,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
         {archiveStats && (
           <div className="tracker-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)", margin: "48px 0 40px" }}>
             {[
-              { val: runs ? String(runs.length) : "…",      label: "Published Runs",      note: runs?.length ? `Since ${fmtDate([...runs].sort()[0])}` : "" },
+              { val: runs ? String(runs.length) : "…",      label: "Published Runs",      note: runs?.length ? `Since ${formatDate(earliestDate(runs))}` : "" },
               { val: String(archiveStats.total_regions),   label: "Regions Tracked",   note: "Monitored globally"  },
               { val: fmtInt(nPending), label: "Pending Grading", note: "Before their T+90 date" },
               { val: grades.length > 0 ? `${((verified.length / grades.length) * 100).toFixed(0)}%` : "…", label: "Directional Agreement", note: grades.length > 0 ? `P(IPC 3+) on the side of 50% the outcome took, ${grades.length} graded` : "" },
@@ -220,7 +211,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
               </div>
 
               {/* Detail panel */}
-              <div style={{ background: "white", padding: 32 }}>
+              <div className="tracker-detail" style={{ background: "white", padding: 32 }}>
                 {!selSnap ? (
                   <div style={{ color: "var(--ink-light)", fontFamily: "var(--mono)", fontSize: 11 }}>Select a region</div>
                 ) : (
@@ -230,7 +221,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                       <div>
                         <div style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1, marginBottom: 6 }}>{selSnap.region_name}</div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
-                          {selSnap.region_id} · Latest run {fmtDate(selSnap.run_date)}
+                          {selSnap.region_id} · Latest run {formatDate(selSnap.run_date)}
                         </div>
                       </div>
                       <div style={{ textAlign: "right" }}>
@@ -312,7 +303,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                 <div style={{ border: "1px solid var(--border)", background: "white", padding: 32 }}>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 20 }}>Next predictions to grade</div>
                   {pendingPredictions.slice(0, 5).map((r, i) => {
-                    const h = r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+                    const h = formatDate(r.horizon_date);
                     return (
                       <div key={r.prediction_id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: i < 4 ? "1px solid var(--border-light)" : "none" }}>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink)" }}>{r.region_name}</div>
@@ -344,7 +335,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                       <div>
                         <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{g.region_name}</div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>
-                          Issued {fmtDate(g.reference_date)} · Horizon {fmtDate(g.horizon_date)}
+                          Issued {formatDate(g.reference_date)} · Horizon {formatDate(g.horizon_date)}
                         </div>
                       </div>
                     </div>
@@ -363,7 +354,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                     <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>
                       Brier <strong style={{ color: "var(--ink)" }}>{g.brier_score.toFixed(4)}</strong>
                       {" · "}SI covered <strong style={{ color: "var(--ink)" }}>{g.ci_covered ? "Yes" : "No"}</strong>
-                      {" · "}Graded {fmtDate(g.graded_at)}
+                      {" · "}Graded {formatDate(g.graded_at)}
                     </div>
                   </div>
                 ))}
@@ -391,23 +382,23 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                   {pendingPredictions.length === 0 ? (
                     <tr><td colSpan={6} style={{ padding: "32px 14px", textAlign: "center", fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)" }}>No pending predictions to show.</td></tr>
                   ) : pendingPredictions.map(r => {
-                    const urgency = r.daysUntil <= 14 ? "var(--crisis)" : r.daysUntil <= 30 ? "var(--warning)" : "var(--ink-light)";
+                    const urgency = r.daysUntil === null ? "var(--ink-light)" : r.daysUntil <= 14 ? "var(--crisis)" : r.daysUntil <= 30 ? "var(--warning)" : "var(--ink-light)";
                     return (
                       <tr key={r.prediction_id} style={{ borderBottom: "1px solid var(--border-light)", background: r.alert_tier === "TIER-1" ? "rgba(192,57,43,0.02)" : "white" }}>
                         <td style={{ padding: "10px 14px" }}>
                           <span style={{ fontWeight: 600, color: "var(--ink)" }}>{r.region_name}</span>
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginLeft: 6 }}>{r.region_id}</span>
                         </td>
-                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-mid)" }}>{fmtDate(r.run_date)}</td>
+                        <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-mid)" }}>{formatDate(r.run_date)}</td>
                         <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 11, fontWeight: 700, color: tierColor(r.alert_tier) }}>{fmtPct(r.p_ipc3plus_90d)}</td>
                         <td style={{ padding: "10px 14px", textAlign: "right" }}>
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, fontWeight: 700, color: tierColor(r.alert_tier), background: tierBg(r.alert_tier), padding: "2px 8px" }}>{r.alert_tier}</span>
                         </td>
                         <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-mid)" }}>
-                          {r.horizonDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}
+                          {formatDate(r.horizon_date)}
                         </td>
                         <td style={{ padding: "10px 14px", textAlign: "right", fontFamily: "var(--mono)", fontSize: 11, fontWeight: 700, color: urgency }}>
-                          {r.daysUntil}d
+                          {r.daysUntil === null ? "n/a" : `${r.daysUntil}d`}
                         </td>
                       </tr>
                     );

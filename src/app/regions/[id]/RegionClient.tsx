@@ -7,6 +7,7 @@ import { useSiteData } from "@/lib/useSiteData";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { RegionSnapshot } from "@/lib/api";
+import { formatDate } from "@/lib/utils";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -42,11 +43,6 @@ const DRIVER_LABELS: Record<string, string> = {
   IPC:       "IPC Phase Pressure",
 };
 
-function fmtDate(s: string) {
-  try { return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }); }
-  catch { return s; }
-}
-
 // ── Sparkline ─────────────────────────────────────────────────────────────────
 
 function Sparkline({ data }: { data: RegionSnapshot[] }) {
@@ -76,8 +72,8 @@ function Sparkline({ data }: { data: RegionSnapshot[] }) {
   );
 
   const color = tierColor(pts.last.alert_tier);
-  const firstDate = fmtDate(pts.sorted[0].run_date);
-  const lastDate  = fmtDate(pts.sorted[pts.sorted.length - 1].run_date);
+  const firstDate = formatDate(pts.sorted[0].run_date);
+  const lastDate  = formatDate(pts.sorted[pts.sorted.length - 1].run_date);
 
   return (
     <div>
@@ -230,7 +226,7 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
           <div>
             <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.05, margin: "0 0 10px" }}>{pred.region_name}</h1>
             <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.08em" }}>
-              {regionId} · {pred.forecast_horizon_days}-day forecast horizon · Updated {fmtDate(pred.reference_date)}
+              {regionId} · {pred.forecast_horizon_days}-day forecast horizon{formatDate(pred.reference_date) && ` · Updated ${formatDate(pred.reference_date)}`}
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>

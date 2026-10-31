@@ -33,12 +33,12 @@ export default function WidgetPage({ initial, theme, limit: rawLimit, tier, regi
 
   const { data, failed } = useSiteData<RegionSnapshot[]>("latest", initial);
   const loading = !data && !failed;
-  const matching = [...(data ?? [])]
+  const rows = [...(data ?? [])]
     .sort((a, b) => b.p_ipc3plus_90d - a.p_ipc3plus_90d)
     .filter((r) => !tier || r.alert_tier === tier.toUpperCase())
-    .filter((r) => !region || r.region_id === region.toUpperCase());
-  const rows = matching.slice(0, limit);
-  const latestRun = formatDate(latestDate(matching.map((r) => r.run_date)));
+    .filter((r) => !region || r.region_id === region.toUpperCase())
+    .slice(0, limit);
+  const latestRun = formatDate(latestDate(rows.map((r) => r.run_date)));
 
   const dark = theme === "dark";
   const bg     = dark ? "#1C1917" : "#FAFAF8";
