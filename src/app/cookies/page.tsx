@@ -64,7 +64,7 @@ export default function CookiesPage() {
                 {
                   name: "Google Analytics 4 (_ga, _ga_*)",
                   type: "Analytics",
-                  purpose: "Measures page views, session duration and device type to help us understand how CERES is used. Set only after you accept analytics.",
+                  purpose: "Measures page views, session duration and device type to help us understand how CERES is used. Set only after you accept analytics, on ceres.northflow.no alone.",
                   duration: "Up to 14 months",
                   consent: "Yes: analytics consent required",
                 },
@@ -110,7 +110,7 @@ export default function CookiesPage() {
 
         <h2 style={h2}>5. Other Services Your Browser Contacts</h2>
         <p style={p}>
-          These services set no cookies through CERES, but your browser connects to them directly, so they receive your IP address as part of the request:
+          Your browser connects to these services directly, so they receive your IP address as part of the request. The Google tag sets the analytics cookies above if you accept. The others set no cookies through CERES:
         </p>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
