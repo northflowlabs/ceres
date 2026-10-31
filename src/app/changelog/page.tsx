@@ -37,6 +37,13 @@ const CHANGELOG: ChangeEntry[] = [
     body: "Google Analytics loads only after a visitor accepts statistics. Before that choice, and after a rejection, the browser sends it nothing. The Privacy Policy and the Cookie Policy state this.",
   },
   {
+    date: "2026-10-31",
+    version: "v0.6",
+    type: "platform",
+    title: "The forecast IPC phase is no longer published on this site",
+    body: "The forecast IPC phase and the ipc_phase_forecast column are no longer published on this site or in its data downloads. The published forecast is P(IPC 3+) with its sensitivity interval. Observed IPC phases and graded outcomes are unchanged.",
+  },
+  {
     date: "2026-10-30",
     version: "v0.6",
     type: "platform",

@@ -83,7 +83,7 @@ function pick<T extends object, K extends keyof T>(row: T, keys: readonly K[]): 
 
 const PREDICTION_FIELDS = [
   "region_id", "region_name", "lat", "lon", "reference_date", "forecast_horizon_days", "alert_tier",
-  "ipc_phase_forecast", "p_ipc3plus_90d", "sensitivity_interval_low", "sensitivity_interval_high",
+  "p_ipc3plus_90d", "sensitivity_interval_low", "sensitivity_interval_high",
   "convergence_score", "convergence_tier", "is_compound", "n_signals_flagged",
   "flagged_sources", "composite_stress_score", "drought_stress", "vegetation_stress", "conflict_stress",
   "food_access_stress", "ipc_stress", "price_stress", "driver_types", "hypothesis_id",
@@ -91,12 +91,12 @@ const PREDICTION_FIELDS = [
 
 const HYPOTHESIS_FIELDS = [
   "hypothesis_id", "region_id", "region_name", "lat", "lon", "forecast_horizon_days", "reference_date",
-  "alert_tier", "ipc_phase_forecast", "composite_stress_score", "p_ipc3plus_90d", "driver_types",
+  "alert_tier", "composite_stress_score", "p_ipc3plus_90d", "driver_types",
   "n_sources_agreeing",
 ] as const;
 
 const SNAPSHOT_FIELDS = [
-  "run_date", "region_id", "region_name", "alert_tier", "p_ipc3plus_90d", "sensitivity_interval_low", "sensitivity_interval_high", "ipc_phase_forecast", "composite_stress_score", "convergence_tier",
+  "run_date", "region_id", "region_name", "alert_tier", "p_ipc3plus_90d", "sensitivity_interval_low", "sensitivity_interval_high", "composite_stress_score", "convergence_tier",
   "driver_types",
 ] as const;
 
@@ -608,7 +608,6 @@ const HXL_TAGS: Record<(typeof SNAPSHOT_FIELDS)[number], string> = {
   p_ipc3plus_90d: "#indicator+value+prob+ipc3plus+days_90",
   sensitivity_interval_low: "#indicator+value+sensitivity_interval+low+days_90",
   sensitivity_interval_high: "#indicator+value+sensitivity_interval+high+days_90",
-  ipc_phase_forecast: "#indicator+value+ipc+phase+forecast",
   composite_stress_score: "#indicator+value+stress+composite",
   convergence_tier: "#indicator+tier+convergence",
   driver_types: "#indicator+label+drivers",

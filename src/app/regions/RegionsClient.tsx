@@ -17,7 +17,6 @@ function fmtDate(s: string) {
   catch { return s; }
 }
 
-const IPC_LABELS: Record<number, string> = { 1: "Minimal", 2: "Stressed", 3: "Crisis", 4: "Emergency", 5: "Famine" };
 
 export default function RegionsPage({ initial }: { initial: Prediction[] | null }) {
   const { data, failed } = useSiteData<Prediction[]>("regions", initial);
@@ -153,10 +152,7 @@ export default function RegionsPage({ initial }: { initial: Prediction[] | null 
                     {/* Footer row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-                        IPC {p.ipc_phase_forecast} · {IPC_LABELS[p.ipc_phase_forecast] ?? "n/a"}
-                        {p.driver_types?.length > 0 && (
-                          <span style={{ marginLeft: 8, color: "var(--ink-light)" }}>· {p.driver_types.slice(0, 2).join(", ")}</span>
-                        )}
+                        {p.driver_types?.slice(0, 2).join(", ")}
                       </div>
                       <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--earth)", letterSpacing: "0.06em" }}>View →</span>
                     </div>

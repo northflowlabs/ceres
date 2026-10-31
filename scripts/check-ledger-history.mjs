@@ -147,7 +147,7 @@ for (const [region, siteRows] of Object.entries(history)) {
     }
     siteCompared += 1;
     for (const field of [
-      "p_ipc3plus_90d", "alert_tier", "composite_stress_score", "ipc_phase_forecast",
+      "p_ipc3plus_90d", "alert_tier", "composite_stress_score",
       "sensitivity_interval_low", "sensitivity_interval_high",
     ]) {
       if (s[field] !== first[field]) wrong.push(`${region} ${s.run_date}: ${field} is ${s[field]}, first write has ${first[field]}`);
@@ -314,7 +314,7 @@ for (const key of servedKeys) if (!scoreKeys.has(key)) wrong.push(`graded.json $
 for (const key of scoreKeys) if (!servedKeys.includes(key)) wrong.push(`graded.json ${key}: missing`);
 
 // Fields the site must never serve, in any route or download.
-const REMOVED = ["p_ipc4plus", "p_famine", "total_runs", "earliest_run", "total_snapshots"];
+const REMOVED = ["p_ipc4plus", "p_famine", "ipc_phase_forecast", "total_runs", "earliest_run", "total_snapshots"];
 const routes = [
   "dashboard.json", "figures.json", "graded.json", "impact.json", "latest.json", "map.json", "metrics.json",
   "regions.json", "tracker.json", "validation.json", "withdrawn.json", "archive.csv", "latest.csv", `region/${regions[0]}.json`,

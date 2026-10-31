@@ -29,10 +29,6 @@ function tierBg(tier: string) {
   return "#F0FDF4";
 }
 
-const IPC_LABELS: Record<number, string> = {
-  1: "Minimal", 2: "Stressed", 3: "Crisis", 4: "Emergency", 5: "Famine",
-};
-
 const DRIVER_LABELS: Record<string, string> = {
   CLIMATE:   "Climate / Drought",
   CONFLICT:  "Conflict",
@@ -246,8 +242,7 @@ export default function RegionPage({ regionId, initial }: { regionId: string; in
       <div className="region-detail-body" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "40px 40px 80px", display: "flex", flexDirection: "column", gap: 36, boxSizing: "border-box" }}>
 
         {/* ── Stat strip ───────────────────────────────────────── */}
-        <div className="region-stat-strip" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
-          <StatBox label="IPC Phase Forecast" value={`Phase ${pred.ipc_phase_forecast}`} sub={IPC_LABELS[pred.ipc_phase_forecast]} accent={pred.ipc_phase_forecast >= 3 ? color : undefined} />
+        <div className="region-stat-strip" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
           <StatBox label="Composite Stress" value={`${(pred.composite_stress_score * 100).toFixed(0)}/100`} sub="0 = low · 100 = extreme" />
           <StatBox label="Sensitivity Interval" value={pred.sensitivity_interval_low != null && pred.sensitivity_interval_high != null ? `${pct(pred.sensitivity_interval_low)} to ${pct(pred.sensitivity_interval_high)}` : "Pending"} sub={pred.sensitivity_interval_low != null ? "90% SI · P(IPC 3+)" : "Populating from current runs"} />
         </div>

@@ -8,7 +8,6 @@ export interface Prediction {
   reference_date: string;
   forecast_horizon_days: number;
   alert_tier: "TIER-1" | "TIER-2" | "TIER-3";
-  ipc_phase_forecast: number;
   p_ipc3plus_90d: number;
   sensitivity_interval_low: number | null;
   sensitivity_interval_high: number | null;
@@ -38,7 +37,6 @@ export interface Hypothesis {
   reference_date: string;
   description?: string;
   alert_tier: string;
-  ipc_phase_forecast: number;
   composite_stress_score: number;
   p_ipc3plus_90d: number;
   sensitivity_interval_low?: number | null;
@@ -178,7 +176,6 @@ export interface RegionSnapshot {
   p_ipc3plus_90d:         number;
   sensitivity_interval_low:  number | null;
   sensitivity_interval_high: number | null;
-  ipc_phase_forecast:     number;
   composite_stress_score: number;
   convergence_tier:       string;
   driver_types:           string[];
