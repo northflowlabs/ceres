@@ -24,7 +24,7 @@ CERES (Calibrated Early-warning and Risk Estimation System) issues 90-day probab
 | Map | `/map` | Global risk map by country |
 | Validation | `/validation` | The public prediction ledger: pending, awaiting data, graded |
 | Track record | `/tracker` | Run snapshots per region and graded outcomes |
-| Impact | `/impact` | The operational record, read live from the archive and the ledger |
+| Impact | `/impact` | The operational record, read from the archive and the ledger |
 | Changelog | `/changelog` | Model, data, methodology and platform changes |
 | Methodology | `/methodology` | Technical documentation of the method |
 | Data sources | `/data` | The model inputs and the grading source |

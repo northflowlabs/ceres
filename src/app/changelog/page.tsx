@@ -34,7 +34,7 @@ const CHANGELOG: ChangeEntry[] = [
     version: "v0.6",
     type: "platform",
     title: "Analytics load only after consent",
-    body: "Google Analytics loads only after a visitor accepts statistics. Before that choice, and after a rejection, the browser sends it nothing. The Privacy Policy and the Cookie Policy state this.",
+    body: "Google Analytics loads only after a visitor accepts statistics. Before that choice, and after a rejection, the site sends it nothing new. The Privacy Policy and the Cookie Policy state this.",
   },
   {
     date: "2026-10-30",
