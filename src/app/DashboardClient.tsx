@@ -74,7 +74,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
     const check = () => {
       setIsMobile(window.innerWidth <= 1280);
       setIsCompact(window.innerWidth <= 1440);
-      setIsTinyMobile(window.innerWidth < 768);
+      setIsTinyMobile(window.matchMedia("(max-width: 768px)").matches);
     };
     check();
     window.addEventListener("resize", check);

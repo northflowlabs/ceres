@@ -219,8 +219,13 @@ export default function LeafletRiskMap({
     const geo = CRISIS_COUNTRIES.find(c => c.iso3 === selected.region_id);
     const lat = geo?.lat ?? selected.lat;
     const lon = geo?.lon ?? selected.lon;
-    if ((lat === 0 && lon === 0) || lat == null || lon == null) return;
-    mapRef.current.flyTo([lat, lon], 6, { duration: 1.2, easeLinearity: 0.4 });
+    if ((lat === 0 && lon === 0) || !Number.isFinite(lat) || !Number.isFinite(lon)) return;
+    // A hidden map has no size, and flyTo on it throws.
+    const map = mapRef.current;
+    map.invalidateSize({ pan: false });
+    const { x, y } = map.getSize();
+    if (!x || !y) return;
+    map.flyTo([lat, lon], 6, { duration: 1.2, easeLinearity: 0.4 });
   }, [mapReady, selected]);
 
   return (
