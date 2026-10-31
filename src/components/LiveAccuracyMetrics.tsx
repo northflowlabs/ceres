@@ -125,7 +125,7 @@ export default function LiveAccuracyMetrics({
             padding: "2px 10px",
           }}
         >
-          {hasGrades ? `● Live · ${fmtInt(nGraded)} of ${fmtInt(total)} graded` : `${fmtInt(total)} predictions issued`}
+          {hasGrades ? `${fmtInt(nGraded)} of ${fmtInt(total)} graded` : `${fmtInt(total)} predictions issued`}
         </span>
       </div>
 

@@ -7,7 +7,7 @@ import SiteFooter from "@/components/SiteFooter";
 import type { MapData } from "@/lib/serverData";
 import { useSiteData } from "@/lib/useSiteData";
 import { TIER_DEFS } from "@/lib/tiers";
-import { formatDate } from "@/lib/utils";
+import { formatDate, latestDate } from "@/lib/utils";
 
 const CeresMap = dynamic(() => import("./CeresMap"), { ssr: false, loading: () => (
   <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 480, fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.1em" }}>
@@ -25,7 +25,7 @@ export default function MapPage({ initial }: { initial: MapData | null }) {
       <div style={{ borderBottom: "1px solid var(--border)", padding: "40px 40px 32px", maxWidth: 1300, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ display: "block", width: 24, height: 1, background: "var(--earth)" }} />
-          CERES Risk Intelligence · Live Map
+          CERES Risk Intelligence · Risk Map
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 40, fontWeight: 700, lineHeight: 1.1, marginBottom: 10 }}>
           Global Famine Risk Map
@@ -35,7 +35,7 @@ export default function MapPage({ initial }: { initial: MapData | null }) {
         </p>
         {countries.length > 0 && (
           <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", margin: "14px 0 0" }}>
-            {formatDate(countries[0].reference_date)} · {countries.length} countries ·{" "}
+            Data from {formatDate(latestDate(countries.map((c) => c.reference_date)))} · {countries.length} countries ·{" "}
             {TIER_DEFS.map(({ tier, name }) => `${countries.filter((c) => c.alert_tier === tier).length} ${name}`).join(" · ")}
           </p>
         )}

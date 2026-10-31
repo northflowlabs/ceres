@@ -6,7 +6,7 @@ import { LedgerRow, ScoredRow } from "@/lib/api";
 import { ASSESSMENT_LABEL, MIN_N, TARGETS, assess } from "@/lib/protocol";
 import type { ValidationData } from "@/lib/serverData";
 import { useSiteData } from "@/lib/useSiteData";
-import { fmtInt } from "@/lib/utils";
+import { fmtInt, formatDate, latestDate } from "@/lib/utils";
 
 function tierColor(tier: string) {
   if (tier === "TIER-1") return "var(--crisis)";
@@ -70,6 +70,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
   const nPending = metrics?.pending ?? 0;
   const nAwaiting = metrics?.awaiting_data ?? 0;
   const hasGrades = nGraded > 0;
+  const lastGradedRun = formatDate(latestDate(graded.map(g => g.reference_date)));
   const sampleOf = {
     graded: nGraded,
     tier1: graded.filter(g => g.alert_tier === "TIER-1").length,
@@ -138,7 +139,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
             Accuracy Metrics
           </div>
           {hasGrades
-            ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>{"\u25CF"} Live · {fmtInt(nGraded)} graded</span>
+            ? <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--watch-light)", color: "var(--watch)", border: "1px solid var(--watch)", padding: "2px 10px" }}>{lastGradedRun && `Latest graded run ${lastGradedRun} · `}{fmtInt(nGraded)} graded</span>
             : metrics && <span style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", background: "var(--parchment-dark)", color: "var(--ink-light)", border: "1px solid var(--border)", padding: "2px 10px" }}>{fmtInt(totalPredictions)} predictions issued</span>
           }
         </div>
@@ -157,7 +158,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
 
         <p style={{ fontSize: 13, color: "var(--ink-light)", fontStyle: "italic", margin: "12px 0 40px" }}>
           {hasGrades
-            ? <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Live data.</strong> Metrics computed from {fmtInt(nGraded)} predictions graded against the FEWS NET proxy at T+90 days. This record updates automatically.</>
+            ? <>Metrics computed from {fmtInt(nGraded)} predictions graded against the FEWS NET proxy at T+90 days{lastGradedRun && <>, the latest from the run of {lastGradedRun}</>}.</>
             : metrics && <><strong style={{ color: "var(--ink)", fontStyle: "normal" }}>Note:</strong> {fmtInt(totalPredictions)} predictions issued{withdrawals && withdrawals.n_withdrawn > 0 ? <>, of which {withdrawals.n_withdrawn} were withdrawn from the score and are listed below with the reason</> : null}. Grading is automated and pre-registered.</>
           }
         </p>
@@ -360,7 +361,7 @@ export default function ValidationPage({ initial }: { initial: ValidationData | 
         {/* Calibration & Reliability */}
         <div style={{ margin: "48px 0", paddingTop: 40, borderTop: "1px solid var(--border-light)" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 10 }}>
-            {hasGrades ? `Live Calibration · ${nGraded} Graded Predictions` : "Calibration"}
+            {hasGrades ? `Calibration · ${nGraded} Graded Predictions` : "Calibration"}
           </div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>
             {hasGrades ? `Reliability Diagram · Brier = ${fmt(metrics?.brier_score, 4)}` : "Reliability Diagram"}
