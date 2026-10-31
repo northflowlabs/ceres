@@ -4,7 +4,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import LiveAccuracyMetrics from "@/components/LiveAccuracyMetrics";
 import { useSiteData } from "@/lib/useSiteData";
-import { fmtInt } from "@/lib/utils";
+import { fmtInt, formatDate, latestDate } from "@/lib/utils";
 import { TIER_DEFS } from "@/lib/tiers";
 import type { ImpactData } from "@/lib/serverData";
 
@@ -18,25 +18,17 @@ function StatCard({ val, label, sub, accent = false }: { val: string; label: str
   );
 }
 
-function fmtDate(s: string | null | undefined) {
-  if (!s) return "…";
-  const d = new Date(s);
-  return Number.isNaN(d.getTime())
-    ? s
-    : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-}
-
 export default function ImpactPage({ initial }: { initial: ImpactData | null }) {
   const { data } = useSiteData<ImpactData>("impact", initial);
   const runs = data?.runs ?? null;
   const predictions = data?.predictions ?? null;
   const issued = data?.ledger.metrics.total_predictions ?? null;
   const regionRuns = data?.regionRuns ?? null;
-  const firstRun = runs?.length ? [...runs].sort()[0] : null;
+  const firstRun = formatDate(runs?.length ? [...runs].sort()[0] : null);
 
   const count = fmtInt;
   const inTier = (tier: string) => predictions?.filter(x => x.alert_tier === tier).length ?? null;
-  const asOf = predictions?.[0]?.reference_date;
+  const asOf = formatDate(latestDate(predictions?.map(x => x.reference_date) ?? []));
 
   const p = { color: "var(--ink-mid)", fontSize: 15, lineHeight: 1.75, marginBottom: 14 };
 
@@ -74,7 +66,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
             </div>
             {firstRun && (
               <p style={{ background: "white", padding: "14px 24px", margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--ink-light)" }}>
-                Predictions issued counts single forecasts in the verification ledger, which also holds dates outside the published archive; published runs counts run dates in the prediction archive since {fmtDate(firstRun)}.
+                Predictions issued counts single forecasts in the verification ledger, which also holds dates outside the published archive; published runs counts run dates in the prediction archive{firstRun && ` since ${firstRun}`}.
               </p>
             )}
           </div>
@@ -91,9 +83,9 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
         {/* Operational stats */}
         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-light)", margin: "40px 0 10px" }}>System Activity</div>
         <div className="impact-grid-3 impact-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
-          <StatCard val={count(runs?.length)}             label="Published Runs" sub={firstRun ? `Since ${fmtDate(firstRun)}` : undefined} />
+          <StatCard val={count(runs?.length)}             label="Published Runs" sub={firstRun ? `Since ${firstRun}` : undefined} />
           <StatCard val={count(regionRuns)}                label="Region Run Records" sub="One row per region and published run" />
-          <StatCard val={count(inTier("TIER-1"))}         label="Active Tier I Regions" sub={asOf ? `As of ${fmtDate(asOf)}` : undefined} />
+          <StatCard val={count(inTier("TIER-1"))}         label="Active Tier I Regions" sub={asOf ? `As of ${asOf}` : undefined} />
         </div>
 
         {/* What this means: narrative */}
@@ -110,7 +102,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>Graded against the FEWS NET proxy.</h2>
             <p style={p}>Every CERES prediction carries a T+90 grading date. When the data for that window is published, we compare our probabilistic forecast against the FEWS NET proxy for that country: the highest Current Situation phase FEWS NET reports for any of its areas within 30 days of the grading date.</p>
             <p style={p}>Predictions are graded on: (1) whether our predicted tier matches the proxy phase, (2) whether the actual outcome fell within our 90% sensitivity interval, and (3) our Brier score, the standard probabilistic calibration metric used in meteorological forecasting.</p>
-            <p style={p}>This ledger is public, permanent, and updated automatically. <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>View the full ledger →</a></p>
+            <p style={p}>This ledger is public and permanent. <a href="/validation" style={{ color: "var(--earth)", textDecoration: "none" }}>View the full ledger →</a></p>
           </div>
         </div>
 
@@ -118,7 +110,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
         {predictions && predictions.length > 0 && (
           <div style={{ margin: "48px 0 0", paddingTop: 48, borderTop: "1px solid var(--border-light)" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>Current Risk Landscape</div>
-            <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Active Alerts, {fmtDate(asOf)}</h2>
+            <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 20, lineHeight: 1.2 }}>Active Alerts{asOf && `, ${asOf}`}</h2>
             <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
               {TIER_DEFS.map(({ tier, name, thresh, color, bg }) => (
                 <div key={tier} style={{ background: bg, border: `1px solid ${color}`, padding: "20px 28px", minWidth: 160 }}>

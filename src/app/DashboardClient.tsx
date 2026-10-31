@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import { api, Prediction, Hypothesis } from "@/lib/api";
-import { tierLabel, formatDate, pct } from "@/lib/utils";
+import { tierLabel, formatDate, latestDate, pct } from "@/lib/utils";
 import { worldRegion } from "@/lib/regionNames";
 import LedgerSummary from "@/components/LedgerSummary";
 import { TIER_DEFS } from "@/lib/tiers";
@@ -58,7 +58,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
   const [selHyp,      setSelHyp]      = useState<Hypothesis | null>(null);
   const [deepHyp,     setDeepHyp]     = useState<Hypothesis | null>(null);
   const [deepLoading, setDeepLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<string>(initial?.predictions[0]?.reference_date ?? "");
+  const [lastUpdated, setLastUpdated] = useState<string>(latestDate(initial?.predictions.map((p) => p.reference_date) ?? []));
   const [mobileTab, setMobileTab] = useState<"regions" | "detail">("regions");
   const [isMobile, setIsMobile] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
@@ -165,7 +165,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
       setPredictions(d.predictions);
       setHypotheses(d.hypotheses);
       setComplete(d.complete);
-      setLastUpdated(d.predictions[0]?.reference_date ?? "");
+      setLastUpdated(latestDate(d.predictions.map((p) => p.reference_date)));
     } catch {
       if (!background) setError("unavailable");
     } finally {
@@ -258,7 +258,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
         {/* Meta: hidden on compact/mobile */}
         {!isCompact && <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 32px", gap: 28, flexShrink: 1, overflow: "hidden" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
-            {lastUpdated ? `LAST UPDATED: ${formatDate(lastUpdated).toUpperCase()}` : "LOADING…"} · 90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
+            {lastUpdated ? `LAST UPDATED: ${formatDate(lastUpdated).toUpperCase()} · ` : loading ? "LOADING… · " : ""}90-DAY HORIZON · IPC PHASE 3+ THRESHOLD
           </span>
           <span style={{ fontStyle: "italic", color: "var(--ink-light)", fontSize: 12 }}>
             Northflow Technologies · Open Humanitarian Intelligence
@@ -271,7 +271,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
               fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.08em",
               borderRadius: 2,
             }}>
-              <span className="animate-pulse-dot" style={{
+              <span style={{
                 width: 6, height: 6, background: "white", borderRadius: "50%", display: "inline-block",
               }} />
               {n1} REGION{n1 > 1 ? "S" : ""} AT CRITICAL RISK
@@ -307,7 +307,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
           marginLeft: "auto",
         }}>
                     <span style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)" }}>
-            {loading ? "LOADING…" : error ? "UNAVAILABLE" : `LATEST RUN ${formatDate(lastUpdated)} · ${predictions.length} REGIONS`}
+            {loading ? "LOADING…" : error ? "UNAVAILABLE" : `${lastUpdated ? `LATEST RUN ${formatDate(lastUpdated)} · ` : ""}${predictions.length} REGIONS`}
           </span>
           <button
             onClick={() => load()}

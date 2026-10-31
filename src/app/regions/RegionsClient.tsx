@@ -6,16 +6,12 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { Prediction } from "@/lib/api";
 import { useSiteData } from "@/lib/useSiteData";
+import { formatDate, latestDate } from "@/lib/utils";
 
 function pct(n: number | null | undefined) { if (n == null) return "n/a"; return `${(n * 100).toFixed(1)}%`; }
 function tierColor(t: string) { return t === "TIER-1" ? "#C0392B" : t === "TIER-2" ? "#D97706" : "#2E7D32"; }
 function tierLabel(t: string) { return t === "TIER-1" ? "Critical" : t === "TIER-2" ? "Warning" : "Watch"; }
 function tierBg(t: string)    { return t === "TIER-1" ? "#FEF2F2" : t === "TIER-2" ? "#FFFBEB" : "#F0FDF4"; }
-
-function fmtDate(s: string) {
-  try { return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); }
-  catch { return s; }
-}
 
 const IPC_LABELS: Record<number, string> = { 1: "Minimal", 2: "Stressed", 3: "Crisis", 4: "Emergency", 5: "Famine" };
 
@@ -23,6 +19,7 @@ export default function RegionsPage({ initial }: { initial: Prediction[] | null 
   const { data, failed } = useSiteData<Prediction[]>("regions", initial);
   const predictions = data ?? [];
   const loading = !data && !failed;
+  const latestRun = formatDate(latestDate(predictions.map((p) => p.reference_date)));
   const error = failed ? "The forecasts are unavailable right now." : null;
   const [filter,      setFilter]      = useState<"all" | "TIER-1" | "TIER-2" | "TIER-3">("all");
   const [sort,        setSort]        = useState<"risk" | "name">("risk");
@@ -176,7 +173,7 @@ export default function RegionsPage({ initial }: { initial: Prediction[] | null 
         {/* Last updated */}
         {!loading && predictions.length > 0 && (
           <div style={{ marginTop: 40, fontFamily: "var(--mono)", fontSize: 10, color: "var(--ink-light)", letterSpacing: "0.06em", borderTop: "1px solid var(--border-light)", paddingTop: 20 }}>
-            Last pipeline run: {fmtDate(predictions[0]?.reference_date ?? "")} · {predictions.length} regions · 90-day forecast horizon · Scheduled weekly
+            {latestRun && `Last pipeline run: ${latestRun} · `}{predictions.length} regions · 90-day forecast horizon · Scheduled weekly
           </div>
         )}
       </div>
