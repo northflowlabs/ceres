@@ -62,17 +62,23 @@ function Sparkline({ data, width = 320, height = 80 }: { data: RegionSnapshot[];
   if (!pts) return null;
 
   return (
-    <svg role="img" aria-label="Probability of IPC Phase 3+ by run" width={width} height={height} style={{ overflow: "visible" }}>
-      {/* 50% line */}
-      <line x1={0} y1={height - 0.5 * (height - 8) - 4} x2={width} y2={height - 0.5 * (height - 8) - 4}
-        stroke="var(--border)" strokeWidth={1} strokeDasharray="3 3" />
-      {/* SI band */}
-      {pts.ciPath && <path d={pts.ciPath} fill="var(--earth)" fillOpacity={0.1} />}
-      {/* Main line */}
-      <path d={pts.linePath} fill="none" stroke="var(--earth)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
-      {/* Latest dot */}
-      <circle cx={pts.xs[pts.xs.length - 1]} cy={pts.ys[pts.ys.length - 1]} r={4} fill="var(--earth)" />
-    </svg>
+    <div style={{ position: "relative", height }}>
+      {/* The whole series stretches to the width, so the height stays readable on a phone. */}
+      <svg role="img" aria-label="Probability of IPC Phase 3+ by run" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ display: "block", width: "100%", height: "100%", overflow: "visible" }}>
+        {/* 50% line */}
+        <line x1={0} y1={height - 0.5 * (height - 8) - 4} x2={width} y2={height - 0.5 * (height - 8) - 4}
+          stroke="var(--border)" strokeWidth={1} strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+        {/* SI band */}
+        {pts.ciPath && <path d={pts.ciPath} fill="var(--earth)" fillOpacity={0.1} />}
+        {/* Main line */}
+        <path d={pts.linePath} fill="none" stroke="var(--earth)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
+      {/* Latest dot, outside the stretched drawing so it stays round */}
+      <span className="spark-latest" style={{
+        position: "absolute", left: "100%", top: `${(pts.ys[pts.ys.length - 1] / height) * 100}%`,
+        width: 8, height: 8, marginLeft: -4, marginTop: -4, borderRadius: "50%", background: "var(--earth)",
+      }} />
+    </div>
   );
 }
 
@@ -172,7 +178,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
               The archive is unavailable right now.
             </div>
           ) : (
-            <div className="tracker-panel-grid" style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 0, border: "1px solid var(--border)" }}>
+            <div className="tracker-panel-grid" style={{ display: "grid", gridTemplateColumns: "280px minmax(0, 1fr)", gap: 0, border: "1px solid var(--border)" }}>
               {/* Region list */}
               <div className="tracker-region-list" style={{ borderRight: "1px solid var(--border)", maxHeight: 640, overflowY: "auto" }}>
                 {latest.map(s => {
@@ -211,13 +217,13 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
               </div>
 
               {/* Detail panel */}
-              <div className="tracker-detail" style={{ background: "white", padding: 32 }}>
+              <div className="tracker-detail" style={{ background: "white", padding: 32, minWidth: 0 }}>
                 {!selSnap ? (
                   <div style={{ color: "var(--ink-light)", fontFamily: "var(--mono)", fontSize: 11 }}>Select a region</div>
                 ) : (
                   <>
                     {/* Region header */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
                       <div>
                         <div style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1, marginBottom: 6 }}>{selSnap.region_name}</div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
@@ -240,14 +246,14 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 10 }}>
                           P(IPC3+ / 90d), {history.length} published runs · 90% sensitivity interval (SI)
                         </div>
-                        <div style={{ position: "relative" }}>
+                        <div style={{ position: "relative", paddingRight: 36 }}>
                           <div style={{ position: "absolute", right: 0, top: 0, fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>100%</div>
                           <div style={{ position: "absolute", right: 0, top: "50%", fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>50%</div>
                           <div style={{ position: "absolute", right: 0, bottom: 0, fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>0%</div>
                           <Sparkline data={history} width={580} height={100} />
                         </div>
                         {/* X-axis dates */}
-                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, paddingRight: 36 }}>
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{fmtDateShort(sortedHistory[0]?.run_date)}</span>
                           <span style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)" }}>{fmtDateShort(sortedHistory[sortedHistory.length - 1]?.run_date)}</span>
                         </div>
@@ -260,7 +266,8 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
 
                     {/* History table */}
                     {sortedHistory.length > 0 && (
-                      <div style={{ borderTop: "1px solid var(--border-light)" }}>
+                      <div className="tracker-history" style={{ borderTop: "1px solid var(--border-light)", overflowX: "auto" }}>
+                        <div style={{ minWidth: 560 }}>
                         <div style={{ display: "grid", gridTemplateColumns: "100px 80px 80px 80px 80px 1fr", gap: 0, padding: "8px 0", borderBottom: "1px solid var(--border)" }}>
                           {["Run date", "P(IPC3+)", "SI Low", "SI High", "Tier", "Drivers"].map(h => (
                             <div key={h} style={{ fontFamily: "var(--mono)", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-light)", padding: "0 6px" }}>{h}</div>
@@ -276,6 +283,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                             <div style={{ fontFamily: "var(--mono)", fontSize: 9, padding: "0 6px", color: "var(--ink-light)" }}>{s.driver_types.slice(0, 3).join(", ")}</div>
                           </div>
                         ))}
+                        </div>
                       </div>
                     )}
                   </>

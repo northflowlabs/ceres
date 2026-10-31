@@ -489,18 +489,8 @@
     }
 
     /* ── Tracker: region list + detail → stacked ─────────────────── */
-    .tracker-panel-grid {
-      grid-template-columns: minmax(0, 1fr) !important;
-    }
     .tracker-detail {
-      min-width: 0;
-      overflow-x: auto;
       padding: 16px !important;
-    }
-    .tracker-region-list {
-      max-height: 280px !important;
-      border-right: none !important;
-      border-bottom: 1px solid var(--border) !important;
     }
 
     /* ── Validation newsletter CTA: stack form below text ────────── */
@@ -710,6 +700,19 @@
     }
   }
 
+  /* The history table needs its full width, Drivers included, so the region list
+     stacks above the detail until both fit side by side. */
+  @media (max-width: 964px) {
+    .tracker-panel-grid {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
+    .tracker-region-list {
+      max-height: 280px !important;
+      border-right: none !important;
+      border-bottom: 1px solid var(--border) !important;
+    }
+  }
+
   @media (max-width: 480px) {
     .footer-grid {
       grid-template-columns: minmax(0, 1fr) !important;
@@ -719,6 +722,9 @@
   @media (max-width: 359px) {
     .brand-tagline {
       display: none;
+    }
+    .validation-metrics-grid {
+      grid-template-columns: minmax(0, 1fr) !important;
     }
   }
 }
