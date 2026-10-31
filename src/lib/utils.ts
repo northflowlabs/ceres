@@ -87,6 +87,11 @@ export function latestDate(dates: (string | null | undefined)[]): string {
   }, "");
 }
 
+// Oldest first, for sorting rows. A missing date sorts first and never throws.
+export function byRunDate(a: { run_date?: string | null }, b: { run_date?: string | null }): number {
+  return (a.run_date ?? "").localeCompare(b.run_date ?? "");
+}
+
 // The earliest valid date in a list, or "" when the list holds none.
 export function earliestDate(dates: (string | null | undefined)[]): string {
   return dates.reduce<string>((earliest, d) => {

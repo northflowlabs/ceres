@@ -7,7 +7,7 @@ import { useSiteData } from "@/lib/useSiteData";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { RegionSnapshot } from "@/lib/api";
-import { formatDate } from "@/lib/utils";
+import { byRunDate, formatDate } from "@/lib/utils";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -49,7 +49,7 @@ function Sparkline({ data }: { data: RegionSnapshot[] }) {
   const W = 560, H = 100;
   const pts = useMemo(() => {
     if (data.length < 2) return null;
-    const sorted = [...data].sort((a, b) => a.run_date.localeCompare(b.run_date));
+    const sorted = [...data].sort(byRunDate);
     const xs = sorted.map((_, i) => (i / (sorted.length - 1)) * W);
     const ys = sorted.map(s => H - s.p_ipc3plus_90d * (H - 10) - 5);
     const hasCi = sorted.every(s => s.sensitivity_interval_low != null && s.sensitivity_interval_high != null);

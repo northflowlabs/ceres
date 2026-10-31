@@ -5,7 +5,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { RegionSnapshot } from "@/lib/api";
 import { useSiteData } from "@/lib/useSiteData";
-import { earliestDate, fmtInt, formatDate, isIsoDate } from "@/lib/utils";
+import { byRunDate, earliestDate, fmtInt, formatDate, isIsoDate } from "@/lib/utils";
 import { regionName } from "@/lib/regionNames";
 import type { TrackerData } from "@/lib/serverData";
 
@@ -42,7 +42,7 @@ function fmtDateShort(s: string | null | undefined) {
 function Sparkline({ data, width = 320, height = 80 }: { data: RegionSnapshot[]; width?: number; height?: number }) {
   const pts = useMemo(() => {
     if (data.length < 2) return null;
-    const sorted = [...data].sort((a, b) => a.run_date.localeCompare(b.run_date));
+    const sorted = [...data].sort(byRunDate);
     const xs = sorted.map((_, i) => (i / (sorted.length - 1)) * width);
     const ys = sorted.map(s => height - s.p_ipc3plus_90d * (height - 8) - 4);
     const hasCi = sorted.every(s => s.sensitivity_interval_low != null && s.sensitivity_interval_high != null);
@@ -115,7 +115,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
   });
 
   const selSnap = latest.find(s => s.region_id === selRegion);
-  const sortedHistory = [...history].sort((a, b) => a.run_date.localeCompare(b.run_date));
+  const sortedHistory = [...history].sort(byRunDate);
 
   return (
     <div className="topo-texture" style={{ background: "var(--parchment)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -176,7 +176,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
               {/* Region list */}
               <div className="tracker-region-list" style={{ borderRight: "1px solid var(--border)", maxHeight: 640, overflowY: "auto" }}>
                 {latest.map(s => {
-                  const mini = ((histories?.[s.region_id] ?? []).slice(0, 8) ?? []).sort((a, b) => a.run_date.localeCompare(b.run_date));
+                  const mini = ((histories?.[s.region_id] ?? []).slice(0, 8) ?? []).sort(byRunDate);
                   const trend = mini.length >= 2 ? mini[mini.length - 1].p_ipc3plus_90d - mini[0].p_ipc3plus_90d : 0;
                   const trendArrow = trend > 0.03 ? "↑" : trend < -0.03 ? "↓" : "→";
                   const trendColor = trend > 0.03 ? "var(--crisis)" : trend < -0.03 ? "var(--watch)" : "var(--ink-light)";
@@ -221,7 +221,7 @@ export default function TrackerPage({ initial }: { initial: TrackerData | null }
                       <div>
                         <div style={{ fontFamily: "var(--display)", fontSize: 28, fontWeight: 700, lineHeight: 1, marginBottom: 6 }}>{selSnap.region_name}</div>
                         <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", letterSpacing: "0.06em" }}>
-                          {selSnap.region_id} · Latest run {formatDate(selSnap.run_date)}
+                          {selSnap.region_id}{formatDate(selSnap.run_date) && ` · Latest run ${formatDate(selSnap.run_date)}`}
                         </div>
                       </div>
                       <div style={{ textAlign: "right" }}>
