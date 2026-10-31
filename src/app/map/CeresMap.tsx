@@ -248,9 +248,10 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
       {/* Map container */}
       <div className="map-pane" style={{ flex: 1, position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
 
-        {/* Zoom controls: bottom-left inside container (avoids overflow:hidden clipping) */}
+        {/* Zoom controls: top-right inside the container (avoids overflow:hidden
+            clipping, and the consent button in the bottom-left corner of the screen) */}
         <div style={{
-          position: "absolute", bottom: 16, left: 12, zIndex: 1000,
+          position: "absolute", top: 12, right: 12, zIndex: 1000,
           display: "flex", flexDirection: "column", gap: 1,
         }}>
           {([["+", 1], ["-", -1]] as const).map(([label, delta]) => (

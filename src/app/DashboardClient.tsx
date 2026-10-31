@@ -343,7 +343,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
 
       {/* ── MOBILE NAV DRAWER ────────────────────────────────────────── */}
       {menuOpen && (
-        <div style={{
+        <div className="covers-consent-button" style={{
           position: "fixed", inset: 0, zIndex: 3000,
           background: "var(--parchment)",
           display: "flex", flexDirection: "column",
@@ -446,7 +446,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
           </div>
 
           {/* Cards */}
-          <div style={{ flex: 1, overflowY: "auto", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ flex: 1, overflowY: "auto", padding: "12px 12px 72px", display: "flex", flexDirection: "column", gap: 8 }}>
             {loading && Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="skeleton" style={{
                 height: 118, border: "1px solid var(--border-light)",
@@ -858,7 +858,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
 
       {/* ── MOBILE BOTTOM SHEET ──────────────────────────────────────── */}
       {sheetOpen && !selPred && (
-        <div onClick={() => setSheetOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(28,25,23,0.5)" }}>
+        <div className="covers-consent-button" onClick={() => setSheetOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(28,25,23,0.5)" }}>
           <div ref={sheetRef} role="dialog" aria-modal="true" aria-label="No region selected" tabIndex={-1} onClick={e => e.stopPropagation()} style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "var(--parchment)", borderTop: "2px solid var(--ink)", borderRadius: "12px 12px 0 0", padding: "20px 20px 40px" }}>
             <div style={{ width: 36, height: 4, background: "var(--border)", borderRadius: 2, margin: "0 auto 20px" }} />
             <div style={{ textAlign: "center", padding: "20px 0" }}>
@@ -875,6 +875,7 @@ export default function Dashboard({ initial }: { initial: DashboardData | null }
       )}
       {sheetOpen && selPred && (
         <div
+          className="covers-consent-button"
           onClick={() => setSheetOpen(false)}
           style={{
             position: "fixed", inset: 0, zIndex: 2000,
