@@ -98,7 +98,7 @@ export default function CookiesPage() {
           We use Google Analytics 4 to understand how visitors use CERES: which pages are visited, how long sessions last, and what device types are used. We do not use it for advertising or remarketing.
         </p>
         <p style={p}>
-          The Google tag loads only after you accept statistics. Until then, and after you reject, your browser sends nothing to Google Analytics and no analytics cookies are set. If you accept, the cookies above are set. If you change your mind, the tag stops and those cookies are deleted. If you reject in one tab while another is open, a measurement already queued in that other tab may still leave within seconds. Google processes this data under a Data Processing Addendum, and Google Analytics 4 does not store IP addresses.
+          The Google tag loads only after you accept statistics. Until then, and after you reject, your browser sends nothing to Google Analytics and no analytics cookies are set. If you accept, the cookies above are set. If you change your mind, the tag stops and those cookies are deleted. A measurement already queued when you reject may still leave within seconds. Google processes this data under a Data Processing Addendum, and Google Analytics 4 does not store IP addresses.
         </p>
         <p style={p}>
           You can change your choice at any time using the controls below, or install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Analytics Opt-out Browser Add-on</a>.

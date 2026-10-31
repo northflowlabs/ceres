@@ -60,7 +60,7 @@ export default function PrivacyPage() {
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
           <li style={li}><strong>Email address and organisation name</strong>: collected when you contact us, and held for people who signed up to the CERES newsletter or an API plan earlier. Used to answer you and to keep those existing records.</li>
           <li style={li}><strong>Payment data</strong>: earlier API plans were paid through Stripe. We have never stored card numbers or payment credentials. Stripe acts as an independent data processor under its own privacy policy.</li>
-          <li style={li}><strong>Usage data</strong>: analytics via Google Analytics 4, only with your consent. This includes pages visited, session duration, and device type, measured with cookies. Without consent nothing is sent to Google Analytics. See the <a href="/cookies" style={{ color: "var(--earth)" }}>Cookie Policy</a>.</li>
+          <li style={li}><strong>Usage data</strong>: analytics via Google Analytics 4, only with your consent. This includes pages visited, session duration, and device type, measured with cookies. Without consent nothing is sent to Google Analytics. A measurement already queued when you reject may still leave within seconds. See the <a href="/cookies" style={{ color: "var(--earth)" }}>Cookie Policy</a>.</li>
           <li style={li}><strong>API request logs</strong>: IP address and request timestamps for API calls. Retained for 30 days for security and abuse prevention.</li>
         </ul>
 
