@@ -69,6 +69,11 @@ export function formatDate(isoStr: string): string {
   });
 }
 
+// The latest of a list of ISO dates, or "" when the list holds none.
+export function latestDate(dates: (string | null | undefined)[]): string {
+  return dates.reduce<string>((latest, d) => (d && d > latest ? d : latest), "");
+}
+
 export function clsx(...classes: (string | undefined | false | null)[]): string {
   return classes.filter(Boolean).join(" ");
 }

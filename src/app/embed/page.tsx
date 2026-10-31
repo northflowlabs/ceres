@@ -73,7 +73,7 @@ export default function EmbedPage() {
         </div>
         <h1 style={{ fontFamily: "var(--display)", fontSize: 48, fontWeight: 700, lineHeight: 1.1, marginBottom: 16 }}>Embeddable Widget</h1>
         <p style={{ fontSize: 17, color: "var(--ink-mid)", maxWidth: 640, lineHeight: 1.7, fontWeight: 300 }}>
-          Add a live CERES risk monitor to your organisation&rsquo;s website, dashboard, or intranet with a single line of HTML. No API key required. It shows the latest published forecasts.
+          Add a CERES risk monitor to your organisation&rsquo;s website, dashboard, or intranet with a single line of HTML. No API key required. It shows the latest published forecasts.
         </p>
       </div>
 
@@ -181,9 +181,9 @@ export default function EmbedPage() {
           </div>
         </div>
 
-        {/* Live preview */}
+        {/* Preview */}
         <div>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16 }}>Live Preview</div>
+          <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 16 }}>Preview</div>
           <div style={{ border: "1px solid var(--border)", background: "#F5F5F5", padding: 20, display: "flex", justifyContent: "center" }}>
             <iframe
               src={previewUrl}
@@ -196,7 +196,7 @@ export default function EmbedPage() {
             />
           </div>
           <div style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--ink-light)", marginTop: 8, letterSpacing: "0.06em" }}>
-            Preview loads live data, may take a moment
+            Preview loads the latest published data, may take a moment
           </div>
 
           {/* Usage notes */}

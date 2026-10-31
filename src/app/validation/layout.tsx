@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Validation · CERES Famine Early Warning",
   description:
-    "CERES prediction validation ledger. Live accuracy metrics, calibration charts, and grading of timestamped forecasts against the FEWS NET proxy.",
+    "CERES prediction validation ledger. Accuracy metrics, calibration charts, and grading of timestamped forecasts against the FEWS NET proxy.",
   keywords: [
     "famine forecast validation", "Brier score", "calibration", "FEWS NET outcomes",
     "prediction accuracy", "food security forecasting", "CERES validation", "Northflow",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CERES Validation · Prediction Accuracy",
-    description: "Timestamped famine forecasts graded against the FEWS NET proxy at T+90. Live Brier score, sensitivity-interval coverage and skill score against the FEWS NET proxy.",
+    description: "Timestamped famine forecasts graded against the FEWS NET proxy at T+90. Brier score, sensitivity-interval coverage and skill score against the FEWS NET proxy.",
   },
   alternates: { canonical: "https://ceres.northflow.no/validation" },
 };
