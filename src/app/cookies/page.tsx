@@ -64,7 +64,7 @@ export default function CookiesPage() {
                 {
                   name: "Google Analytics 4 (_ga, _ga_*)",
                   type: "Analytics",
-                  purpose: "Measures page views, session duration and device type to help us understand how CERES is used. Set only after you accept analytics, on ceres.northflow.no alone.",
+                  purpose: "Measures page views, session duration and device type to help us understand how CERES is used. Set only after you accept analytics. Normally set on ceres.northflow.no; if a northflow.no cookie already exists, Google's tag may reuse its identifier.",
                   duration: "Up to 14 months",
                   consent: "Yes: analytics consent required",
                 },
