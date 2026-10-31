@@ -89,9 +89,12 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        {/* Consent Mode v2: everything denied until the visitor consents through
-            Samtykkr, whose engine pushes the update. Inside another site's iframe
-            neither loads: the widget then sets no cookies and has nothing to ask. */}
+        {/* The Google tag loads only once Samtykkr reports statistics consent, and
+            its disable flag stops it again the moment that consent is taken back.
+            Consent Mode alone is not enough: a tag running under denied consent
+            still sends cookieless hits. Samtykkr's engine pushes the Consent Mode
+            update before its events fire. Inside another site's iframe neither
+            loads: the widget then sets no cookies and has nothing to ask. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -104,17 +107,26 @@ export default function RootLayout({
                   functionality_storage: 'denied', personalization_storage: 'denied',
                   security_storage: 'granted'
                 });
-                gtag('js', new Date());
-                gtag('config', 'G-GQX8JPPF85', { page_path: window.location.pathname });
-                [
-                  'https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85',
-                  'https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fceres.northflow.no%2Fprivacy'
-                ].forEach(function (src) {
+                var tagLoaded = false;
+                function addScript(src, async) {
                   var s = document.createElement('script');
-                  s.async = true;
+                  s.async = async;
                   s.src = src;
                   document.head.appendChild(s);
+                }
+                function applyConsent() {
+                  var granted = !!window.NFConsent && window.NFConsent.has('statistics');
+                  window['ga-disable-G-GQX8JPPF85'] = !granted;
+                  if (!granted || tagLoaded) return;
+                  tagLoaded = true;
+                  gtag('js', new Date());
+                  gtag('config', 'G-GQX8JPPF85', { page_path: window.location.pathname });
+                  addScript('https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85', true);
+                }
+                ['nf-consent-ready', 'nf-consent-change', 'nf-consent-withdraw'].forEach(function (name) {
+                  window.addEventListener(name, applyConsent);
                 });
+                addScript('https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fceres.northflow.no%2Fprivacy', false);
               }
             `,
           }}

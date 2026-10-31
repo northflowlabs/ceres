@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://ceres.northflow.no/cookies" },
 };
 
-const LAST_UPDATED = "30 October 2026";
+const LAST_UPDATED = "31 October 2026";
 
 export default function CookiesPage() {
   const h2 = { fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, marginBottom: 12, marginTop: 40, lineHeight: 1.2 } as const;
@@ -98,7 +98,7 @@ export default function CookiesPage() {
           We use Google Analytics 4 to understand how visitors use CERES: which pages are visited, how long sessions last, and what device types are used. We do not use it for advertising or remarketing.
         </p>
         <p style={p}>
-          The Google tag loads on every page in Consent Mode, with analytics and advertising storage denied by default. Until you accept, it sets no analytics cookies, and Google may receive cookieless measurements such as the page and browser type. If you accept, the cookies above are set. Google processes this data under a Data Processing Addendum, and Google Analytics 4 does not store IP addresses.
+          The Google tag loads only after you accept statistics. Until then, and after you reject, your browser sends nothing to Google Analytics and no analytics cookies are set. If you accept, the cookies above are set. If you change your mind, the tag stops and those cookies are deleted. Google processes this data under a Data Processing Addendum, and Google Analytics 4 does not store IP addresses.
         </p>
         <p style={p}>
           You can change your choice at any time using the controls below, or install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Analytics Opt-out Browser Add-on</a>.
@@ -117,7 +117,7 @@ export default function CookiesPage() {
             <strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com): the typefaces on every page.
           </li>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
-            <strong>Google Tag</strong> (googletagmanager.com): the analytics script described above.
+            <strong>Google Tag</strong> (googletagmanager.com): the analytics script described above, fetched only after you accept statistics.
           </li>
           <li style={{ fontSize: 14, color: "var(--ink-mid)", marginBottom: 8, lineHeight: 1.75 }}>
             <strong>Samtykkr</strong> (app.samtykkr.no): the consent banner.
