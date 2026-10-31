@@ -246,10 +246,12 @@ export default function CeresMap({ data, failed }: { data: MapData | null; faile
     <div className="map-shell" style={{ display: "flex", gap: 0, marginTop: 24, height: 620 }}>
 
       {/* Map container */}
-      <div className="map-pane" style={{ flex: 1, position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
+      <div className="map-pane" style={{ flex: 1, position: "relative", isolation: "isolate", border: "1px solid var(--border)", overflow: "hidden" }}>
 
         {/* Zoom controls: top-right inside the container (avoids overflow:hidden
-            clipping, and the consent button in the bottom-left corner of the screen) */}
+            clipping, and the consent button in the bottom-left corner of the screen).
+            The z-index only has to beat Leaflet's panes: the isolated pane keeps the
+            map and these controls under the sticky nav. */}
         <div style={{
           position: "absolute", top: 12, right: 12, zIndex: 1000,
           display: "flex", flexDirection: "column", gap: 1,
