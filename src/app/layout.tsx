@@ -93,8 +93,12 @@ export default function RootLayout({
             its disable flag stops it again the moment that consent is taken back.
             Consent Mode alone is not enough: a tag running under denied consent
             still sends cookieless hits. Samtykkr's engine pushes the Consent Mode
-            update before its events fire. Inside another site's iframe neither
-            loads: the widget then sets no cookies and has nothing to ask. */}
+            update before its events fire, but it knows only its own tab, so the
+            stored choice is checked as well, on a storage event from another tab
+            and on a return from the back-forward cache. A storage copy without
+            the cookie is dropped first, so deleting cookies brings the banner back.
+            Inside another site's iframe neither loads: the widget then sets no
+            cookies and has nothing to ask. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -114,18 +118,53 @@ export default function RootLayout({
                   s.src = src;
                   document.head.appendChild(s);
                 }
+                function storedGrant() {
+                  var found = document.cookie.match(/(?:^|; )nf_consent=([^;]*)/);
+                  try {
+                    return !!found && !!JSON.parse(decodeURIComponent(found[1])).categories.statistics;
+                  } catch (e) {
+                    return false;
+                  }
+                }
+                function clearAnalyticsCookies() {
+                  var labels = window.location.hostname.split('.');
+                  document.cookie.split('; ').forEach(function (pair) {
+                    var name = pair.split('=')[0];
+                    if (name !== '_ga' && name.indexOf('_ga_') !== 0) return;
+                    var expired = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+                    document.cookie = expired;
+                    labels.forEach(function (_, i) {
+                      document.cookie = expired + '; domain=.' + labels.slice(i).join('.');
+                    });
+                  });
+                }
                 function applyConsent() {
-                  var granted = !!window.NFConsent && window.NFConsent.has('statistics');
+                  var granted = !!window.NFConsent && window.NFConsent.has('statistics') && storedGrant();
                   window['ga-disable-G-GQX8JPPF85'] = !granted;
-                  if (!granted || tagLoaded) return;
+                  if (tagLoaded) {
+                    gtag('consent', 'update', { analytics_storage: granted ? 'granted' : 'denied' });
+                    if (!granted) clearAnalyticsCookies();
+                    return;
+                  }
+                  if (!granted) return;
                   tagLoaded = true;
                   gtag('js', new Date());
-                  gtag('config', 'G-GQX8JPPF85', { page_path: window.location.pathname });
+                  // 14 months of 30 days, in seconds. The cookie policy states this limit.
+                  gtag('config', 'G-GQX8JPPF85', { cookie_expires: 36288000 });
                   addScript('https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85', true);
                 }
                 ['nf-consent-ready', 'nf-consent-change', 'nf-consent-withdraw'].forEach(function (name) {
                   window.addEventListener(name, applyConsent);
                 });
+                window.addEventListener('storage', function (e) {
+                  if (e.key === 'nf_consent' || e.key === null) applyConsent();
+                });
+                window.addEventListener('pageshow', function (e) {
+                  if (e.persisted) applyConsent();
+                });
+                if (!/(?:^|; )nf_consent=/.test(document.cookie)) {
+                  try { window.localStorage.removeItem('nf_consent'); } catch (e) {}
+                }
                 addScript('https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fceres.northflow.no%2Fprivacy', false);
               }
             `,
