@@ -678,7 +678,7 @@
 
     /* ── Footer ──────────────────────────────────────────────── */
     footer {
-      padding: 32px 20px !important;
+      padding: 32px 20px 72px !important;
     }
     .footer-grid {
       grid-template-columns: 1fr 1fr !important;
@@ -693,6 +693,14 @@
       margin-top: 24px !important;
     }
   }
+}
+
+/* The consent button sits above every layer of the page. A full-screen drawer or
+   sheet cannot move out from under it, so it steps aside while one is open. The
+   footer and the region list keep 72px free at their ends for the same reason. */
+body:has(.mobile-nav-drawer.open) .nf-manage,
+body:has(.covers-consent-button) .nf-manage {
+  display: none !important;
 }
 
 /* ── Small laptop / tablet breakpoint (outside @layer for reliable cascade) ── */
