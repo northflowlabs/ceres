@@ -191,7 +191,7 @@ export default function EmbedPage() {
               height={cfg.height}
               frameBorder={0}
               scrolling="no"
-              style={{ border: "none", overflow: "hidden", display: "block" }}
+              style={{ border: "none", overflow: "hidden", display: "block", maxWidth: "100%" }}
               title="CERES Widget Preview"
             />
           </div>

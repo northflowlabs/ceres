@@ -207,10 +207,10 @@ export default function ChangelogPage() {
 
       <div className="content-wrap" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "0 40px 80px" }}>
 
-        <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 0, marginTop: 48 }}>
+        <div className="changelog-layout" style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 0, marginTop: 48 }}>
 
           {/* Sticky year nav */}
-          <nav style={{ position: "sticky", top: 64, alignSelf: "start", padding: "0 32px 0 0", borderRight: "1px solid var(--border-light)" }}>
+          <nav className="changelog-nav" style={{ position: "sticky", top: 64, alignSelf: "start", padding: "0 32px 0 0", borderRight: "1px solid var(--border-light)" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-light)", marginBottom: 16 }}>Jump to year</div>
             {years.map(year => (
               <a key={year} href={`#year-${year}`} style={{ display: "block", fontFamily: "var(--mono)", fontSize: 12, color: "var(--ink-light)", textDecoration: "none", padding: "4px 0 4px 10px", borderLeft: "2px solid transparent", marginLeft: -10, lineHeight: 1.4 }}>
@@ -226,7 +226,7 @@ export default function ChangelogPage() {
           </nav>
 
           {/* Entries */}
-          <div style={{ paddingLeft: 56 }}>
+          <div className="changelog-entries" style={{ paddingLeft: 56 }}>
             {years.map(year => (
               <div key={year} id={`year-${year}`} style={{ marginBottom: 64 }}>
                 <div style={{ fontFamily: "var(--display)", fontSize: 32, fontWeight: 700, color: "var(--ink)", marginBottom: 32, paddingBottom: 12, borderBottom: "2px solid var(--ink)" }}>
