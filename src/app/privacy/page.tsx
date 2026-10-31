@@ -67,8 +67,8 @@ export default function PrivacyPage() {
         <h2 style={h2}>3. Legal Basis for Processing</h2>
         <ul style={{ margin: "0 0 16px 0", paddingLeft: 24 }}>
           <li style={li}><strong>Contract performance (Art. 6(1)(b) GDPR)</strong>: processing the email and billing records of earlier newsletter and API sign-ups.</li>
-          <li style={li}><strong>Legitimate interests (Art. 6(1)(f) GDPR)</strong>: security logging, fraud prevention, and platform analytics.</li>
-          <li style={li}><strong>Consent (Art. 6(1)(a) GDPR)</strong>: where you have given explicit consent, such as accepting cookie tracking for analytics.</li>
+          <li style={li}><strong>Legitimate interests (Art. 6(1)(f) GDPR)</strong>: security logging and fraud prevention.</li>
+          <li style={li}><strong>Consent (Art. 6(1)(a) GDPR)</strong>: where you have given explicit consent, for analytics, which run only if you accept statistics in the consent banner.</li>
         </ul>
 
         <h2 style={h2}>4. How We Use Your Data</h2>
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
           <li style={li}><strong>Google LLC (Analytics and Fonts)</strong>: website analytics and typefaces. Analytics data is processed under a Data Processing Addendum. Your browser fetches the typefaces directly from Google, which receives your IP address with the request. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--earth)" }}>Google Privacy Policy</a></li>
           <li style={li}><strong>Esri Inc.</strong>: map tiles. Your browser fetches them directly from Esri on pages with a map.</li>
           <li style={li}><strong>GitHub Inc.</strong>: country outlines on the map page. Your browser fetches them directly from raw.githubusercontent.com.</li>
-          <li style={li}><strong>Samtykkr</strong>: the consent banner, loaded from app.samtykkr.no. Your choice is stored in your own browser.</li>
+          <li style={li}><strong>Samtykkr</strong>: the consent banner, loaded from app.samtykkr.no. Your choice is stored in your own browser. Each time you decide, your browser also sends app.samtykkr.no the site id and whether the decision was accept, reject or partial, for counting.</li>
           <li style={li}><strong>Railway Inc.</strong>: cloud infrastructure hosting the API backend. Data processed within the EU/EEA or under Standard Contractual Clauses.</li>
           <li style={li}><strong>Vercel Inc.</strong>: frontend hosting. Data processed under Vercel&rsquo;s Data Processing Addendum.</li>
         </ul>
@@ -97,7 +97,7 @@ export default function PrivacyPage() {
           <li style={li}><strong>Earlier API plans</strong>: retained for the duration of the plan plus 2 years for accounting purposes.</li>
           <li style={li}><strong>Enquiries</strong>: retained for as long as the conversation is relevant.</li>
           <li style={li}><strong>API request logs</strong>: 30 days.</li>
-          <li style={li}><strong>Analytics data</strong>: Google Analytics default retention (14 months).</li>
+          <li style={li}><strong>Analytics data</strong>: kept for a limited period under our Google Analytics settings, then deleted by Google.</li>
         </ul>
 
         <h2 style={h2}>7. Your Rights Under GDPR</h2>
