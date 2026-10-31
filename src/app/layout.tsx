@@ -94,9 +94,14 @@ export default function RootLayout({
             Consent Mode alone is not enough: a tag running under denied consent
             still sends cookieless hits. Samtykkr's engine pushes the Consent Mode
             update before its events fire, but it knows only its own tab, so the
-            stored choice is checked as well, on a storage event from another tab
-            and on a return from the back-forward cache. A storage copy without
-            the cookie is dropped first, so deleting cookies brings the banner back.
+            stored choice is checked as well: on a storage event from another tab,
+            on a return from the back-forward cache, when the tab becomes visible
+            and on every route change. Without a readable cookie the storage copy,
+            the bad cookie and the analytics cookies go before Samtykkr loads, so
+            deleting cookies brings the banner back. Advertising signals stay denied
+            whatever the banner grants, because GA is not used for advertising. The
+            GA cookies are host-only. Of the older cookies on the parent domain only
+            this stream's goes: _ga there may belong to another northflow.no site.
             Inside another site's iframe neither loads: the widget then sets no
             cookies and has nothing to ask. */}
         <script
@@ -118,39 +123,44 @@ export default function RootLayout({
                   s.src = src;
                   document.head.appendChild(s);
                 }
-                function storedGrant() {
+                function storedChoice() {
                   var found = document.cookie.match(/(?:^|; )nf_consent=([^;]*)/);
+                  if (!found) return null;
                   try {
-                    return !!found && !!JSON.parse(decodeURIComponent(found[1])).categories.statistics;
+                    var choice = JSON.parse(decodeURIComponent(found[1]));
+                    return choice && choice.categories && typeof choice.categories === 'object' ? choice : null;
                   } catch (e) {
-                    return false;
+                    return null;
                   }
+                }
+                function expireCookie(name, domain) {
+                  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + (domain ? '; domain=' + domain : '');
                 }
                 function clearAnalyticsCookies() {
-                  var labels = window.location.hostname.split('.');
-                  document.cookie.split('; ').forEach(function (pair) {
-                    var name = pair.split('=')[0];
-                    if (name !== '_ga' && name.indexOf('_ga_') !== 0) return;
-                    var expired = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
-                    document.cookie = expired;
-                    labels.forEach(function (_, i) {
-                      document.cookie = expired + '; domain=.' + labels.slice(i).join('.');
-                    });
+                  var host = window.location.hostname;
+                  ['_ga', '_ga_GQX8JPPF85'].forEach(function (name) {
+                    expireCookie(name);
+                    expireCookie(name, host);
                   });
+                  expireCookie('_ga_GQX8JPPF85', host.split('.').slice(1).join('.'));
                 }
                 function applyConsent() {
-                  var granted = !!window.NFConsent && window.NFConsent.has('statistics') && storedGrant();
+                  var choice = storedChoice();
+                  var granted = !!window.NFConsent && window.NFConsent.has('statistics') && !!choice && !!choice.categories.statistics;
                   window['ga-disable-G-GQX8JPPF85'] = !granted;
-                  if (tagLoaded) {
-                    gtag('consent', 'update', { analytics_storage: granted ? 'granted' : 'denied' });
-                    if (!granted) clearAnalyticsCookies();
+                  gtag('consent', 'update', {
+                    analytics_storage: granted ? 'granted' : 'denied',
+                    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied'
+                  });
+                  if (!granted) {
+                    if (tagLoaded) clearAnalyticsCookies();
                     return;
                   }
-                  if (!granted) return;
+                  if (tagLoaded) return;
                   tagLoaded = true;
                   gtag('js', new Date());
                   // 14 months of 30 days, in seconds. The cookie policy states this limit.
-                  gtag('config', 'G-GQX8JPPF85', { cookie_expires: 36288000 });
+                  gtag('config', 'G-GQX8JPPF85', { cookie_expires: 36288000, cookie_domain: 'none' });
                   addScript('https://www.googletagmanager.com/gtag/js?id=G-GQX8JPPF85', true);
                 }
                 ['nf-consent-ready', 'nf-consent-change', 'nf-consent-withdraw'].forEach(function (name) {
@@ -162,8 +172,21 @@ export default function RootLayout({
                 window.addEventListener('pageshow', function (e) {
                   if (e.persisted) applyConsent();
                 });
-                if (!/(?:^|; )nf_consent=/.test(document.cookie)) {
+                document.addEventListener('visibilitychange', function () {
+                  if (document.visibilityState === 'visible') applyConsent();
+                });
+                window.addEventListener('popstate', applyConsent);
+                ['pushState', 'replaceState'].forEach(function (method) {
+                  var original = window.history[method];
+                  window.history[method] = function () {
+                    applyConsent();
+                    return original.apply(this, arguments);
+                  };
+                });
+                if (!storedChoice()) {
+                  expireCookie('nf_consent');
                   try { window.localStorage.removeItem('nf_consent'); } catch (e) {}
+                  clearAnalyticsCookies();
                 }
                 addScript('https://app.samtykkr.no/v1/loader.js?site=STK-853d2967708856fc70834196&lang=en&accent=%231C1917&position=bottom-left&privacy=https%3A%2F%2Fceres.northflow.no%2Fprivacy', false);
               }
