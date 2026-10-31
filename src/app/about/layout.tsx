@@ -73,7 +73,7 @@ const faqJsonLd = {
       name: "How accurate is CERES?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The model uses expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023). Forward accuracy (Brier score, sensitivity-interval coverage, and tier precision) is graded openly as predictions reach their T+90 horizon, and grading is live: current Brier score, sensitivity-interval coverage and skill score are published on the Validation page.",
+        text: "The model uses expert-informed priors, specified with reference to 87 IPC transition records across 31 countries (2011-2023). Forward accuracy (Brier score, sensitivity-interval coverage, and tier precision) is graded openly as predictions reach their T+90 horizon. Brier score, sensitivity-interval coverage and skill score are published on the Validation page.",
       },
     },
     {

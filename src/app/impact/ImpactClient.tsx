@@ -56,7 +56,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
               CERES<br />Impact Record
             </h1>
             <p style={{ ...p, fontSize: 17, fontWeight: 300 }}>
-              The public operational record of CERES, in numbers, read live from the prediction archive and the verification ledger. Forward accuracy is graded against the FEWS NET proxy.
+              The public operational record of CERES, in numbers, from the prediction archive and the verification ledger. Forward accuracy is graded against the FEWS NET proxy.
             </p>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 1, background: "var(--border)", border: "1px solid var(--border)" }}>
@@ -103,7 +103,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
             <h2 style={{ fontFamily: "var(--display)", fontSize: 26, fontWeight: 700, marginBottom: 16, lineHeight: 1.2 }}>90 days. That is the target.</h2>
             <p style={p}>Pre-positioning food aid and mobilising emergency logistics takes 60 to 90 days. CERES forecasts 90 days ahead, so that a warning arrives while there is still time to act on it.</p>
             <p style={p}>CERES issues 90-day horizon predictions, each carrying a probability, a 90% sensitivity interval, and named driver causes. Every prediction is timestamped on issue and graded against the FEWS NET proxy after the T+90 date.</p>
-            <p style={p}>Grading trails the horizon, because the data for each window has to be published first. The figures above are read live from the verification ledger, against the pre-registered targets.</p>
+            <p style={p}>Grading trails the horizon, because the data for each window has to be published first. The figures above come from the verification ledger, against the pre-registered targets.</p>
           </div>
           <div>
             <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--earth)", marginBottom: 12 }}>How We Verify</div>
@@ -129,7 +129,7 @@ export default function ImpactPage({ initial }: { initial: ImpactData | null }) 
               ))}
             </div>
             <p style={{ ...p, marginTop: 16, fontSize: 13 }}>
-              <a href="/" style={{ color: "var(--earth)", textDecoration: "none" }}>View live dashboard →</a>
+              <a href="/" style={{ color: "var(--earth)", textDecoration: "none" }}>View the dashboard →</a>
             </p>
           </div>
         )}

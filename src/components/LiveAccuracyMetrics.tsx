@@ -47,7 +47,7 @@ export default function LiveAccuracyMetrics({
       <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-light)", margin: "10px 0 0" }}>
         {failed ? (
           <>
-            The live figures are in the{" "}
+            The figures are in the{" "}
             <Link href="/validation" style={{ color: "var(--earth)" }}>
               verification ledger
             </Link>

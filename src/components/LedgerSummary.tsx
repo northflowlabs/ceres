@@ -48,7 +48,7 @@ export default function LedgerSummary({ initial = null }: { initial?: LedgerFigu
   if (state !== "ready" || !v) {
     return (
       <p style={{ ...muted, margin: "4px 0 0" }}>
-        {state === "loading" ? "Loading the verification ledger…" : "The live figures are in the "}
+        {state === "loading" ? "Loading the verification ledger…" : "The figures are in the "}
         {state === "failed" && (
           <Link href="/validation" style={{ color: "var(--earth)" }}>
             verification ledger

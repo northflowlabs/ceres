@@ -9,13 +9,13 @@ const ADAPTERS = [
   { color: "var(--warning)", name: "MARVIS · Maritime",          desc: "Ships, cables and pipelines on the seabed · In development" },
   { color: "var(--watch)",   name: "AION · Longevity",           desc: "Hypotheses on ageing, published under CC BY 4.0" },
   { color: "var(--warning)", name: "ATHENA · Women's health",    desc: "In development, opens after an ethics and regulatory review" },
-  { color: "var(--earth)",   name: "CERES · Famine Early Warning", desc: "This system · Probabilistic · 43 countries · Live" },
+  { color: "var(--earth)",   name: "CERES · Famine Early Warning", desc: "This system · Probabilistic · 43 countries" },
 ];
 
 const STATS = [
   { num: "90d",      label: "Forecast Horizon",        note: "P(IPC Phase 3+) within 90 days of issue" },
   { num: "87",       label: "Reference Records",      note: "IPC transition records the priors were set against, 2011-2023, 31 countries" },
-  { num: "T+90",     label: "Grading Horizon",         note: "Graded against the FEWS NET proxy; live figures on the Validation page" },
+  { num: "T+90",     label: "Grading Horizon",         note: "Graded against the FEWS NET proxy; figures on the Validation page" },
   { num: "Open",     label: "Model Inputs",              note: "NASA POWER · MODIS NDVI · UCDP GED · IPC / CH · WFP prices" },
 ];
 
